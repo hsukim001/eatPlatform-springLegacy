@@ -3,7 +3,4 @@
 
 .metadata
 .classpath
-org.eclipse.wst.common.project.facet.core.xml
-pom.properties
-target/
 Servers
