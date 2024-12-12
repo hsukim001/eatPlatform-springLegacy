@@ -2,4 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=eclipse,java
 
 .metadata
+.classpath
+org.eclipse.wst.common.project.facet.core.xml
+pom.properties
 Servers
