@@ -3,6 +3,8 @@
 
 .metadata
 .classpath
+EatPlatform\.settings\org.eclipse.wst.common.component
 org.eclipse.wst.common.project.facet.core.xml
 pom.properties
+target/
 Servers
