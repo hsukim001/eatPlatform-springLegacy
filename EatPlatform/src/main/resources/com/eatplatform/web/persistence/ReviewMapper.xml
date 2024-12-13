@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.ReviewMapper">
+
+	<resultMap type="com.eatplatform.web.domain.ReviewVO" id="reviewResultMap">
+		<id property="reviewId" column="REVIEW_ID" />
+		<result property="storeId" column="STORE_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="reviewStar" column="REVIEW_STAR" />
+		<result property="reviewContent" column="REVIEW_CONTENT" />
+		<result property="reviewTag" column="REVIEW_TAG" />
+		<result property="reviewDate" column="REVIEW_DATE" />
+		<result property="reviewLike" column="REVIEW_LIKE" />
+		<result property="reviewReport" column="REVIEW_REPORT" />
+	</resultMap>
+	
+	<insert id="insert">
+		INSERT INTO REVIEW (REVIEW_ID, STORE_ID, USER_ID, 
+		REVIEW_STAR, REVIEW_CONTENT, REVIEW_TAG)
+		VALUES (REVIEW_SEQ.NEXTVAL, #{storeId}, #{userId}, 
+		#{reviewStar}, #{reviewContent}, #{reviewTag})
+	</insert>
+	
+	<select id="selectListByStoreId" resultMap="reviewResultMap">
+		SELECT * FROM REVIEW
+		WHERE STORE_ID = #{storeId}
+		ORDER BY REVIEW_ID
+	</select>
+	
+	<update id="update">
+		UPDATE REVIEW SET 
+		REVIEW_STAR = #{reviewStar},
+		REVIEW_CONTENT = #{reviewContent},
+		REVIEW_TAG = #{reviewTag},
+		REVIEW_DATE = SYSDATE
+		WHERE REVIEW_ID = #{reviewId}
+	</update>
+	
+	<delete id="delete">
+		DELETE REVIEW
+		WHERE REVIEW_ID = #{reviewId}
+	</delete>
+
+</mapper>
