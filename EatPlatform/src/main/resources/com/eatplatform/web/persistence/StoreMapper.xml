@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- namespace -->
+<mapper namespace="com.eatplatform.web.persistence.StoreMapper">
+
+	<resultMap type="com.eatplatform.web.domain.StoreVO"
+		id="StoreResultMap">
+		<id property="storeId" column="STORE_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="storeName" column="STORE_NAME" />
+		<result property="storePhone" column="STORE_PHONE" />
+		<result property="ownerName" column="OWNER_NAME" />
+		<result property="foodCategory" column="FOOD_CATEGORY" />
+		<result property="reservLimit" column="RESERV_LIMIT" />
+		<result property="seat" column="SEAT" />
+		<result property="businessHour" column="BUSINESS_HOUR" />
+		<result property="storeComment" column="STORE_COMMENT" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="storeRegDate" column="STORE_REG_DATE" />
+	</resultMap>
+
+	<insert id="insertStore">
+		INSERT INTO STORE(
+		STORE_ID, USER_ID, STORE_NAME, STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,
+		RESERV_LIMIT, SEAT, BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
+		) VALUES (
+		STORE_SEQ.NEXTVAL,
+		#{userId},
+		#{storeName},
+		#{storePhone},
+		#{ownerName},
+		#{foodCategory},
+		#{reservLimit},
+		#{seat},
+		#{businessHour},
+		#{storeComment},
+		#{description}
+		)
+	</insert>
+
+
+
+
+
+</mapper>

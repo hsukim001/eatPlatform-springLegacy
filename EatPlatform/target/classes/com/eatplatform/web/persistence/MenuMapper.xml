@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	
+<!-- namespace -->
+<mapper	namespace="com.eatplatform.web.persistence.StoreMapper">
+
+	<resultMap type="com.eatplatform.web.domain.StoreVO" id="StoreResultMap">
+		<id property="storeId" column="STORE_ID" />
+		<result property="menuId" column="MENU_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="menuName" column="MENU_NAME"/>
+		<result property="menuPrice" column="MENU_PRICE"/>
+		<result property="menuImg" column="MENU_IMG"/>
+		<result property="menuRegDate" column="MENU_REG_DATE"/>
+	</resultMap>
+
+</mapper>
