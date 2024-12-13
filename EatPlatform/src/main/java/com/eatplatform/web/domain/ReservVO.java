@@ -1,6 +1,6 @@
 package com.eatplatform.web.domain;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +17,5 @@ public class ReservVO {
 	private String userId;
 	private String reservDate;
 	private String reservTime;
-	private LocalDate reservDateCreated;
+	private Date reservDateCreated;
 }

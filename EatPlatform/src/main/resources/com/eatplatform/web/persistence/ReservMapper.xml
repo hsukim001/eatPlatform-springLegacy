@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.ReservMapper">
+
+	<resultMap type="com.eatplatform.web.domain.ReservVO" id="reservResultMap">
+		<id property="reservId" column="RESERV_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="reservDate" column="RESERV_DATE"/>
+		<result property="reservTime" column="RESERV_TIME"/>
+		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
+	</resultMap>
+	
+	<select id="selectList" resultMap="reservResultMap">
+		SELECT * FROM RESERV
+	</select>
+	
+	<select id="selectByReservId" resultMap="reservResultMap">
+		SELECT * FROM RESERV
+		WHERE RESERV_ID = #{reservId}
+	</select>
+	
+	<select id="selectByUserId" resultMap="reservResultMap">
+		SELECT * FROM RESERV
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO RESERV
+		VALUES(
+			RESERV_SEQ.NEXTVAL,
+			#{storeId},
+			#{userId},
+			#{reservDate},
+			#{reservTime},
+			SYSDATE
+		)
+	</insert>
+	
+	<delete id="delete">
+		DELETE RESERV
+		WHERE RESERV_ID = #{reservId}
+	</delete>
+	
+</mapper>
