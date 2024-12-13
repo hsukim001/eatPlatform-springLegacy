@@ -11,13 +11,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserListVO {
+public class ReservVO {
+	private int reservId;
+	private int storeId;
 	private String userId;
-	private String userPw;
-	private String userEmail;
-	private String userPhone;
-	private String userName;
-	private String userAuth;
-	private char userActiveYn;
-	private LocalDate userRegDate;
+	private String reservDate;
+	private String reservTime;
+	private LocalDate reservDateCreated;
 }
