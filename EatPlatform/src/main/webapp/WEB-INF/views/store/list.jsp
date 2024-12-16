@@ -34,7 +34,7 @@
 									<span>#${store.foodCategory}</span>
 								</p>
 								<p class="store_comment">${store.storeComment}</p>
-								<a href="/reserv/register?storeId=${store.storeId }">
+								<a href="../reserv/register?storeId=${store.storeId }">
 									<button>예약</button>
 								</a>
 							</div>
