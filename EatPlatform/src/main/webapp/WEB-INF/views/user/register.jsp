@@ -33,5 +33,8 @@
 		<input type="hidden" name="flagNum" value="${flagNum }">
 		<input type="submit" value="등록">
 	</form>
+	<div>
+		<button onclick="loaction.href='../'">취소</button>
+	</div>
 </body>
 </html>

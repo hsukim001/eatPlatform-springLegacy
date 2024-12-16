@@ -14,10 +14,6 @@
 			<input type="text" name="userId" disabled="disabled" value="${vo.userId }">
 		</div>
 		<div>
-			<span>비밀번호 : </span>
-			<input type="password" name="userPw" required="required" value="${vo.userPw }">
-		</div>
-		<div>
 			<span>이름 : </span>
 			<input type="text" name="userName" required="required" value="${vo.userName }">
 		</div>
@@ -31,5 +27,9 @@
 		</div>
 		<input type="submit" value="수정">
 	</form>
+	<div>
+		<button onclick="location.href='modifyPw'">비밀번호 변경</button>
+		<button onclick="location.href='../'">메인 이동</button>
+	</div>
 </body>
 </html>
