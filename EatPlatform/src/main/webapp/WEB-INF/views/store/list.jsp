@@ -7,7 +7,7 @@
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/resources/css/reset.css">
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/resources/css/list.css">
+	href="<%=request.getContextPath()%>/resources/store/css/list.css">
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
