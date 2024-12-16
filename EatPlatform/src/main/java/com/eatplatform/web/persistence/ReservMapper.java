@@ -11,6 +11,8 @@ public interface ReservMapper {
 	List<ReservVO> selectList();
 	ReservVO selectByReservId(int reservId);
 	List<ReservVO> selectByUserId(String userId);
+	List<ReservVO> selectToDayByReservDateUserId(String userId);
+	List<ReservVO> selectPrevDayByReservDateUserId(String userId);
 	
 	int insert(ReservVO reservVO);
 	int delete(int reservId);

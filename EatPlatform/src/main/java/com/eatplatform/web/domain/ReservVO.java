@@ -14,8 +14,10 @@ import lombok.ToString;
 public class ReservVO {
 	private int reservId;
 	private int storeId;
+	private String storeName;
 	private String userId;
 	private String reservDate;
 	private String reservTime;
+	private int reservPersonnel;
 	private Date reservDateCreated;
 }

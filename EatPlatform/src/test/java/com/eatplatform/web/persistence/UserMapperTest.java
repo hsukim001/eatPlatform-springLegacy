@@ -30,7 +30,7 @@ public class UserMapperTest {
 
 	private void deleteUser() {
 		String userId = "test2";
-		int result = userListMapper.deleteUserList(userId);
+		int result = userListMapper.deleteUser(userId);
 		
 		log.info(result + "�� ����");
 	}
@@ -46,7 +46,7 @@ public class UserMapperTest {
 		userListVO.setUserName("�׽�Ʈ ����");
 
 		log.info(userListVO);
-		int result = userListMapper.updateUserList(userListVO);
+		int result = userListMapper.updateUser(userListVO);
 
 		log.info(result + "�� ����");
 	}
@@ -54,7 +54,7 @@ public class UserMapperTest {
 	private void select() {
 		UserVO userListVO = new UserVO();
 		String userId = "test2";
-		userListVO = userListMapper.selectUserListByUserId(userId);
+		userListVO = userListMapper.selectUserByUserId(userId);
 		log.info(userListVO);
 	}
 
@@ -70,7 +70,7 @@ public class UserMapperTest {
 		userListVO.setUserActiveYn('Y');
 
 		log.info(userListVO);
-		int result = userListMapper.insertUserList(userListVO);
+		int result = userListMapper.insertUser(userListVO);
 
 		log.info(result + "�� ���");
 	}

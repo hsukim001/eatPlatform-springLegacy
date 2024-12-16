@@ -29,6 +29,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE USER_ID = #{userId}
 	</select>
 	
+	<select id="selectToDayByReservDateUserId" resultMap="reservResultMap">
+		SELECT * FROM RESERV
+		WHERE USER_ID = #{userId}
+		AND RESERV_DATE >= SYSDATE
+	</select>
+	
+	<select id="selectPrevDayByReservDateUserId" resultMap="reservResultMap">
+		SELECT * FROM RESERV
+		WHERE USER_ID = #{userId}
+		AND RESERV_DATE <![CDATA[<=]]> SYSDATE
+	</select>
+	
 	<insert id="insert">
 		INSERT INTO RESERV
 		VALUES(
@@ -37,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			#{userId},
 			#{reservDate},
 			#{reservTime},
+			#{reservPersonnel},
 			SYSDATE
 		)
 	</insert>

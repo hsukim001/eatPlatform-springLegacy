@@ -25,7 +25,7 @@ public class UserServiceImple implements UserService{
 
 	// 회원 등록
 	@Override
-	public int createdUserList(UserVO userVO, int flagNum) {
+	public int createdUser(UserVO userVO, int flagNum) {
 		log.info("createdUserList()");
 		
 		// 비밀번호 암호화
@@ -49,29 +49,29 @@ public class UserServiceImple implements UserService{
 		
 		log.info(vo);
 		
-		return userMapper.insertUserList(vo);
+		return userMapper.insertUser(vo);
 	}
 
 	// 회원 검색(회원 아이디)
 	@Override
-	public UserVO searchUserList(String userId) {
+	public UserVO searchUser(String userId) {
 		log.info("searchUserList()");
-		UserVO vo = userMapper.selectUserListByUserId(userId);
+		UserVO vo = userMapper.selectUserByUserId(userId);
 		return vo;
 	}
 
 	// 회원 정보 수정(비밀번호 제외)
 	@Override
-	public int modifyUserList(UserVO userVO) {
+	public int modifyUser(UserVO userVO) {
 		log.info("modifyUserList()");
 		
-		return userMapper.updateUserList(userVO);
+		return userMapper.updateUser(userVO);
 	}
 
-	// 로그인 체크
+	// 로그인
 	@Override
 	public int login(String userId, String userPw) {
-		log.info("userMatcher()");
+		log.info("login()");
 		UserVO vo = userMapper.selectUserPwByUserId(userId);
 		String encodePw = vo.getUserPw();
 		log.info(encodePw);
@@ -92,7 +92,10 @@ public class UserServiceImple implements UserService{
 		log.info("modifyUserPw()");
 		log.info(userPw);
 		UserVO vo = new UserVO();
+		
+		// 암호화
 		String encodePw = passwordEncoder.encode(userPw);
+		
 		vo.setUserId(userId);
 		vo.setUserPw(encodePw);
 		return userMapper.updateUserPw(vo);

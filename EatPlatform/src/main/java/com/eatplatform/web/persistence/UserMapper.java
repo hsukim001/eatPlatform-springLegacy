@@ -6,10 +6,10 @@ import com.eatplatform.web.domain.UserVO;
 
 @Mapper
 public interface UserMapper {
-	UserVO selectUserListByUserId(String userId);
-	int insertUserList(UserVO userVO);
-	int updateUserList(UserVO userVO);
-	int deleteUserList(String userId);
+	UserVO selectUserByUserId(String userId);
+	int insertUser(UserVO userVO);
+	int updateUser(UserVO userVO);
+	int deleteUser(String userId);
 	UserVO selectUserPwByUserId(String userId);
 	int updateUserPw(UserVO userVO);
 }
