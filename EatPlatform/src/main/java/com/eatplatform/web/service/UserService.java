@@ -3,11 +3,11 @@ package com.eatplatform.web.service;
 import com.eatplatform.web.domain.UserVO;
 
 public interface UserService {
-	int createdUserList(UserVO userVO, int flagNum);
+	int createdUser(UserVO userVO, int flagNum);
 	
-	UserVO searchUserList(String userId);
+	UserVO searchUser(String userId);
 	
-	int modifyUserList(UserVO userVO);
+	int modifyUser(UserVO userVO);
 	
 	int login(String userId, String userPw);
 	

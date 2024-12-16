@@ -2,22 +2,21 @@ package com.eatplatform.web.domain;
 
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class ReservVO {
-	private int reservId;
+public class ReplyVO {
+	private int replyId;
 	private int storeId;
-	private String storeName;
-	private String userId;
-	private String reservDate;
-	private String reservTime;
-	private int reservPersonnel;
-	private Date reservDateCreated;
+	private int reviewId;
+	private String replyContent;
+	private Date replyDate;
 }

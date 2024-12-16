@@ -32,10 +32,9 @@ public class ReviewServiceImple implements ReviewService{
 	}
 
 	@Override
-	public int updateReview(ReviewVO reviewVo) {
+	public int updateReview(ReviewVO reviewVO) {
 		log.info("updateReview()");
-		ReviewVO reviewVO = new ReviewVO();
-		int result = reviewMapper.update(reviewVo);
+		int result = reviewMapper.update(reviewVO);
 		log.info(result + "행 리뷰 수정");
 		return 1;
 	}

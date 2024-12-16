@@ -26,6 +26,7 @@ public class ReviewRESTController {
 	@Autowired
 	private ReviewService reviewService;
 	
+	// 리뷰 등록(회원)
 	@PostMapping
 	public ResponseEntity<Integer> createReview(
 			@RequestBody ReviewVO reviewVO) {
@@ -35,6 +36,7 @@ public class ReviewRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
+	// 식당별 리뷰 전체 조회
 	@GetMapping("/all/{storeId}")
 	public ResponseEntity<List<ReviewVO>> readAllReview(
 			@PathVariable("storeId") int storeId) {
@@ -45,6 +47,7 @@ public class ReviewRESTController {
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
 	}
 	
+	// 리뷰 수정
 	@PutMapping("/{reviewId}")
 	public ResponseEntity<Integer> updateReview(
 			@PathVariable int reviewId, 
@@ -55,6 +58,7 @@ public class ReviewRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
+	// 리뷰 삭제
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<Integer> deleteReview(
 			@PathVariable("reviewId") int reivewId) {

@@ -43,7 +43,7 @@ public class UserController {
 		log.info("registerPOST()");
 		log.info(flagNum);
 		
-		int result = userService.createdUserList(userVO, flagNum);
+		int result = userService.createdUser(userVO, flagNum);
 		
 		if(result == 1) {
 			log.info("회원 등록 성공");
@@ -61,7 +61,7 @@ public class UserController {
 		String userId = (String) session.getAttribute("userId");
 		log.info(userId);
 		
-		UserVO vo = userService.searchUserList(userId);
+		UserVO vo = userService.searchUser(userId);
 		model.addAttribute("vo", vo);
 		log.info(vo);
 	}
@@ -72,7 +72,7 @@ public class UserController {
 		log.info("modify()");
 		UserVO vo = userVO;
 		vo.setUserId("user"); // session userId (추후 변경)
-		int result = userService.modifyUserList(vo);
+		int result = userService.modifyUser(vo);
 		
 		if(result == 1) {
 			log.info("회원 정보 수정 성공");

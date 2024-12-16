@@ -1,5 +1,6 @@
 package com.eatplatform.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,26 @@ public class ReservRESTController {
 		ReservVO vo = reservService.searchByReservId(reservId);
 		
 		return new ResponseEntity<ReservVO>(vo, HttpStatus.OK);
+	}
+	
+	// 예약 목록 조회 (userId)
+	@GetMapping("/toDay/{userId}")
+	public ResponseEntity<List<ReservVO>> searchToDayByReservDateUserId(@PathVariable("userId") String userId) {
+		log.info("searchToDayByReservDateUserId()");
+		log.info(userId);
+		List<ReservVO> list = new ArrayList<ReservVO>();
+		list = reservService.searchToDayByReservDateUserId(userId);
+		return new ResponseEntity<List<ReservVO>>(list, HttpStatus.OK);
+	}
+	
+	// 이전 예약 목록 조회(userId)
+	@GetMapping("/prevDay/{userId}")
+	public ResponseEntity<List<ReservVO>> searchPrevDayByReservDateUserId(@PathVariable("userId") String userId) {
+		log.info("searchPrevDayByReservDateUserId()");
+		log.info(userId);
+		List<ReservVO> list = new ArrayList<ReservVO>();
+		list = reservService.searchPrevDayByReservDateUserId(userId);
+		return new ResponseEntity<List<ReservVO>>(list, HttpStatus.OK);
 	}
 	
 	// 예약 등록

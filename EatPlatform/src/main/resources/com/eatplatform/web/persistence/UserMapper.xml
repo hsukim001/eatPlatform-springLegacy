@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="userRegDate" column="USER_REG_DATE"/>
 	</resultMap>
 	
-	<select id="selectUserListByUserId" resultMap="userResultMap">
+	<select id="selectUserByUserId" resultMap="userResultMap">
 		SELECT * FROM USER_LIST 
 		WHERE USER_ID = #{userId}
 	</select>
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE USER_ID = #{userId}
 	</select>
 	
-	<insert id="insertUserList">
+	<insert id="insertUser">
 		INSERT INTO USER_LIST
 		VALUES(
 			#{userId},
@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 	
-	<update id="updateUserList">
+	<update id="updateUser">
 		UPDATE USER_LIST 
 		SET USER_EMAIL = #{userEmail},
 			USER_PHONE = #{userPhone},
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE USER_ID = #{userId}
 	</update>
 	
-	<delete id="deleteUserList">
+	<delete id="deleteUser">
 		DELETE USER_LIST
 		WHERE USER_ID = #{userId}
 	</delete>
