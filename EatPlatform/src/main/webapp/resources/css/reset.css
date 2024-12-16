@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+ul, ol, li {
+    list-style: none;
+}
+
+body {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+}

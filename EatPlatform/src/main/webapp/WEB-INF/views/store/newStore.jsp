@@ -9,8 +9,11 @@
 	display: none;
 }
 </style>
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script>
         $(function() { 
+        	
+        	
         	// "기타" 선택 관련 input 컨트롤
             $('#foodCategory').change(function() {  
                 var selectedCategory = $(this).val();
@@ -24,22 +27,21 @@
             }); // End foodCategory.change
 
             // 폼 제출 시  &  "기타" 선택 시 입력값을 foodCategory에 덮어씌우기
-            $('form').submit(function() { /
+            $('form').submit(function() { 
                 var category = $('#foodCategory').val();
                 if (category === '기타') {
                     var otherCategoryInput = $('#otherCategoryInput').val();
                     $('#foodCategory').val(otherCategoryInput); 
                 }
             }); // End form.submit
-        }); // End $funtion
+        }); // End $function
     </script>
 <title>Insert title here</title>
 </head>
 <body>
 	<h2>여기는 등록 페이지입니다.</h2>
 	<form action="register" method="POST">
-		<input type="hidden" value="${storeVO.storeId }" id="storeId">
-		<input type="hidden" value="${storeVO.userId }" id="userId"> 
+		<input type="hidden" value="${storeVO.userId }"  id="userId" name="userId"> 
 		<label for="storeName"> 
 			식당 이름 : <input type="text" id="storeName" name="storeName">
 		</label>

@@ -26,8 +26,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<insert id="insertStore">
 		INSERT INTO STORE(
-		STORE_ID, USER_ID, STORE_NAME, STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,
-		RESERV_LIMIT, SEAT, BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
+		STORE_ID, USER_ID, STORE_NAME,
+		STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,
+		RESERV_LIMIT, SEAT,
+		BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
 		) VALUES (
 		STORE_SEQ.NEXTVAL,
 		#{userId},
@@ -43,6 +45,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 
+	<select id="selectStoreById" resultMap="StoreResultMap">
+		SELECT *
+		FROM STORE
+		WHERE
+		STORE_ID = #{storeId}
+	</select>
+
+
+	<!-- list paging 처리 -->
+	<select id="getStoresWithPaging" resultMap="StoreResultMap">
+		SELECT *
+		FROM (
+		SELECT
+		store.*, ROW_NUMBER() OVER (ORDER BY STORE_REG_DATE DESC) AS RN
+		FROM
+		STORE store
+		)
+		WHERE RN &gt;= #{startRow} AND RN &lt;= #{endRow}
+	</select>
+
+	<!-- 전체 게시글 카운트 -->
+	<select id="getTotalStoresCount" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		STORE
+	</select>
+
+	<!-- 최근 6개의 매장 가져오기 -->
+	<select id="getRecentStores" resultMap="StoreResultMap">
+		SELECT *
+		FROM (
+		SELECT *
+		FROM STORE
+		ORDER BY STORE_REG_DATE DESC
+		)
+		WHERE ROWNUM &lt;= #{endRow} AND ROWNUM &gt;= #{startRow}
+	</select>
 
 
 

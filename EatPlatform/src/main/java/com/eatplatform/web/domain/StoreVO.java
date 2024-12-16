@@ -24,4 +24,6 @@ public class StoreVO {
 	private String storeComment;
 	private String description;
 	private LocalDate storeRegDate;
+	private int startNum;
+	private int endNum;
 }
