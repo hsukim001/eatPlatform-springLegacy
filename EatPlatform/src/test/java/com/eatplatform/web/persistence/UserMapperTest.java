@@ -7,17 +7,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eatplatform.web.config.RootConfig;
-import com.eatplatform.web.domain.UserListVO;
+import com.eatplatform.web.domain.UserVO;
 
 import lombok.extern.log4j.Log4j;
 
-@RunWith(SpringJUnit4ClassRunner.class) // ½ºÇÁ¸µ JUnit test ¿¬°á
-@ContextConfiguration(classes = { RootConfig.class }) // ¼³Á¤ ÆÄÀÏ ¿¬°á
+@RunWith(SpringJUnit4ClassRunner.class) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ JUnit test ï¿½ï¿½ï¿½ï¿½
+@ContextConfiguration(classes = { RootConfig.class }) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 @Log4j
-public class UserListMapperTest {
+public class UserMapperTest {
 
 	@Autowired
-	private UserListMapper userListMapper;
+	private UserMapper userListMapper;
 
 	@Test
 	public void test() {
@@ -32,34 +32,34 @@ public class UserListMapperTest {
 		String userId = "test2";
 		int result = userListMapper.deleteUserList(userId);
 		
-		log.info(result + "Çà »èÁ¦");
+		log.info(result + "ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 	}
 
 
 	private void update() {
-		UserListVO userListVO = new UserListVO();
+		UserVO userListVO = new UserVO();
 
 		userListVO.setUserId("test");
 		userListVO.setUserPw("test123");
 		userListVO.setUserEmail("mokmok@test.com");
 		userListVO.setUserPhone("010-7716-7711");
-		userListVO.setUserName("Å×½ºÆ® À¯Àú");
+		userListVO.setUserName("ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½");
 
 		log.info(userListVO);
 		int result = userListMapper.updateUserList(userListVO);
 
-		log.info(result + "Çà ¼öÁ¤");
+		log.info(result + "ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 	}
 
 	private void select() {
-		UserListVO userListVO = new UserListVO();
+		UserVO userListVO = new UserVO();
 		String userId = "test2";
 		userListVO = userListMapper.selectUserListByUserId(userId);
 		log.info(userListVO);
 	}
 
 	private void insertUser() {
-		UserListVO userListVO = new UserListVO();
+		UserVO userListVO = new UserVO();
 
 		userListVO.setUserId("test2");
 		userListVO.setUserPw("test2");
@@ -72,7 +72,7 @@ public class UserListMapperTest {
 		log.info(userListVO);
 		int result = userListMapper.insertUserList(userListVO);
 
-		log.info(result + "Çà µî·Ï");
+		log.info(result + "ï¿½ï¿½ ï¿½ï¿½ï¿½");
 	}
 
 }
