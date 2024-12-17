@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,8 +11,7 @@
 	<h1>예약 등록</h1>
 	<form action="register" method="post">
 		<div>
-			<span>식당 번호 : </span>
-			<input type="text" name="storeId">
+			<input type="hidden" name="storeId" value="${param.storeId }">
 		</div>
 		<div>
 			<span>예약일 : </span>

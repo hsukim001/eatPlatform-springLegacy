@@ -1,6 +1,5 @@
 package com.eatplatform.web.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.persistence.ReservMapper;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -58,23 +58,33 @@ public class ReservServiceImple implements ReservService{
 		int result = reservMapper.delete(reservId);
 		return result;
 	}
-
-	// 예약 목록 조회(reservDate, userId)
+	
+	// 페이징 예약 목록 조회
 	@Override
-	public List<ReservVO> searchToDayByReservDateUserId(String userId) {
-		log.info("searchToDayByReservDateUserId()");
-		List<ReservVO> list = new ArrayList<ReservVO>();
-		list = reservMapper.selectToDayByReservDateUserId(userId);
-		return list;
+	public List<ReservVO> searchPagingToDay(Pagination pagination) {
+		log.info("searchPagingToDayByReservDateUserId()");
+		return reservMapper.selectPagingToDay(pagination);
 	}
 
-	// 지난 예약 목록 조회(reservDate, userId)
+	// 페이징 이전 예약 목록 조회
 	@Override
-	public List<ReservVO> searchPrevDayByReservDateUserId(String userId) {
-		log.info(userId);
-		List<ReservVO> list = new ArrayList<ReservVO>();
-		list = reservMapper.selectPrevDayByReservDateUserId(userId);
-		return list;
+	public List<ReservVO> searchPagingPrevDay(Pagination pagination) {
+		log.info("searchPagingPrevDayByReservDateUserId()");
+		return reservMapper.selectPagingPrevDay(pagination);
+	}
+
+	// 예약 목록 totalCount
+	@Override
+	public int searchToDayTotalCountByReservDateUserId(String userId) {
+		log.info("searchToDayTotalCountByReservDateUserId()");
+		return reservMapper.selectToDayTotalCount(userId);
+	}
+
+	// 이전 예약 목록 totalCount
+	@Override
+	public int searchPrevDayTotalCountByReservDateUserId(String userId) {
+		log.info("searchPrevDayTotalCountByReservDateUserId()");
+		return reservMapper.selectPrevDayTotalCount(userId);
 	}
 	
 }

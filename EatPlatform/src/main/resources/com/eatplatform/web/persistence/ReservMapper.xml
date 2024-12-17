@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.ReservVO" id="reservResultMap">
 		<id property="reservId" column="RESERV_ID"/>
 		<result property="storeId" column="STORE_ID"/>
+		<result property="storeName" column="STORE_NAME"/>
 		<result property="userId" column="USER_ID"/>
 		<result property="reservDate" column="RESERV_DATE"/>
 		<result property="reservTime" column="RESERV_TIME"/>
@@ -29,16 +30,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE USER_ID = #{userId}
 	</select>
 	
-	<select id="selectToDayByReservDateUserId" resultMap="reservResultMap">
-		SELECT * FROM RESERV
-		WHERE USER_ID = #{userId}
-		AND RESERV_DATE >= SYSDATE
+	<select id="selectPagingToDay" resultMap="reservResultMap">
+		SELECT r.*, 
+	       (
+	           SELECT s.STORE_NAME 
+	           FROM STORE s 
+	           WHERE s.STORE_ID = r.STORE_ID
+	       ) AS STORE_NAME
+		FROM (
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_TIME, RESERV_DATE_CREATED,
+		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
+		    FROM RESERV
+		    WHERE USER_ID = #{userId} AND RESERV_DATE >= TRUNC(SYSDATE)
+		) r
+		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
 	
-	<select id="selectPrevDayByReservDateUserId" resultMap="reservResultMap">
-		SELECT * FROM RESERV
+	<select id="selectPagingPrevDay" resultMap="reservResultMap">
+		SELECT r.*, 
+	       (
+	           SELECT s.STORE_NAME 
+	           FROM STORE s 
+	           WHERE s.STORE_ID = r.STORE_ID
+	       ) AS STORE_NAME
+		FROM (
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_TIME, RESERV_DATE_CREATED,
+		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
+		    FROM RESERV
+		    WHERE USER_ID = #{userId} AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
+		) r
+		WHERE r.RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectToDayTotalCount" resultType="Integer">
+		SELECT COUNT(*)
+		FROM RESERV
 		WHERE USER_ID = #{userId}
-		AND RESERV_DATE <![CDATA[<=]]> SYSDATE
+		AND RESERV_DATE >= TRUNC(SYSDATE)
+	</select>
+	
+	<select id="selectPrevDayTotalCount" resultType="Integer">
+		SELECT COUNT(*)
+		FROM RESERV
+		WHERE USER_ID = #{userId}
+		AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
 	</select>
 	
 	<insert id="insert">
