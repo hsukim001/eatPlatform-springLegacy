@@ -28,7 +28,7 @@
 		$(document).ready(function(){
 			getAllReview();
 			
-			// 리뷰 작성 기능
+			// 리뷰 등록
 			$('#btnAdd').click(function(){
 				var storeId = $('#storeId').val();
 				var userId = $('#userId').val();
@@ -78,7 +78,7 @@
 							
 							// 문자열 형태를 날짜 형태로 변환
 							var reviewDate = new Date(this.reviewDate);
-							
+		                    
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
@@ -92,12 +92,21 @@
 								+ '&nbsp;&nbsp;'
 								+ reviewDate
 								+ '&nbsp;&nbsp;'
-								+ '<button class="btn_update" >수정</button>'
-								+ '<button class="btn_delete" >삭제</button>'
-								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
-								+ '<button class="btn_reply" >댓글</button>'
+								+ '<button class="btn_update" >리뷰 수정</button>'
+								+ '<button class="btn_delete" >리뷰 삭제</button>'
+								+ '<button class="btn_like" >리뷰 추천</button>'
+								+ '<button class="btn_report" >리뷰 신고</button>'
 								+ '</pre>'
+								+ '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' // 리뷰 댓글 표시
+								+ '</div>' 
+								+ '<div class="review_reply">' // 리뷰 댓글 입력창
+								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
+								+ '&nbsp;&nbsp;'
+								+ '<button class="btn_reply" >댓글 입력</button>'
+								+ '</div>'
 								+ '</div>';
+								
+								getReplies(this.reviewId);
 						}); // end each()
 						
 						$('#reviews').html(list);
@@ -106,7 +115,39 @@
 				
 			} // end getAllReiview()
 			
-			// 수정 버튼을 클릭하면 선택된 리뷰 수정
+			// 리뷰에 대한 댓글을 가져오는 함수
+			function getReplies(reviewId) {
+				
+				var url = '../reply/all/' + reviewId;
+				$.getJSON(
+					url,
+					function(data) {
+						console.log(data);
+						var repliesList = '';
+						
+						$(data).each(function(){
+							
+							var replyDate = new Date(this.replyDate);
+						
+							repliesList += '<div class="reply_item">'
+								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
+								+ '<input type="hidden" id="replyId" value="'+ this.replyId +'">'
+								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
+								+ '&nbsp;&nbsp;'
+								+ replyDate
+								+ '&nbsp;&nbsp;'
+								+ '<button class="btn_update_reply" >댓글 수정</button>'
+								+ '<button class="btn_delete_reply" >댓글 삭제</button>'
+								+ '</div>';
+						}); // end each()
+						
+						$('#review_' + reviewId + '_replies').html(repliesList);
+					} // end function()
+				); // end getJSON()
+				
+			} // end getReplies()
+			
+			// 리뷰 수정
 			$('#reviews').on('click', '.review_item .btn_update', function(){
 				console.log(this);
 				
@@ -142,7 +183,7 @@
 				
 			}); // end reviews.on()
 			
-			// 삭제 버튼을 클릭하면 선택된 리뷰 삭제
+			// 리뷰 삭제
 			$('#reviews').on('click', '.review_item .btn_delete', function(){
 				console.log(this);
 				
@@ -166,14 +207,14 @@
 				
 			}); // end reviews.on()
 			
-			// 댓글 버튼을 클릭하면 선택된 리뷰에 댓글 등록(사업자)
+			// 선택된 리뷰에 댓글 등록(사업자)
 			$('#reviews').on('click', '.review_item .btn_reply', function(){
 				console.log(this);
 				
 				var storeId = $('#storeId').val();
-				var reviewId = $('#reviewId').val();
-				var replyContent = $('#replyContent').val();
-				
+				var reviewId = $(this).closest('.review_item').find('#reviewId').val();  // 리뷰 아이디 가져오기
+	            var replyContent = $(this).siblings('#replyContent').val();  // 댓글 내용 가져오기
+
 				var obj3 = {
 						'storeId' : storeId,
 						'reviewId' : reviewId,
@@ -192,12 +233,66 @@
 						console.log(result);
 						if(result == 1) {
 							alert('댓글 입력 성공');
-							getAllReview();
+							getReplies(reviewId);
 						}
 					}
 				});
+				
 			}); // end reviews.on()
 			
+			// 선택된 댓글 수정
+			$('#reviews').on('click', '.reply_item .btn_update_reply', function(){
+				console.log(this);
+				
+				var reviewId = $(this).closest('.review_item').find('#reviewId').val();
+				var replyId = $(this).closest('.reply_item').find('#replyId').val();
+				var replyContent = $(this).closest('.reply_item').find('#replyContent').val(); 
+				console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + replyId + ", 댓글 내용 : " + replyContent);
+				
+				$.ajax({
+					type : 'PUT', 
+					url : '../reply/' + replyId,
+					headers : {
+						'Content-Type' : 'application/json'
+					},
+					data : replyContent,  
+					success : function(result) {
+						console.log(result);
+						if(result == 1) {
+							alert('댓글 수정 성공!');
+							getReplies(reviewId);
+						}
+					}
+					
+				}); 
+				
+			}); // end reviews.on() 
+			
+			// 선택된 댓글 삭제
+			$('#reviews').on('click', '.reply_item .btn_delete_reply', function(){
+				console.log(this);
+				
+				var reviewId = $(this).closest('.review_item').find('#reviewId').val();
+				var replyId = $(this).closest('.reply_item').find('#replyId').val();
+				console.log("리뷰 번호 : " + reviewId + ", 댓글 번호 : " + replyId);
+				
+				$.ajax({
+					type : 'DELETE', 
+					url : '../reply/' + replyId,
+					headers : {
+						'Content-Type' : 'application/json'
+					}, 
+					success : function(result) {
+						console.log(result);
+						if(result == 1) {
+							alert('댓글 삭제 성공!');
+							getReplies(reviewId);
+						}
+					}
+					
+				}); 
+				
+			}); // end reviews.on()
 			
 		}); // end document()
 	</script>
