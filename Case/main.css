@@ -1,0 +1,240 @@
+@charset "UTF-8";
+
+/* Recommned */
+#recommend_container {
+    width: 100%;
+    height: 40vh;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: url('recommendBg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+
+#recommend_box {
+    width: 1200px;
+    height: 85%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Recommend Store */
+#recommend_store {
+    width: 15%;
+    height: 85%;
+    background: #fff;
+    border-top: #210f66 1px solid;
+    box-shadow: 3px 5px 3px 3px #666;
+}
+
+#recommend_slider {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.recommend_slide {
+    flex: 0 0 100%; /* 슬라이드 개별 너비 100% */
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#recommend_store_img {
+    width: 90%;
+    height: 40%;
+    margin: 0 auto;
+    border: 1px solid #e7e7e7;
+    margin-top: 10%;
+    box-shadow: 2px 2px 2px #aaa;
+}
+
+#recommend_store_img img {
+    width: 100%;
+    height: 100%;
+}
+
+#recommend_store_ment {
+    margin: 5px auto;
+    padding: 0% 1%;
+}
+
+#recommend_store_title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#recommend_store_time {
+    width: 90%;
+    font-size: 12px;
+    text-align: right;
+    margin: 3px auto 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #aaa;
+}
+
+#recomment_store_info {
+    width: 90%;
+    font-size: 14px;
+    text-align: left;
+    margin: 5% auto;
+    padding: 0 2%;
+}
+
+/* Recommend Review*/
+#recommend_review {
+    width: 50%;
+    height: 85%;
+    background: rgba(250, 250, 250, 0.9);;
+    border-radius: 15px;
+    box-shadow: 3px 5px 3px 3px #666;
+}
+
+#recommend_review_top_layer {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #aaa;
+}
+
+#recommend_user_layer {
+    width: 50%;
+    display: flex;
+    padding: 1% 0 1% 3%;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-right: 1px solid #aaa;
+}
+
+#recommend_user_layer img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+#recommend_info_layer {
+    width: 50%;
+}
+
+#recommend_info_layer img {
+    width: 25px;
+}
+
+#recommend_info_layer > div {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    font-weight: bold;
+}
+
+#recommend_info_heart img,
+.star1 {
+    margin-left: 10px;
+}
+
+#recommend_review_comment {
+    text-align: left;
+    padding: 3%;
+}
+
+#slider_dots {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+#slider_dots span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    background-color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#slider_dots span:hover {
+    background: #444;
+}
+
+#slider_dots .active {
+    background-color: #000;
+    transition: 0.3s;
+}
+
+/* Best */
+#best_container {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#best_box {
+    width: 1200px;
+    display: inline-block;
+    position: relative;
+    margin: 20px auto;
+}
+
+#best_box > p {
+    font-size: 22px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+#best_box > p img {
+    width: 30px;
+    margin-right:10px;
+}
+
+/* width 687px ~ 1199px*/
+@media (max-width: 1199px) and (min-width: 687px) {
+
+    #recommend_store  {
+        width: 25%;
+    }
+
+}
+
+/* width ~ 686px */ 
+@media (max-width: 686px) {
+
+    #recommend_store  {
+        width: 40%;
+    }
+
+    #recommend_review {
+        font-size: 12px;
+    }
+
+    #recommend_user_layer {
+        font-size: 14px;
+    }
+
+    #recommend_user_layer img {
+        width: 30px;
+        margin-right: 5px;
+    }
+
+    #recommend_info_layer img {
+        width: 12px;
+    }
+}
