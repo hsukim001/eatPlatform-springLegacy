@@ -6,16 +6,16 @@ import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.util.Pagination;
 
 public interface ReservService {
-	List<ReservVO> searchList();
-	ReservVO searchByReservId(int reservId);
-	List<ReservVO> searchByUserId(String userId);
-	
-	List<ReservVO> searchPagingToDay(Pagination pagination);
-	List<ReservVO> searchPagingPrevDay(Pagination pagination);
-	
-	int searchToDayTotalCountByReservDateUserId(String userId);
-	int searchPrevDayTotalCountByReservDateUserId(String userId);
-	
+	// 예약 목록 조회
+	List<ReservVO> searchToDayList(Pagination pagination);
+	// 이전 예약 목록 조회
+	List<ReservVO> searchPrevDayList(Pagination pagination);
+	// 예약 목록 총 건수 조회
+	int searchToDayTotalCount(String userId);
+	// 이전 예약 목록 총 건수 조회
+	int searchPrevDayTotalCount(String userId);
+	// 예약 등록
 	int createdReserv(ReservVO reservVO);
-	int deleteReserv(int reservId);
+	// 예약 취소
+	int cancelReserv(int reservId);
 }
