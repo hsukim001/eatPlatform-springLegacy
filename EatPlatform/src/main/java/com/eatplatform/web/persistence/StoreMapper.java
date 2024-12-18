@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.StoreVO;
 
@@ -18,9 +19,13 @@ public interface StoreMapper {
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
 
-
+	// storeId로 userId 검색
+	String getUserIdByStoreId(@Param("storeId") int storeId);
+	
+	//  List Pagination
 	List<StoreVO> getStoresWithPaging(Map<String, Integer> params);
 	
 	int getTotalStoresCount();
 
+	int updateStore(StoreVO storeVO);
 }

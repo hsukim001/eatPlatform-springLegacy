@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeComment" column="STORE_COMMENT" />
 		<result property="description" column="DESCRIPTION" />
 		<result property="storeRegDate" column="STORE_REG_DATE" />
+		<result property="storeUpdateDate" column="STORE_UPDATE_DATE" />
 	</resultMap>
 
 	<insert id="insertStore">
@@ -72,6 +73,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		STORE
 	</select>
 
+	<select id="getUserIdByStoreId" parameterType="int"
+		resultType="string">
+		SELECT USER_ID
+		FROM STORE
+		WHERE STORE_ID = #{storeId}
+	</select>
+
 	<!-- 최근 6개의 매장 가져오기 -->
 	<select id="getRecentStores" resultMap="StoreResultMap">
 		SELECT *
@@ -80,9 +88,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM STORE
 		ORDER BY STORE_REG_DATE DESC
 		)
-		WHERE ROWNUM &lt;= #{endRow} AND ROWNUM &gt;= #{startRow}
+		WHERE ROWNUM &lt;= #{endRow}
+		AND ROWNUM &gt;= #{startRow}
 	</select>
 
+	<!-- 가게 정보 수정 -->
+	<update id="updateStore">
+		UPDATE STORE
+		SET
+		STORE_NAME = #{storeName},
+		STORE_PHONE
+		= #{storePhone},
+		OWNER_NAME = #{ownerName},
+		FOOD_CATEGORY =
+		#{foodCategory},
+		RESERV_LIMIT = #{reservLimit},
+		SEAT = #{seat},
+		BUSINESS_HOUR = #{businessHour},
+		STORE_COMMENT = #{storeComment},
+		DESCRIPTION = #{description},
+		STORE_UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE STORE_ID = #{storeId}
+	</update>
 
 
 

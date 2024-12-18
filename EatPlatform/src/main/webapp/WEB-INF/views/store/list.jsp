@@ -37,6 +37,9 @@
 								<a href="../reserv/register?storeId=${store.storeId }">
 									<button>예약</button>
 								</a>
+								<a href="updateStore?storeId=${store.storeId }">
+									<button>수정</button>
+								</a>
 							</div>
 						</div>
 					</c:forEach>

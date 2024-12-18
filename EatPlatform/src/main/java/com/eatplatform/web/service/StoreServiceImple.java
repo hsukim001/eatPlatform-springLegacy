@@ -28,7 +28,11 @@ public class StoreServiceImple implements StoreService {
 		return result;
 	}
 
-
+	@Override
+	public String getUserIdByStoreId(int storeId) {
+		return storeMapper.getUserIdByStoreId(storeId);
+	}
+	
 	public List<StoreVO> getStoresWithPaging(int pageNum, int pageSize) {
 	    int startRow = (pageNum - 1) * pageSize + 1; 
 	    int endRow = pageNum * pageSize;
@@ -43,5 +47,18 @@ public class StoreServiceImple implements StoreService {
 	public int getTotalStoresCount() {
 	    return storeMapper.getTotalStoresCount(); 
 	}
+
+
+	@Override
+	public int modifyStore(StoreVO storeVO) {
+		log.info("modifyStore()");
+		int result = storeMapper.updateStore(storeVO);
+		log.info(storeVO);
+		log.info(result + "행 수정성공");
+		return result;
+	}
+
+
+
 
 }
