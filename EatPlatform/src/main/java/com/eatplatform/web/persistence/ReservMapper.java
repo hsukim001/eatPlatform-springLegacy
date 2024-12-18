@@ -9,15 +9,16 @@ import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface ReservMapper {
-	List<ReservVO> selectList();
-	ReservVO selectByReservId(int reservId);
-	List<ReservVO> selectByUserId(String userId);
-	
+	// 예약 목록 조회
 	List<ReservVO> selectPagingToDay(Pagination pagination);
+	// 이전 예약 목록 조회
 	List<ReservVO> selectPagingPrevDay(Pagination pagination);
+	// 예약 목록 총 건수 조회
 	int selectToDayTotalCount(String userId);
+	// 이전 예약 목록 총 건수 조회
 	int selectPrevDayTotalCount(String userId);
-	
+	// 예약 등록
 	int insert(ReservVO reservVO);
+	// 예약 삭제
 	int delete(int reservId);
 }

@@ -9,23 +9,21 @@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		nextListHtml();
-		//nextList();
-		//prevList();
+		nextList(1);
+		prevList(1);
+		
 	});
 	
-	function nextListHtml() {
-		let userId = $('#userId').val();
-		let pageNum;
-		console.log(`toDay/list?userId=${sessionScope.userId}&pageNum=${pageNum}`);
-		let url = 'toDay/list?=?userId=' + userId + '&pageNum=' + pageNum;
+	// 예약 목록 조회
+	function nextList(pageNum) {
+		let getURL = 'toDay/' + pageNum;
 		$.ajax({
-			url : `toDay/list?userId=${sessionScope.userId}&pageNum=${pageNum}`,
-			dataType : 'json',
+			url : getURL,
+			//dataType : 'json',
 			type : 'get',
 			success : function(data) {
-				renderNextTable(data.list); // 테이블 데이터 렌더링
-	            renderPagination($(#'nextPagination'), data.pageMaker, nextListHtml); // 페이지네이션 렌더링
+				nextTable(data.list); // 테이블 데이터 렌더링
+	            pagination($('#nextPagination'), data.pageMaker, nextList); // 페이지네이션 렌더링
 			},
 			error : function() {
 				alert('예약 목록을 가져오는데 실패 하였습니다.');
@@ -33,157 +31,128 @@
 		});
 	}
 	
-	function renderNextTable(list) {
-	    let tableRows = "";
-	    reservations.forEach((list) => {
-	        tableRows += `
-	            <tr>
-	                <td>${list.reservId}</td>
-	                <td>${list.storeName}</td>
-	                <td>${list.reservDate}</td>
-	                <td>${list.reservTime}</td>
-	                <td>${new Date(list.reservDateCreated).toLocaleString()}</td>
-	            </tr>
-	        `;
+	// 예약 목록 테이블
+	function nextTable(reserv) {
+	    let tableRows = '';
+	    
+	    reserv.forEach(function(list) {
+	    	
+	    	let date = new Date(list.reservDateCreated);
+		   	let year = date.getFullYear(); // 년도
+		    let month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+		    let day = String(date.getDate()).padStart(2, '0'); // 일
+		    let createdDate = year + '-' + month + '-' + day;
+		    
+	        tableRows += '<tr>'+
+	                '<td class="reserv_id">'+ list.reservId+'</td>'+
+	                '<td><a href="../store/list">'+ list.storeName +'</a></td>'+
+	                '<td>'+ list.reservDate + ' ' + list.reservTime+'</td>'+
+	                '<td>'+ list.reservPersonnel +'</td>'+
+	                '<td>'+ createdDate +'</td>'+
+	                '<td><button onclick="cancelBtn(this)">예약 취소</button></td>'+
+	            '</tr>';
 	    });
 	    $('#nextTable').html(tableRows); // 테이블 갱신
 	}
 	
-	function renderPagination(container, pageMaker, loadFunction) {
-	    let paginationHtml = "";
+	// 이전 예약 목록 조회
+	function prevList(pageNum) {
+		let getURL = 'prevDay/' + pageNum;
+		$.ajax({
+			url : getURL,
+			//dataType : 'json',
+			type : 'get',
+			success : function(data) {
+				prevTable(data.list); // 테이블 데이터 렌더링
+	            pagination($('#prevPagination'), data.pageMaker, prevList); // 페이지네이션 렌더링
+			},
+			error : function() {
+				alert('이전 예약 목록을 가져오는데 실패 하였습니다.');
+			}
+		});
+	}
+	
+	// 이전 예약 목록 테이블
+	function prevTable(reserv) {
+	    let tableRows = '';
+	    reserv.forEach(function(list) {
+	    	let date = new Date(list.reservDateCreated);
+		   	let year = date.getFullYear(); // 년도
+		    let month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+		    let day = String(date.getDate()).padStart(2, '0'); // 일
+		    let createdDate = year + '-' + month + '-' + day;
+	    	
+	        tableRows += '<tr>'+
+	                '<td>'+ list.reservId+'</td>'+
+	                '<td><a href="../store/list">'+ list.storeName+'</a></td>'+
+	                '<td>'+ list.reservDate + ' ' + list.reservTime+'</td>'+
+	                '<td>'+ list.reservPersonnel +'</td>'+
+	                '<td>'+ createdDate +'</td>'+
+	            '</tr>';
+	    });
+	    $('#prevTable').html(tableRows); // 테이블 갱신
+	}
+	
+	// 페이지네이션
+	function pagination(container, pageMaker, loadFunction) {
+		let paginationHtml = "";
+        
+        if (pageMaker.prev) {
+            paginationHtml += '<a href="#" class="page-link" data-page="'+ (pageMaker.startNum - 1) +'">이전</a>';
+        }
 
-	    if (pageMaker.prev) {
-	        paginationHtml += `<a href="#" data-page="${pageMaker.startNum - 1}">&laquo; 이전</a>`;
-	    }
+        for (let i = pageMaker.startNum; i <= pageMaker.endNum; i++) {
+            paginationHtml += '<a href="#" class="page-link" data-page="'+ i +'">'+ i +'</a>';
+        }
 
-	    for (let i = pageMaker.startNum; i <= pageMaker.endNum; i++) {
-	        paginationHtml += `<a href="#" data-page="${i}">${i}</a>`;
-	    }
+        if (pageMaker.next) {
+            paginationHtml += '<a href="#" class="page-link" data-page="'+ (pageMaker.endNum + 1) +'">다음</a>';
+        }
 
-	    if (pageMaker.next) {
-	        paginationHtml += `<a href="#" data-page="${pageMaker.endNum + 1}">다음 &raquo;</a>`;
-	    }
+        $(container).html(paginationHtml);
 
-	    $('#nextPagination').html(paginationHtml); // 페이지네이션 갱신
-	    
-	 	// 페이지네이션 클릭 이벤트
-        $(container).find(".page-link").on("click", function (e) {
-            e.preventDefault();
+        // 페이지네이션 클릭 이벤트
+        $(container).find(".page-link").on("click", function () {
             let pageNum = $(this).data("page");
             loadFunction(pageNum); // 호출된 테이블에 맞는 페이지 로드 함수 실행
         });
 	}
 	
-	function nextList() {
-		console.log('nextList()');
-		let userId = $('#userId').val();
-		let url = '../reserv/toDay/' + userId + '?pageNum=';
-		$.getJSON(url, function(data) {
-			console.log(data);
-			let list = '';
-
-			$(data.list).each(
-					function() {
-						let reservDateTime = this.reservDate + ' '
-								+ this.reservTime;
-						
-						let date = new Date(this.reservDateCreated);
-						let createdDate = date.getFullYear() + '-' 
-							+ String(date.getMonth() + 1).padStart(2, '0') + '-' 
-							+ String(date.getDate()).padStart(2, '0');
-
-
-						list += '<tr>' + '<td>' + this.reservId + '</td>'
-								+ '<td>' + this.storeName + '</td>' + '<td>'
-								+ reservDateTime + '</td>' + '<td>'
-								+ createdDate + '</td>' + '</tr>';
-					});
-			
-			/* let prev = '';
-			let next = '';
-			let pageList = '';
-			let startNum;
-			let endNum;
-			if($(data.pageMaker.prev) == true) {
-				prev += '<li><a href="toDay/'+ userId +'?pageNum='+ ($(data.pageMaker.startNum) - 1) +'">이전</a></li>';
-			}
-			if($(data.pageMaker.startNum) == 1 && $(data.pageMaker.endNum) == 0) {
-				startNum = data.pageMaker.startNum;
-				endNum = data.pageMaker.startNum;
-			} else {
-				startNum = data.pageMaker.startNum;
-				endNum = data.pageMaker.endNum;
-			}
-			for(let x = startNum; x >= endNum; x++) {
-				pageList += '<li><a href="toDay/'+ userId +'?pageNum='+ x +'">'+ x +'</a></li>';
-			}
-			if($(data.pageMaker.next) == true) {
-				next += '<li><a href="toDay/'+ userId +'?pageNum='+ (endNum + 1) +'">다음</a></li>';
-			} */
-			
-			$('#nextReserv').html(list);
-			//$('#nextPagination').html(pageList);
-		});
-
+	// 예약 취소 버튼
+	function cancelBtn(obj) {
+	    let row = obj.closest('tr');
+	    let reservId = row.querySelector('.reserv_id').innerText;
+	    
+	    let check = confirm('선택하신 예약을 취소 하시겠습니까?');
+	    if(check) {
+	    	reservCancel(reservId);
+	    }
 	}
-
-	function prevList() {
-		console.log('prevList()');
-		let userId = $('#userId').val();
-		let url = '../reserv/prevDay/' + userId + '?pageNum=';
-
-		$.getJSON(url, function(data) {
-			console.log(data);
-			let list = '';
-			console.log(data.list);
-
-			$(data.list).each(
-					function() {
-						let reservDateTime = this.reservDate + ' '
-								+ this.reservTime;
-						let date = new Date(this.reservDateCreated);
-						let createdDate = date.getFullYear() + '-' 
-							+ String(date.getMonth() + 1).padStart(2, '0') + '-' 
-							+ String(date.getDate()).padStart(2, '0');
-
-						list += '<tr>' + '<td>' + this.reservId + '</td>'
-								+ '<td>' + this.storeName + '</td>' + '<td>'
-								+ reservDateTime + '</td>' + '<td>'
-								+ createdDate + '</td>' + '</tr>';
-					});
-			
-			/* let prev = '';
-			let next = '';
-			let pageList = '';
-			let startNum;
-			let endNum;
-			if($(data.pageMaker.prev) == true) {
-				prev += '<li><a href="prevDay/'+ userId +'?pageNum='+ ($(data.pageMaker.startNum) - 1) +'">이전</a></li>';
+	
+	function reservCancel(reservId) {
+		$.ajax({
+			url : 'cancel/' + reservId,
+			type : 'delete',
+			headers : {
+				"Content-Type" : "application/json",
+			},
+			success : function(result) {
+				if(result == 1) {
+					alert('예약 취소 성공');
+					nextList(1);
+				}
+			},
+			error : function() {
+				alert('예약을 취소하는중 오류 발생');
 			}
-			if($(data.pageMaker.startNum) == 1 && $(data.pageMaker.endNum) == 0) {
-				startNum = data.pageMaker.startNum;
-				endNum = data.pageMaker.startNum;
-			} else {
-				startNum = data.pageMaker.startNum;
-				endNum = data.pageMaker.endNum;
-			}
-			for(let x = startNum; x >= endNum; x++) {
-				pageList += '<li><a href="prevDay/'+ userId +'?pageNum='+ x +'">'+ x +'</a></li>';
-			}
-			if($(data.pageMaker.next) == true) {
-				next += '<li><a href="prevDay/'+ userId +'?pageNum='+ (endNum + 1) +'">다음</a></li>';
-			} */
-			
-			$('#prevReserv').html(list);
-			//$('#prevPagination').html(pageList);
 		});
+	};
 
-	}
 </script>
 </head>
 <body>
 	<h1>예약 목록</h1>
-	<div id="nextReserv">
+	<div>
 		<h2>예정 예약 목록</h2>
 		<table>
 			<thead>
@@ -191,15 +160,18 @@
 					<th>번호</th>
 					<th>식당명</th>
 					<th>예약 일자</th>
+					<th>예약 인원</th>
 					<th>예약 등록일</th>
+					<th>예약 취소</th>
 				</tr>
 			</thead>
 			<tbody id="nextTable">
+				<!-- ajax로 table load -->
 			</tbody>
 		</table>
-		<ul id="nextPagination">
-			
-		</ul>
+		<div id="nextPagination">
+			<!-- ajax로 pagination load -->
+		</div>
 	</div>
 
 	<div>
@@ -210,39 +182,18 @@
 					<th>번호</th>
 					<th>식당명</th>
 					<th>예약 일자</th>
+					<th>예약 인원</th>
 					<th>예약 등록일</th>
 				</tr>
 			</thead>
-			<tbody id="prevReserv">
-				<c:forEach var="prevList" items="${prevList }">
-					<tr>
-						<td>${prevList.reservId }</td>
-						<td>${prevList.storeName }</td>
-						<td>${prevList.reservDate } ${item.reservTime }</td>
-						<td>${prevList.reservCreateDate }</td>
-					</tr>
-				</c:forEach>
+			<tbody id="prevTable">
+				<!-- ajax로 table load -->
 			</tbody>
 		</table>
-		<ul id="prevPagination">
-			<!-- 이전 버튼 생성을 위한 조건문 -->
-			<c:if test="${pageMaker.isPrev() }">
-				<li><a href="prevDay/${sessionScope.userId }?pageNum=${pageMaker.startNum - 1}">이전</a></li>
-			</c:if>
-			<!-- 반복문으로 시작 번호부터 끝 번호까지 생성 -->
-			<c:forEach begin="${pageMaker.startNum }"
-				end="${pageMaker.endNum }" var="num">
-				<li><a href="prevDay/${sessionScope.userId }?pageNum=${num }">${num }</a></li>
-			</c:forEach>
-			<!-- 다음 버튼 생성을 위한 조건문 -->
-			<c:if test="${pageMaker.isNext() }">
-				<li><a href="prevDay/${sessionScope.userId }?pageNum=${pageMaker.endNum + 1}">다음</a></li>
-			</c:if>
-		</ul>
 	</div>
-	<input type="hidden" name="userId" id="userId"
-		value="${sessionScope.userId }">
-	<input type="text" value="${pageMaker.startNum }">
+	<div id="prevPagination">
+		<!-- ajax로 pagination load -->
+	</div>
 
 </body>
 

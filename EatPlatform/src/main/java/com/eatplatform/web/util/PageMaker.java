@@ -10,8 +10,6 @@ import lombok.ToString;
 @ToString
 public class PageMaker {
 	private Pagination pagination; // 페이징 처리 객체
-	private int pageSize;
-	private int pageNum;
 	private int totalCount; // 전체 게시글 수
 	private int pageCount; // 화면에 표시되는 페이지 번호 수
 	
