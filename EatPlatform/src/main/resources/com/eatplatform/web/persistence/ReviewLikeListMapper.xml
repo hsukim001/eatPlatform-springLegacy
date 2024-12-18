@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.ReviewLikeListMapper">
+	
+	<select id="checkLike" resultType="int">
+		SELECT COUNT(*) FROM REVIEW_LIKE_LIST
+		WHERE REVIEW_ID = #{reviewId} AND USER_ID = #{userId}
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO REVIEW_LIKE_LIST (REVIEW_ID, USER_ID)
+		VALUES (#{reviewId}, #{userId})
+	</insert>
+
+</mapper>

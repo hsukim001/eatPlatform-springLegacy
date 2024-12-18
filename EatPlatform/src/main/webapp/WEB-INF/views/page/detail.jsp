@@ -92,6 +92,8 @@
 								+ '&nbsp;&nbsp;'
 								+ reviewDate
 								+ '&nbsp;&nbsp;'
+								+ this.reviewLike // 추천 수 표시
+								+ '&nbsp;&nbsp;'
 								+ '<button class="btn_update" >리뷰 수정</button>'
 								+ '<button class="btn_delete" >리뷰 삭제</button>'
 								+ '<button class="btn_like" >리뷰 추천</button>'
@@ -200,6 +202,35 @@
 						if(result == 1) {
 							alert('리뷰 삭제 성공!');
 							getAllReview();
+						}
+					}
+					
+				}); 
+				
+			}); // end reviews.on()
+			
+			// 리뷰 추천
+			$('#reviews').on('click', '.review_item .btn_like', function(){
+				console.log(this);
+				
+				var reviewId = $(this).prevAll('#reviewId').val();
+				var userId = $(this).prevAll('#userId').val();
+				console.log("리뷰번호 : " + reviewId + ", 회원 : " + userId);
+				
+				$.ajax({
+					type : 'POST', 
+					url : '../review/like/' + reviewId,
+					headers : {
+						'Content-Type' : 'application/json'
+					},
+					data : userId,
+					success : function(result) {
+						console.log(result);
+						if(result == 1) {
+							alert('리뷰 추천!');
+							getAllReview();
+						} else if(result != 1) {
+							alert('이미 추천');
 						}
 					}
 					

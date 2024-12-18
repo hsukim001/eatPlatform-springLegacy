@@ -43,5 +43,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		DELETE REVIEW
 		WHERE REVIEW_ID = #{reviewId}
 	</delete>
+	
+	<update id="updateLikeCount">
+		UPDATE REVIEW
+		SET REVIEW_LIKE = REVIEW_LIKE + #{amount}
+		WHERE REVIEW_ID = #{reviewId}
+	</update>
 
 </mapper>
