@@ -3,30 +3,30 @@ package com.eatplatform.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eatplatform.web.service.ReviewLikeListService;
+import com.eatplatform.web.domain.ReviewReportListVO;
+import com.eatplatform.web.service.ReviewReportListService;
 
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping("/review/like")
+@RequestMapping("/review/report")
 @Log4j
-public class ReviewLikeListRESTController {
+public class ReviewReportListRESTController {
 	
 	@Autowired
-	private ReviewLikeListService reviewLikeListService;
+	private ReviewReportListService reviewReportListService;
 	
 	@PostMapping("/{reviewId}")
-	public ResponseEntity<Integer> createReviewLikeList(
-			@PathVariable("reviewId") int reviewId, @RequestBody String userId) {
-		log.info("createReviewLikeList()");
-		int result = reviewLikeListService.createReviewLikeList(reviewId, userId);
+	public ResponseEntity<Integer> createReviewReportList(
+			@RequestBody ReviewReportListVO reviewReportListVO) {
+		log.info("createReviewReportList()");
+		int result = reviewReportListService.createReviewReportList(reviewReportListVO);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
-
+	
 }

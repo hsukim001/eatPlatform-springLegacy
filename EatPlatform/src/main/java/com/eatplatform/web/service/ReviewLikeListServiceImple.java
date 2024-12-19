@@ -24,6 +24,7 @@ public class ReviewLikeListServiceImple implements ReviewLikeListService{
 	public int createReviewLikeList(int reviewId, String userId) {
 		log.info("createReviewLikeList()");
 		
+		// 추천여부 확인
 		int checkResult = reviewLikeListMapper.checkLike(reviewId, userId);
 		if(checkResult > 0) {
 			log.info("이미 추천된 리뷰입니다.");
@@ -31,10 +32,11 @@ public class ReviewLikeListServiceImple implements ReviewLikeListService{
 		}
 		
 		int result = reviewLikeListMapper.insert(reviewId, userId);
-		log.info(result + "행 등록");
+		log.info(result + "행 추천 등록");
 		
-		int updateResult = reviewMapper.updateLikeCount(reviewId, 1);
-		log.info(updateResult);
+		// 추천 카운트
+		int updateLike = reviewMapper.updateLikeCount(reviewId, 1);
+		log.info(updateLike);
 		
 		return 1;
 	}

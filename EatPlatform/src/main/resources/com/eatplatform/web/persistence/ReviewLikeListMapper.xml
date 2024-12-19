@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.eatplatform.web.persistence.ReviewLikeListMapper">
 	
-	<select id="checkLike" resultType="int">
+	<select id="checkLike" resultType="Integer">
 		SELECT COUNT(*) FROM REVIEW_LIKE_LIST
 		WHERE REVIEW_ID = #{reviewId} AND USER_ID = #{userId}
 	</select>

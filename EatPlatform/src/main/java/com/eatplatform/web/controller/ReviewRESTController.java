@@ -2,6 +2,8 @@ package com.eatplatform.web.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,17 @@ public class ReviewRESTController {
 	// 리뷰 등록(회원)
 	@PostMapping
 	public ResponseEntity<Integer> createReview(
-			@RequestBody ReviewVO reviewVO) {
+			@RequestBody ReviewVO reviewVO, HttpSession session) {
+		
+		// 세션에서 userId 가져오기
+		String userId = (String) session.getAttribute("userId");
+		
+		// 리뷰 내용 길이 제한 (250자 이하) 
+		if (reviewVO.getReviewContent() != null && 
+				reviewVO.getReviewContent().length() > 250) {
+			return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+		}
+		
 		log.info("createReview()");
 		
 		int result = reviewService.createReview(reviewVO);

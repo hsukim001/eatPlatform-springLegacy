@@ -12,5 +12,9 @@ public interface ReviewMapper {
 	int update(ReviewVO reviewVO);
 	int delete(int reviewId);
 	// 추천 수 변경
-	int updateLikeCount(@Param("reviewId") int reviewId, @Param("amount") int amount);
+	int updateLikeCount(@Param("reviewId") int reviewId, 
+			@Param("amount") int amount);
+	// 신고 수 변경
+	int updateReportCount(@Param("reviewId") int reviewId,
+			@Param("amount") int amount);
 }

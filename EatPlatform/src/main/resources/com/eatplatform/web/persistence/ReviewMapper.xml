@@ -49,5 +49,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SET REVIEW_LIKE = REVIEW_LIKE + #{amount}
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
+	
+	<update id="updateReportCount">
+		UPDATE REVIEW
+		SET REVIEW_REPORT = REVIEW_REPORT + #{amount}
+		WHERE REVIEW_ID = #{reviewId}
+	</update>
 
 </mapper>
