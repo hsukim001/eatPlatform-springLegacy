@@ -1,5 +1,6 @@
 package com.eatplatform.web.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,32 +75,39 @@ public class StoreController {
 	}
 
 	@GetMapping("/updateStore")
-	public void updateStore() {
-		log.info("updateStore()");
-	}
-
-	@PostMapping("/modify")
-	public String modify(@ModelAttribute  StoreVO storeVO, HttpServletRequest request, Model model) {
-		log.info("modify()");
+	public String updateStore(@RequestParam("storeId") int storeId, Model model, HttpServletRequest request) {
+		StoreVO storeVO = storeService.selectStoreById(storeId);
 
 		HttpSession session = request.getSession();
 		String sessionUserId = (String) session.getAttribute("userId");
 		String dbUserId = storeService.getUserIdByStoreId(storeVO.getStoreId());
 		log.info("sessionUserId : " + sessionUserId + "// dbUserId : " + dbUserId);
-
+		
 		if (dbUserId != null && dbUserId.equals(sessionUserId)) {
+		List<String> categories = Arrays.asList(
+				"한식", "중식", "일식", "양식", "아시안", "치킨", "피자", "패스트푸드", "카페/디저트"
+				);
+		model.addAttribute("storeVO", storeVO);
+		model.addAttribute("categories", categories);
+		return "/store/updateStore";
+		} else {
+			String errHandler = "otherUser";
+			log.info(errHandler);
+			log.info("잘못된 User 접근");
+			model.addAttribute("errHandler", errHandler);
+		return "/store/errHandler";
+		}
+	}
+
+	@PostMapping("/modify")
+	public String modify(@ModelAttribute StoreVO storeVO, Model model) {
+		log.info("modify()");
 			int result = storeService.modifyStore(storeVO);
 			if (result == 1) {
 				log.info("가게 수정 성공");
 			}
 			log.info(result);
 			model.addAttribute("result", result);
-		} else {
-			int result = 2;
-			log.info(result);
-			log.info("잘못된 User 접근");
-			model.addAttribute("result", result);
-		}
 		return "/store/modify";
 	}
 }

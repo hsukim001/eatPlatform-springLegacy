@@ -16,6 +16,8 @@ public class MenuVO {
 	private int storeId;
 	private String menuName;
 	private int menuPrice;
+	private String menuComment;
+	private int represent;
 	private String menuImg;
 	private LocalDate menuRegDate;
 }

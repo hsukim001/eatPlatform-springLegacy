@@ -39,7 +39,7 @@
 <title>식당 등록 페이지</title>
 </head>
 <body>
-    <h2>여기는 등록 페이지입니다.</h2>
+    <h2>여기는 가게 등록 페이지입니다.</h2>
     <form action="register" method="POST">
         <input type="hidden" value="${storeVO.userId}" id="userId" name="userId"> 
         

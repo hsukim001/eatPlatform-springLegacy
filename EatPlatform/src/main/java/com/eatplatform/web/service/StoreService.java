@@ -13,6 +13,9 @@ public interface StoreService {
 
 	// pageNum과 pageSize를 받아 페이징 처리 결과를 리턴
 	List<StoreVO>getStoresWithPaging(int pageNum, int pageSize);
+
+	// storeId로 검색하여 조회
+	StoreVO selectStoreById(int storeId);
 	
 	// storeId로 userId 검색
 	String getUserIdByStoreId(@Param("storeId") int storeId);
