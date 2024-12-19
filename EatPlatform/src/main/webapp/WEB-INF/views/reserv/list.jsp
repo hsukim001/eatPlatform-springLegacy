@@ -19,7 +19,6 @@
 		let getURL = 'toDay/' + pageNum;
 		$.ajax({
 			url : getURL,
-			//dataType : 'json',
 			type : 'get',
 			success : function(data) {
 				nextTable(data.list); // 테이블 데이터 렌더링
@@ -60,7 +59,6 @@
 		let getURL = 'prevDay/' + pageNum;
 		$.ajax({
 			url : getURL,
-			//dataType : 'json',
 			type : 'get',
 			success : function(data) {
 				prevTable(data.list); // 테이블 데이터 렌더링

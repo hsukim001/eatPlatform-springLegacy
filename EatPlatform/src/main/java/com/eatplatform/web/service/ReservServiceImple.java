@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.StoreScheduleVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.ReservMapper;
+import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
@@ -17,6 +20,9 @@ public class ReservServiceImple implements ReservService{
 	
 	@Autowired
 	private ReservMapper reservMapper;
+	
+	@Autowired
+	private StoreMapper storeMapper;
 	
 	// 페이징 예약 목록 조회
 	@Override
@@ -46,6 +52,13 @@ public class ReservServiceImple implements ReservService{
 		return reservMapper.selectPrevDayTotalCount(userId);
 	}
 	
+	// store 상세
+	@Override
+	public StoreVO searchStoreByStoreId(int storeId) {
+		log.info("searchStoreByStoreId()");;
+		return storeMapper.selectStoreById(storeId);
+	}
+	
 	// 예약 등록
 	@Override
 	public int createdReserv(ReservVO reservVO) {
@@ -60,6 +73,13 @@ public class ReservServiceImple implements ReservService{
 		log.info("cancelReserv()");
 		int result = reservMapper.delete(reservId);
 		return result;
+	}
+
+	// 예약 가능시간 조회
+	@Override
+	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO) {
+//		List<StoreScheduleVO> list = 
+		return null;
 	}
 	
 }

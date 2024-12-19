@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.util.Pagination;
 
 @Mapper
@@ -21,4 +22,6 @@ public interface ReservMapper {
 	int insert(ReservVO reservVO);
 	// 예약 삭제
 	int delete(int reservId);
+	// 예약 가능시간 조회
+	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
 }

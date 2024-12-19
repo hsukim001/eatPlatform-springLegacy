@@ -81,4 +81,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE RESERV_ID = #{reservId}
 	</delete>
 	
+	<select id="selectSchedule" resultMap="reservResultMap">
+		
+	</select>
+	
 </mapper>

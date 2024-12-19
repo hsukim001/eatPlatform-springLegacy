@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.StoreScheduleVO;
+import com.eatplatform.web.persistence.ReservMapper;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.util.DataResponse;
 import com.eatplatform.web.util.PageMaker;
@@ -86,7 +88,7 @@ public class ReservRESTController {
 	}
 
 	// 예약 등록
-	@PostMapping
+	@PostMapping("/created")
 	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO) {
 		log.info("createdReserv()");
 		int result = reservService.createdReserv(reservVO);
@@ -101,6 +103,17 @@ public class ReservRESTController {
 		int result = reservService.cancelReserv(reservId);
 
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
+	}
+	
+	// 예약 가능시간 조회
+	@GetMapping("/schedule/{storeId}/{startTime}/{endTime}/{reservLimit}")
+	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, 
+			@PathVariable("storeStartTime") String storeStartTime, @PathVariable("storeEndTime") String storeEndTime, 
+			@PathVariable("reservLimit") int reservLimit) {
+		StoreScheduleVO vo = new StoreScheduleVO(storeId, storeStartTime, storeEndTime, reservLimit);
+		List<StoreScheduleVO> list = reservService.searchSchedule(vo);
+		
+		return new ResponseEntity<List<StoreScheduleVO>>(list, HttpStatus.OK);
 	}
 
 }
