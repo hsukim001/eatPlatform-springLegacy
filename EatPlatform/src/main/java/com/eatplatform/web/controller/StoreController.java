@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.StoreService;
+import com.eatplatform.web.util.BusinessHourUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -28,6 +31,9 @@ public class StoreController {
 
 	@Autowired
 	private StoreService storeService;
+	
+	@Autowired
+	private MenuService menuService;
 
 	@GetMapping("/newStore")
 	public String newStore(HttpServletRequest request, Model model) {
@@ -81,14 +87,31 @@ public class StoreController {
 		HttpSession session = request.getSession();
 		String sessionUserId = (String) session.getAttribute("userId");
 		String dbUserId = storeService.getUserIdByStoreId(storeVO.getStoreId());
+
+	    
 		log.info("sessionUserId : " + sessionUserId + "// dbUserId : " + dbUserId);
 		
 		if (dbUserId != null && dbUserId.equals(sessionUserId)) {
 		List<String> categories = Arrays.asList(
 				"한식", "중식", "일식", "양식", "아시안", "치킨", "피자", "패스트푸드", "카페/디저트"
 				);
+		
+		String businessHour = storeVO.getBusinessHour();
+	    if (businessHour == null || !businessHour.contains(" - ")) {
+			String errHandler = "invalidTimeFormat";
+			log.info("잘못된 시간 포맷");
+			model.addAttribute("errHandler", errHandler);
+	        return "/store/errHandler";
+	    }
+
+		String[] times = BusinessHourUtil.splitBusinessHour(businessHour);
+		String startTime = times[0];  
+	    String endTime = times[1];
+		
 		model.addAttribute("storeVO", storeVO);
 		model.addAttribute("categories", categories);
+	    model.addAttribute("startTime",startTime);
+	    model.addAttribute("endTime",endTime);
 		return "/store/updateStore";
 		} else {
 			String errHandler = "otherUser";
@@ -109,5 +132,30 @@ public class StoreController {
 			log.info(result);
 			model.addAttribute("result", result);
 		return "/store/modify";
+	}
+	
+	@GetMapping("/detail")
+	public String detail(@RequestParam("storeId") int storeId, Model model) {
+		log.info("detail");
+		StoreVO storeVO = storeService.selectStoreById(storeId);
+		List<MenuVO> menuVO = menuService.selectMenuByStoreId(storeId);
+		log.info(menuVO);
+		String businessHour = storeVO.getBusinessHour();
+		String[] times = BusinessHourUtil.splitBusinessHour(businessHour);
+
+	    if (businessHour == null || !businessHour.contains(" - ")) {
+			String errHandler = "invalidTimeFormat";
+			log.info("잘못된 시간 포맷");
+			model.addAttribute("errHandler", errHandler);
+	        return "/store/errHandler";   	
+	    }
+		String startTime = times[0];  
+	    String endTime = times[1];
+	    
+	    model.addAttribute("startTime",startTime);
+	    model.addAttribute("endTime",endTime);
+		model.addAttribute("storeVO", storeVO);
+		model.addAttribute("menuVO", menuVO);
+		return "/store/detail";
 	}
 }

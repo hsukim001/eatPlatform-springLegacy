@@ -7,6 +7,21 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script>
+	$(function(){
+		let representCount = <%= representMenuCount %>;
+
+		$('#represent').click(function(){
+			if(representCount >= 2) {
+				alert("대표 메뉴는 2 종류까지 설정할 수 있습니다.");
+				$('#represent').prop('checked', false);
+				return false;
+			}
+		});
+
+	});
+</script>
 <title>메뉴 등록</title>
 </head>
 <body>
@@ -16,11 +31,11 @@
 		<input type="hidden" id="storeId" name="storeId" value="${menuVO.storeId }">
 		<label for="menuName">
 			메뉴 이름
-			<input type="text" id="menuName" name="menuName" placeholder="메뉴 이름을 25자 이내로 작성해주세요.">
+			<input type="text" id="menuName" name="menuName" placeholder="메뉴 이름을 25자 이내로 작성해주세요." required>
 		</label><br>
 		<label for="menuPrice">
 			가격
-			<input type="number" id="menuPrice" name="menuPrice"  placeholder="ex) 50000">
+			<input type="number" id="menuPrice" name="menuPrice"  placeholder="ex) 50000" required>
 		</label> <br>
 		<label for="menuComment">
 			메뉴 설명

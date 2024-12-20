@@ -34,6 +34,13 @@
             } else {
                 $('#hiddenFoodCategory').val(category);
             }
+            
+            const startTime = $("#startTime").val();
+            const endTime = $("#endTime").val();
+            const businessHour = startTime + " - " + endTime;
+
+            // 이 값을 서버로 전송
+            $("#businessHour").val(businessHour);
         }); // End form.submit
     }); // End $function
 </script>
@@ -74,13 +81,13 @@
 		           value="${!categories.contains(storeVO.foodCategory) ? storeVO.foodCategory : ''}">
 		</div>
         <label for="reservLimit">
-            시간별 예약 제한: <input type="number" id="reservLimit" name="reservLimit" value="${storeVO.reservLimit }">
+            시간별 예약 제한: <input type="number" max="99999"  id="reservLimit" name="reservLimit" value="${storeVO.reservLimit }">
         </label> 
         <label for="seat"> 
-            좌석 수 : <input type="number" id="seat" name="seat" value="${storeVO.seat }">
+            좌석 수 : <input type="number" max="99999"  id="seat" name="seat" value="${storeVO.seat }">
         </label> 
         <label for="businessHour"> 
-            영업시간 : <input type="text" id="businessHour" name="businessHour" value="${storeVO.businessHour }">
+            영업시간 : <input type="time" id="startTime" name="startTime" value="${startTime }"> - <input type="time" id="endTime" name="endTime" value="${endTime }">
         </label> 
         <label for="storeComment"> 
             식당 소개: 

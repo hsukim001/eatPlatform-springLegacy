@@ -1,6 +1,9 @@
 package com.eatplatform.web.service;
 
+import java.util.List;
+
 import com.eatplatform.web.domain.MenuVO;
+import com.eatplatform.web.domain.StoreVO;
 
 public interface MenuService {
 	
@@ -9,4 +12,7 @@ public interface MenuService {
 	
 	// 대표 메뉴 카운트
 	int getRepresentMenuCountByStoreId(int storeId);
+
+	// storeId로 검색하여 조회
+	List<MenuVO> selectMenuByStoreId(int storeId);
 }

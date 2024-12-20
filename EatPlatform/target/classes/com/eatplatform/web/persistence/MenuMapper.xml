@@ -38,8 +38,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 
+	<select id="selectMenuByStoreId" resultMap="MenuResultMap">
+		SELECT *
+		FROM MENU
+		WHERE
+		STORE_ID = #{storeId}
+	</select>
+
 	<select id="countRepresentMenuByStoreId" resultType="int">
-		SELECT COUNT(*)
+		SELECT
+		COUNT(*)
 		FROM MENU
 		WHERE STORE_ID = #{storeId}
 		AND REPRESENT = 1

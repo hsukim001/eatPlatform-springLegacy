@@ -28,11 +28,18 @@
         $('form').submit(function() { 
             var category = $('#foodCategory').val();
             if (category === '기타') {
-                var otherCategoryInput = $('#otherCategoryInput').val();
+                let otherCategoryInput = $('#otherCategoryInput').val();
                 $('#hiddenFoodCategory').val(otherCategoryInput);
             } else {
                 $('#hiddenFoodCategory').val(category);
             }
+            
+            const startTime = $("#startTime").val();
+            const endTime = $("#endTime").val();
+            const businessHour = startTime + " - " + endTime;
+
+            // 이 값을 서버로 전송
+            $("#businessHour").val(businessHour);
         }); // End form.submit
     }); // End $function
 </script>
@@ -41,18 +48,19 @@
 <body>
     <h2>여기는 가게 등록 페이지입니다.</h2>
     <form action="register" method="POST">
-        <input type="hidden" value="${storeVO.userId}" id="userId" name="userId"> 
+        <input type="hidden" value="${storeVO.userId}" id="userId" name="userId">
+    	<input type="hidden" id="businessHour" name="businessHour"> 
         
-        <input type="hidden" id="hiddenFoodCategory" name="foodCategory">
+        <input type="hidden" id="hiddenFoodCategory" name="foodCategory" required>
         
         <label for="storeName"> 
-            식당 이름 : <input type="text" id="storeName" name="storeName">
+            식당 이름 : <input type="text" id="storeName" name="storeName" required>
         </label>
         <label for="storePhone"> 
-            연락처 : <input type="number" id="storePhone" name="storePhone">
+            연락처 : <input type="number" id="storePhone" name="storePhone" required>
         </label> 
         <label for="ownerName">
-            대표명 : <input type="text" id="ownerName" name="ownerName"> 
+            대표명 : <input type="text" id="ownerName" name="ownerName" required> 
         </label>
         <label for="foodCategory">
             카테고리: 
@@ -71,13 +79,13 @@
             <input type="text" id="otherCategoryInput" name="foodCategoryInput" placeholder="기타 카테고리 입력">
         </div> 
         <label for="reservLimit">
-            시간별 예약 제한: <input type="number" id="reservLimit" name="reservLimit">
+            시간별 예약 제한: <input type="number" max="99999" id="reservLimit" name="reservLimit" required>
         </label> 
         <label for="seat"> 
-            좌석 수 : <input type="number" id="seat" name="seat">
+            좌석 수 : <input type="number" max="99999" id="seat" name="seat">
         </label> 
         <label for="businessHour"> 
-            영업시간 : <input type="text" id="businessHour" name="businessHour">
+            영업시간 : <input type="time" id="startTime" name="startTime"> - <input type="time" id="endTime" name="endTime">
         </label> 
         <label for="storeComment"> 
             식당 소개: 

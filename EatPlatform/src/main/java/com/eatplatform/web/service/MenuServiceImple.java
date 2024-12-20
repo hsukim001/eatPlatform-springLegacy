@@ -1,5 +1,7 @@
 package com.eatplatform.web.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,11 @@ public class MenuServiceImple implements MenuService {
 	@Override
 	public int getRepresentMenuCountByStoreId(int storeId) {
 		return menuMapper.countRepresentMenuByStoreId(storeId);
+	}
+
+	@Override
+	public List<MenuVO> selectMenuByStoreId(int storeId) {
+		return menuMapper.selectMenuByStoreId(storeId);
 	}
 
 }

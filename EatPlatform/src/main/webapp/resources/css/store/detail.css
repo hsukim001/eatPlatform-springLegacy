@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+#container {
+	margin: 30px auto 10px;
+}
+
+#storeContainer {
+	width: 1200px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+#storeInfoBox {
+	width: 100%;
+	height: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#storeInfoImg {
+	width: 40%;
+	height: 100%;	
+}
+
+#storeInfoImg img {
+	width: 100%;
+	height: 100%;
+}
+
+#storeInfoText {
+	width: 50%;
+	height: 100%;
+	display: flex;
+}
+
+#storeInfoText > div {
+	width: 50%;
+}
