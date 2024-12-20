@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.service.ReplyService;
 import com.eatplatform.web.service.ReviewService;
 
 import lombok.extern.log4j.Log4j;
@@ -27,6 +30,9 @@ import lombok.extern.log4j.Log4j;
 public class ReviewRESTController {
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private ReplyService replyService;
 	
 	// 리뷰 등록(회원)
 	@PostMapping
@@ -51,11 +57,14 @@ public class ReviewRESTController {
 	// 식당별 리뷰 전체 조회
 	@GetMapping("/all/{storeId}")
 	public ResponseEntity<List<ReviewVO>> readAllReview(
-			@PathVariable("storeId") int storeId) {
+			@PathVariable("storeId") int storeId, 
+			@RequestParam("end") int end, Model model) {
 		log.info("readAllReview()");
 		log.info("storeId = " + storeId);
 		
-		List<ReviewVO> list = reviewService.getAllReview(storeId);
+		List<ReviewVO> list = reviewService.getPagedReviews(storeId, end);
+		model.addAttribute("list", list);
+		
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
 	}
 	
@@ -73,10 +82,11 @@ public class ReviewRESTController {
 	// 리뷰 삭제
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<Integer> deleteReview(
-			@PathVariable("reviewId") int reivewId) {
+			@PathVariable("reviewId") int reviewId) {
 		log.info("deleteReview()");
 		
-		int result = reviewService.deleteReview(reivewId);
+		int result = reviewService.deleteReview(reviewId);
+		int deleteReply = replyService.deleteReplyByReview(reviewId);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	

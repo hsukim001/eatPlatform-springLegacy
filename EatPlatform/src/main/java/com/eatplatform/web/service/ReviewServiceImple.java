@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.persistence.ReplyMapper;
 import com.eatplatform.web.persistence.ReviewMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -16,6 +18,9 @@ public class ReviewServiceImple implements ReviewService{
 
 	@Autowired
 	private ReviewMapper reviewMapper;
+	
+	@Autowired
+	private ReplyMapper replyMapper;
 	
 	@Override
 	public int createReview(ReviewVO reviewVO) {
@@ -38,13 +43,25 @@ public class ReviewServiceImple implements ReviewService{
 		log.info(result + "행 리뷰 수정");
 		return 1;
 	}
-
+	
+	@Transactional(value = "transactionManager")
 	@Override
 	public int deleteReview(int reviewId) {
 		log.info("deleteReview()");
 		int result = reviewMapper.delete(reviewId);
 		log.info(result + "행 리뷰 삭제");
+		
+		// 리뷰 댓글 삭제
+		int deleteReply = replyMapper.deleteByReviewId(reviewId);
+		log.info(deleteReply + "행 댓글 삭제");
 		return 1;
 	}
+
+	@Override
+	public List<ReviewVO> getPagedReviews(int storeId, int end) {
+		return reviewMapper.selectReviewByPagination(storeId, end);
+	}
+	
+	
 
 }

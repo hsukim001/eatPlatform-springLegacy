@@ -55,5 +55,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SET REVIEW_REPORT = REVIEW_REPORT + #{amount}
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
+	
+	<!-- 리뷰 페이징 처리 -->
+	<select id="selectReviewByPagination" resultMap="reviewResultMap">
+		SELECT * FROM
+		(
+			SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) 
+			AS RN, BOARD.* FROM BOARD
+			WHERE STORE_ID = #{storeId} 
+		)
+		WHERE RN BETWEEN 1 AND #{end}
+	</select>
+	
+	<select id="selectTotalCount" resultType="Integer">
+		SELECT COUNT(*) TOTAL_COUNT FROM REVIEW
+	</select>
 
 </mapper>

@@ -1,9 +1,11 @@
 package com.eatplatform.web.persistence;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.ReviewReportListVO;
 
+@Mapper
 public interface ReviewReportListMapper {
 	
 	// 중복 체크

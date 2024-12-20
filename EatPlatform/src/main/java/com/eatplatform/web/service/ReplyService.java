@@ -9,4 +9,5 @@ public interface ReplyService {
 	List<ReplyVO> getAllReply(int revewId);
 	int updateReply(int replyId, String replyContent);
 	int deleteReply(int replyId);
+	int deleteReplyByReview(int reviewId);
 }

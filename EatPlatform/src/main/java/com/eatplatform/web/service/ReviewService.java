@@ -9,4 +9,7 @@ public interface ReviewService {
 	List<ReviewVO> getAllReview(int storeId);
 	int updateReview(ReviewVO reviewVO);
 	int deleteReview(int reviewId);
+	
+	List<ReviewVO> getPagedReviews(int storeId, int end);
+	
 }

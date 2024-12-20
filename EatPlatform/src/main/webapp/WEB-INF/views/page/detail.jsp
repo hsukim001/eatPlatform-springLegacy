@@ -32,13 +32,6 @@
 		$(document).ready(function(){
 			getAllReview();
 			
-			// 로그인 여부 체크
-            var userId = $('#userId').val();
-            if (!userId) {
-                // 로그인 안 된 경우 모든 버튼 숨기기
-                $('button').hide();
-            }
-			
 			// 리뷰 등록
 			$('#btnAdd').click(function(){
 				var storeId = $('#storeId').val();
@@ -90,6 +83,7 @@
 					function(data) {
 						console.log(data);
 						var list = '';
+						var pageMaker = data.pageMaker;
 						
 						$(data).each(function(){
 							console.log(this); // 인덱스 데이터
@@ -130,6 +124,7 @@
 						}); // end each()
 						
 						$('#reviews').html(list);
+						
 					} // end function()
 				); // end getJSON()
 				
@@ -232,7 +227,7 @@
 				console.log(this);
 				
 				var reviewId = $(this).prevAll('#reviewId').val();
-				var userId = $(this).prevAll('#userId').val();
+				var userId = "${sessionScope.userId}";
 				
 				$.ajax({
 					type : 'POST', 
@@ -272,6 +267,7 @@
 
 			    if (selectedReason) {
 			      // 신고 내용 처리 (예: 서버로 보내기)
+			      var userId = "${sessionScope.userId}";
 			      var reportMessage = selectedReason;
 			      var obj3 = {
 			    		  'reviewId' : reviewId,
@@ -317,7 +313,7 @@
 		    $('#reportModal').hide();
 		  }
 		});
-			
+					
 			// 선택된 리뷰에 댓글 등록(사업자)
 			$('#reviews').on('click', '.review_item .btn_reply', function(){
 				console.log(this);
@@ -407,7 +403,6 @@
 			
 		}); // end document()
 	</script>
-
 
 </body>
 </html>
