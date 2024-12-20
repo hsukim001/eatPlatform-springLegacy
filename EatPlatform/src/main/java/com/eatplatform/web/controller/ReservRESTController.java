@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
-import com.eatplatform.web.persistence.ReservMapper;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.util.DataResponse;
 import com.eatplatform.web.util.PageMaker;
@@ -106,11 +105,11 @@ public class ReservRESTController {
 	}
 	
 	// 예약 가능시간 조회
-	@GetMapping("/schedule/{storeId}/{startTime}/{endTime}/{reservLimit}")
+	@GetMapping("/schedule/{storeId}/{reservDate}/{reservLimit}")
 	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, 
-			@PathVariable("storeStartTime") String storeStartTime, @PathVariable("storeEndTime") String storeEndTime, 
+			@PathVariable("reservDate") String reservDate,
 			@PathVariable("reservLimit") int reservLimit) {
-		StoreScheduleVO vo = new StoreScheduleVO(storeId, storeStartTime, storeEndTime, reservLimit);
+		StoreScheduleVO vo = new StoreScheduleVO(storeId, reservDate, reservLimit);
 		List<StoreScheduleVO> list = reservService.searchSchedule(vo);
 		
 		return new ResponseEntity<List<StoreScheduleVO>>(list, HttpStatus.OK);

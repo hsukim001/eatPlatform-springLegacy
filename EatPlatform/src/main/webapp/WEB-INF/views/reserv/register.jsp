@@ -30,6 +30,7 @@
 	}
 </style>
 
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <%-- <script src="<%=request.getContextPath()%>/resources/reservRegister.js" ></script> --%>
 <script type="text/javascript">
 	
@@ -43,20 +44,19 @@
 		// 날짜 선택 이벤트
 		$('#date').change(function() {
 			reservDay = $(this).val();
+			$('#personnel').disabled = false;
+			
 			reservSchedule();
+			
 		});
 		
 		// 예약 가능 시간 조회
 		function reservSchedule() {
-			let businessHour = ${store.businessHour };
-			console.log(businessHour);
-			
-			let [storeStartTime, storeEndTime] = businessHour.split(',');
-			console.log('storeStartTime : ' + storeStartTime);
-			console.log('storeEndtime : ' + storeEndTime);
+			let reservLimit = ${store.reservLimit };
+			console.log(reservLimit);
 			
 			$.ajax({
-				url : 'schedule/'+ storeId + '/' + storeStartTime + '/' + storeEndTime,
+				url : 'schedule/'+ storeId + '/' + reservDate + '/' + reservLimit,
 				type : 'get',
 				success : function(data) {
 					console.log('data : ' + data);
@@ -68,13 +68,31 @@
 		// 예약 가능 시간 버튼 추가
 		function addTimeBtn(isTime) {
 			timeBtn = '';
-			isTime.forEach(function() {
-				if(active) {
-					reservTimeBtn += '<button type="button" class="btn" id="timeBtn">'+ time +'</button>';
+			
+			let businessHour = '${store.businessHour }';
+			let [storeStartTime, storeEndTime] = businessHour.split(' - ');
+			console.log('storeStartTime : ' + storeStartTime);
+			console.log('storeEndtime : ' + storeEndTime);
+			
+			for(let i = 1; i <= 24; i++) {
+				
+				if(i.length == 1) {
+					let setTime	= '0' + i;				
 				} else {
-					reservTimeBtn += '<button type="button" disabled>'+ time +'</button>';
+					let setTime = i;
 				}
-			});
+				
+				let addTime = setTime + ':00';
+				
+				if(addTime >= storeStartTime && addTime <= storeStartTime) {
+					if(time == addTime && active == true) {
+						reservTimeBtn += '<button type="button" class="btn" id="timeBtn">'+ addTime +'</button>';
+					} else {
+						reservTimeBtn += '<button type="button" disabled>'+ addTime +'</button>';
+					}					
+				}
+				
+			}
 			
 			$('#timeDiv').html(timeBtn);
 		}
@@ -100,7 +118,7 @@
 				url : 'created',
 				type : 'post',
 				headers : {
-					"Content-Type" : "application/json";
+					"Content-Type" : "application/json"
 				},
 				data : {
 					"storeId" : storeId,
@@ -132,7 +150,7 @@
 			<!-- 날짜선택시 버튼 출력 -->
 		</div>
 		<div>
-			<input type="number" name="personnel" id="personnel">
+			<input type="number" name="personnel" id="personnel" disabled>
 		</div>
 	</div>
 	<div>

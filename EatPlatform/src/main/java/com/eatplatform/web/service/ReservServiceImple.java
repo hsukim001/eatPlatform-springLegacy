@@ -1,5 +1,6 @@
 package com.eatplatform.web.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +79,19 @@ public class ReservServiceImple implements ReservService{
 	// 예약 가능시간 조회
 	@Override
 	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO) {
-//		List<StoreScheduleVO> list = 
-		return null;
+		List<StoreScheduleVO> list = reservMapper.selectSchedule(storeScheduleVO);
+		
+		List<StoreScheduleVO> resultList = new ArrayList<>();
+		int totalPersonnel = storeScheduleVO.getTotalPersonnel();
+		int reservLimit = storeScheduleVO.getReservLimit();
+		
+		for(int i = 0; i < list.size(); i++) {
+			if(totalPersonnel < reservLimit) {
+				resultList.add(list.get(i));
+			}
+		}
+		
+		return resultList;
 	}
 	
 }

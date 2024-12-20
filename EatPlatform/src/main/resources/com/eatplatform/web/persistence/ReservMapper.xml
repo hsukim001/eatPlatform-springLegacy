@@ -17,6 +17,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
 	</resultMap>
 	
+	<resultMap type="com.eatplatform.web.domain.StoreScheduleVO" id="storeScheduleResultMap">
+		<id property="time" column="TIME"/>
+		<result property="totalPersonnel" column="TOTAL_PERSONNEL"/>
+	</resultMap>
+	
 	<select id="selectPagingToDay" resultMap="reservResultMap">
 		SELECT r.*, 
 	       (
@@ -81,8 +86,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE RESERV_ID = #{reservId}
 	</delete>
 	
-	<select id="selectSchedule" resultMap="reservResultMap">
-		
+	<select id="selectSchedule" resultMap="storeScheduleResultMap">
+		SELECT 
+		    CONCAT(SUBSTR(RESERV_TIME, 1, 2), ':00') AS TIME,
+		    SUM(RESERV_PERSONNEL) AS TOTAL_PERSONNEL
+		FROM RESERV
+		WHERE STORE_ID = #{storeId}
+		AND RESERV_DATE = TRUNC(SYSDATE)
+		GROUP BY SUBSTR(RESERV_TIME, 1, 2)
+		ORDER BY TIME
 	</select>
 	
 </mapper>

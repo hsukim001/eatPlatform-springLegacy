@@ -100,5 +100,10 @@ public class UserServiceImple implements UserService{
 		vo.setUserPw(encodePw);
 		return userMapper.updateUserPw(vo);
 	}
+
+	@Override
+	public int checkUserByUserId(String userId) {
+		return userMapper.checkUserByUserId(userId);
+	}
 	
 }
