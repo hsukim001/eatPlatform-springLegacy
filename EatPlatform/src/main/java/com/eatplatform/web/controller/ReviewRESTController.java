@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReplyService;
 import com.eatplatform.web.service.ReviewService;
+import com.eatplatform.web.util.PageMaker;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -58,11 +60,18 @@ public class ReviewRESTController {
 	@GetMapping("/all/{storeId}")
 	public ResponseEntity<List<ReviewVO>> readAllReview(
 			@PathVariable("storeId") int storeId, 
-			@RequestParam("end") int end, Model model) {
+			Model model, Pagination pagination) {
 		log.info("readAllReview()");
 		log.info("storeId = " + storeId);
+		log.info("pagination = " + pagination);
 		
-		List<ReviewVO> list = reviewService.getPagedReviews(storeId, end);
+		List<ReviewVO> list = reviewService.getPagingReviews(pagination);
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		pageMaker.setTotalCount(reviewService.getReviewCount());
+		
+		model.addAttribute("pageMaker", pageMaker);
 		model.addAttribute("list", list);
 		
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);

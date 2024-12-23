@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.persistence.ReplyMapper;
 import com.eatplatform.web.persistence.ReviewMapper;
+import com.eatplatform.web.util.PageMaker;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -58,10 +60,17 @@ public class ReviewServiceImple implements ReviewService{
 	}
 
 	@Override
-	public List<ReviewVO> getPagedReviews(int storeId, int end) {
-		return reviewMapper.selectReviewByPagination(storeId, end);
+	public List<ReviewVO> getPagingReviews(Pagination pagination) {
+		log.info("getPagingReviews()");
+		return reviewMapper.selectListByPagination(pagination);
 	}
-	
-	
+
+	@Override
+	public int getReviewCount() {
+		log.info("getReviewCount()");
+		return reviewMapper.selectTotalCount();
+	}
+
+
 
 }
