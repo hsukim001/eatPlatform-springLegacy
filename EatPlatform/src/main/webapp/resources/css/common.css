@@ -84,10 +84,31 @@ header {
     display: block;
 }
 
+/* width */
 .width100 {
 	width: 100%;
 }
 
+/* text-align */
+.textLeft {
+	text-align: left;
+}
+
+/* margin-bottom */
+
+.mb20 {
+	margin-bottom: 20px;
+}
+
+.mb30 {
+	margin-bottom: 30px;
+}
+
+
+/* font-weight */
+.bold {
+	font-weight: bold;
+}
 
 /* Container */
 #container {

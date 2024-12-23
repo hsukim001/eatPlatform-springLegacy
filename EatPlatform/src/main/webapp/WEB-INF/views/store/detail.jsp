@@ -5,55 +5,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/resources/css/reset.css">
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/resources/css/common.css">
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/resources/css/store/detail.css">
-<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-<script
-	src="<%=request.getContextPath()%>/resources/js/headerFooterEmptySpaceController.js"></script>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/detail.css">
+	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/headerFooterEmptySpaceController.js"></script>
+	<script>
+		$(function(){
+		});
+	</script>
 
-<title>${storeVO.storeName }</title>
+	<title>${storeVO.storeName }</title>
 </head>
 <body>
 	<div id="wrap">
 		<jsp:include page="/include/header.jsp" />
 		<div id="container">
 			<div id="storeContainer">
-				<p class="storeTitle width100">${storeVO.storeName }</p>
-				<div id="storeInfoBox">
+				<p class="storeTitle width100 textLeft mb20 bold">${storeVO.storeName }</p>
+				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
-						<img src="<%=request.getContextPath()%>/resources/img/sample2.png"
-							alt="sample">
+						<img src="<%=request.getContextPath()%>/resources/img/sample2.png" alt="sample">
 					</div>
 					<div id="storeInfoText">
-						<div id="storeInfoTextLeft">
-							<p>${storeVO.businessHour }</p>
-							<p>${storeVO.storePhone }</p>
-							<p>${storeVO.ownerName }</p>
-							<p>${storeVO.storeRegDate }</p>
-						</div>
-						<div id="storeInfoTextRight">
-							<p>5</p>
-							<p>345</p>
-						</div>
+						<ul>
+							<li>
+								<span class="textTitle">영업 시간 </span> 
+								<span class="colon">:</span> 
+								<span class="textValue">${storeVO.businessHour }</span>
+							</li>
+							<li>
+								<span class="textTitle">연락처 </span> 
+								<span class="colon">:</span>
+								<span class="textValue">${storeVO.storePhone }</span></li>
+							<li>
+								<span class="textTitle">대표명 </span>
+								 <span class="colon">:</span>
+								<span class="textValue">${storeVO.ownerName }</span></li>
+							<li>
+								<span class="textTitle">최근 등록일 </span> 
+								<span class="colon">:</span> 
+								<span class="textValue">${storeVO.storeUpdateDate }</span>
+							</li>
+							<li>
+								<span class="textTitle">별점 </span> 
+								<span class="colon">:</span>
+								<span class="textValue">${storeVO.storeUpdateDate }</span></li>
+							<li>
+								<span class="textTitle">추천 수 </span> 
+								<span class="colon">:</span>
+								<span class="textValue">${storeVO.storeUpdateDate }</span></li>
+						</ul>
+
 					</div>
+				</div> 
+				<!-- End StoreInfoBox -->
+				<div id="reservBtnWrap" class="width100 mb30">
+					<input type="button" id="reservBtn" onclick="location.href='../reserv/register?storeId=${storeVO.storeId }'" value="온라인 예약">
 				</div>
-				<input type="button" id="reservBtn"
-					onclick="location.href='../reserv/register?storeId=${storeVO.storeId }'"
-					value="온라인 예약">
-				<div id="remoteBar">
+				<div id="remoteBar" class="mb30">
 					<ul>
-						<li><a href="#"> 매장 소개 </a></li>
+						<li><a href="#storeContent"> 매장 소개 </a></li>
 						<li><a href="#"> 메뉴 </a></li>
 						<li><a href="#"> 리뷰 </a></li>
 					</ul>
-				</div> <!--  End RemoteBar -->
-			</div> <!--  End StoreContainer -->
-		</div> <!--  End Container -->
+				</div>
+				<!--  End RemoteBar -->
+				
+				<div id="storeContent" class="width100 mb30">
+					
+					<div id="storeContentDescription" class="textLeft width100 mb30">
+						<p class="descriptionTitle mb20 bold">매장 소개</p>
+					    <c:if test="${empty storeVO.description}">
+					        <pre class="descriptionContent">작성된 소개글이 없습니다.</pre>
+					    </c:if>
+					    <c:if test="${not empty storeVO.description}">
+					        <pre class="descriptionContent">${storeVO.description }</pre>
+					    </c:if>
+					</div>
+					<!-- End storeContentDescription -->
+					
+					<div id="menuContainer" class="width100">
+						<ul class="width100">
+							<c:forEach var="menu" items="${menuVO}" varStatus="status">
+								<li>
+									<img src="<%=request.getContextPath()%>/resources/img/sample3.png" alt="메뉴사진 ${status.index + 1 }"><br>
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
+					<!--  End MenuConteiner -->
+				</div>
+				<!--  End StoreContent -->
+			</div>
+			<!--  End StoreContainer -->
+		</div>
+		<!--  End Container -->
 
 
 
@@ -70,6 +119,7 @@
 			${menu.represent } <br>
 		</c:forEach>
 
-	</div> <!--  End Wrap -->
+	</div>
+	<!--  End Wrap -->
 </body>
 </html>

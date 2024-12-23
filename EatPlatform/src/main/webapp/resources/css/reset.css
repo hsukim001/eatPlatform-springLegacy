@@ -19,6 +19,10 @@ ul, ol, li {
     list-style: none;
 }
 
+a {
+	color: #000;
+}
+
 body {
     width: 100%;
     display: inline-block;
