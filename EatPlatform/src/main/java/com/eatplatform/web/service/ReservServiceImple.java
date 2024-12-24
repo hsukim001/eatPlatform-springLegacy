@@ -86,7 +86,7 @@ public class ReservServiceImple implements ReservService{
 		int reservLimit = storeScheduleVO.getReservLimit();
 		
 		for(int i = 0; i < list.size(); i++) {
-			if(totalPersonnel < reservLimit) {
+			if(totalPersonnel <= reservLimit) {
 				resultList.add(list.get(i));
 			}
 		}

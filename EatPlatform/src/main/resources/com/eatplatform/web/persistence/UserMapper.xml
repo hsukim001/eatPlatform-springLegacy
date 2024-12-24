@@ -29,6 +29,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE USER_ID = #{userId}
 	</select>
 	
+	<select id="checkUserByUserEmail" resultType="Integer">
+		SELECT COUNT(USER_EMAIL)
+		FROM USER_LIST
+		WHERE USER_EMAIL = #{userEmail}
+	</select>
+	
 	<insert id="insertUser">
 		INSERT INTO USER_LIST
 		VALUES(

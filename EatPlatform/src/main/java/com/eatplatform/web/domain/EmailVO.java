@@ -1,5 +1,8 @@
 package com.eatplatform.web.domain;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,6 +11,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class EmailVO {
-	private boolean status;
-	private int num;
+	private int status;
+	private String userEmail;
+	private String authCode;
+	private Date sendTime;
+	private Date expirationTime;
+	private String message;
+	
 }

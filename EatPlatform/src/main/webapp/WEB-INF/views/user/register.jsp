@@ -13,6 +13,10 @@
 		let isUserId = false;
 		let isUserPw = false;
 		
+		let email;
+		let authCode;
+		let expirationTime;
+		
 		$("#userChk").click(function(){
 			userCheck();
 			if (isUserId == true) {
@@ -69,6 +73,64 @@
 				}
 			}
 		}
+		
+		// 이메일 인증코드 전송
+		function sendEmailCode() {
+			let userEmail = $('#email').val();
+			let obj = {
+					"userEmail" : userEmail
+			};
+			$.ajax({
+				url : '/email/send/authCode',
+				type : 'post',
+				headers : {
+					"Context-Type" : "application/json"
+				},
+				data : {
+					"userEmail" : userEmail
+				},
+				success : function(response) {
+					if(response.authCode != null && response.expirationTime != null) {
+						let msg = response.message;
+						email = response.userEmail;
+						$('#checkCode').prop('disabled', false);
+						$('#codeChkBtn').prop('disabled', false);
+						alert(msg);		
+					} else {
+						alert('메일 전송에 실패하였습니다.');
+					}
+					
+				}
+			});
+		}
+		
+		// 이메일 인증 기능
+		function codeChk() {
+			if(email == $('#email').val()) {
+				authChk();
+			} else {
+				alert('현재 입력된 이메일과 인증번호를 받은 이메일이 일치하지 않습니다.');
+			}
+		}
+		
+		function authChk() {
+			let checkCode = $('#checkCode').val();
+			
+			$.ajax({
+				url : '/email/authCode/' + checkCode,
+				type : 'get',
+				headers : {
+					"Context-Type" : "application/json"
+				},
+				data : {
+					"authCode" : authCode,
+					"expirationTime" : expirationTime
+				},
+				success : function(response) {
+					alert(response.message);
+				}
+			});
+		}
 
 	});
 	
@@ -97,7 +159,10 @@
 		</div>
 		<div>
 			<span>이메일 : </span>
-			<input type="email" name="userEmail" required="required">
+			<input type="email" id="email" name="userEmail" required="required">
+			<button type="button" id="sendEmailCode" onclick="sendEmailCode()">인증번호 받기</button>
+			<input type="text" id="checkCode" name="checkCode" disabled="disabled">
+			<button type="button" id="codeChkBtn" disabled="disabled" onclick="codeChk()">확인</button>
 		</div>
 		<div>
 			<span>휴대폰 : </span>
