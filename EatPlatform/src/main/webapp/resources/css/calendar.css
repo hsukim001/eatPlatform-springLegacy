@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+body {
+	font-family: Arial, sans-serif;
+	margin: 20px;
+}
+
+.calendar-container {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.calendar-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.calendar-header h2 {
+	margin: 0 25px;
+}
+
+.calendar-header button {
+	background: none;
+	color: #000;
+	font-size: 24px;
+	font-weight: bold;
+	border: none;
+	cursor: pointer;
+}
+
+.calendar {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.calendar div {
+	padding: 10px;
+	border: 1px solid #ddd;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.calendar .day-names {
+	font-weight: bold;
+	background-color: #f0f0f0;
+	cursor: default;
+}
+
+.calendar .today {
+	color: green;
+}
+
+.calendar .holiday {
+	color: red;
+}
+
+.calendar .selected {
+	background-color: #4caf50;
+	color: white;
+}
+
+.time-container {
+	text-align: center;
+}
+
+.time-slots {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.time-slots button {
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	background-color: white;
+	cursor: pointer;
+	outline: none;
+}
+
+.time-slots button:not(.disabled):hover,
+.calendar div:not(.disabled):hover {
+	background-color: #000;
+	color: #fff;
+}
+
+.time-slots .selected {
+	background-color: #4caf50;
+	color: white;
+}
+
+.disabled {
+    background-color: #eee !important;
+    color: #a9a9a9 !important;
+    cursor: not-allowed;
+}
+
+.selection-display {
+	margin-top: 20px;
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.hidden-input {
+	display: none;
+}

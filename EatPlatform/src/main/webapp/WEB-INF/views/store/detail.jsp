@@ -10,11 +10,12 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/detail.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/headerFooterEmptySpaceController.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
 	<script>
-		$(function(){
-		});
 	</script>
 
 	<title>${storeVO.storeName }</title>
@@ -87,37 +88,29 @@
 					</div>
 					<!-- End storeContentDescription -->
 					
-					<div id="menuContainer" class="width100">
+					<div id="menuContainer">
 						<ul class="width100">
 							<c:forEach var="menu" items="${menuVO}" varStatus="status">
 								<li>
-									<img src="<%=request.getContextPath()%>/resources/img/sample3.png" alt="메뉴사진 ${status.index + 1 }"><br>
+									<img src="<%=request.getContextPath()%>/resources/img/sample3.png" alt="메뉴사진 ${status.index + 1 }">
+									<p class="menuTitle menuText">${menu.menuName }</p>
+									<p class="menuComment menuText">${menu.menuComment }</p>
+									<p class="menuPrice menuText">${menu.menuPrice } \</p>
 								</li>
 							</c:forEach>
 						</ul>
 					</div>
 					<!--  End MenuConteiner -->
+					
+					<div id="reservContainer">
+						<jsp:include page="/include/calendar.jsp" />
+					</div>
 				</div>
 				<!--  End StoreContent -->
 			</div>
 			<!--  End StoreContainer -->
 		</div>
 		<!--  End Container -->
-
-
-
-
-
-
-
-
-
-		<c:forEach var="menu" items="${menuVO}">
-			${menu.menuName } <br>
-			${menu.menuPrice } <br>
-			${menu.menuComment } <br>
-			${menu.represent } <br>
-		</c:forEach>
 
 	</div>
 	<!--  End Wrap -->

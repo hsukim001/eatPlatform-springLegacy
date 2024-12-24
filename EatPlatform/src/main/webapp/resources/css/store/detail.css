@@ -160,21 +160,27 @@
     border-left: none;
 }
 
-.descriptionContent::-webkit-scrollbar {
-	width: 10px;
+.descriptionContent::-webkit-scrollbar,
+#menuContainer::-webkit-scrollbar {
+	width: 5px;
 	border-radius: 35px;
 	margin-right: 10px;
 	position: absolute;
 	right: 0;
 }
 
-.descriptionContent::-webkit-scrollbar-thumb {
+.descriptionContent::-webkit-scrollbar-thumb,
+#menuContainer::-webkit-scrollbar-thumb {
 	background-color: #1b47b3;
 	border-radius: 35px;
 }
 
 #menuContainer {
+	width: 70%;
 	display: inline-block;
+	max-height: 540px;
+	overflow-x: hidden;
+	overflow-y: scroll
 }
 
 #menuContainer ul {
@@ -184,7 +190,64 @@
 	overflow: hidden;
 }
 
+#menuContainer ul li {
+	width: 100%;
+	height: 180px;
+	display: inline-block;
+	border: 1px solid #ddd;
+	text-align: left;
+	padding: 0 10px 10px 0;
+}
+
+#menuContainer ul li:first-child {
+	border-top-right-radius: 15px;
+	border-top-left-radius: 15px;
+}
+
+#menuContainer ul li:last-child {
+	border-bottom-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+}
+
+#menuContainer ul li:not(:first-child) {
+	border-top: none;	
+}
+
 #menuContainer ul li img {
 	width: 180px;
 	height: 180px;
+	margin-right: 5px;
+	float: left;
+}
+
+.menuText {
+	width: calc(100% - 185px);
+	text-align: center;
+	float: left;
+	margin: 5px auto 10px;
+	text-overflow: ellipsis;
+}
+
+.menuTitle {
+	font-size: 20px;
+}
+
+.menuComment {
+    height: 90px;
+    text-align: center;
+    float: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.menuPrice {
+	text-align: right;
+}
+
+#calendar-wrap {
+	width: 50%;
+	margin: 0 auto;
 }
