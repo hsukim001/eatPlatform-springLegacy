@@ -16,6 +16,12 @@
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
 	<script>
+		$(function(){
+			$('#reservBtnWrap input').click(function(){
+				$('#calendar-wrap > div').fadeToggle(400);
+				$('#calendar-wrap').slideToggle(500);
+			});
+		});
 	</script>
 
 	<title>${storeVO.storeName }</title>
@@ -64,7 +70,8 @@
 				</div> 
 				<!-- End StoreInfoBox -->
 				<div id="reservBtnWrap" class="width100 mb30">
-					<input type="button" id="reservBtn" onclick="location.href='../reserv/register?storeId=${storeVO.storeId }'" value="온라인 예약">
+					<input type="button" id="reservBtn" value="온라인 예약">	
+					<jsp:include page="/include/calendar.jsp" />
 				</div>
 				<div id="remoteBar" class="mb30">
 					<ul>
@@ -102,9 +109,18 @@
 					</div>
 					<!--  End MenuConteiner -->
 					
-					<div id="reservContainer">
-						<jsp:include page="/include/calendar.jsp" />
+					<div id="reviewContainer">
+						<p>리뷰 (???)</p>
+						<ul>
+							<li>
+								
+							</li>
+							<li></li>
+							<li></li>
+							<li></li>
+						</ul>
 					</div>
+					<!-- End ReviewContainer -->
 				</div>
 				<!--  End StoreContent -->
 			</div>

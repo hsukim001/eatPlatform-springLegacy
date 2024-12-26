@@ -73,7 +73,7 @@ public class RootConfig {
 		props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.debug", "true");
+		// props.put("mail.debug", "true"); // 이메일 디버그
 		
 		mailSender.setJavaMailProperties(props);
 		
