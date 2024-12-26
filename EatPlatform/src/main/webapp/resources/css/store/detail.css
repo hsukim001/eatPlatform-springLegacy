@@ -85,7 +85,7 @@
 
 #reservBtnWrap input {
 	width: 90%;
-	margin: 0 auto;
+	margin: 0 auto 20px;
 	background: #1b47b3;
 	color: #fff;
 	font-size: 30px;
@@ -102,6 +102,15 @@
 	background: #fff;
 	color: #1b47b3;
 	box-shadow: 1px 2px 3px 2px #aaa;
+}
+
+#calendar-wrap {
+	width: 50%;
+	margin: 0 auto;
+	display: none;
+}
+#calendar-wrap > div {
+	display: none;
 }
 
 #remoteBar {
@@ -176,7 +185,7 @@
 }
 
 #menuContainer {
-	width: 70%;
+	width: 100%;
 	display: inline-block;
 	max-height: 540px;
 	overflow-x: hidden;
@@ -186,7 +195,7 @@
 #menuContainer ul {
 	display: flex;
 	flex-wrap: wrap;	
-	border-radius: 15px;
+	/*border-radius: 15px;*/
 	overflow: hidden;
 }
 
@@ -195,10 +204,11 @@
 	height: 180px;
 	display: inline-block;
 	border: 1px solid #ddd;
+	border-right: none;
 	text-align: left;
 	padding: 0 10px 10px 0;
 }
-
+/*
 #menuContainer ul li:first-child {
 	border-top-right-radius: 15px;
 	border-top-left-radius: 15px;
@@ -208,7 +218,7 @@
 	border-bottom-right-radius: 15px;
 	border-bottom-left-radius: 15px;
 }
-
+*/
 #menuContainer ul li:not(:first-child) {
 	border-top: none;	
 }
@@ -216,13 +226,13 @@
 #menuContainer ul li img {
 	width: 180px;
 	height: 180px;
-	margin-right: 5px;
+	margin-right: 15px;
 	float: left;
 }
 
 .menuText {
-	width: calc(100% - 185px);
-	text-align: center;
+	width: calc(100% - 195px);
+	text-align: left;
 	float: left;
 	margin: 5px auto 10px;
 	text-overflow: ellipsis;
@@ -234,7 +244,6 @@
 
 .menuComment {
     height: 90px;
-    text-align: center;
     float: left;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -245,9 +254,4 @@
 
 .menuPrice {
 	text-align: right;
-}
-
-#calendar-wrap {
-	width: 50%;
-	margin: 0 auto;
 }
