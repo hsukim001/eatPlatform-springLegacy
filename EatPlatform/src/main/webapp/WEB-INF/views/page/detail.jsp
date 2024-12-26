@@ -24,8 +24,10 @@
 	<hr>
 	<div style="text-align: center;">
 		<div id="reviews"></div>
+		<br>
+		<button type="button" class="btn btn-default btn-block id="moreList">더보기</button>
 	</div>
-	
+
 	<!-- 리뷰 신고 모달 포함 -->
     <jsp:include page="reportModal.jsp" />
 
@@ -74,10 +76,14 @@
 				});
 			}); // end btnAdd.click()
 			
+			function moreList() {
+				
+			}
+			
 			// 식당 리뷰 전체 가져오기
 			function getAllReview() {
+			
 				var storeId = $('#storeId').val();
-			    var pageSize = 5; // 페이지당 리뷰 개수
 				
 				var url = '../review/all/' + storeId;
 				
@@ -124,14 +130,14 @@
 								
 								getReplies(this.reviewId);
 						}); // end each()
-						
+					
 						$('#reviews').html(list);
 
 					} // end function()
+
 				); // end getJSON()
 				
 			} // end getAllReiview()
-			
 			
 			// 리뷰에 대한 댓글을 가져오는 함수
 			function getReplies(reviewId) {
@@ -406,21 +412,8 @@
 			
 		}); // end document()
 	</script>
-	<ul>
-		<!-- 이전 버튼 생성을 위한 조건문 -->
-		<c:if test="${pageMaker.isPrev() }">
-			<li><a href="detail?pageNum=${pageMaker.startNum - 1}">이전</a></li>
-		</c:if>
-		<!-- 반복문으로 시작 번호부터 끝 번호까지 생성 -->
-		<c:forEach begin="${pageMaker.startNum }"
-			end="${pageMaker.endNum }" var="num">
-			<li><a href="detail?pageNum=${num }">${num }</a></li>
-		</c:forEach>
-		<!-- 다음 버튼 생성을 위한 조건문 -->
-		<c:if test="${pageMaker.isNext() }">
-			<li><a href="detail?pageNum=${pageMaker.endNum + 1}">다음</a></li>
-		</c:if>
-	</ul>
+	
+	
 
 </body>
 </html>

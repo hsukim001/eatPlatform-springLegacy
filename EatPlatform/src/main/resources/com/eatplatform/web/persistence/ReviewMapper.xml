@@ -56,8 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
 	
-	<!-- 리뷰 페이징 처리 -->
-	<select id="selectListByPagination" resultMap="reviewResultMap">
+	<select id="pagination" resultMap="reviewResultMap">
 		SELECT * FROM
 		(
 			SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC)
@@ -66,9 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE RN BETWEEN #{start} AND #{end}
 	</select>
 	
-	<select id="selectTotalCount" resultType="Integer">
+	<select id="TotalCount" resultType="Integer">
 		SELECT COUNT(*) TOTAL_COUNT FROM REVIEW
 	</select>
 	
-
 </mapper>

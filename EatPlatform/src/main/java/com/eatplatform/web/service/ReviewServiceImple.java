@@ -60,17 +60,15 @@ public class ReviewServiceImple implements ReviewService{
 	}
 
 	@Override
-	public List<ReviewVO> getPagingReviews(Pagination pagination) {
-		log.info("getPagingReviews()");
-		return reviewMapper.selectListByPagination(pagination);
+	public List<ReviewVO> getPagination(int storeId, PageMaker pageMaker) {
+		log.info("getPagination()");
+		return reviewMapper.pagination(storeId, pageMaker);
 	}
 
 	@Override
-	public int getReviewCount() {
-		log.info("getReviewCount()");
-		return reviewMapper.selectTotalCount();
+	public int getTotal(int storeId) {
+		log.info("getTotal()");
+		return reviewMapper.TotalCount();
 	}
-
-
 
 }

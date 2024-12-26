@@ -1,6 +1,8 @@
 package com.eatplatform.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -59,21 +61,12 @@ public class ReviewRESTController {
 	// 식당별 리뷰 전체 조회
 	@GetMapping("/all/{storeId}")
 	public ResponseEntity<List<ReviewVO>> readAllReview(
-			@PathVariable("storeId") int storeId, 
-			Model model, Pagination pagination) {
+			@PathVariable("storeId") int storeId) {
 		log.info("readAllReview()");
 		log.info("storeId = " + storeId);
-		log.info("pagination = " + pagination);
 		
-		List<ReviewVO> list = reviewService.getPagingReviews(pagination);
-		
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.setPagination(pagination);
-		pageMaker.setTotalCount(reviewService.getReviewCount());
-		
-		model.addAttribute("pageMaker", pageMaker);
-		model.addAttribute("list", list);
-		
+		List<ReviewVO> list = reviewService.getAllReview(storeId);
+
 		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
 	}
 	
@@ -98,5 +91,25 @@ public class ReviewRESTController {
 		int deleteReply = replyService.deleteReplyByReview(reviewId);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
+	
+	// 페이징
+	@GetMapping("/all/{storeId}/{pageNum}")
+	public Map<String, Object> getPagination(
+			@PathVariable("storeId") int storeId, 
+			@PathVariable("pageNum") int pageNum) {
+		log.info("getPagination()");
+		
+		PageMaker pageMaker = new PageMaker();
+		List<ReviewVO> list = reviewService.getAllReview(storeId);
+		
+		int total = reviewService.getTotal(storeId);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", list); // 댓글 목록
+		map.put("total", total); // 전체 리뷰 수
+		
+		return map;
+	}
+	
 	
 }
