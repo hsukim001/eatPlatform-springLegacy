@@ -1,17 +1,9 @@
 package com.eatplatform.web.service;
 
-import java.util.Random;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.eatplatform.web.domain.EmailVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.UserMapper;
 
@@ -42,8 +34,12 @@ public class UserServiceImple implements UserService{
 		String encodePassword = passwordEncoder.encode(password);
 		log.info("암호화 후 : " + encodePassword);
 		
+		// 휴대폰 번호 식별번호 수정
+		String phoneNum = "010-" + userVO.getUserPhone();
+		
 		UserVO vo = userVO;
 		vo.setUserPw(encodePassword);
+		vo.setUserPhone(phoneNum);
 		
 		// 회원 가입 유형의 따른 권한 설정
 		// 1 : 일반 회원

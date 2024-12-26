@@ -3,7 +3,6 @@ package com.eatplatform.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,9 +33,9 @@ public class EmailRESTController {
 		
 	}
 	
-	@GetMapping("/check/authCode/{checkCode}")
+	@PostMapping("/check/authCode/{checkCode}")
 	public ResponseEntity<EmailVO> checkEmailByAuthCode(@PathVariable("checkCode") String checkCode, @RequestBody EmailVO emailVO) {
-		log.info("checkEmailByAuthCode");
+		log.info("checkEmailByAuthCode()");
 		EmailVO vo = emailService.checkAuthCode(emailVO, checkCode);
 		return new ResponseEntity<EmailVO>(vo, HttpStatus.OK);
 	}
