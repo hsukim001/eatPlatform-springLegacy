@@ -22,3 +22,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		REVIEW_IMAGE_CHG_NAME, )
 	</insert>
 	
+	
+	
