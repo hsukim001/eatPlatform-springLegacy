@@ -71,13 +71,16 @@ public class ReviewRESTController {
 			int end = pageNumber * pageSize;
 			
 			List<ReviewVO> list = reviewService.getAllReviewsByStoreId(storeId, start, end);
+			log.info("list : " + list);
+			log.info("start : " + start);
+			log.info("end : " + end);
 			
 			Map<String, Object> result = new HashMap<>();
 		    result.put("list", list);
 		    result.put("totalReviews", totalReviews);  // 전체 리뷰 개수 포함
 		    result.put("pageNumber", pageNumber);     // 현재 페이지 번호 포함
 		    result.put("pageSize", pageSize);         // 한 페이지 당 리뷰 수 포함
-
+		    result.put("end", end);
 		    return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	
