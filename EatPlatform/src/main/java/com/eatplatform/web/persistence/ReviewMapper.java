@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.ReviewVO;
-import com.eatplatform.web.util.PageMaker;
-import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface ReviewMapper {
@@ -23,9 +21,9 @@ public interface ReviewMapper {
 	int updateReportCount(@Param("reviewId") int reviewId,
 			@Param("amount") int amount);
 	
-	public List<ReviewVO> pagination(@Param("storeId") int storeId,
-			PageMaker pageMaker);
-	
-	int TotalCount();
+	// 페이징
+		int countReviewsByStoreId(int storeId);
+		List<ReviewVO> getReviewsByStoreId(@Param("storeId") int storeId, 
+				@Param("start") int start, @Param("end") int end);
 	
 }

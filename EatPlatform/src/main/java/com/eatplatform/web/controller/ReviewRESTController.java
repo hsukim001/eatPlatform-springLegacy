@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReplyService;
 import com.eatplatform.web.service.ReviewService;
-import com.eatplatform.web.util.PageMaker;
-import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -59,16 +56,30 @@ public class ReviewRESTController {
 	}
 	
 	// 식당별 리뷰 전체 조회
-	@GetMapping("/all/{storeId}")
-	public ResponseEntity<List<ReviewVO>> readAllReview(
-			@PathVariable("storeId") int storeId) {
-		log.info("readAllReview()");
-		log.info("storeId = " + storeId);
-		
-		List<ReviewVO> list = reviewService.getAllReview(storeId);
+		@GetMapping("/all/{storeId}")
+		public ResponseEntity<Map<String, Object>> readAllReview(
+				@PathVariable("storeId") int storeId,
+				@RequestParam("page") int pageNumber,
+				@RequestParam("pageSize") int pageSize) {
+			log.info("readAllReview()");
+			log.info("storeId = " + storeId);
+			
+			int totalReviews = reviewService.countAllReviewsByStoreId(storeId);
+			log.info("totalReviews = " + totalReviews);
+			
+			int start = (pageNumber - 1) * pageSize + 1;
+			int end = pageNumber * pageSize;
+			
+			List<ReviewVO> list = reviewService.getAllReviewsByStoreId(storeId, start, end);
+			
+			Map<String, Object> result = new HashMap<>();
+		    result.put("list", list);
+		    result.put("totalReviews", totalReviews);  // 전체 리뷰 개수 포함
+		    result.put("pageNumber", pageNumber);     // 현재 페이지 번호 포함
+		    result.put("pageSize", pageSize);         // 한 페이지 당 리뷰 수 포함
 
-		return new ResponseEntity<List<ReviewVO>>(list, HttpStatus.OK);
-	}
+		    return new ResponseEntity<>(result, HttpStatus.OK);
+		}
 	
 	// 리뷰 수정
 	@PutMapping("/{reviewId}")
@@ -92,24 +103,7 @@ public class ReviewRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
-	// 페이징
-	@GetMapping("/all/{storeId}/{pageNum}")
-	public Map<String, Object> getPagination(
-			@PathVariable("storeId") int storeId, 
-			@PathVariable("pageNum") int pageNum) {
-		log.info("getPagination()");
-		
-		PageMaker pageMaker = new PageMaker();
-		List<ReviewVO> list = reviewService.getAllReview(storeId);
-		
-		int total = reviewService.getTotal(storeId);
-		
-		Map<String, Object> map = new HashMap<>();
-		map.put("list", list); // 댓글 목록
-		map.put("total", total); // 전체 리뷰 수
-		
-		return map;
-	}
+
 	
 	
 }

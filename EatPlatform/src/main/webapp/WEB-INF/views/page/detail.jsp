@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>리뷰</title>
+
 <script src="https://code.jquery.com/jquery-3.7.1.js">
 </script>
 </head>
@@ -14,10 +15,12 @@
 	<input type="hidden" id="storeId" value="1">
 	
 	<div style="text-align: center;">
-		<input type="text" id="userId" value="${sessionScope.userId != null ? sessionScope.userId : ''}" readonly >
-		<input type="text" id="reviewStar"> 
-		<input type="text" id="reviewContent">
-		<input type="text" id="reviewTag">
+		<input type="text" id="userId" value="${sessionScope.userId }" readonly >
+		<input type="number" id="reviewStar" placeholder="별점" min="1" max="5">
+		<input type="text" id="reviewTag" placeholder="태그">
+		<br>
+		<br>
+        <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>
 		<button id="btnAdd">작성</button>
 	</div>
 
@@ -25,14 +28,17 @@
 	<div style="text-align: center;">
 		<div id="reviews"></div>
 		<br>
-		<button type="button" class="btn btn-default btn-block id="moreList">더보기</button>
+		<!-- 더보기 버튼 추가 -->
+		<button id="loadMoreBtn">더보기</button>
 	</div>
-
+	
 	<!-- 리뷰 신고 모달 포함 -->
     <jsp:include page="reportModal.jsp" />
 
 	<script type="text/javascript">
 		$(document).ready(function(){
+			var pageNumber = 1;  // 페이지 번호
+            var pageSize = 5;  // 한 번에 가져올 리뷰의 개수
 			getAllReview();
 			
 			// 리뷰 등록
@@ -42,6 +48,11 @@
 				var reviewStar = $('#reviewStar').val();
 				var reviewContent = $('#reviewContent').val();
 				var reviewTag = $('#reviewTag').val();
+				
+				if (!reviewStar || !reviewContent) {
+                    alert("모든 항목을 입력해주세요.");
+                    return;
+                }
 				
 				var obj = {
 						'storeId' : storeId,
@@ -64,6 +75,8 @@
 						if(result == 1) {
 							alert('리뷰 등록 성공');
 							getAllReview();
+						} else {
+							alert('리뷰 등록에 실패했습니다.');
 						}
 					},
 					error: function(xhr, status, error) {
@@ -76,24 +89,24 @@
 				});
 			}); // end btnAdd.click()
 			
-			function moreList() {
-				
-			}
-			
 			// 식당 리뷰 전체 가져오기
 			function getAllReview() {
-			
 				var storeId = $('#storeId').val();
 				
-				var url = '../review/all/' + storeId;
+				var url = '../review/all/' + storeId + '?page=' + pageNumber + '&pageSize=' + pageSize; // 페이지 파라미터
 				
 				$.getJSON(
 					url,
 					function(data) {				
 						console.log(data);
+						
+						if(data.totalReviews === 0) {
+							$('#loadMoreBtn').hide();
+							$('#reviews').html('<p>현재 리뷰가 없습니다.</p>');
+						}
 						var list = '';
 						
-						$(data).each(function(){
+						$(data.list).each(function(){
 							console.log(this); // 인덱스 데이터
 							
 							// 문자열 형태를 날짜 형태로 변환
@@ -128,16 +141,28 @@
 								+ '</div>'
 								+ '</div>';
 								
-								getReplies(this.reviewId);
+							getReplies(this.reviewId);
+							
+							// 페이징 중복 조회 제외
+							if(data.totalReviews <= pageSize) {
+								$('#loadMoreBtn').hide();
+								$('#reviews').html(list);
+							} else {
+								$('#loadMoreBtn').show();
+								$('#reviews').append(list);
+							}
 						}); // end each()
-					
-						$('#reviews').html(list);
 
 					} // end function()
-
 				); // end getJSON()
 				
 			} // end getAllReiview()
+			
+			// 더보기 버튼 클릭 시
+            $('#loadMoreBtn').click(function() {
+                pageNumber++;  // 페이지 번호 증가
+                getAllReview();  // 다음 페이지의 리뷰 로드
+            });
 			
 			// 리뷰에 대한 댓글을 가져오는 함수
 			function getReplies(reviewId) {
@@ -227,7 +252,7 @@
 						}
 					}
 					
-				}); 0
+				});
 				
 			}); // end reviews.on()
 			
@@ -412,8 +437,6 @@
 			
 		}); // end document()
 	</script>
-	
-	
 
 </body>
 </html>

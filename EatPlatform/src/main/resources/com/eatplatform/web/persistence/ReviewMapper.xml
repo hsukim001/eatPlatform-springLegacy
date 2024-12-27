@@ -5,7 +5,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.eatplatform.web.persistence.ReviewMapper">
 
-	<resultMap type="com.eatplatform.web.domain.ReviewVO" id="reviewResultMap">
+	<resultMap type="com.eatplatform.web.domain.ReviewVO"
+		id="reviewResultMap">
 		<id property="reviewId" column="REVIEW_ID" />
 		<result property="storeId" column="STORE_ID" />
 		<result property="userId" column="USER_ID" />
@@ -16,57 +17,59 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewLike" column="REVIEW_LIKE" />
 		<result property="reviewReport" column="REVIEW_REPORT" />
 	</resultMap>
-	
+
 	<insert id="insert">
-		INSERT INTO REVIEW (REVIEW_ID, STORE_ID, USER_ID, 
+		INSERT INTO REVIEW (REVIEW_ID, STORE_ID, USER_ID,
 		REVIEW_STAR, REVIEW_CONTENT, REVIEW_TAG)
-		VALUES (REVIEW_SEQ.NEXTVAL, #{storeId}, #{userId}, 
+		VALUES (REVIEW_SEQ.NEXTVAL,
+		#{storeId}, #{userId},
 		#{reviewStar}, #{reviewContent}, #{reviewTag})
 	</insert>
-	
+
 	<select id="selectListByStoreId" resultMap="reviewResultMap">
 		SELECT * FROM REVIEW
 		WHERE STORE_ID = #{storeId}
 		ORDER BY REVIEW_ID
 	</select>
-	
+
 	<update id="update">
-		UPDATE REVIEW SET 
+		UPDATE REVIEW SET
 		REVIEW_STAR = #{reviewStar},
 		REVIEW_CONTENT = #{reviewContent},
-		REVIEW_TAG = #{reviewTag},
+		REVIEW_TAG =
+		#{reviewTag},
 		REVIEW_DATE = SYSDATE
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
-	
+
 	<delete id="delete">
 		DELETE REVIEW
 		WHERE REVIEW_ID = #{reviewId}
 	</delete>
-	
+
 	<update id="updateLikeCount">
 		UPDATE REVIEW
-		SET REVIEW_LIKE = REVIEW_LIKE + #{amount}
+		SET REVIEW_LIKE = REVIEW_LIKE +
+		#{amount}
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
-	
+
 	<update id="updateReportCount">
 		UPDATE REVIEW
-		SET REVIEW_REPORT = REVIEW_REPORT + #{amount}
+		SET REVIEW_REPORT = REVIEW_REPORT +
+		#{amount}
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
-	
-	<select id="pagination" resultMap="reviewResultMap">
-		SELECT * FROM
-		(
-			SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC)
-			AS RN, REVIEW.* FROM REVIEW
-		)
-		WHERE RN BETWEEN #{start} AND #{end}
+
+	<!-- 페이징 -->
+	<select id="countReviewsByStoreId" resultType="Integer">
+		SELECT COUNT(*) FROM REVIEW WHERE STORE_ID = #{storeId}
 	</select>
 	
-	<select id="TotalCount" resultType="Integer">
-		SELECT COUNT(*) TOTAL_COUNT FROM REVIEW
+	<select id="getReviewsByStoreId" resultMap="reviewResultMap"> SELECT * FROM (
+		SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) 
+		AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId} ) 
+		WHERE RN BETWEEN #{start} AND #{end} 
 	</select>
-	
+
 </mapper>

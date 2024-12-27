@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.ReviewImageMapper">
+
+	<resultMap type="com.eatplatform.web.domain.ReviewImageVO" 
+		id="reviewImageResultMap">
+		
+		<id property="reviweImageId" column="REVIEW_IMAGE_ID" />
+		<result property="reviewId" column="REVIEW_ID" />
+		<result property="reviewImagePath" column="REVIEW_IMAGE_PATH" />
+		<result property="reviewImageRealName" column="REVIEW_IMAGE_REAL_NAME" />
+		<result property="reviewImageChgName" column="REVIEW_IMAGE_CHG_NAME" />
+		<result property="reviewImageExtension" column="REVIEW_IMAGE_EXTENSION" />
+	</resultMap>
+	
+	<insert id="insert">
+		INSERT INTO REVIEW_IMAGE
+		(REVIEW_IMAGE_ID, REVIEW_ID, REVIEW_IMAGE_PATH, REVIEW_IMAGE_REAL_NAME,
+		REVIEW_IMAGE_CHG_NAME, )
+	</insert>
+	
