@@ -81,10 +81,6 @@ public class ReviewRESTController {
 		    result.put("pageNumber", pageNumber);     // 현재 페이지 번호 포함
 		    result.put("pageSize", pageSize);         // 한 페이지 당 리뷰 수 포함
 		    result.put("end", end);
-<<<<<<< Updated upstream
-=======
-		    
->>>>>>> Stashed changes
 		    return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	
