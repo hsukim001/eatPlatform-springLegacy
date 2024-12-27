@@ -131,18 +131,13 @@ public class EmailServiceImple implements EmailService {
 
 	// 비밀번호 찾기
 	@Override
-	public EmailVO sendSearchPassword(UserVO userVO) {
+	public EmailVO sendSearchPassword(EmailVO emailVO) {
 		log.info("sendSearchPassword()");
-		int result = userMapper.checkUserByUserIdUserEmail(userVO);
 		
 		EmailVO vo = new EmailVO();
-		if(result == 1) {
-			String mailType = "비밀번호";
-			vo = emailFrom(userVO.getUserEmail(), mailType);
-		} else {
-			vo.setStatus(1);
-			vo.setMessage("등록되지 않은 이메일 입니다.");
-		}
+		String mailType = "비밀번호";
+		String userEmail = emailVO.getUserEmail();
+		vo = emailFrom(userEmail, mailType);
 		
 		return vo;
 	}

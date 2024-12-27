@@ -7,11 +7,29 @@
 	<title>인증코드</title>
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script type="text/javascript">
+		
 		$(document).ready(function(){
-			$('#chkBtn').click(function(){
-				
-			});
+			
 		});
+		
+		function sendPwCodeEmail() {
+			let userId = '${userId }';
+			let userEmail = '${userEmail }';
+			console.log(userId);
+			console.log(userEmail);
+			
+			$.ajax({
+				url : '../email/send/pwCode',
+				type : 'post',
+				headers : {
+					"Context-Type" : "application/json"
+				},
+				data : JSON.stringify(userEmail),
+				success : function(response) {
+					alert(response.message);
+				}
+			});
+		}
 	</script>
 </head>
 	<body>

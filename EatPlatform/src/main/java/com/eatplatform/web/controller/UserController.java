@@ -1,7 +1,5 @@
 package com.eatplatform.web.controller;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -113,7 +111,10 @@ public class UserController {
 	
 	// 이메일 인증 화면 호출
 	@GetMapping("/authUser")
-	public void authUser() {
+	public void authUser(@RequestParam("userId") String userId, @RequestParam String userEmail, Model model) {
 		log.info("authUser()");
+		model.addAttribute("userId", userId);
+		model.addAttribute("userEmail", userEmail);
 	}
+	
 }

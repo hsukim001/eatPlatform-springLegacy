@@ -21,28 +21,22 @@
 				function searchUserInfo() {
 					let userId = $('#userId').val();
 					let userEmail = $('#email').val();
-					console.log(userId);
-					console.log(userEmail);
-					let obj = {
-							"userId" : userId,
-							"userEmail" : userEmail
-						};
-					console.log(obj);
+					
 					$.ajax({
-						url : '../email/search/password/authCode',
-						type : 'post',
+						url : 'search/' + userId + '/' + userEmail,
+						type : 'get',
 						headers : {
-							'Content-Type' : 'application/json'
+							"Content-Type" : "application/json"
 						},
-						data : JSON.stringify(obj),
-						success : function(response) {
-							//let authCode = response.authCode;
-							//let expirationTime = response.expirationTime;
-							alert(response.message);
-							location.href="authUser";
+						success : function(result) {
+							if(result == 1) {
+								location.href = 'authUser?userId=' + userId + '&userEmail=' + userEmail;
+							} else {
+								alert("회원정보가 존재하지 않습니다.");
+							}
 						}
-						
 					});
+					
 				}
 				
 				$('#moveLogin').click(function(){

@@ -43,11 +43,11 @@ public class EmailRESTController {
 	}
 	
 	// 비밀번호 찾기
-	@PostMapping("/search/password/authCode")
-	public ResponseEntity<EmailVO> sendSearchPassword(@RequestBody UserVO userVO) {
+	@PostMapping("/send/pwCode")
+	public ResponseEntity<EmailVO> sendSearchPassword(@RequestBody EmailVO emailVO) {
 		log.info("sendSearchPassword()");
 		
-		EmailVO vo = emailService.sendSearchPassword(userVO);
+		EmailVO vo = emailService.sendSearchPassword(emailVO);
 		return new ResponseEntity<EmailVO>(vo, HttpStatus.OK);
 	}
 	
