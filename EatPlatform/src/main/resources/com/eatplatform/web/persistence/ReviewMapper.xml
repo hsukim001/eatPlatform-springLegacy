@@ -66,9 +66,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT COUNT(*) FROM REVIEW WHERE STORE_ID = #{storeId}
 	</select>
 	
-	<select id="getReviewsByStoreId" resultMap="reviewResultMap"> SELECT * FROM (
-		SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) 
-		AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId} ) 
+	<select id="getReviewsByStoreId" resultMap="reviewResultMap"> 
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) 
+			AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId} ) 
 		WHERE RN BETWEEN #{start} AND #{end} 
 	</select>
 

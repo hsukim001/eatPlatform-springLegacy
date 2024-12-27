@@ -18,6 +18,7 @@
 			<input type="password" name="userPw">
 		</div>
 		<input type="submit" value="로그인">
+		<button type="button" id="searchPw" onclick="location.href='../user/searchPw'">아이디, 비밀번호 찾기</button>
 	</form>
 </body>
 </html>

@@ -91,6 +91,8 @@ public class ReviewRESTController {
 			@RequestBody ReviewVO reviewVO) {
 		log.info("updateReview()");
 		
+		
+			
 		int result = reviewService.updateReview(reviewVO);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}

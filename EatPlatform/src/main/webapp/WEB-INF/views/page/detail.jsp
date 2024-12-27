@@ -39,6 +39,7 @@
 		$(document).ready(function(){
 			var pageNumber = 1;  // 페이지 번호
             var pageSize = 5;  // 한 번에 가져올 리뷰의 개수
+            var totalReviews = 0; // 전체 리뷰 개수
 			getAllReview();
 			
 			// 리뷰 등록
@@ -49,7 +50,7 @@
 				var reviewContent = $('#reviewContent').val();
 				var reviewTag = $('#reviewTag').val();
 				
-				if (!reviewStar || !reviewContent) {
+				if (!reviewStar || !reviewContent || !reviewTag) {
                     alert("모든 항목을 입력해주세요.");
                     return;
                 }
@@ -91,6 +92,7 @@
 			
 			// 식당 리뷰 전체 가져오기
 			function getAllReview() {
+<<<<<<< Updated upstream
     var storeId = $('#storeId').val();
     var url = '../review/all/' + storeId + '?page=' + pageNumber + '&pageSize=' + pageSize; // 페이지 파라미터
 
@@ -158,12 +160,84 @@
         }
     });
 }
-			
-			// 더보기 버튼 클릭 시
-            $('#loadMoreBtn').click(function() {
-                pageNumber++;  // 페이지 번호 증가
-                getAllReview();  // 다음 페이지의 리뷰 로드
-            });
+=======
+				var storeId = $('#storeId').val();
+				
+				var url = '../review/all/' + storeId + '?page=' + pageNumber + '&pageSize=' + pageSize; // 페이지 파라미터
+				
+				$.getJSON(
+					url,
+					function(data) {				
+						console.log(data);
+						
+						if(data.totalReviews === 0) {
+							if (pageNumber === 1) {
+                                $('#reviews').html('<p>현재 리뷰가 없습니다.</p>'); // 첫 페이지에 데이터가 없을 때
+                             }
+                             $('#loadMoreBtn').hide();
+                             return;
+						}
+						
+						var list = '';
+						
+						$(data.list).each(function(){
+							console.log(this); // 인덱스 데이터
+							
+							// 문자열 형태를 날짜 형태로 변환
+							var reviewDate = new Date(this.reviewDate).toLocaleString();
+		                    
+							list += '<div class="review_item">'
+								+ '<pre>'
+								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
+								+ this.userId
+								+ '&nbsp;&nbsp;' // 공백
+								+ '<input type="text" id="reviewStar" value="'+ this.reviewStar +'">'
+								+ '&nbsp;&nbsp;'
+								+ '<input type="text" id="reviewContent" value="'+ this.reviewContent +'">'
+								+ '&nbsp;&nbsp;'
+								+ '<input type="text" id="reviewTag" value="'+ this.reviewTag +'">'
+								+ '&nbsp;&nbsp;'
+								+ reviewDate
+								+ '&nbsp;&nbsp;'
+								+ this.reviewLike // 추천 수 표시
+								+ '&nbsp;&nbsp;'
+								+ '<button class="btn_update" >수정</button>'
+								+ '<button class="btn_delete" >삭제</button>'
+								+ '<button class="btn_like" >추천</button>'
+								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
+								+ '</pre>'
+								+ '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' // 리뷰 댓글 표시
+								+ '</div>' 
+								+ '<div class="review_reply">' // 리뷰 댓글 입력창
+								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
+								+ '&nbsp;&nbsp;'
+								+ '<button class="btn_reply" >댓글 입력</button>'
+								+ '</div>'
+								+ '</div>';
+								
+							getReplies(this.reviewId);
+
+						}); // end each()
+						
+						// 첫 페이지 = 초기화 / 그 외는 붙이기
+                        if (pageNumber === 1) {
+                           $('#reviews').html(list);
+                        } else {
+                           $('#reviews').append(list); 
+                        }
+						
+                     	// 페이징 버튼 처리
+                        let endPage = pageNumber * pageSize;
+                        if (data.totalReviews <= endPage) {
+                           $('#loadMoreBtn').hide(); 
+                        } else {
+                           $('#loadMoreBtn').show(); 
+                        }
+
+					}); // end getJSON()
+				
+			} // end getAllReiview()
+>>>>>>> Stashed changes
 			
 			// 리뷰에 대한 댓글을 가져오는 함수
 			function getReplies(reviewId) {
@@ -206,6 +280,8 @@
 				var reviewContent = $(this).prevAll('#reviewContent').val();
 				var reviewTag = $(this).prevAll('#reviewTag').val();
 
+				if(reviewId )
+				
 				var obj2 = {
 						'reviewId' : reviewId,
 						'reviewStar' : reviewStar,

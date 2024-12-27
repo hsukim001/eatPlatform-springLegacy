@@ -1,5 +1,7 @@
 package com.eatplatform.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.service.UserService;
@@ -102,4 +105,15 @@ public class UserController {
 		return "redirect:/user/detail";
 	}
 	
+	// 비밀번호 찾기 화면 호출
+	@GetMapping("/searchPw")
+	public void searchPw() {
+		log.info("searchPw()");
+	}
+	
+	// 이메일 인증 화면 호출
+	@GetMapping("/authUser")
+	public void authUser() {
+		log.info("authUser()");
+	}
 }
