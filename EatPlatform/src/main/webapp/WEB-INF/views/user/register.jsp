@@ -180,6 +180,7 @@
 			if(email == $('#userEmail').val()) {
 				authChk();
 			} else {
+				$('#emailCheck').val("");
 				$('#emailCheck').hide();
 				alert('현재 입력된 이메일과 인증번호를 받은 이메일이 일치하지 않습니다.');
 			}
@@ -205,6 +206,10 @@
 					authStatus = response.status;
 					if(authStatus == 0) {
 						$('#codeChkMsg').text('이메일 인증 성공');
+						$('#checkCode').prop('disabled', true);
+						$('#codeChkBtn').prop('disabled', true);
+						$('#userEmail').prop('readonly', true);
+						$('#sendEmailCodeBtn').prop('disabled', true)
 					} else {
 						$('#codeChkMsg').text('이메일 인증 실패');
 					}

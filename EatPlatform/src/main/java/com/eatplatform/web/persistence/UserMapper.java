@@ -14,4 +14,5 @@ public interface UserMapper {
 	int updateUserPw(UserVO userVO);
 	int checkUserByUserId(String userId);
 	int checkUserByUserEmail(String userEmail);
+	int checkUserByUserIdUserEmail(UserVO userVO);
 }

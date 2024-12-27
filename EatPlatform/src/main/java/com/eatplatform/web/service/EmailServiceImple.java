@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.eatplatform.web.domain.EmailVO;
+import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.UserMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -27,54 +28,16 @@ public class EmailServiceImple implements EmailService {
 	@Autowired
 	UserMapper userMapper;
 
+	// 회원가입 이메일 인증코드 발송
 	@Override
 	public EmailVO sendEmailByAuthCode(EmailVO emailVO) {
 
 		int checkEmail = userMapper.checkUserByUserEmail(emailVO.getUserEmail());
 		EmailVO vo = new EmailVO();
 
+		String mailType = "회원가입";
 		if (checkEmail == 0) {
-			Random random = new Random();
-			int randomCode = random.nextInt(999999);
-
-			String authCode = Integer.toString(randomCode);
-
-			String setFrom = "hsuemail157@gmail.com";
-			String toMail = emailVO.getUserEmail();
-			log.info(toMail);
-			String subject = "먹플랫폼 회원가입 인증 번호 메일입니다.";
-			String content = "회원가입 인증번호는 " + authCode + " 입니다.";
-
-			vo = emailVO;
-
-			try {
-				MimeMessage msg = mailSender.createMimeMessage();
-				MimeMessageHelper msgHelper = new MimeMessageHelper(msg, true, "UTF-8");
-
-				msgHelper.setFrom(setFrom);
-				msgHelper.setTo(toMail);
-				msgHelper.setSubject(subject);
-				msgHelper.setText(content);
-
-				mailSender.send(msg);
-				
-				Date sendTime = new Date();
-				Date time = new Date();
-				
-		        Instant instant = time.toInstant();
-		        Instant updatedInstant = instant.plus(Duration.ofMinutes(3)); // 3분 추가
-		        Date expirationTime = Date.from(updatedInstant);
-
-				vo.setAuthCode(authCode);
-				vo.setSendTime(sendTime);
-				vo.setExpirationTime(expirationTime);
-				vo.setMessage("코드 전송이 완료되었습니다. 3분이내에 인증코드를 확인해주세요.");
-				vo.setStatus(0);
-			} catch (Exception e) {
-				e.printStackTrace();
-				vo.setStatus(5);
-				vo.setMessage("메일전송 과정에서 오류가 발생하였습니다.");
-			}
+			vo = emailFrom(emailVO.getUserEmail(), mailType);
 		} else {
 			vo.setStatus(1);
 			vo.setMessage("이미 사용중인 이메일 입니다.");
@@ -83,6 +46,7 @@ public class EmailServiceImple implements EmailService {
 		return vo;
 	}
 
+	// 인증코드 확인
 	@Override
 	public EmailVO checkAuthCode(EmailVO emailVO, String checkCode) {
 		log.info("checkAuthCode()");
@@ -108,6 +72,78 @@ public class EmailServiceImple implements EmailService {
 			vo.setMessage(message);
 		}
 
+		return vo;
+	}
+	
+	// 인증코드 난수 생성
+	private String createdAuthCode() {
+		Random random = new Random();
+		int randomCode = random.nextInt(999999);
+
+		String authCode = Integer.toString(randomCode);
+		return authCode;
+	}
+	
+	// 이메일 입력 폼
+	private EmailVO emailFrom(String userEmail, String mailType) {
+		String authCode = createdAuthCode();
+		
+		String setFrom = "hsuemail157@gmail.com";
+		String toMail = userEmail;
+		log.info(toMail);
+		String subject = "먹플랫폼 " + mailType + " 인증번호 메일입니다.";
+		String content = mailType + " 인증번호는 " + authCode + " 입니다.";
+
+		EmailVO vo = new EmailVO();
+
+		try {
+			MimeMessage msg = mailSender.createMimeMessage();
+			MimeMessageHelper msgHelper = new MimeMessageHelper(msg, true, "UTF-8");
+
+			msgHelper.setFrom(setFrom);
+			msgHelper.setTo(toMail);
+			msgHelper.setSubject(subject);
+			msgHelper.setText(content);
+
+			mailSender.send(msg);
+			
+			Date sendTime = new Date();
+			Date time = new Date();
+			
+	        Instant instant = time.toInstant();
+	        Instant updatedInstant = instant.plus(Duration.ofMinutes(3)); // 3분 추가
+	        Date expirationTime = Date.from(updatedInstant);
+
+	        vo.setUserEmail(userEmail);
+			vo.setAuthCode(authCode);
+			vo.setSendTime(sendTime);
+			vo.setExpirationTime(expirationTime);
+			vo.setMessage("코드 전송이 완료되었습니다. 3분이내에 인증코드를 입력해주세요.");
+			vo.setStatus(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			vo.setStatus(5);
+			vo.setMessage("메일전송 과정에서 오류가 발생하였습니다.");
+		}
+		
+		return vo;
+	}
+
+	// 비밀번호 찾기
+	@Override
+	public EmailVO sendSearchPassword(UserVO userVO) {
+		log.info("sendSearchPassword()");
+		int result = userMapper.checkUserByUserIdUserEmail(userVO);
+		
+		EmailVO vo = new EmailVO();
+		if(result == 1) {
+			String mailType = "비밀번호";
+			vo = emailFrom(userVO.getUserEmail(), mailType);
+		} else {
+			vo.setStatus(1);
+			vo.setMessage("등록되지 않은 이메일 입니다.");
+		}
+		
 		return vo;
 	}
 

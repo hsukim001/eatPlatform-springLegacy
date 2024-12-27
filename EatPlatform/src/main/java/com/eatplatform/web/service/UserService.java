@@ -1,6 +1,5 @@
 package com.eatplatform.web.service;
 
-import com.eatplatform.web.domain.EmailVO;
 import com.eatplatform.web.domain.UserVO;
 
 public interface UserService {
