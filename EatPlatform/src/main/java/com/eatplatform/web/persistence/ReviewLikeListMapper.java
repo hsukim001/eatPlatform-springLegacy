@@ -12,4 +12,6 @@ public interface ReviewLikeListMapper {
 	
 	int insert(@Param("reviewId") int reviewId, 
 			@Param("userId") String userId);
+	
+	int delete(@Param("reviewId") int reviewId);
 }

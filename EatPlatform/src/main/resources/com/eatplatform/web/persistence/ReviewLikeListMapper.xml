@@ -14,5 +14,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		INSERT INTO REVIEW_LIKE_LIST (REVIEW_ID, USER_ID)
 		VALUES (#{reviewId}, #{userId})
 	</insert>
+	
+	<delete id="delete">
+		DELETE REVIEW_LIKE_LIST
+		WHERE REVIEW_ID = #{reviewId}
+	</delete>
 
 </mapper>

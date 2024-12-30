@@ -109,5 +109,10 @@ public class UserServiceImple implements UserService{
 	public int checkUserByUserId(String userId) {
 		return userMapper.checkUserByUserId(userId);
 	}
+
+	@Override
+	public int checkUserByUserIdUserEmail(UserVO userVO) {
+		return userMapper.checkUserByUserIdUserEmail(userVO);
+	}
 	
 }

@@ -66,7 +66,7 @@ public class ReviewRESTController {
 			
 			int totalReviews = reviewService.countAllReviewsByStoreId(storeId);
 			log.info("totalReviews = " + totalReviews);
-			
+		
 			int start = (pageNumber - 1) * pageSize + 1;
 			int end = pageNumber * pageSize;
 			
@@ -81,10 +81,6 @@ public class ReviewRESTController {
 		    result.put("pageNumber", pageNumber);     // 현재 페이지 번호 포함
 		    result.put("pageSize", pageSize);         // 한 페이지 당 리뷰 수 포함
 		    result.put("end", end);
-<<<<<<< Updated upstream
-=======
-		    
->>>>>>> Stashed changes
 		    return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	
@@ -111,8 +107,5 @@ public class ReviewRESTController {
 		int deleteReply = replyService.deleteReplyByReview(reviewId);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
-	
-
-	
 	
 }

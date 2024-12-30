@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.service.UserService;
@@ -100,6 +101,20 @@ public class UserController {
 			log.info("비밀번호 수정 완료");
 		}
 		return "redirect:/user/detail";
+	}
+	
+	// 비밀번호 찾기 화면 호출
+	@GetMapping("/searchPw")
+	public void searchPw() {
+		log.info("searchPw()");
+	}
+	
+	// 이메일 인증 화면 호출
+	@GetMapping("/authUser")
+	public void authUser(@RequestParam("userId") String userId, @RequestParam String userEmail, Model model) {
+		log.info("authUser()");
+		model.addAttribute("userId", userId);
+		model.addAttribute("userEmail", userEmail);
 	}
 	
 }

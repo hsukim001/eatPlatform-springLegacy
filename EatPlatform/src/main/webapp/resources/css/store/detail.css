@@ -4,6 +4,7 @@
 	margin: 30px auto 10px;
 }
 
+/* Store Container */
 #storeContainer {
 	width: 900px;
 	display: flex;
@@ -79,6 +80,7 @@
 	text-align: right;
 }
 
+/* reservBtnWrap */
 #reservBtnWrap {
 	display: inline-block;
 }
@@ -113,6 +115,7 @@
 	display: none;
 }
 
+/* RemoteBar */
 #remoteBar {
 	width: 100%;
 	display: inline-block;
@@ -169,6 +172,7 @@
     border-left: none;
 }
 
+/* ScrollBar */
 .descriptionContent::-webkit-scrollbar,
 #menuContainer::-webkit-scrollbar {
 	width: 5px;
@@ -184,12 +188,14 @@
 	border-radius: 35px;
 }
 
+/* Menu Container */
 #menuContainer {
 	width: 100%;
 	display: inline-block;
 	max-height: 540px;
 	overflow-x: hidden;
-	overflow-y: scroll
+	overflow-y: scroll;
+	margin-bottom: 40px;
 }
 
 #menuContainer ul {
@@ -254,4 +260,150 @@
 
 .menuPrice {
 	text-align: right;
+}
+
+#reviewContainer {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#reviewContainer p {
+	width: 100%;
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+	font-size: 22px;
+	border-bottom: 1px solid #ddd;
+	text-align: left;	
+}
+
+#reviewWrite {
+	width: 100%;
+	text-align: left;    
+	display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#reviewWrite textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#scoreWrap {
+	display: flex;
+	float: left;
+}
+
+#scoreWrap img {
+	width: 30px;
+	cursor: pointer;
+	margin: 0 3px;
+}
+
+#scoreWrap span {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1b32c7;
+}
+
+#tagSelect {
+	display: flex;
+	float: left;
+	position: relative;
+}
+
+.tagBtn {
+	width: 180px;
+    background: #819afd;
+    border-radius: 15px;
+    text-align: center;
+    letter-spacing: 5px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#tagList {
+    overflow: hidden;
+    position: absolute;
+    top: 24px;
+    border: 1px solid #eee;
+	border-radius: 15px;
+    background: #fff;
+    box-shadow: 2px 2px 6px #444;
+    display: none;
+}
+
+#tagList li {
+	float: left;
+    display: flex;
+    width: 180px;
+    font-size: 13px;
+    align-items: center;
+    padding: 5px 10px;
+    border-bottom: 1px solid #aaa;
+    cursor: pointer;
+}
+
+#tagList li:hover:not(.tagActive) {
+	background: #819afd;
+	color: #fff;
+	font-weight: bold;
+}
+
+#tagList li:last-child {
+    border-bottom: none;
+}
+
+#tagList li img {
+	width: 20px;
+}
+
+.tagActive {
+	background: #1b47b3;
+	color: #fff;
+	font-weight: bold;
+}
+
+/* Report Modal */
+.modal {
+  display: none; /* 기본적으로 숨겨짐 */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 500px;
+  border: 1px solid #888;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  cursor: pointer;
 }

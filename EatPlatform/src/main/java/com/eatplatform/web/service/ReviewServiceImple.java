@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.persistence.ReplyMapper;
+import com.eatplatform.web.persistence.ReviewLikeListMapper;
 import com.eatplatform.web.persistence.ReviewMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -21,6 +22,9 @@ public class ReviewServiceImple implements ReviewService{
 	
 	@Autowired
 	private ReplyMapper replyMapper;
+	
+	@Autowired
+	private ReviewLikeListMapper reviewLikeListMapper;
 	
 	@Override
 	public int createReview(ReviewVO reviewVO) {
@@ -54,6 +58,10 @@ public class ReviewServiceImple implements ReviewService{
 		// 리뷰 댓글 삭제
 		int deleteReply = replyMapper.deleteByReviewId(reviewId);
 		log.info(deleteReply + "행 댓글 삭제");
+		
+		// 추천인 목록 삭제
+		int deleteReviewLikeList = reviewLikeListMapper.delete(reviewId);
+		log.info(deleteReviewLikeList + "행 추천 삭제");
 		return 1;
 	}
 

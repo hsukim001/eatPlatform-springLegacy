@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getReviewsByStoreId" resultMap="reviewResultMap"> 
 		SELECT * FROM (
 			SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) 
-			AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId} ) 
+			AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId}) 
 		WHERE RN BETWEEN #{start} AND #{end} 
 	</select>
 

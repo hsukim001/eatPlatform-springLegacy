@@ -10,4 +10,5 @@ public interface ReplyService {
 	int updateReply(int replyId, String replyContent);
 	int deleteReply(int replyId);
 	int deleteReplyByReview(int reviewId);
+	
 }

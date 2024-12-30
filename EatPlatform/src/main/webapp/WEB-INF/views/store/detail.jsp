@@ -15,13 +15,90 @@
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
 	<script>
 		$(function(){
+			
 			$('#reservBtnWrap input').click(function(){
-				$('#calendar-wrap > div').fadeToggle(400);
-				$('#calendar-wrap').slideToggle(500);
-			});
-		});
+				$('#calendar-wrap > div').stop().fadeToggle(400);
+				$('#calendar-wrap').stop().slideToggle(500);
+			}); // End #reservBtnWrap input.click
+			
+			$('#scoreWrap img').click(function () {
+			    let currentScore = $(this).data('score'); 
+			    console.log(currentScore);
+
+			    $('#scoreWrap img').each(function () {
+			        let imgScore = $(this).data('score'); 
+			        if (imgScore <= currentScore) {
+			            $(this).attr('src', '<%=request.getContextPath()%>/resources/img/sample3.png');
+			        } else {
+			            $(this).attr('src', '<%=request.getContextPath()%>/resources/img/sample3bk.png');
+			        }
+			    }); // End #scoreWrap img.each 
+
+			    $(this).siblings('.scoreNum').text(currentScore + " / 5 점");
+			}); // End #scoreWrap img.click
+			
+			const tagData = [
+			    { icon: 1, text: "음식이 맛있어요 !" },
+			    { icon: 2, text: "친절해요" },
+			    { icon: 3, text: "분위기가 좋아요." },
+			    { icon: 4, text: "재료가 신선해요." },
+			    { icon: 5, text: "청결해요." },
+			    { icon: 6, text: "재방문 의사가 있어요." }
+			];
+			console.log(tagData);
+			const listContainer = $('#tagList');
+			const tagContainer = $('#viewTag');
+
+			tagData.forEach(tag => {
+			    const listItem =
+			    	'<li data-tag-id=' + tag.icon +'>' +
+                		'<img src="<%=request.getContextPath()%>/resources/img/store/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+                		'<span>' + tag.text + '</span>' +
+           			 '</li>';
+			    listContainer.append(listItem);
+			}); // End tagData.forEach
+			
+			$(document).click(function(event) {
+			    if (!$(event.target).closest('.tagBtn').length && !$(event.target).closest('#tagList').length) {
+			        $('#tagList').slideUp(200); 
+			    }
+			}); // End document.click
+
+			$(".tagBtn").click(function(event) {
+			    event.stopPropagation();  
+			    $('#tagList').stop().slideToggle(200); 
+			}); // End .tagBtn.click
+			
+			
+			$("#tagList li").click(function(){
+				$(this).toggleClass('tagActive');
+				
+				const tagId = $(this).data('tag-id'); 
+			    const tag = tagData.find(tag => tag.icon === tagId);
+
+				
+		        if ($(this).hasClass('tagActive')) {
+		            const tagItem =
+		                '<li data-sticker-id=' + tag.icon + '>' +
+		                	'<img src="<%=request.getContextPath()%>/resources/img/store/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+		                	'<span>' + tag.text + '</span>' +
+		                '</li>';
+		            tagContainer.append(tagItem);
+		        } else {
+		            $('#viewTag li').each(function() {
+		                const stickerId = $(this).data('sticker-id');  // #viewTag 내 각 li에서 data-tag-id를 가져옵니다.
+		                if (stickerId === tagId) {
+		                    $(this).remove();  // 해당 li를 삭제합니다.
+		                }
+		            });
+		        }
+			}); // End #tagList li.click
+			
+			
+		}); // End $function
 	</script>
 
 	<title>${storeVO.storeName }</title>
@@ -111,13 +188,41 @@
 					
 					<div id="reviewContainer">
 						<p>리뷰 (???)</p>
+						<input type="hidden" id="storeId" value="${storeVO.storeId }">
+						<input type="hidden" id="userId" value="${sessionScope.userId }" readonly >
+						<div id="reviewWrite">
+							<div id="scoreWrap">
+								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="1">
+								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="2">
+								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="3">
+								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="4">
+								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="5">
+								<span id="reviewStar" class="scoreNum">0 / 5 점</span>
+							</div>
+							<div id="tagSelect">
+								<div class="tagBtn">
+									태그 추가
+								</div>
+								<ul id="tagList"></ul>
+							</div>
+							<ul id="viewTag"></ul>
+							
+							<!-- <input type="text" id="reviewTag" placeholder="태그">  -->
+							<br>
+							<br>
+					        <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>								<button id="btnAdd">작성</button>
+						</div>
+							<div style="text-align: center;">
+								<div id="reviews"></div>
+								<br>
+								<!-- 더보기 버튼 추가 -->
+								<button id="loadMoreBtn">더보기</button>
+							</div>
+							
+							<!-- 리뷰 신고 모달 포함 -->
+    						<jsp:include page="/include/reportModal.jsp" />	
 						<ul>
-							<li>
-								
-							</li>
-							<li></li>
-							<li></li>
-							<li></li>
+
 						</ul>
 					</div>
 					<!-- End ReviewContainer -->

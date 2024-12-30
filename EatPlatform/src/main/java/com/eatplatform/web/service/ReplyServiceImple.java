@@ -49,11 +49,11 @@ public class ReplyServiceImple implements ReplyService{
 		return 1;
 	}
 
+	// 해당 리뷰 댓글 삭제
 	@Override
 	public int deleteReplyByReview(int reviewId) {
 		log.info("deleteReplyByReview()");
-		int result = replyMapper.deleteByReviewId(reviewId);
-		return 1;
+		return replyMapper.deleteByReviewId(reviewId);
 	}
 
 }

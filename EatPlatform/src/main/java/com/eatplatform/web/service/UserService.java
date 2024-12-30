@@ -1,6 +1,5 @@
 package com.eatplatform.web.service;
 
-import com.eatplatform.web.domain.EmailVO;
 import com.eatplatform.web.domain.UserVO;
 
 public interface UserService {
@@ -15,4 +14,6 @@ public interface UserService {
 	int modifyUserPw(String userId, String userPw);
 	
 	int checkUserByUserId(String userId);
+	
+	int checkUserByUserIdUserEmail(UserVO userVO);
 }
