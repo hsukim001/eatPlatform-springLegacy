@@ -11,9 +11,7 @@ public interface UserService {
 	
 	int login(String userId, String userPw);
 	
-	int modifyUserPw(String userId, String userPw);
+	int modifyUserPw(UserVO userVO);
 	
 	int checkUserByUserId(String userId);
-	
-	int checkUserByUserIdUserEmail(UserVO userVO);
 }

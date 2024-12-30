@@ -11,7 +11,8 @@ public interface UserMapper {
 	int updateUser(UserVO userVO);
 	int deleteUser(String userId);
 	UserVO selectUserPwByUserId(String userId);
-	int updateUserPw(UserVO userVO);
+	int updateUserPwByUserId(UserVO userVO);
+	int updateUserPwByUserEmail(UserVO userVO);
 	int checkUserByUserId(String userId);
 	int checkUserByUserEmail(String userEmail);
 	int checkUserByUserIdUserEmail(UserVO userVO);

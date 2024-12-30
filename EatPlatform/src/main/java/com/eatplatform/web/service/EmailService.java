@@ -11,5 +11,5 @@ public interface EmailService {
 	// 인증코드 확인
 	EmailVO checkAuthCode(EmailVO emailVO, String checkCode);
 	// 비밀번호 찾기
-	EmailVO sendSearchPassword(EmailVO emailVO);
+	EmailVO sendSearchPassword(UserVO userVO);
 }

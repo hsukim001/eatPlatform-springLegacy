@@ -82,25 +82,14 @@ public class UserController {
 		return "redirect:/user/detail";
 	}
 	
+	// 비밀번호 수정 페이지 호출
 	@GetMapping("/modifyPw")
-	public void modifyPwGET() {
-		log.info("modifyPwGET()");
-	}
-	
-	@PostMapping("/modifyPw")
-	public String modifyPwPOST(String userPw, HttpServletRequest request) {
-		log.info("modifyPwPOST()");
-		
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
-		log.info(userId);
-		log.info(userPw);
-		
-		int result = userService.modifyUserPw(userId, userPw);
-		if(result == 1) {
-			log.info("비밀번호 수정 완료");
+	public void modifyPw(@RequestParam(value = "email", required = false) String userEmail, Model model) {
+		log.info("modifyPw()");
+		log.info("email : " + userEmail);
+		if(userEmail != null) {
+			model.addAttribute("email", userEmail);		
 		}
-		return "redirect:/user/detail";
 	}
 	
 	// 비밀번호 찾기 화면 호출

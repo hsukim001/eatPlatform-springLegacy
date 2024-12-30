@@ -14,14 +14,6 @@
 	.divShow {
 		display : block;
 	}
-	
-	.pHide {
-		display : none;
-	}
-	
-	.pShow {
-		display : block;
-	}
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">

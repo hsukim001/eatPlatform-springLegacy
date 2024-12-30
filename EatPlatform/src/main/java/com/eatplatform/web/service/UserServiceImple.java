@@ -92,27 +92,31 @@ public class UserServiceImple implements UserService{
 
 	// 회원 비밀번호 수정
 	@Override
-	public int modifyUserPw(String userId, String userPw) {
+	public int modifyUserPw(UserVO userVO) {
 		log.info("modifyUserPw()");
-		log.info(userPw);
+		log.info(userVO);
 		UserVO vo = new UserVO();
 		
 		// 암호화
-		String encodePw = passwordEncoder.encode(userPw);
+		String encodePw = passwordEncoder.encode(userVO.getUserPw());
 		
-		vo.setUserId(userId);
 		vo.setUserPw(encodePw);
-		return userMapper.updateUserPw(vo);
+		int result = 0;
+		if(userVO.getUserEmail().isBlank() && userVO.getUserId() != null) {
+			log.info("userEmail = null");
+			vo.setUserId(userVO.getUserId());
+			result = userMapper.updateUserPwByUserId(vo);
+		} else if(userVO.getUserId() == null && !userVO.getUserEmail().isBlank()) {
+			log.info("userId = null");
+			vo.setUserEmail(userVO.getUserEmail());
+			result = userMapper.updateUserPwByUserEmail(vo);
+		}
+		return result;
 	}
 
 	@Override
 	public int checkUserByUserId(String userId) {
 		return userMapper.checkUserByUserId(userId);
-	}
-
-	@Override
-	public int checkUserByUserIdUserEmail(UserVO userVO) {
-		return userMapper.checkUserByUserIdUserEmail(userVO);
 	}
 	
 }
