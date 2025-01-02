@@ -47,9 +47,10 @@
 				function sendCodeMail() {
 					let userId = $('#userId').val();
 					let userEmail = $('#email').val();
+					let emailType = '비밀번호';
 					
 					$.ajax({
-						url : '../email/send/pwCode',
+						url : '../email/send/searchCode/' + emailType,
 						type : 'post',
 						headers : {
 							"Content-Type" : "application/json"
@@ -93,7 +94,7 @@
 							alert(response.message);
 							//location.href();
 						}
-					})
+					});
 				}
 				
 				// 비밀번호 찾기 버튼 액션

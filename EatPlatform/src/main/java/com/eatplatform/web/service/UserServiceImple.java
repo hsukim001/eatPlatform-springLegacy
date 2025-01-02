@@ -118,5 +118,18 @@ public class UserServiceImple implements UserService{
 	public int checkUserByUserId(String userId) {
 		return userMapper.checkUserByUserId(userId);
 	}
+
+	@Override
+	public String searchUserId(String userEmail) {
+		UserVO vo = userMapper.selectUserIdByUserEmail(userEmail);
+		String userId = vo.getUserId();
+		int index = userId.length() - 2;
+		log.info(index);
+		String chUserId = userId.substring(0, 2);
+		for(int i = 0; i < index; i++) {
+			chUserId += "*";
+		}
+		return chUserId;
+	}
 	
 }

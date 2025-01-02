@@ -14,4 +14,6 @@ public interface UserService {
 	int modifyUserPw(UserVO userVO);
 	
 	int checkUserByUserId(String userId);
+	
+	String searchUserId(String userEmail);
 }
