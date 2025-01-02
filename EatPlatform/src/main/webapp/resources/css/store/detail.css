@@ -270,11 +270,22 @@
 
 #reviewContainer p {
 	width: 100%;
+	display: flex;
+	justify-content: space-between;
 	margin-bottom: 20px;
 	padding-bottom: 10px;
 	font-size: 22px;
 	border-bottom: 1px solid #ddd;
 	text-align: left;	
+}
+
+#reviewBtn {
+	background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: #1b47b3;
+    font-weight: bold;
 }
 
 #reviewWrite {
@@ -307,12 +318,14 @@
 }
 
 #scoreWrap span {
-    display: flex;
     align-items: center;
-    margin: 0 10px;
     font-size: 18px;
     font-weight: bold;
     color: #1b32c7;
+}
+
+.scoreText {
+	margin: 0 10px;
 }
 
 #tagSelect {
@@ -372,6 +385,27 @@
 	background: #1b47b3;
 	color: #fff;
 	font-weight: bold;
+}
+
+#viewTag {
+	width: 100%;
+	display: inline-block;
+	margin: 10px auto;
+}
+
+#viewTag li {
+	display: inline-flex;
+	align-items: center;
+	border-radius: 25px;
+    border: 1px solid #ddd;
+    padding: 1px 10px;
+    margin: 0 2.5px;
+    font-size: 12px;
+}
+
+#viewTag li img {
+	width: 30px;
+	margin-right: 5px;
 }
 
 /* Report Modal */

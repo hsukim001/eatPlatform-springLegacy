@@ -1,6 +1,7 @@
 		$(document).ready(function(){
 			var pageNumber = 1;  // 페이지 번호
             var pageSize = 5;  // 한 번에 가져올 리뷰의 개수
+            const contextPath = "<%=request.getContextPath()%>/resources/img/sample3bk.png";
 			getAllReview();
 			
 			// 리뷰 등록
@@ -36,7 +37,12 @@
 						console.log(result);
 						if(result == 1) {
 							alert('리뷰 등록 성공');
-							$("#reviewStar").text("0 / 5");
+							$("#reviewStar").text("0");
+							$("#reviewContent").val("");
+							$("#reviewTag").val("");
+							$("#scoreWrap img").attr('src', '/web/resources/img/sample3bk.png');
+							$("#viewTag").empty();
+							$("#tagList li").removeClass("tagActive");
 							getAllReview();
 						} else {
 							alert('리뷰 등록에 실패했습니다.');

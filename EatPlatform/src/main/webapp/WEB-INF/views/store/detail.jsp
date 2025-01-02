@@ -37,7 +37,7 @@
 			        }
 			    }); // End #scoreWrap img.each 
 
-			    $(this).siblings('.scoreNum').text(currentScore + " / 5 점");
+			    $(this).siblings('.scoreText').find('#reviewStar').text(currentScore);
 			}); // End #scoreWrap img.click
 			
 			const tagData = [
@@ -73,14 +73,17 @@
 			}); // End .tagBtn.click
 			
 			
-			$("#tagList li").click(function(){
-				$(this).toggleClass('tagActive');
-				
-				const tagId = $(this).data('tag-id'); 
-			    const tag = tagData.find(tag => tag.icon === tagId);
+		    $("#tagList li").click(function () {
+		        $(this).toggleClass("tagActive");
 
-				
-		        if ($(this).hasClass('tagActive')) {
+		        const tagId = $(this).data("tag-id")
+		        const tag = tagData.find(tag => tag.icon === tagId); 
+		        let currentTags = $("#reviewTag").val().split(",").filter(Boolean); 
+
+		        if ($(this).hasClass("tagActive")) {
+		            if (!currentTags.includes(String(tagId))) {
+		                currentTags.push(tagId);
+		            }
 		            const tagItem =
 		                '<li data-sticker-id=' + tag.icon + '>' +
 		                	'<img src="<%=request.getContextPath()%>/resources/img/store/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
@@ -88,16 +91,28 @@
 		                '</li>';
 		            tagContainer.append(tagItem);
 		        } else {
-		            $('#viewTag li').each(function() {
-		                const stickerId = $(this).data('sticker-id');  // #viewTag 내 각 li에서 data-tag-id를 가져옵니다.
+		           $('#viewTag li').each(function() {
+		                const stickerId = $(this).data('sticker-id'); 
 		                if (stickerId === tagId) {
-		                    $(this).remove();  // 해당 li를 삭제합니다.
+		                    $(this).remove();
 		                }
 		            });
 		        }
-			}); // End #tagList li.click
-			
-			
+		        $("#reviewTag").val(currentTags.join(","));
+		        
+
+		        let tags = $("#reviewTag").val().split(",").filter(Boolean).map(Number);
+		        tags.sort((a, b) => a - b);
+
+		        $("#reviewTag").val(tags.join(","));
+		        console.log($("#reviewTag").val());
+		    }); // End #tagList li.click
+
+		    $("#reviewWrite").hide();
+		    
+		    $("#reviewBtn").click(function(){
+		    	$("#reviewWrite").slideToggle('300');
+		    });		
 		}); // End $function
 	</script>
 
@@ -166,7 +181,8 @@
 					    <c:if test="${empty storeVO.description}">
 					        <pre class="descriptionContent">작성된 소개글이 없습니다.</pre>
 					    </c:if>
-					    <c:if test="${not empty storeVO.description}">
+					   
+				    	<c:if test="${not empty storeVO.description}">
 					        <pre class="descriptionContent">${storeVO.description }</pre>
 					    </c:if>
 					</div>
@@ -174,6 +190,9 @@
 					
 					<div id="menuContainer">
 						<ul class="width100">
+						    <c:if test="${empty menuVO}">
+					        	<pre class="descriptionContent">등록된 메뉴가 없습니다.</pre>
+					   		</c:if>
 							<c:forEach var="menu" items="${menuVO}" varStatus="status">
 								<li>
 									<img src="<%=request.getContextPath()%>/resources/img/sample3.png" alt="메뉴사진 ${status.index + 1 }">
@@ -187,7 +206,11 @@
 					<!--  End MenuConteiner -->
 					
 					<div id="reviewContainer">
-						<p>리뷰 (???)</p>
+						<p>
+							리뷰 (???)
+							<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
+						</p>
+						
 						<input type="hidden" id="storeId" value="${storeVO.storeId }">
 						<input type="hidden" id="userId" value="${sessionScope.userId }" readonly >
 						<div id="reviewWrite">
@@ -197,7 +220,11 @@
 								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="3">
 								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="4">
 								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="5">
-								<span id="reviewStar" class="scoreNum">0 / 5 점</span>
+							
+								<div class="scoreText">
+									<span id="reviewStar">0 </span>
+									<span class="scoreNum"> / 5 점</span>
+								</div>
 							</div>
 							<div id="tagSelect">
 								<div class="tagBtn">
@@ -207,9 +234,7 @@
 							</div>
 							<ul id="viewTag"></ul>
 							
-							<!-- <input type="text" id="reviewTag" placeholder="태그">  -->
-							<br>
-							<br>
+							<input type="hidden" id="reviewTag" placeholder="태그">
 					        <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>								<button id="btnAdd">작성</button>
 						</div>
 							<div style="text-align: center;">
