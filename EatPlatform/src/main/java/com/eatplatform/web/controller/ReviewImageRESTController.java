@@ -26,7 +26,7 @@ import com.eatplatform.web.util.FileUploadUtil;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping(value = "/image")
+@RequestMapping(value = "/page/test")
 @Log4j
 public class ReviewImageRESTController {
 	
