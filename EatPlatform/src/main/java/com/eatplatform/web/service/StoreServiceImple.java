@@ -38,19 +38,20 @@ public class StoreServiceImple implements StoreService {
 		return storeMapper.selectStoreById(storeId);
 	}
 	
-	public List<StoreVO> getStoresWithPaging(int pageNum, int pageSize) {
+	public List<StoreVO> getStoresWithPaging(int pageNum, int pageSize, String keyword) {
 	    int startRow = (pageNum - 1) * pageSize + 1; 
 	    int endRow = pageNum * pageSize;
 
-	    Map<String, Integer> params = new HashMap<>();
+	    Map<String, Object> params = new HashMap<>();
 	    params.put("startRow", startRow);
 	    params.put("endRow", endRow);
-	    log.info("Start Row: " + startRow + ", End Row: " + endRow);
+	    params.put("keyword", keyword); 
+	    log.info("Start Row: " + startRow + ", End Row: " + endRow + ", Keyword: " + keyword);	    
 	    return storeMapper.getStoresWithPaging(params); 
 	}
 
-	public int getTotalStoresCount() {
-	    return storeMapper.getTotalStoresCount(); 
+	public int getTotalStoresCount(String keyword) {
+	    return storeMapper.getTotalStoresCount(keyword); 
 	}
 
 

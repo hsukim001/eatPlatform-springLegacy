@@ -60,21 +60,22 @@ public class StoreController {
 	}
 
 	@GetMapping("/list")
-	public String getStoresWithPaging(@RequestParam(defaultValue = "1") int pageNum, Model model) {
+	public String getStoresWithPaging(@RequestParam(defaultValue = "1") int pageNum,
+															@RequestParam(value = "keyword", required = false) String keyword,
+															Model model) {
 		if (pageNum <= 0) {
 			pageNum = 1;
 		}
 		log.info("Current Page Number: " + pageNum);
 		int pageSize = 6;
-		List<StoreVO> stores = storeService.getStoresWithPaging(pageNum, pageSize);
-		List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize);
-		int totalStoresCount = storeService.getTotalStoresCount();
+		List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keyword);
+		int totalStoresCount = storeService.getTotalStoresCount(keyword);
 		int totalPages = (int) Math.ceil((double) totalStoresCount / pageSize);
 
-		model.addAttribute("stores", stores);
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("currentPage", pageNum);
 		model.addAttribute("recentStores", recentStores);
+		model.addAttribute("keyword", keyword);
 		log.info(recentStores);
 
 		return "/store/list";
@@ -125,6 +126,7 @@ public class StoreController {
 	@PostMapping("/modify")
 	public String modify(@ModelAttribute StoreVO storeVO, Model model) {
 		log.info("modify()");
+		log.info(storeVO);
 			int result = storeService.modifyStore(storeVO);
 			if (result == 1) {
 				log.info("가게 수정 성공");

@@ -53,6 +53,7 @@ header {
     height: 50px;
     border: 1px solid #aaa;
     border-radius: 50px;
+    outline: none;
     padding: 0 60px 0 20px;
     box-sizing: border-box;
     background: url('../img/common/sch_btn.png') no-repeat right 10px center;

@@ -60,8 +60,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM (
 		SELECT
 		store.*, ROW_NUMBER() OVER (ORDER BY STORE_REG_DATE DESC) AS RN
-		FROM
-		STORE store
+		FROM STORE store
+		LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND (
+				REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+				OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
+				', '') || '%'
+				OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
+				', '') || '%'
+				OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
+				'') || '%'
+				OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
+				'') || '%'
+				OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
+				'') || '%'
+				)
+			</if>
+		</where>
 		)
 		WHERE RN &gt;= #{startRow} AND RN &lt;= #{endRow}
 	</select>
@@ -70,7 +87,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getTotalStoresCount" resultType="int">
 		SELECT COUNT(*)
 		FROM
-		STORE
+		STORE store
+		LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND (
+				REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+				OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
+				', '') || '%'
+				OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
+				', '') || '%'
+				OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
+				'') || '%'
+				OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
+				'') || '%'
+				OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
+				'') || '%'
+				)
+			</if>
+		</where>
 	</select>
 
 	<select id="getUserIdByStoreId" parameterType="int"
@@ -110,5 +145,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		STORE_UPDATE_DATE = CURRENT_TIMESTAMP
 		WHERE STORE_ID = #{storeId}
 	</update>
-	
+
 </mapper>

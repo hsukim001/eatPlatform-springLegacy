@@ -23,9 +23,9 @@ public interface StoreMapper {
 	String getUserIdByStoreId(@Param("storeId") int storeId);
 	
 	//  List Pagination
-	List<StoreVO> getStoresWithPaging(Map<String, Integer> params);
+	List<StoreVO> getStoresWithPaging(Map<String, Object> params);
 	
-	int getTotalStoresCount();
+	int getTotalStoresCount(String keyword);
 
 	int updateStore(StoreVO storeVO);
 }

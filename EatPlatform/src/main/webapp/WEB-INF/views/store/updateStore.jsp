@@ -50,7 +50,8 @@
     <h2>여기는 수정 페이지입니다.</h2>
     <form action="modify" method="POST">
         <input type="hidden" value="${storeVO.userId }" id="userId" name="userId"> 
-        <input type="hidden" value="${param.storeId }" id="storeId" name="storeId"> 
+        <input type="hidden" value="${param.storeId }" id="storeId" name="storeId">
+    	<input type="hidden" id="businessHour" name="businessHour">  
         
         <input type="hidden" id="hiddenFoodCategory" name="foodCategory">
         <p>${param.storeId }</p>
