@@ -5,7 +5,6 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>아이디 찾기</title>
-		
 		<style>
 			.divHide {
 				display : none;
@@ -19,8 +18,6 @@
 		<script src="<%=request.getContextPath()%>/resources/js/mail/searchUser.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
-				
-				
 				function searchId(){
 					$.ajax({
 						url : 'search/id/' + email + '/',
@@ -69,5 +66,6 @@
 			<button id="searchBtn">찾기</button>
 			<button id="cancelBtn">취소</button>
 		</div>
+		<input type="hidden" id="mailType" name="mailType" value="아이디">
 	</body>
 </html>

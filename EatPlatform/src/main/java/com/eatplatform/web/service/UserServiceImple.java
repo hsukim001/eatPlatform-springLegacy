@@ -34,12 +34,8 @@ public class UserServiceImple implements UserService{
 		String encodePassword = passwordEncoder.encode(password);
 		log.info("암호화 후 : " + encodePassword);
 		
-		// 휴대폰 번호 식별번호 수정
-		String phoneNum = "010-" + userVO.getUserPhone();
-		
 		UserVO vo = userVO;
 		vo.setUserPw(encodePassword);
-		vo.setUserPhone(phoneNum);
 		
 		// 회원 가입 유형의 따른 권한 설정
 		// 1 : 일반 회원
@@ -76,16 +72,16 @@ public class UserServiceImple implements UserService{
 	@Override
 	public int login(String userId, String userPw) {
 		log.info("login()");
-		UserVO vo = userMapper.selectUserPwByUserId(userId);
-		String encodePw = vo.getUserPw();
-		log.info(encodePw);
-		
-		boolean isMatcher = false;
-		int result = 0;
-		if(isMatcher = passwordEncoder.matches(userPw, encodePw)) {
-			result = 1; 
+		int result = userMapper.checkUserByUserId(userId);
+		UserVO vo = new UserVO();
+		if(result == 1) {
+			vo = userMapper.selectUserByUserId(userId);
+			String encodePw = vo.getUserPw();
+			
+			if(!passwordEncoder.matches(userPw, encodePw)) {
+				result = 0;
+			}
 		}
-		log.info(isMatcher);
 		
 		return result;
 	}
@@ -114,11 +110,13 @@ public class UserServiceImple implements UserService{
 		return result;
 	}
 
+	// 사용자 확인
 	@Override
 	public int checkUserByUserId(String userId) {
 		return userMapper.checkUserByUserId(userId);
 	}
 
+	// 아이디 찾기
 	@Override
 	public String searchUserId(String userEmail) {
 		UserVO vo = userMapper.selectUserIdByUserEmail(userEmail);
@@ -130,6 +128,16 @@ public class UserServiceImple implements UserService{
 			chUserId += "*";
 		}
 		return chUserId;
+	}
+
+	// 회원 삭제
+	@Override
+	public int deleteUser(char status, String userId) {
+		log.info("deleteUser()");
+		UserVO vo = new UserVO();
+		vo.setUserActiveYn(status);
+		vo.setUserId(userId);
+		return userMapper.updateActiveYnByUserId(vo);
 	}
 	
 }

@@ -69,10 +69,13 @@ public class UserController {
 	
 	// 회원 정보 수정
 	@PostMapping("/modify")
-	public String modify(UserVO userVO) {
+	public String modify(UserVO userVO, HttpServletRequest request) {
 		log.info("modify()");
 		UserVO vo = userVO;
-		vo.setUserId("user"); // session userId (추후 변경)
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		vo.setUserId(userId);
+		log.info(vo);
 		int result = userService.modifyUser(vo);
 		
 		if(result == 1) {

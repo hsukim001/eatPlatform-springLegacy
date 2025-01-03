@@ -9,15 +9,18 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.service.UserService;
+import com.eatplatform.web.util.ResultMsgResponse;
 
 import lombok.extern.log4j.Log4j;
 
@@ -29,6 +32,18 @@ public class UserRESTController {
 	@Autowired
 	private UserService userService;
 	
+	// 회원 상세 정보 조회
+	@GetMapping("/info")
+	public ResponseEntity<UserVO> searchUserInfo(HttpServletRequest request) {
+		log.info("searchUserInfo()");
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		UserVO vo = userService.searchUser(userId);
+		
+		return new ResponseEntity<UserVO>(vo, HttpStatus.OK);
+	}
+	
+	// 아이디 확인
 	@GetMapping("/check/{userId}")
 	public ResponseEntity<Integer> checkUserByUserId(@PathVariable("userId") String userId) {
 		log.info("checkUserByUserId()");
@@ -38,6 +53,7 @@ public class UserRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
+	// 비밀번호 수정
 	@PostMapping("/modify/password")
 	public ResponseEntity<Map<String, String>> modifyUserPw(@RequestBody UserVO userVO, HttpServletRequest request) {
 		log.info("modifyUserPw()");
@@ -66,11 +82,34 @@ public class UserRESTController {
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 	}
 	
+	// 아이디 찾기
 	@GetMapping("/search/id/{email}/")
 	public ResponseEntity<String> searchId(@PathVariable("email") String email) {
 		log.info("searchId()");
 		String userId = userService.searchUserId(email);
 		return new ResponseEntity<String>(userId, HttpStatus.OK);
+	}
+	
+	// 회원 삭제
+	@PutMapping ("/delete/{status}")
+	public ResponseEntity<ResultMsgResponse> deleteUser(@PathVariable("status") char status, HttpServletRequest request) {
+		log.info("deleteUser()");
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		
+		int result = userService.deleteUser(status, userId);
+		String msg = "";
+		
+		if(result == 1) {
+			msg = "회원 탈퇴가 완료되었습니다.";
+		} else {
+			msg = "회원 탈퇴에 실패하였습니다.";
+		}
+		
+		ResultMsgResponse response = new ResultMsgResponse(result, msg);
+		
+		session.invalidate();
+		return new ResponseEntity<ResultMsgResponse>(response, HttpStatus.OK);
 	}
 	
 }

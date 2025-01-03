@@ -24,7 +24,7 @@
 	<div>
 		<button type="button" id="searchId" onclick="location.href='../user/searchId'">아이디 찾기</button>
 		<button type="button" id="searchPw" onclick="location.href='../user/searchPw'">비밀번호 찾기</button>
-		<button type="button" id="createdMember">회원가입</button>	
+		<button type="button" id="createdMember" onclick="location.href='../user/flag'">회원가입</button>	
 	</div>
 </body>
 </html>

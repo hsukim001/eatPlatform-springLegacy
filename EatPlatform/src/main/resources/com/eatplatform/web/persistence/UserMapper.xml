@@ -22,11 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectUserByUserId" resultMap="userResultMap">
 		SELECT * FROM USER_LIST 
 		WHERE USER_ID = #{userId}
-	</select>
-	
-	<select id="selectUserPwByUserId" resultMap="userResultMap">
-		SELECT USER_PW FROM USER_LIST
-		WHERE USER_ID = #{userId}
+		AND USER_ACTIVE_YN = 'Y'
 	</select>
 	
 	<select id="selectUserIdByUserEmail" resultMap="userResultMap">
@@ -61,6 +57,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 	
+	<update id="updateActiveYnByUserId">
+		UPDATE USER_LIST
+		SET USER_ACTIVE_YN = #{userActiveYn}
+		WHERE USER_ID = #{userId}
+	</update>
+	
 	<update id="updateUser">
 		UPDATE USER_LIST 
 		SET USER_EMAIL = #{userEmail},
@@ -91,5 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM USER_LIST
 		WHERE USER_ID = #{userId}
 	</select>
+	
+	<select id=""></select>
 
 </mapper>

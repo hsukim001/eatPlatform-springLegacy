@@ -17,6 +17,11 @@
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
+	const autoHyphen = (target) => {
+		target.value = target.value
+			.replace(/[^0-9]/g, '')
+			.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+	}
 
 	$(document).ready(function() {
 		let isUserId = false;
@@ -29,7 +34,7 @@
 		
 		let emailAddressChk;
 		
-		let userIdPattern = /^(?=.*[a-zA-Z])[a-zA-Z0-9]+$/;
+		let userIdPattern = /^(?=.*[a-zA-Z])[a-zA-Z0-9]{5,}$/;
 		
 		// 사용자 계정 확인 버튼 이벤트
 		$("#userChk").click(function(){
@@ -46,18 +51,19 @@
 			let pwPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)[a-zA-Z\d!@#$%^&*]{8,}$/;
 			
 			// 비밀번호, 비밀번호 확인 input 일치 확인
-			if($('#userPw').val() == $("#userPwChk").val()) {
+			if($('#userPw').val() === "" && $('#userPwChk').val() === "") {
+				$('#pwChkMsg').text("비밀번호를 입력해 주세요.");
+				isUserPw = false;
+			} else if($('#userPw').val() == $("#userPwChk").val()) {
 				$('#pwChkMsg').text("비밀번호가 일치 합니다.");
 				isUserPw = true;
 			} else if($("#userPw").val() != $("#userPwChk").val()) {
 				$('#pwChkMsg').text("비밀번호가 일치 하지않습니다.")
 				isUserPw = false;
-			} else if($('#userPw').val() === "" || $('#userPwChk').val() === "") {
-				$('#pwChkMsg').text("비밀번호를 입력해 주세요.");
 			}
 			
 			// 비밀번호, 비밀번호 확인 input 영문대소문자, 특수문자, 비밀번호 최소 길이 확인
-			if(pwPattern.test($('#userPw').val()) == false || pwPattern.test($('#userPwChk').val()) == false) {
+			if(pwPattern.test($('#userPw').val()) == false && $('#userPw').val() !== "") {
 				$("#pwChkMsg").text("비밀번호는 8자 이상, 영문대소문자, 특수문자(!@#$%^&*) 각 한개 이상 포함하여 작성해야 합니다.");
 				isUserPw = false;
 			}
@@ -74,7 +80,7 @@
 					$('#userIdChkMsg').text('아이디 입력이 완료되었습니다.');
 					userCheck();
 				} else {
-					$('#userIdChkMsg').text('아이디에는 특수문자를 작성할수 없습니다.');
+					$('#userIdChkMsg').text('아이디에는 특수문자를 작성할수 없으며 5글자 이상 작성해야 합니다.');
 				}
 			}
 		});
@@ -102,9 +108,7 @@
 		}
 		
 		// 계정 생성전 아이디,비밀번호 확인 및 이메일 인증 확인
-		function createdUser() {
-			let phonePattern = /^\d{3,4}-\d{4}$/;
-			
+		function createdUser() {			
 			if(isUserId == false || isUserPw == false) {
 				if(!isUserId) {
 					alert("아이디 중복 체크를 다시 해주세요.");
@@ -115,9 +119,6 @@
 				}
 			} else if(authStatus != 0) {
 				alert("이메일인증이 완료되지 않았습니다.");
-				event.preventDefault();
-			} else if(phonePattern.test($('#userPhone').val()) == false) {
-				alert("휴대전화 번호를 올바르게 입력해주세요.");
 				event.preventDefault();
 			}
 		}
@@ -238,7 +239,7 @@
 	<form action="register?flagNum=${flagNum }" method="post">
 		<div>
 			<span>아이디 : </span>
-			<input type="text" name="userId" id="userId" required="required" maxlength="50">
+			<input type="text" name="userId" id="userId" required="required" maxlength="30">
 			<button type="button" id="userChk">중복 확인</button><br>
 			<p id="userIdChkMsg">아이디를 입력해 주세요.</p>
 		</div>
@@ -269,8 +270,7 @@
 		</div>
 		<div>
 			<span>휴대폰 : </span>
-			<input type="text" id="phoneId" value="010" disabled="disabled">
-			<input type="tel" id="userPhone" name="userPhone" required="required">
+			<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" maxlength="13">
 		</div>
 		<div></div>
 		<div>

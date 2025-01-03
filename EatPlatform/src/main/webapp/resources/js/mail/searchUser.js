@@ -33,9 +33,16 @@ let authStatus;
 				
 	// 인증번호 발급
 	function sendCodeMail() {
+		isChkCode = false;
+		let userId;
+		if($('#userId').length > 0) {
+			userId = $('#userId').val();
+		} else {
+			userId = '';
+		}
 		let userEmail = $('#email').val();
-		let emailType = '아이디';
-					
+		let emailType = $('#mailType').val();
+							
 		$.ajax({
 			url : '../email/send/searchCode/' + emailType,
 			type : 'post',
@@ -43,6 +50,7 @@ let authStatus;
 				"Content-Type" : "application/json"
 			},
 			data : JSON.stringify({
+				"userId" : userId,
 				"userEmail" : userEmail
 			}),
 			success : function(response) {
@@ -74,11 +82,12 @@ let authStatus;
 			success : function(response){
 				if(response.status == 0) {
 					isChkCode = true;
+					$('#chkCode').prop('disabled', true);
+					$('#chkCodeBtn').prop('disabled', true);
 				} else {
 					isChkCode = false;
 				}
 				alert(response.message);
-				//location.href();
 			}
 		});
 	}

@@ -10,11 +10,11 @@ public interface UserMapper {
 	int insertUser(UserVO userVO);
 	int updateUser(UserVO userVO);
 	int deleteUser(String userId);
-	UserVO selectUserPwByUserId(String userId);
 	int updateUserPwByUserId(UserVO userVO);
 	int updateUserPwByUserEmail(UserVO userVO);
 	int checkUserByUserId(String userId);
 	int checkUserByUserEmail(String userEmail);
 	int checkUserByUserIdUserEmail(UserVO userVO);
 	UserVO selectUserIdByUserEmail(String userEmail);
+	int updateActiveYnByUserId(UserVO userVO);
 }
