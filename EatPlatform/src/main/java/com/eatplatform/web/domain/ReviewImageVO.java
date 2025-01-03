@@ -1,6 +1,6 @@
 package com.eatplatform.web.domain;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,5 +18,6 @@ public class ReviewImageVO {
 	private String reviewImageRealName;
 	private String reviewImageChgName;
 	private String reviewImageExtension;
-	private MultipartFile file;
+	private Date reviewImageDate;
+
 }

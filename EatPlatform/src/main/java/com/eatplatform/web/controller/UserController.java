@@ -106,4 +106,10 @@ public class UserController {
 		model.addAttribute("userEmail", userEmail);
 	}
 	
+	// 아이디 찾기 화면 호출
+	@GetMapping("/searchId")
+	public void searchId() {
+		log.info("searchId()");
+	}
+	
 }

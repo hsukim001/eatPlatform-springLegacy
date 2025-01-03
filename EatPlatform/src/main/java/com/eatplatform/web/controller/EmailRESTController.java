@@ -42,12 +42,12 @@ public class EmailRESTController {
 		return new ResponseEntity<EmailVO>(vo, HttpStatus.OK);
 	}
 	
-	// 비밀번호 찾기
-	@PostMapping("/send/pwCode")
-	public ResponseEntity<EmailVO> sendSearchPassword(@RequestBody UserVO userVO) {
-		log.info("sendSearchPassword()");
+	// 아이디, 비밀번호 찾기
+	@PostMapping("/send/searchCode/{mailType}")
+	public ResponseEntity<EmailVO> sendSearchUser(@RequestBody UserVO userVO, @PathVariable("mailType") String mailType) {
+		log.info("sendSearchUser()");
 		
-		EmailVO vo = emailService.sendSearchPassword(userVO);
+		EmailVO vo = emailService.sendSearchUser(userVO, mailType);
 		return new ResponseEntity<EmailVO>(vo, HttpStatus.OK);
 	}
 	

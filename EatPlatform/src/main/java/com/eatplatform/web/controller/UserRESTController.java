@@ -66,4 +66,11 @@ public class UserRESTController {
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 	}
 	
+	@GetMapping("/search/id/{email}/")
+	public ResponseEntity<String> searchId(@PathVariable("email") String email) {
+		log.info("searchId()");
+		String userId = userService.searchUserId(email);
+		return new ResponseEntity<String>(userId, HttpStatus.OK);
+	}
+	
 }

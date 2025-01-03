@@ -2,9 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- css 파일 불러오기 -->
+<link rel="stylesheet" th:href="@{/css/image.css}">
 <title>리뷰</title>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js">
@@ -18,11 +21,6 @@
 		<input type="text" id="userId" value="${sessionScope.userId }" readonly >
 		<input type="number" id="reviewStar" placeholder="별점" min="1" max="5">
 		<input type="text" id="reviewTag" placeholder="태그">
-		<h2>단일 파일 업로드</h2>
-   		<form action="image/upload" method="post" enctype="multipart/form-data">
-      	<input type="file" name="file">
-      	<input type="submit" value="업로드">
-  		</form>
 		<br>
 		<br>
         <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>
