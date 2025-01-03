@@ -16,6 +16,11 @@
                     alert("모든 항목을 입력해주세요.");
                     return;
                 }
+                
+                if (!userId) {
+                	alert("리뷰는 로그인 후 작성 가능합니다.");
+                	return;
+                }
 				
 				var obj = {
 						'storeId' : storeId,
