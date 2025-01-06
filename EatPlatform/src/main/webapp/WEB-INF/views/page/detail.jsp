@@ -2,12 +2,12 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <meta charset="UTF-8">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- css 파일 불러오기 -->
-<link rel="stylesheet" th:href="@{/css/image.css}">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
 <title>리뷰</title>
 
 <script src="https://code.jquery.com/jquery-3.7.1.js">
@@ -15,10 +15,10 @@
 </head>
 <body>
 	
-	<input type="hidden" id="storeId" value="38">
+	<input type="hidden" id="storeId" value="1">
 	
 	<div style="text-align: center;">
-		<input type="text" id="userId" value="${sessionScope.userId }" readonly >
+		<input type="text" id="userId" value="test21" readonly >
 		<input type="number" id="reviewStar" placeholder="별점" min="1" max="5">
 		<input type="text" id="reviewTag" placeholder="태그">
 		<br>
@@ -26,6 +26,20 @@
         <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>
 		<button id="btnAdd">작성</button>
 	</div>
+	
+	<div class="image-upload">
+      <h2>이미지 파일 업로드</h2>
+      <p>* 이미지 파일은 최대 3개까지 가능합니다.</p>
+      <p>* 최대 용량은 10MB 입니다.</p>
+      <div class="image-drop"></div>
+      <h2>선택한 이미지 파일 :</h2>
+      <div class="image-list"></div>
+   	</div>
+   	
+   	<div class="reviewImg-list">
+    </div>
+   
+   	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 
 	<hr>
 	<div style="text-align: center;">
@@ -91,6 +105,44 @@
 				        }
 				    }
 				});
+				
+				var formData = new FormData;
+				
+				// reviewImg-list의 각 input 태그 접근
+	            var i = 0;
+	            $('.reviewImg-list input[name="reviewImageVO"]').each(function(){
+	               console.log(this);
+	               // JSON reviewImageVO 데이터를 object 변경
+	               var reviewImageVO = JSON.parse($(this).val());
+	               // reviewImagePath input 생성
+	               var inputPath = $('<input>').attr('type', 'hidden')
+	                     .attr('name', 'reviewImageList[' + i + '].reviewImagePath');
+	               inputPath.val(reviewImageVO.reviewImagePath);
+	               
+	               // reviewImageRealName input 생성
+	               var inputRealName = $('<input>').attr('type', 'hidden')
+	                     .attr('name', 'reviewImageList[' + i + '].reviewImageRealName');
+	               inputRealName.val(reviewImageVO.reviewImageRealName);
+	               
+	               // reviewImageChgName input 생성
+	               var inputChgName = $('<input>').attr('type', 'hidden')
+	                     .attr('name', 'reviewImageList[' + i + '].reviewImageChgName');
+	               inputChgName.val(reviewImageVO.reviewImageChgName);
+	               
+	               // reviewImageExtension input 생성
+	               var inputExtension = $('<input>').attr('type', 'hidden')
+	                     .attr('name', 'reviewImageList[' + i + '].reviewImageExtension');
+	               inputExtension.val(reviewImageVO.reviewImageExtension);
+	               
+	               // form에 태그 추가
+	               formData.append(reviewImagePath, inputPath);
+	               formData.append(reviewImageRealName, inputRealName);
+	               formData.append(reviewImageChgName, inputChgName);
+	               formData.append(reviewImageExtension, inputExtension);
+	               
+	               i++;
+	            });
+	            
 			}); // end btnAdd.click()
 			
 			// 식당 리뷰 전체 가져오기

@@ -24,14 +24,5 @@ public class ReviewVO {
 	private Date reviewDate;
 	private int reviewLike;
 	private int reviewReport;
-	
-	private List<ReviewImageVO> reviewImageList;
-	
-	public List<ReviewImageVO> getReviewImageList() {
-		if(reviewImageList == null) {
-			reviewImageList = new ArrayList<ReviewImageVO>();
-		}
-		return reviewImageList;
-	}
 
 }

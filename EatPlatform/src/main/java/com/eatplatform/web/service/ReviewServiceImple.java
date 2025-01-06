@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.persistence.ReplyMapper;
+import com.eatplatform.web.persistence.ReviewImageMapper;
 import com.eatplatform.web.persistence.ReviewLikeListMapper;
 import com.eatplatform.web.persistence.ReviewMapper;
 
@@ -25,6 +27,9 @@ public class ReviewServiceImple implements ReviewService{
 	
 	@Autowired
 	private ReviewLikeListMapper reviewLikeListMapper;
+	
+	@Autowired 
+	private ReviewImageMapper reviewImageMapper;
 	
 	@Override
 	public int createReview(ReviewVO reviewVO) {

@@ -47,7 +47,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		console.log('drop 테스트');
 		
-		$('.attachDTOImg-list').empty(); // 기존 이미지 dto 초기화
+		$('.reviewImg-list').empty(); // 기존 이미지 dto 초기화
 						
 		// 드래그한 파일 정보를 갖고 있는 객체
 		var files = event.originalEvent.dataTransfer.files;
@@ -77,39 +77,40 @@ $(document).ready(function(){
 				$(data).each(function(){
 					// this : 컬렉션의 각 인덱스 데이터를 의미
 					console.log(this);
-				  	var attachDTO = this; // attachDTO 저장
+				  	var reviewImageVO = this; // reviewImageVO 저장
 				  	// encodeURIComponent() : 문자열에 포함된 특수 기호를 UTF-8로 
 				  	// 인코딩하여 이스케이프시퀀스로 변경하는 함수 
-					var attachPath = encodeURIComponent(this.attachPath);
+					var reviewImagePath = encodeURIComponent(this.reviewImagePath);
 					
 					// input 태그 생성 
 					// - type = hidden
-					// - name = attachDTO
-					// - data-chgName = attachtDTO.attachChgName
+					// - name = reviewImageVO
+					// - data-chgName = reviweImageVO.reviewImageChgName
 					var input = $('<input>').attr('type', 'hidden')
-						.attr('name', 'attachDTO')
-						.attr('data-chgName', attachDTO.attachChgName);
+						.attr('name', 'reviewImageVO')
+						.attr('data-chgName', reviewImageVO.reviewImageChgName);
 					
-					// attachDTO를 JSON 데이터로 변경
+					// reviewImageVO를 JSON 데이터로 변경
 					// - object 형태는 데이터 인식 불가능
-					input.val(JSON.stringify(attachDTO));
+					input.val(JSON.stringify(reviewImageVO));
 					
 		       		// div에 input 태그 추가
-		        	$('.attachDTOImg-list').append(input);
+		        	$('.reviewImg-list').append(input);
 				  	
 				    // display() 메서드에서 이미지 호출을 위한 문자열 구성
-				    list += '<div class="image_item" data-chgName="'+ this.attachChgName +'">'
+				    list += '<div class="image_item" data-chgName="'+ this.reviewImageChgName +'">'
 				    	+ '<pre>'
-				    	+ '<input type="hidden" id="attachPath" value="'+ this.attachPath +'">'
-				    	+ '<input type="hidden" id="attachChgName" value="'+ attachDTO.attachChgName +'">'
-				    	+ '<input type="hidden" id="attachExtension" value="'+ attachDTO.attachExtension +'">'
-				        + '<a href="../image/display?attachPath=' + attachPath + '&attachChgName='
-				        + attachDTO.attachChgName + "&attachExtension=" + attachDTO.attachExtension
+				    	+ '<input type="hidden" id="reviewImagePath" value="'+ this.reviewImagePath +'">'
+				    	+ '<input type="hidden" id="reviewImageRealName" value="'+ this.reviewRealName +'">'
+				    	+ '<input type="hidden" id="reviewImageChgName" value="'+ reviewImageVO.reviewImageChgName +'">'
+				    	+ '<input type="hidden" id="reviewImageExtension" value="'+ reviewImageVO.reviewImageExtension +'">'
+				        + '<a href="../image/display?reviewImagePath=' + reviewImagePath + '&reviewImageChgName='
+				        + reviewImageVO.reviewImageChgName + "&reviewImageExtension=" + reviewImageVO.reviewImageExtension
 				        + '" target="_blank">'
-				        + '<img width="100px" height="100px" src="../image/display?attachPath=' 
-				        + attachPath + '&attachChgName='
-				        + 't_' + attachDTO.attachChgName 
-				        + "&attachExtension=" + attachDTO.attachExtension
+				        + '<img width="100px" height="100px" src="../image/display?reviewImagePath=' 
+				        + reviewImagePath + '&reviewImageChgName='
+				        + 't_' + reviewImageVO.reviewImageChgName 
+				        + "&reviewImageExtension=" + reviewImageVO.reviewImageExtension
 				        + '" />'
 				        + '</a>'
 				        + '<button class="image_delete" >x</button>'
@@ -131,19 +132,19 @@ $(document).ready(function(){
 		if(!confirm('삭제하시겠습니까?')) {
 			return;
 		}
-		var attachPath = $(this).prevAll('#attachPath').val();
-		var attachChgName = $(this).prevAll('#attachChgName').val();
-		var attachExtension= $(this).prevAll('#attachExtension').val();
-		console.log(attachPath);
+		var reviewImagePath = $(this).prevAll('#reviewImagePath').val();
+		var reviewImageChgName = $(this).prevAll('#reviewImageChgName').val();
+		var reviewImageExtension= $(this).prevAll('#reviewImageExtension').val();
+		console.log(reviewImagePath);
 		
 		// ajax 요청
 		$.ajax({
 			type : 'POST', 
 			url : '../image/delete', 
 			data : {
-				attachPath : attachPath, 
-				attachChgName : attachChgName,
-				attachExtension: attachExtension
+				reviewImagePath : reviewImagePath, 
+				reviewImageChgName : reviewImageChgName,
+				reviewImageExtension: reviewImageExtension
 			}, 
 			success : function(result) {
 				console.log(result);
@@ -151,14 +152,14 @@ $(document).ready(function(){
 					$('.image-list').find('div')
 				    .filter(function() {
 				    	// data-chgName이 선택된 파일 이름과 같은 경우
-				        return $(this).attr('data-chgName') === attachChgName;
+				        return $(this).attr('data-chgName') === reviewImageChgName;
 				    })
 				    .remove();
 				    
-				    $('.attachDTOImg-list').find('input')
+				    $('.reviewImg-list').find('input')
 				    .filter(function() {
 				    	// data-chgName이 삭제 선택된 파일 이름과 같은 경우
-				        return $(this).attr('data-chgName') === attachChgName;
+				        return $(this).attr('data-chgName') === reviewImageChgName;
 				    })
 				    .remove();
 

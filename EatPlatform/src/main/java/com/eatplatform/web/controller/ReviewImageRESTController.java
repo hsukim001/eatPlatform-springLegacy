@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import com.eatplatform.web.util.FileUploadUtil;
 import lombok.extern.log4j.Log4j;
 
 @RestController
-@RequestMapping(value = "/page/test")
+@RequestMapping(value = "/image")
 @Log4j
 public class ReviewImageRESTController {
 	
@@ -35,7 +36,6 @@ public class ReviewImageRESTController {
 	
 	@Autowired
 	private ReviewImageService reviewImageService;
-
 	
 	// 첨부 파일 업로드 처리(POST)
 	@PostMapping
@@ -68,6 +68,8 @@ public class ReviewImageRESTController {
 			
 			list.add(reviewImageVO);
 			
+			int result = reviewImageService.reviewImage(reviewImageVO);
+			
 		}
 		return new ResponseEntity<ArrayList<ReviewImageVO>>(list, HttpStatus.OK);
 		
@@ -82,6 +84,7 @@ public class ReviewImageRESTController {
 		
 		try {
 			// 파일을 읽어와서 byte 배열로 변환
+			log.info(reviewImagePath + reviewImageChgName + reviewImageExtension);
 			String savedPath = uploadPath + File.separator 
 					+ reviewImagePath + File.separator + reviewImageChgName;
 			
