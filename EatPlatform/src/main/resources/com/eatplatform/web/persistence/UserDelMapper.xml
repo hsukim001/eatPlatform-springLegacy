@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.UserDelMapper">
+
+	<resultMap type="com.eatplatform.web.domain.UserVO" id="userResultMap">
+		<id property="userId" column="USER_ID" />
+		<result property="userPw" column="USER_PW"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="userPhone" column="USER_PHONE"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userAuth" column="USER_AUTH"/>
+		<result property="userActiveYn" column="USER_ACTIVE_YN"/>
+		<result property="userRegDate" column="USER_REG_DATE"/>
+	</resultMap>
+
+	<insert id="insertUser">
+		INSERT INTO USER_DEL_LIST
+		VALUES(
+			USER_DEL_SEQ.NEXTVAL,
+			#{userId},
+			#{userPw},
+			#{userEmail},
+			#{userPhone},
+			#{userName},
+			#{userAuth},
+			#{userActiveYn},
+			SYSDATE
+		)
+	</insert>
+</mapper>

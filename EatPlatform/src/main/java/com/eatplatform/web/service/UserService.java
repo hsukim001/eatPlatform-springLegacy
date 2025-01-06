@@ -15,9 +15,11 @@ public interface UserService {
 	// 비밀번호 수정
 	int modifyUserPw(UserVO userVO);
 	// 사용자 확인
-	int checkUserByUserId(String userId);
+	int checkUserByUserId(String userId, String type);
 	// 아이디 찾기
 	String searchUserId(String userEmail);
 	// 회원 삭제
 	int deleteUser(char status, String userId);
+	// 회원 목록 삭제
+	int deleteUserList(char userActiveYn);
 }

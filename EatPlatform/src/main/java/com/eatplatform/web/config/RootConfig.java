@@ -14,7 +14,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,10 +24,12 @@ import com.zaxxer.hikari.HikariDataSource;
 // root-context.xml과 동일
 @Configuration
 @ComponentScan(basePackages = {"com.eatplatform.web.service"})
+// 패키지 경로로 Mapper 스캐닝
 @MapperScan(basePackages = {"com.eatplatform.web.persistence"})
 @ComponentScan(basePackages = {"com.eatplatform.web.aspect"})
 @EnableAspectJAutoProxy
-// 패키지 경로로 Mapper 스캐닝
+@EnableScheduling
+@EnableTransactionManagement // 트랜잭션 관리 활성화
 public class RootConfig {
 	
 	@Bean // 스프링 bean으로 설정. xml의 <bean>태그와 동일, 빈은 DI에 속한다.

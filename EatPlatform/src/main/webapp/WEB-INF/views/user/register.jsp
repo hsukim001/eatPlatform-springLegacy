@@ -94,8 +94,9 @@
 		// 중복 계정 확인
 		function userCheck() {
 			let userId = $("#userId").val();
+			let type = "회원가입";
 			$.ajax({
-				url : 'check/' + userId,
+				url : 'check/' + userId + '/' + type,
 				type : 'get',
 				success : function(result) {
 					if (result == 1 || userIdPattern.test($('#userId').val()) == false) {

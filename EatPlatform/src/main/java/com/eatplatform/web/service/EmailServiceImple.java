@@ -10,6 +10,7 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.eatplatform.web.domain.EmailVO;
@@ -24,6 +25,9 @@ public class EmailServiceImple implements EmailService {
 
 	@Autowired
 	JavaMailSender mailSender;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@Autowired
 	UserMapper userMapper;
@@ -55,7 +59,7 @@ public class EmailServiceImple implements EmailService {
 		Date sendTime = new Date();
 
 		if (vo.getExpirationTime().after(sendTime)) {
-			if (vo.getAuthCode().equals(checkCode)) {
+			if (passwordEncoder.matches(checkCode, vo.getAuthCode())) {
 				vo.setStatus(0);
 				String message = "이메일 인증이 성공";
 				vo.setMessage(message);
@@ -87,6 +91,8 @@ public class EmailServiceImple implements EmailService {
 	// 이메일 입력 폼
 	private EmailVO emailFrom(String userEmail, String mailType) {
 		String authCode = createdAuthCode();
+		// authCode 암호화
+		String encode = passwordEncoder.encode(authCode);
 		
 		String setFrom = "hsuemail157@gmail.com";
 		String toMail = userEmail;
@@ -115,7 +121,7 @@ public class EmailServiceImple implements EmailService {
 	        Date expirationTime = Date.from(updatedInstant);
 
 	        vo.setUserEmail(userEmail);
-			vo.setAuthCode(authCode);
+			vo.setAuthCode(encode);
 			vo.setSendTime(sendTime);
 			vo.setExpirationTime(expirationTime);
 			vo.setMessage("코드 전송이 완료되었습니다. 3분이내에 인증코드를 입력해주세요.");

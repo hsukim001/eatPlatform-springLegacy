@@ -1,10 +1,14 @@
 package com.eatplatform.web.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.persistence.UserDelMapper;
 import com.eatplatform.web.persistence.UserMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -15,6 +19,9 @@ public class UserServiceImple implements UserService{
 	
 	@Autowired
 	private UserMapper userMapper;
+	
+	@Autowired
+	private UserDelMapper userDelMapper;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -72,8 +79,9 @@ public class UserServiceImple implements UserService{
 	@Override
 	public int login(String userId, String userPw) {
 		log.info("login()");
-		int result = userMapper.checkUserByUserId(userId);
 		UserVO vo = new UserVO();
+		vo.setUserId(userId);
+		int result = userMapper.checkUserByUserId(vo);
 		if(result == 1) {
 			vo = userMapper.selectUserByUserId(userId);
 			String encodePw = vo.getUserPw();
@@ -112,8 +120,14 @@ public class UserServiceImple implements UserService{
 
 	// 사용자 확인
 	@Override
-	public int checkUserByUserId(String userId) {
-		return userMapper.checkUserByUserId(userId);
+	public int checkUserByUserId(String userId, String type) {
+		UserVO vo = new UserVO();
+		vo.setUserId(userId);
+		if(!type.equals("회원가입")) {
+			vo.setUserActiveYn('Y');
+		}
+		log.info("active YN : " + vo.getUserActiveYn());
+		return userMapper.checkUserByUserId(vo);
 	}
 
 	// 아이디 찾기
@@ -138,6 +152,34 @@ public class UserServiceImple implements UserService{
 		vo.setUserActiveYn(status);
 		vo.setUserId(userId);
 		return userMapper.updateActiveYnByUserId(vo);
+	}
+
+	// 회원 목록 삭제
+	@Transactional(value = "transactionManager")
+	@Override
+	public int deleteUserList(char userActiveYn) {
+		log.info("deleteUserList()");
+		log.info(userActiveYn);
+		
+		List<UserVO> userList = userMapper.selectUserListByUserActiveYn(userActiveYn);
+		
+		int insertDelTableResult = 0;
+		int deleteUserTableResult = 0;
+		
+		log.info(userList.size());
+		
+		for(int i = 0; i < userList.size(); i++) {
+			String userId = userList.get(i).getUserId();
+			log.info("userId : " + userId);
+			UserVO vo = userList.get(i);
+			log.info("vo : " + vo);
+			insertDelTableResult += userDelMapper.insertUser(vo);
+			deleteUserTableResult += userMapper.deleteUser(userId);
+		}
+		log.info("삭제 회원 " + insertDelTableResult + "행 등록");
+		log.info("회원 정보 " + deleteUserTableResult + "행 삭제");
+		
+		return 1;
 	}
 	
 }

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,17 +43,17 @@ public class UserRESTController {
 	}
 	
 	// 아이디 확인
-	@GetMapping("/check/{userId}")
-	public ResponseEntity<Integer> checkUserByUserId(@PathVariable("userId") String userId) {
+	@GetMapping("/check/{userId}/{type}")
+	public ResponseEntity<Integer> checkUserByUserId(@PathVariable("userId") String userId, @PathVariable("type") String type) {
 		log.info("checkUserByUserId()");
 		log.info(userId);
-		int result = userService.checkUserByUserId(userId);
+		int result = userService.checkUserByUserId(userId, type);
 		log.info(result);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
 	// 비밀번호 수정
-	@PostMapping("/modify/password")
+	@PutMapping("/modify/password")
 	public ResponseEntity<Map<String, String>> modifyUserPw(@RequestBody UserVO userVO, HttpServletRequest request) {
 		log.info("modifyUserPw()");
 		UserVO vo = userVO;

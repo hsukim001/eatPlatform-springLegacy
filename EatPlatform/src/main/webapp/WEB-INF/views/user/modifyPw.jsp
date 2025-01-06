@@ -58,7 +58,7 @@
 					let userPw = $('#userPw').val();
 					$.ajax({
 						url : 'modify/password',
-						type : 'post',
+						type : 'put',
 						headers : {
 							"Content-Type" : "application/json"
 						},
