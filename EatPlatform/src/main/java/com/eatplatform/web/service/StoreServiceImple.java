@@ -1,5 +1,6 @@
 package com.eatplatform.web.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,20 +39,26 @@ public class StoreServiceImple implements StoreService {
 		return storeMapper.selectStoreById(storeId);
 	}
 	
-	public List<StoreVO> getStoresWithPaging(int pageNum, int pageSize, String keyword) {
+	public List<StoreVO> getStoresWithPaging(int pageNum, int pageSize, List<String> keywords) {
 	    int startRow = (pageNum - 1) * pageSize + 1; 
 	    int endRow = pageNum * pageSize;
 
 	    Map<String, Object> params = new HashMap<>();
 	    params.put("startRow", startRow);
 	    params.put("endRow", endRow);
-	    params.put("keyword", keyword); 
-	    log.info("Start Row: " + startRow + ", End Row: " + endRow + ", Keyword: " + keyword);	    
+	    params.put("keywords", keywords); 
+	    log.info("Start Row: " + startRow + ", End Row: " + endRow + ", Keyword: " + keywords);	    
+	    log.info(params);
 	    return storeMapper.getStoresWithPaging(params); 
 	}
 
-	public int getTotalStoresCount(String keyword) {
-	    return storeMapper.getTotalStoresCount(keyword); 
+	public int getTotalStoresCount(List<String> keywords) {
+        if (keywords == null || keywords.isEmpty()) {
+            keywords = new ArrayList<>();
+        }
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("keywords", keywords); 
+	    return storeMapper.getTotalStoresCount(params); 
 	}
 
 

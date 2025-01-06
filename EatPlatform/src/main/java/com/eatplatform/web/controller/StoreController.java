@@ -1,5 +1,6 @@
 package com.eatplatform.web.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -68,8 +68,15 @@ public class StoreController {
 		}
 		log.info("Current Page Number: " + pageNum);
 		int pageSize = 6;
-		List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keyword);
-		int totalStoresCount = storeService.getTotalStoresCount(keyword);
+		
+		List<String> keywords = new ArrayList<>();
+	    if (keyword != null && !keyword.isEmpty()) {
+	        keywords = Arrays.asList(keyword.split(" "));
+	    }
+		log.info(keywords);
+		log.info("keywords type: " + keywords.getClass().getName());
+		List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keywords);
+		int totalStoresCount = storeService.getTotalStoresCount(keywords);
 		int totalPages = (int) Math.ceil((double) totalStoresCount / pageSize);
 
 		model.addAttribute("totalPages", totalPages);

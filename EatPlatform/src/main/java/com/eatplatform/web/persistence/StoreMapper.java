@@ -18,14 +18,14 @@ public interface StoreMapper {
 	
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
-
+	
 	// storeId로 userId 검색
 	String getUserIdByStoreId(@Param("storeId") int storeId);
 	
 	//  List Pagination
 	List<StoreVO> getStoresWithPaging(Map<String, Object> params);
 	
-	int getTotalStoresCount(String keyword);
+	int getTotalStoresCount(Map<String, Object> params);
 
 	int updateStore(StoreVO storeVO);
 }

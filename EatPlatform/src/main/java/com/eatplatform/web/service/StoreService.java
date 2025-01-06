@@ -12,7 +12,7 @@ public interface StoreService {
 	int registerStore(StoreVO storeVO);
 
 	// pageNum과 pageSize를 받아 페이징 처리 결과를 리턴
-	List<StoreVO>getStoresWithPaging(int pageNum, int pageSize, String keyword);
+	List<StoreVO>getStoresWithPaging(int pageNum, int pageSize, List<String> keywords);
 
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
@@ -21,7 +21,7 @@ public interface StoreService {
 	String getUserIdByStoreId(@Param("storeId") int storeId);
 	
 	// 전체 게시글 카운트
-	int getTotalStoresCount(String keyword);
+	int getTotalStoresCount(List<String> keywords);
 	
 	int modifyStore(StoreVO storeVO);
 }

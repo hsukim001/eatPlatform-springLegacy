@@ -55,61 +55,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 	<!-- list paging 처리 -->
-	<select id="getStoresWithPaging" resultMap="StoreResultMap">
-		SELECT *
-		FROM (
-		SELECT
-		store.*, ROW_NUMBER() OVER (ORDER BY STORE_REG_DATE DESC) AS RN
-		FROM STORE store
-		LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
-		<where>
-			<if test="keyword != null and keyword != ''">
-				AND (
-				REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-				OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
-				', '') || '%'
-				OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
-				', '') || '%'
-				OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
-				'') || '%'
-				OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
-				'') || '%'
-				OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
-				'') || '%'
-				)
-			</if>
-		</where>
-		)
+	<select id="getStoresWithPaging" resultMap="StoreResultMap" parameterType="java.util.Map">
+	  SELECT *
+	  FROM (
+	    SELECT
+	      store.*, ROW_NUMBER() OVER (ORDER BY STORE_REG_DATE DESC) AS RN
+	    FROM STORE store
+	    LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
+       <where>
+           <if test="keywords != null and keywords.size() > 0">
+               AND (
+                   <foreach collection="keywords" item="keyword" separator="OR">
+                       REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                   </foreach>
+               )
+           </if>
+       </where>
+	 	 )
 		WHERE RN &gt;= #{startRow} AND RN &lt;= #{endRow}
 	</select>
 
 	<!-- 전체 게시글 카운트 -->
-	<select id="getTotalStoresCount" resultType="int">
+	<select id="getTotalStoresCount" resultType="int" parameterType="java.util.Map">
 		SELECT COUNT(*)
 		FROM
 		STORE store
 		LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
-		<where>
-			<if test="keyword != null and keyword != ''">
-				AND (
-				REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-				OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
-				', '') || '%'
-				OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, '
-				', '') || '%'
-				OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
-				'') || '%'
-				OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
-				'') || '%'
-				OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ',
-				'') || '%'
-				)
-			</if>
-		</where>
+       <where>
+           <if test="keywords != null and keywords.size() > 0">
+               AND (
+                   <foreach collection="keywords" item="keyword" separator="OR">
+                       REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                       OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+                   </foreach>
+               )
+           </if>
+       </where>
 	</select>
 
-	<select id="getUserIdByStoreId" parameterType="int"
-		resultType="string">
+	<select id="getUserIdByStoreId" parameterType="int" resultType="string">
 		SELECT USER_ID
 		FROM STORE
 		WHERE STORE_ID = #{storeId}
