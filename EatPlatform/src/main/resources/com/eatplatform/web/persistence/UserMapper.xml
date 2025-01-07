@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM USER_LIST
 		WHERE USER_ID = #{userId}
 		<if test="userActiveYn != null and userActiveYn != ''">
-			AND USER_ACTIVE_YN = #{userActiveYn}
+			AND TRIM(USER_ACTIVE_YN) = #{userActiveYn}
 		</if>
 	</select>
 	

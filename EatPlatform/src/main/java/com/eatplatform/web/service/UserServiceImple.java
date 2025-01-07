@@ -81,6 +81,7 @@ public class UserServiceImple implements UserService{
 		log.info("login()");
 		UserVO vo = new UserVO();
 		vo.setUserId(userId);
+		vo.setUserActiveYn('Y');
 		int result = userMapper.checkUserByUserId(vo);
 		if(result == 1) {
 			vo = userMapper.selectUserByUserId(userId);

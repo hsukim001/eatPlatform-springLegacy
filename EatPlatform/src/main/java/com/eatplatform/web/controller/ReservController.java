@@ -36,6 +36,7 @@ public class ReservController {
 		log.info("register()");
 		
 		StoreVO vo = reservService.searchStoreByStoreId(storeId);
+		log.info(vo);
 		model.addAttribute("store", vo);
 	}
 	

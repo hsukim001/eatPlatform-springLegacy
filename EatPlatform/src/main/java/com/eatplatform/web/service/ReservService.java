@@ -24,5 +24,5 @@ public interface ReservService {
 	// 예약 취소
 	int cancelReserv(int reservId);
 	// 예약 가능 시간 조회
-	List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO);
+	List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel, String date);
 }

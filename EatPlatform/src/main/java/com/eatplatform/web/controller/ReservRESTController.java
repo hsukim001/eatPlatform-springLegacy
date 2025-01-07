@@ -1,5 +1,6 @@
 package com.eatplatform.web.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,12 +106,15 @@ public class ReservRESTController {
 	}
 	
 	// 예약 가능시간 조회
-	@GetMapping("/schedule/{storeId}/{reservDate}/{reservLimit}")
-	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, 
-			@PathVariable("reservDate") String reservDate,
-			@PathVariable("reservLimit") int reservLimit) {
-		StoreScheduleVO vo = new StoreScheduleVO(storeId, reservDate, reservLimit);
-		List<StoreScheduleVO> list = reservService.searchSchedule(vo);
+	@GetMapping("/schedule/{storeId}/{reservLimit}/{personnel}/{date}")
+	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, @PathVariable("reservLimit") int reservLimit, 
+			@PathVariable("personnel") int personnel, @PathVariable("date") String date) {
+		log.info("searchSchedule()");
+		
+		StoreScheduleVO vo = new StoreScheduleVO();
+		vo.setStoreId(storeId);
+		vo.setReservLimit(reservLimit);
+		List<StoreScheduleVO> list = reservService.searchSchedule(vo, personnel, date);
 		
 		return new ResponseEntity<List<StoreScheduleVO>>(list, HttpStatus.OK);
 	}
