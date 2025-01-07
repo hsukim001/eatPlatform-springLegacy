@@ -58,23 +58,24 @@ body {
 	color: red;
 }
 
-.calendar .selected {
-	background-color: #4caf50;
-	color: white;
-}
-
 .time-container {
 	text-align: center;
 }
 
-.time-slots {
+.time-slots div {
 	display: grid;
 	grid-template-columns: repeat(4, 1fr);
 	gap: 10px;
 	margin-top: 10px;
 }
 
-.time-slots button {
+.time-slots div h3 {
+    grid-column: span 4;
+    margin: 10px 0 10px; 
+    text-align: left; 
+}
+
+.time-slots div button {
 	padding: 10px;
 	border: 1px solid #ddd;
 	border-radius: 5px;
@@ -84,14 +85,14 @@ body {
 }
 
 .time-slots button:not(.disabled):hover,
-.calendar div:not(.disabled):hover {
+.calendar div:not(.disabled):not(.day-names):hover {
 	background-color: #000;
 	color: #fff;
 }
 
-.time-slots .selected {
-	background-color: #4caf50;
-	color: white;
+.selected {
+	background-color: #4caf50 !important;
+	color: white !important;
 }
 
 .disabled {

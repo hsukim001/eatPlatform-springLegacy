@@ -19,7 +19,7 @@
 	<script>
 		$(function(){
 			
-			$('#reservBtnWrap input').click(function(){
+			$('#reservBtn').click(function(){
 				$('#calendar-wrap > div').stop().fadeToggle(400);
 				$('#calendar-wrap').stop().slideToggle(500);
 			}); // End #reservBtnWrap input.click
