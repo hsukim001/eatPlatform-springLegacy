@@ -31,130 +31,71 @@
 </style>
 
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-<%-- <script src="<%=request.getContextPath()%>/resources/reservRegister.js" ></script> --%>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
+<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
 <script type="text/javascript">
-	
-	$(document).ready(function() {
-		let reservDay;
-		let reservTime;
-		let reservPersonnel;
-		let storeId = ${store.storeId };
-		console.log('storeId : ' + storeId);
+	$(document).ready(function(){
+		let personnel = parseInt($('#personnel').text());
+		let reservLimit = parseInt(${store.reservLimit });
+		let inputPersonnel;
+		$('#personnel').text(personnel);
 		
-		// 날짜 선택 이벤트
-		$('#date').change(function() {
-			reservDay = $(this).val();
-			$('#personnel').disabled = false;
-			
-			reservSchedule();
-			
-		});
 		
-		// 예약 가능 시간 조회
-		function reservSchedule() {
-			let reservLimit = ${store.reservLimit };
-			console.log(reservLimit);
-			
-			$.ajax({
-				url : 'schedule/'+ storeId + '/' + reservDate + '/' + reservLimit,
-				type : 'get',
-				success : function(data) {
-					console.log('data : ' + data);
-					addTimeBtn(data);
-				}
-			});
-		}
-		
-		// 예약 가능 시간 버튼 추가
-		function addTimeBtn(isTime) {
-			timeBtn = '';
-			
-			let businessHour = '${store.businessHour }';
-			let [storeStartTime, storeEndTime] = businessHour.split(' - ');
-			console.log('storeStartTime : ' + storeStartTime);
-			console.log('storeEndtime : ' + storeEndTime);
-			
-			for(let i = 1; i <= 24; i++) {
-				
-				if(i.length == 1) {
-					let setTime	= '0' + i;				
-				} else {
-					let setTime = i;
-				}
-				
-				let addTime = setTime + ':00';
-				
-				if(addTime >= storeStartTime && addTime <= storeStartTime) {
-					if(time == addTime && active == true) {
-						reservTimeBtn += '<button type="button" class="btn" id="timeBtn">'+ addTime +'</button>';
-					} else {
-						reservTimeBtn += '<button type="button" disabled>'+ addTime +'</button>';
-					}					
-				}
-				
+		// "-" 버튼 클릭 이벤트
+		$('#minerBtn').click(function(){
+			if(personnel == 1) {
+				personnel = 1;
+				$('#personnel').text(personnel);
+			} else {
+				personnel -= 1;
+				$('#personnel').text(personnel);
 			}
-			
-			$('#timeDiv').html(timeBtn);
-		}
-		
-		// 예약 시간 선택 이벤트
-		$('#timeBtn').on('click', function() {
-			$(this).addClass('selected');
-			$('.btn').not(this).removeClass('selected');
-			
-			// 선택한 버튼의 text 값 가져오기
-			reservTime = $(this).text();
 		});
 		
-		// 예약 등록 버튼 이벤트
-		function createdBtn() {
-			reservPersonnel = $('#personnel').val();
-			createdReserv();
-		}
+		// "+" 버튼 클릭 이벤트
+		$('#plusBtn').click(function(){
+			if(personnel == reservLimit) {
+				personnel = reservLimit
+				$('#personnel').text(personnel);
+			} else {
+				personnel += 1;
+				$('#personnel').text(personnel);
+			}
+		});
 		
-		// 예약 등록
-		function createdReserv() {
-			$.ajax({
-				url : 'created',
-				type : 'post',
-				headers : {
-					"Content-Type" : "application/json"
-				},
-				data : {
-					"storeId" : storeId,
-					"reservDate" : reservDate,
-					"reservTime" : reservTime,
-					"reservPersonnel" : reservPersonnel
-				},
-				success : function(result) {
-					if(result == 1) {
-						alert('식당 예약이 완료되었습니다.');
-					} else {
-						alert('식당 예약에 실패하였습니다.');
-					}
-				}
-			});
+		// 적용 버튼 클릭 이벤트
+		$('#applyBtn').click(function(){
+			inputPersonnel = $('#inputPersonnel').val()
+			personnelCheck();
+		});
+		
+		// 예약인원 직접입력 함수
+		function personnelCheck(){
+			if(parseInt(inputPersonnel) < 1 || parseInt(inputPersonnel) > reservLimit) {
+				alert("예약 인원은 1명 이상 " + reservLimit + "명 이하로만 입력 가능합니다.");
+				$('#inputPersonnel').val("");
+			} else {
+				personnel = parseInt(inputPersonnel);
+				$('#personnel').text(personnel);
+				$('#inputPersonnel').val("");
+			}
 		}
 		
 	});
-	
 </script>
 </head>
 <body>
 	<h1>예약 등록</h1>
-	<div id="register">
-		<div>
-			<input type="date" name="date" id="date">
-		</div>
-		<div id="timeDiv">
-			<!-- 날짜선택시 버튼 출력 -->
-		</div>
-		<div>
-			<input type="number" name="personnel" id="personnel" disabled>
-		</div>
-	</div>
 	<div>
-		<button type="button" id="created">예약 등록</button>
+		<button id="minerBtn">-</button>
+		<span id="personnel">1</span>
+		<button id="plusBtn">+</button>
+		<input type="number" id="inputPersonnel">
+		<button id="applyBtn">적용</button>	
+	</div>
+	<div id="reservBtnWrap" class="width100 mb30">
+		<input type="button" id="reservBtn" value="온라인 예약">	
+		<jsp:include page="/include/calendar.jsp" />
 	</div>
 </body>
 </html>

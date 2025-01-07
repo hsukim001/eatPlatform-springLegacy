@@ -1,6 +1,9 @@
 package com.eatplatform.web.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,20 +81,33 @@ public class ReservServiceImple implements ReservService{
 
 	// 예약 가능시간 조회
 	@Override
-	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO) {
-		List<StoreScheduleVO> list = reservMapper.selectSchedule(storeScheduleVO);
+	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel, String date) {
+		log.info("searchSchedule()");
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+			Date reservDate = format.parse(date);
+			
+			storeScheduleVO.setReservDate(reservDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
-		List<StoreScheduleVO> resultList = new ArrayList<>();
-		int totalPersonnel = storeScheduleVO.getTotalPersonnel();
+		List<StoreScheduleVO> list = reservMapper.selectSchedule(storeScheduleVO);
 		int reservLimit = storeScheduleVO.getReservLimit();
 		
 		for(int i = 0; i < list.size(); i++) {
-			if(totalPersonnel <= reservLimit) {
-				resultList.add(list.get(i));
+			int totalPersonnel = list.get(i).getTotalPersonnel();
+			
+			if(totalPersonnel < reservLimit) {
+				int maxPeople = reservLimit - totalPersonnel;
+				
+				if(personnel <= maxPeople) {
+					list.get(i).setActive(true);
+				}
 			}
 		}
 		
-		return resultList;
+		return list;
 	}
 	
 }

@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,8 +66,6 @@ public class ReviewImageRESTController {
 			reviewImageVO.setReviewImageExtension(extension);
 			
 			list.add(reviewImageVO);
-			
-			int result = reviewImageService.reviewImage(reviewImageVO);
 			
 		}
 		return new ResponseEntity<ArrayList<ReviewImageVO>>(list, HttpStatus.OK);

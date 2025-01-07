@@ -72,41 +72,13 @@
                     return;
                 }
 				
-				var obj = {
-						'storeId' : storeId,
-						'userId' : userId,
-						'reviewStar' : reviewStar,
-						'reviewContent' : reviewContent,
-						'reviewTag' : reviewTag
-				}
-				console.log(obj);
-				
-				$.ajax({
-					type : 'POST',
-					url : '../review',
-					headers : {
-						'Content-Type' : 'application/json'
-					},
-					data : JSON.stringify(obj),
-					success : function(result) {
-						console.log(result);
-						if(result == 1) {
-							alert('리뷰 등록 성공');
-							getAllReview();
-						} else {
-							alert('리뷰 등록에 실패했습니다.');
-						}
-					},
-					error: function(xhr, status, error) {
-				        if (xhr.status == 400) {
-				            alert('리뷰 내용은 250자 이하로 작성해주세요.');
-				        } else {
-				            alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
-				        }
-				    }
-				});
-				
 				var formData = new FormData;
+				
+				formData.append("storeId", storeId);
+			    formData.append("userId", userId);
+			    formData.append("reviewStar", reviewStar);
+			    formData.append("reviewContent", reviewContent);
+			    formData.append("reviewTag", reviewTag);
 				
 				// reviewImg-list의 각 input 태그 접근
 	            var i = 0;
@@ -142,6 +114,30 @@
 	               
 	               i++;
 	            });
+	            
+	            $.ajax({
+					type : 'POST',
+					url : '../review',
+					data : formData,
+					processData: false, // FormData는 자동으로 처리되므로 false 설정
+				    contentType: false, // multipart/form-data로 자동 설정
+					success : function(result) {
+						console.log(result);
+						if(result == 1) {
+							alert('리뷰 등록 성공');
+							getAllReview();
+						} else {
+							alert('리뷰 등록에 실패했습니다.');
+						}
+					},
+					error: function(xhr, status, error) {
+				        if (xhr.status == 400) {
+				            alert('리뷰 내용은 250자 이하로 작성해주세요.');
+				        } else {
+				            alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
+				        }
+				    }
+				});
 	            
 			}); // end btnAdd.click()
 			

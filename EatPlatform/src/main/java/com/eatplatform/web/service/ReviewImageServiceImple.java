@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eatplatform.web.domain.ReviewImageVO;
-import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.persistence.ReviewImageMapper;
 
 import lombok.extern.log4j.Log4j;

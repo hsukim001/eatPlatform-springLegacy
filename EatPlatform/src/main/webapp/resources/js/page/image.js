@@ -101,7 +101,7 @@ $(document).ready(function(){
 				    list += '<div class="image_item" data-chgName="'+ this.reviewImageChgName +'">'
 				    	+ '<pre>'
 				    	+ '<input type="hidden" id="reviewImagePath" value="'+ this.reviewImagePath +'">'
-				    	+ '<input type="hidden" id="reviewImageRealName" value="'+ this.reviewRealName +'">'
+				    	+ '<input type="hidden" id="reviewImageRealName" value="'+ this.reviewImageRealName +'">'
 				    	+ '<input type="hidden" id="reviewImageChgName" value="'+ reviewImageVO.reviewImageChgName +'">'
 				    	+ '<input type="hidden" id="reviewImageExtension" value="'+ reviewImageVO.reviewImageExtension +'">'
 				        + '<a href="../image/display?reviewImagePath=' + reviewImagePath + '&reviewImageChgName='
