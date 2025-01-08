@@ -89,9 +89,14 @@ public class ReservRESTController {
 
 	// 예약 등록
 	@PostMapping("/created")
-	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO) {
+	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, HttpServletRequest request) {
 		log.info("createdReserv()");
-		int result = reservService.createdReserv(reservVO);
+		ReservVO vo = reservVO;
+		
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		vo.setUserId(userId);
+		int result = reservService.createdReserv(vo);
 		
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
@@ -106,15 +111,16 @@ public class ReservRESTController {
 	}
 	
 	// 예약 가능시간 조회
-	@GetMapping("/schedule/{storeId}/{reservLimit}/{personnel}/{date}")
+	@GetMapping("/schedule/{storeId}/{reservLimit}/{personnel}/{reservDate}")
 	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, @PathVariable("reservLimit") int reservLimit, 
-			@PathVariable("personnel") int personnel, @PathVariable("date") String date) {
+			@PathVariable("personnel") int personnel, @PathVariable("reservDate") String reservDate) {
 		log.info("searchSchedule()");
 		
 		StoreScheduleVO vo = new StoreScheduleVO();
 		vo.setStoreId(storeId);
 		vo.setReservLimit(reservLimit);
-		List<StoreScheduleVO> list = reservService.searchSchedule(vo, personnel, date);
+		vo.setReservDate(reservDate);
+		List<StoreScheduleVO> list = reservService.searchSchedule(vo, personnel);
 		
 		return new ResponseEntity<List<StoreScheduleVO>>(list, HttpStatus.OK);
 	}

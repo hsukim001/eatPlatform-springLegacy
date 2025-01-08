@@ -85,7 +85,7 @@
 	display: inline-block;
 }
 
-#reservBtnWrap input {
+#reservBtnWrap input:not(#inputPersonnel) {
 	width: 90%;
 	margin: 0 auto 20px;
 	background: #1b47b3;

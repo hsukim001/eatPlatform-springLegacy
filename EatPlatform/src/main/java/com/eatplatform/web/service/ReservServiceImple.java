@@ -81,16 +81,17 @@ public class ReservServiceImple implements ReservService{
 
 	// 예약 가능시간 조회
 	@Override
-	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel, String date) {
+	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel) {
 		log.info("searchSchedule()");
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-			Date reservDate = format.parse(date);
-			
-			storeScheduleVO.setReservDate(reservDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+//			Date reservDate = format.parse(date);
+//			
+//			storeScheduleVO.setReservDate(reservDate);
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+		log.info(storeScheduleVO.getReservDate());
 		
 		List<StoreScheduleVO> list = reservMapper.selectSchedule(storeScheduleVO);
 		int reservLimit = storeScheduleVO.getReservLimit();

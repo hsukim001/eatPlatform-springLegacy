@@ -13,16 +13,16 @@ import lombok.ToString;
 @ToString
 public class StoreScheduleVO {
 	private int storeId;
-	private Date reservDate;
+	private String reservDate;
 	private int reservLimit;
-	private String time;
+	private String hour;
 	private String min;
 	private int totalPersonnel;
 	private boolean active;
 	
-	public StoreScheduleVO(Date reservDate, String time, String min, int totalPersonnel) {
+	public StoreScheduleVO(String reservDate, String hour, String min, int totalPersonnel) {
 		this.reservDate = reservDate;
-		this.time = time;
+		this.hour = hour;
 		this.min = min;
 		this.totalPersonnel = totalPersonnel;
 	}

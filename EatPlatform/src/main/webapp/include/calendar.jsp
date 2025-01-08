@@ -4,7 +4,14 @@
 
 <div id="calendar-wrap">
 	<div class="calendar-container">
-		<h3>인원</h3>
+		<p>최대 <span id="reservLimit">${storeVO.reservLimit}</span>명 까지 예약 가능합니다.</p>
+		<div>
+			<button id="minerBtn">-</button>
+			<span id="personnel">1</span>
+			<button id="plusBtn">+</button>
+			<input type="number" id="inputPersonnel" class="writePersonnel">
+			<button id="applyBtn">적용</button>	
+		</div>
 		<div class="calendar-header">
 			<button id="prev-month">&lt;</button>
 			<h2 id="current-month-year"></h2>
@@ -32,5 +39,5 @@
 		value="${startTime }"> <input type="time" id="end-time"
 		class="hidden-input" value="${endTime }">
 		
-	<input id="timeTest" type="button" value="확인">
+	<input id="createdReserv" type="button" value="등록">
 </div>

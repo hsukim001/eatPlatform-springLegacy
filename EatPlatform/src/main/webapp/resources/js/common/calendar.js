@@ -20,12 +20,28 @@ $(function () {
 	let timeValue;
 	let dateText;
 	let timeText;
-
+	let selectedDateValue;
 	
-	$('#timeTest').click(function(){
-	    updateSelectedTime(); 
-	    alert(selectTimeHour);
-	    alert(selectTimeMinutes);
+	// 예약 인원
+	let personnel = parseInt($('#personnel').text());
+	let reservLimit = parseInt($('#reservLimit').text());
+	let inputPersonnel;
+	$('#personnel').text(personnel);
+	
+	// 예약
+	let activeTimeList;
+	
+	$('#createdReserv').click(function(){
+	    //updateSelectedTime(); 
+	    //alert(selectTimeHour);
+	    //alert(selectTimeMinutes);
+	    createdReserv();
+	});
+	
+	$(document).on('click', '.calendar div', function(){
+		selectedDateValue = $(this).data('dateValue');
+		reservSchedule(selectedDateValue);
+		
 	});
 	
     function updateSelectionDisplay() {
@@ -77,9 +93,8 @@ $(function () {
             dayCell.on('click', function () {
                 if (!$(this).hasClass('disabled')) {
                     $('.calendar .selected').removeClass('selected');
-                    $(this).addClass('selected');
+                    $(this).addClass('selected');;
                     selectedDate = new Date(year, month, day);
-                    generateTimeSlots();  // 날짜 선택 시 시간 슬롯 갱신
                     updateSelectionDisplay();
                 }
             });
@@ -125,6 +140,7 @@ $(function () {
 	        endTimeObject.setDate(endTimeObject.getDate() + 1);
 	    }
 	
+		console.log(activeTimeList);
 	    while (currentTime <= endTimeObject) {
 		    const timeSlotText = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
 		    
@@ -146,6 +162,21 @@ $(function () {
 
 		    }
 
+		    
+		    		    
+		    if(activeTimeList !== null && activeTimeList !== undefined) {
+		    
+		    	for(let i = 0; i < activeTimeList.length; i++){
+		    		if(timeSlotText24Hour === activeTimeList[i].hour && timeSlotText24Minutes === activeTimeList[i].min){
+		    			if(activeTimeList[i].active == false){
+		    				console.log("disabled");
+		    				console.log('not null');
+		    				timeSlot.addClass('disabled');
+		    			}
+		    		}
+		    	}
+		    }
+		    
 		    
 		    timeSlot.on('click', function () {
 		        if (!$(this).hasClass('disabled')) {
@@ -169,6 +200,7 @@ $(function () {
 		
 		    // 30분 간격으로 증가
 		    currentTime.setMinutes(currentTime.getMinutes() + 30);
+		    
 		}
 	}
     prevMonthBtn.on('click', function () {
@@ -194,9 +226,102 @@ $(function () {
 	    selectTimeHour = timeValueSplit[0];
 	    selectTimeMinutes = timeValueSplit[1];
 	}
+	
+	// "-" 버튼 클릭 이벤트
+	$('#minerBtn').click(function(){
+		if(personnel == 1) {
+			personnel = 1;
+			$('#personnel').text(personnel);
+			reservSchedule(selectedDateValue);
+		} else {
+			personnel -= 1;
+			$('#personnel').text(personnel);
+			reservSchedule(selectedDateValue);
+		}
+	});
+		
+	// "+" 버튼 클릭 이벤트
+	$('#plusBtn').click(function(){
+		if(personnel == reservLimit) {
+			personnel = reservLimit
+			$('#personnel').text(personnel);
+			reservSchedule(selectedDateValue);
+		} else {
+			personnel += 1;
+			$('#personnel').text(personnel);
+			reservSchedule(selectedDateValue);
+		}
+	});
+		
+	// 적용 버튼 클릭 이벤트
+	$('#applyBtn').click(function(){
+		inputPersonnel = $('#inputPersonnel').val()
+		personnelCheck();
+		reservSchedule(selectedDateValue);
+	});
+		
+	// 예약인원 직접입력 함수
+	function personnelCheck(){
+		if(inputPersonnel === null || inputPersonnel === ''){
+			inputPersonnel = 1;
+		}
+		
+		if(parseInt(inputPersonnel) < 1 || parseInt(inputPersonnel) > reservLimit) {
+			alert("예약 인원은 1명 이상 " + reservLimit + "명 이하로만 입력 가능합니다.");
+			$('#inputPersonnel').val("");
+		} else {
+			personnel = parseInt(inputPersonnel);
+			$('#personnel').text(personnel);
+			$('#inputPersonnel').val("");
+		}
+	}
+	
+	// 예약 가능 유무 조회
+	function reservSchedule(dateValue){
+		let storeId = $('#storeId').val();
+		
+		$.ajax({
+			url : '../reserv/schedule/' + storeId + '/' + reservLimit + '/' + personnel + '/' + dateValue,
+			type : 'get',
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			success : function(response){
+				console.log("예약 목록 조회");
+				activeTimeList = response;
+				generateTimeSlots();  // 날짜 선택 시 시간 슬롯 갱신
+			}
+		});
+	}
+	
+	// 예약 등록
+	function createdReserv(){
+		let storeId = $('#storeId').val();
+		let timeSplit = timeValue.split(':');
+		$.ajax({
+			url : '../reserv/created',
+			type : 'post',
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			data : JSON.stringify({
+				"storeId" : storeId,
+				"reservDate" : dateText,
+				"reservHour" : timeSplit[0],
+				"reservMin" : timeSplit[1],
+				"reservPersonnel" : personnel
+			}),
+			success : function(response){
+				if(response == 1) {
+					alert("예약이 완료되었습니다.");
+					location.href='detail?storeId=' + storeId;
+				}
+			}
+		});
+	}
 
     generateCalendar(currentMonth, currentYear);
-    generateTimeSlots();
+    reservSchedule(dateText);
     updateSelectionDisplay();
 
     startTimeInput.on('change', generateTimeSlots);
