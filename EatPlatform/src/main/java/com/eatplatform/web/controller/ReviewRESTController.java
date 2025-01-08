@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReplyService;
 import com.eatplatform.web.service.ReviewService;
@@ -37,29 +39,24 @@ public class ReviewRESTController {
 	@Autowired
 	private ReplyService replyService;
 	
-	@GetMapping
-	public void detailGET(@ModelAttribute ReviewVO reviewVO) {
-		log.info("detailGET()");
-	}
-	
 	// 리뷰 등록(회원)
-	@PostMapping
-	public ResponseEntity<Integer> createReview(
-			ReviewVO reviewVO, HttpSession session) {
-		
-		// 리뷰 내용 길이 제한 (250자 이하) 
-		if (reviewVO.getReviewContent() != null && 
-				reviewVO.getReviewContent().length() > 250) {
-			return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+		@PostMapping
+		public ResponseEntity<Integer> createReview(
+				@ModelAttribute ReviewVO reviewVO, HttpSession session) {
+			
+			// 리뷰 내용 길이 제한 (250자 이하) 
+			if (reviewVO.getReviewContent() != null && 
+					reviewVO.getReviewContent().length() > 250) {
+				return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+			}
+	
+			log.info("createReview()");
+			log.info("reviewVO : " + reviewVO);
+			
+			int result = reviewService.createReview(reviewVO);
+			return new ResponseEntity<Integer>(result, HttpStatus.OK);
 		}
 		
-		log.info("createReview()");
-		log.info(reviewVO.toString());
-		
-		int result = reviewService.createReview(reviewVO);
-		
-		return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	}
 	
 	// 식당별 리뷰 전체 조회
 		@GetMapping("/all/{storeId}")

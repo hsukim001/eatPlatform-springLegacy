@@ -28,24 +28,11 @@ public class ReviewServiceImple implements ReviewService{
 	@Autowired
 	private ReviewLikeListMapper reviewLikeListMapper;
 	
-	@Autowired 
-	private ReviewImageMapper reviewImageMapper;
-	
-	@Transactional(value = "transactionManager")
 	@Override
 	public int createReview(ReviewVO reviewVO) {
 		log.info("createReview()");
 		int result = reviewMapper.insert(reviewVO);
 		log.info(result + "행 리뷰 등록");
-		
-		List<ReviewImageVO> reviewImageList = reviewVO.getreviewImageList();
-		
-		for(ReviewImageVO reviewImageVO : reviewImageList) {
-			reviewImageVO.setReviewId(reviewImageVO.getReviewId());
-			int reviewImage = reviewImageMapper.insert(reviewImageVO);
-			log.info(reviewImage);
-		}
-		
 		return 1;
 	}
 

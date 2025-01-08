@@ -15,37 +15,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewImageChgName" column="REVIEW_IMAGE_CHG_NAME" />
 		<result property="reviewImageExtension" column="REVIEW_IMAGE_EXTENSION" />
 	</resultMap>
-	
-	<insert id="insert">
-		INSERT INTO REVIEW_IMAGE
-		(REVIEW_IMAGE_ID, REVIEW_ID, REVIEW_IMAGE_PATH, 
-		REVIEW_IMAGE_REAL_NAME, REVIEW_IMAGE_CHG_NAME, REVIEW_IMAGE_EXTENSION)
-		VALUES (REVIEW_IMAGE_SEQ.NEXTVAL, #{reviewId}, #{reviewImagePath}, 
-		#{reviewImageRealName}, #{reviewImageChgName}, #{reviewImageExtension})
-	</insert>
-	
+
 	<select id="selectByReviewImageId" resultMap="reviewImageResultMap">
 		SELECT * FROM REVIEW_IMAGE 
 		WHERE REVIEW_IMAGE_ID = #{reviewImageId}
 	</select>
 	
-	<select id="selectIdList" resultType="Integer">
-		SELECT REVIEW_IMAGE_ID FROM REVIEW_IMAGE
+	<select id="selectListByReviewId" resultMap="reviewImageResultMap">
+		SELECT * FROM REVIEW_IMAGE 
+		WHERE REVIEW_ID = #{reviewId}
 	</select>
-	
-	<update id="update">
-		UPDATE REVIEW_IMAGE
-		SET REVIEW_IMAGE_PATH = #{reviewImagePath},
-		REVIEW_IMAGE_REAL_NAME = #{reviewImageRealName},
-		REVIEW_IMAGE_CHG_NAME = #{reviewImageChgName},
-		REVIEW_IMAGE_EXTENSION = #{reviewImageExtension}
-		WHERE REVIEW_IMAGE_ID = #{reviewImageId}
-	</update>
-	
-	<delete id="delete">
-		DELETE FROM REVIEW_IMAGE
-		WHERE REVIEW_IMAGE_ID = #{reviewImageId}
-	</delete>
-	
+
 </mapper>
 	

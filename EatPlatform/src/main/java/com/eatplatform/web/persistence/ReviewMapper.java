@@ -10,6 +10,7 @@ import com.eatplatform.web.domain.ReviewVO;
 @Mapper
 public interface ReviewMapper {
 	int insert(ReviewVO reviewVO);
+	int selectReviewId(); // 이미지 첨부 시 reviewId 반환
 	List<ReviewVO> selectListByStoreId(int storeId);
 	int update(ReviewVO reviewVO);
 	int delete(int reviewId);

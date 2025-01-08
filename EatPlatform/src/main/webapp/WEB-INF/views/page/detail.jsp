@@ -79,8 +79,8 @@
 			    formData.append("reviewStar", reviewStar);
 			    formData.append("reviewContent", reviewContent);
 			    formData.append("reviewTag", reviewTag);
-				
-				// reviewImg-list의 각 input 태그 접근
+			    
+			    // reviewImg-list의 각 input 태그 접근
 	            var i = 0;
 	            $('.reviewImg-list input[name="reviewImageVO"]').each(function(){
 	               console.log(this);
@@ -113,9 +113,10 @@
 	               formData.append(reviewImageExtension, inputExtension);
 	               
 	               i++;
+	               
 	            });
-	            
-	            $.ajax({
+	        
+				$.ajax({
 					type : 'POST',
 					url : '../review',
 					data : formData,
@@ -138,7 +139,7 @@
 				        }
 				    }
 				});
-	            
+		
 			}); // end btnAdd.click()
 			
 			// 식당 리뷰 전체 가져오기

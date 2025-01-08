@@ -1,6 +1,8 @@
 package com.eatplatform.web.service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +17,6 @@ public class ReviewImageServiceImple implements ReviewImageService{
 	
 	@Autowired
 	private ReviewImageMapper reviewImageMapper;
-	
-	@Override
-	public int reviewImage(ReviewImageVO reviewImageVO) {
-		log.info("reviewImage()");
-		int result = reviewImageMapper.insert(reviewImageVO);
-		log.info("reviewImageVO : " + reviewImageVO);
-		return result;
-	}
 
 	@Override
 	public ReviewImageVO getReviewImageById(int reviewImageId) {
@@ -30,7 +24,11 @@ public class ReviewImageServiceImple implements ReviewImageService{
 		return reviewImageMapper.selectByReviewImageId(reviewImageId);
 	}
 
-	
+	@Override
+	public List<ReviewImageVO> getImageListByReviewId(int reviewId) {
+		log.info("getReviewImageById()");
+		return reviewImageMapper.selectListByReviewId(reviewId);
+	}
 
 
 }

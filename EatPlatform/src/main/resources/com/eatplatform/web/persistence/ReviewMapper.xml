@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insert">
 		INSERT INTO REVIEW (REVIEW_ID, STORE_ID, USER_ID,
 		REVIEW_STAR, REVIEW_CONTENT, REVIEW_TAG)
-		VALUES (REVIEW_SEQ.NEXTVAL,
+		VALUES (REVIEW_SEQ.NEXTVAL, 
 		#{storeId}, #{userId},
 		#{reviewStar}, #{reviewContent}, #{reviewTag})
 	</insert>
