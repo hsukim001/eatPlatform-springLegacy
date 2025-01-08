@@ -237,7 +237,7 @@
 </head>
 <body>
 	<h1>회원가입</h1>
-	<form action="register?flagNum=${flagNum }" method="post">
+	<form action="created" method="post">
 		<div>
 			<span>아이디 : </span>
 			<input type="text" name="userId" id="userId" required="required" maxlength="30">
@@ -273,11 +273,12 @@
 			<span>휴대폰 : </span>
 			<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" maxlength="13">
 		</div>
-		<div></div>
 		<div>
 			<button type="submit">등록</button>
-			<button type="button" onclick="location.href='../user/flag'">취소</button>
+			<button type="button" onclick="location.href='../'">취소</button>
 		</div>
+		<!-- CSRF 토큰 -->
+	    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 	</form>
 	<div>
 		

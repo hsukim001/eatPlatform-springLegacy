@@ -8,6 +8,14 @@ let email;
 let authCode;
 let expirationTime;
 let authStatus;
+
+ // ajax CSRF 토큰
+ $(document).ajaxSend(function(e, xhr, opt){
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+				
+	xhr.setRequestHeader(header, token);
+ });
  
  $(document).ready(function(){
 				

@@ -32,7 +32,7 @@ public class UserServiceImple implements UserService{
 
 	// 회원 등록
 	@Override
-	public int createdUser(UserVO userVO, int flagNum) {
+	public int createdUser(UserVO userVO) {
 		log.info("createdUserList()");
 		
 		// 비밀번호 암호화
@@ -43,15 +43,8 @@ public class UserServiceImple implements UserService{
 		
 		UserVO vo = userVO;
 		vo.setUserPw(encodePassword);
-		
-		// 회원 가입 유형의 따른 권한 설정
-		// 1 : 일반 회원
-		// 2 : 사업자 회원
-		if(flagNum == 1) {
-			vo.setUserAuth("ROLE_MEMBER");
-		} else if(flagNum == 2) {
-			vo.setUserAuth("ROLE_STORE");
-		}
+
+		vo.setUserAuth("ROLE_MEMBER");
 		vo.setUserActiveYn('Y');
 		
 		log.info(vo);

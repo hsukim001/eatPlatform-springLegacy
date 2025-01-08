@@ -4,6 +4,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="_csrf" content="${_csrf.token}"/>
+		<meta name="_csrf_header" content="${_csrf.headerName}"/>
 		<title>비밀번호 찾기</title>
 		<style>
 			.divHide {

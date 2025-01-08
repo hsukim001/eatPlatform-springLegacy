@@ -4,11 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -91,24 +96,25 @@ public class UserRESTController {
 	
 	// 회원 삭제
 	@PutMapping ("/delete/{status}")
-	public ResponseEntity<ResultMsgResponse> deleteUser(@PathVariable("status") char status, HttpServletRequest request) {
+	public ResponseEntity<ResultMsgResponse> deleteUser(@PathVariable("status") char status, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		log.info("deleteUser()");
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
+		String userId = userDetails.getUsername();
 		
 		int result = userService.deleteUser(status, userId);
 		String msg = "";
 		
 		if(result == 1) {
 			msg = "회원 탈퇴가 완료되었습니다.";
+			
+			// Spring Security의 로그아웃 핸들러 -> SecurityContext에 저장되어있는 인증정보 제거하여 현재 사용자와 모든 보안 데이터를 초기화
+			new SecurityContextLogoutHandler().logout(request, response, authentication);
 		} else {
 			msg = "회원 탈퇴에 실패하였습니다.";
 		}
 		
-		ResultMsgResponse response = new ResultMsgResponse(result, msg);
+		ResultMsgResponse resultResponse = new ResultMsgResponse(result, msg);
 		
-		session.invalidate();
-		return new ResponseEntity<ResultMsgResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<ResultMsgResponse>(resultResponse, HttpStatus.OK);
 	}
 	
 }

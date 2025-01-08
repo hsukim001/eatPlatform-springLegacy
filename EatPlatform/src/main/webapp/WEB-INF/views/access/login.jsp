@@ -11,20 +11,22 @@
 	<form action="login" method="post">
 		<div>
 			<span>아이디 </span>
-			<input type="text" name="userId">
+			<input type="text" name="username">
 		</div>
 		<div>
 			<span>비밀번호 </span>
-			<input type="password" name="userPw">
+			<input type="password" name="password">
 		</div>
 		<div>
 			<input type="submit" value="로그인">		
-		</div>	
+		</div>
+		<!-- CSRF 토큰 -->
+	    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
 	</form>
 	<div>
 		<button type="button" id="searchId" onclick="location.href='../user/searchId'">아이디 찾기</button>
 		<button type="button" id="searchPw" onclick="location.href='../user/searchPw'">비밀번호 찾기</button>
-		<button type="button" id="createdMember" onclick="location.href='../user/flag'">회원가입</button>	
+		<button type="button" id="createdMember" onclick="location.href='../user/register'">회원가입</button>	
 	</div>
 </body>
 </html>

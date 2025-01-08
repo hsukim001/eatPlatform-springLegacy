@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="_csrf" content="${_csrf.token}"/>
+		<meta name="_csrf_header" content="${_csrf.headerName}"/>
 		<title>가입 정보</title>
 		<style type="text/css">
 			.no-cursor {
@@ -21,6 +24,14 @@
 					.replace(/[^0-9]/g, '')
 			   		.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
 			}
+			
+			// ajax CSRF 토큰
+			$(document).ajaxSend(function(e, xhr, opt){
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				xhr.setRequestHeader(header, token);
+			});
 		
 			$(document).ready(function(){
 				
@@ -59,7 +70,7 @@
 		<form action="modify" method="post">
 			<div>
 				<span>아이디 : </span>
-				<input class="no-cursor" type="text" id="userId" name="userId" readonly="readonly" value="${sessionScope.userId }">
+				<input class="no-cursor" type="text" id="userId" name="userId" readonly="readonly" value="${vo.userId }">
 			</div>
 			<div>
 				<span>이름 : </span>
@@ -73,7 +84,9 @@
 				<span>휴대폰 : </span>
 				<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" value="${vo.userPhone }" maxlength="13">
 			</div>
-			<input type="submit" value="수정">	
+			<input type="submit" value="수정">
+			<!-- CSRF 토큰 -->
+	   		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">	
 		</form>
 		<div>
 			<button onclick="location.href='modifyPw'">비밀번호 변경</button>

@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,27 +26,18 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	// 회원 가입 유형 선택 페이지 이동
-	@GetMapping("/flag")
-	public void flag() {
-		log.info("flag()");
-	}
-	
 	// 회원 가입 페이지 이동
 	@GetMapping("/register")
-	public void registerGET(Model model, int flagNum) {
-		log.info("registerGET()");
-		
-		model.addAttribute("flagNum", flagNum);
+	public void registerGET(Model model) {
+		log.info("registerGET()");		
 	}
 	
 	// 회원 등록
-	@PostMapping("/register")
-	public String registerPOST(UserVO userVO, int flagNum) {
-		log.info("registerPOST()");
-		log.info(flagNum);
+	@PostMapping("/created")
+	public String created(UserVO userVO) {
+		log.info("created()");
 		
-		int result = userService.createdUser(userVO, flagNum);
+		int result = userService.createdUser(userVO);
 		
 		if(result == 1) {
 			log.info("회원 등록 성공");
@@ -55,12 +48,9 @@ public class UserController {
 	
 	// 회원 상세(수정) 페이지 이동
 	@GetMapping("/detail")
-	public void detail(Model model, HttpServletRequest request) {
+	public void detail(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		log.info("detail()");
-		HttpSession session = request.getSession();
-		
-		String userId = (String) session.getAttribute("userId");
-		log.info(userId);
+		String userId = userDetails.getUsername();
 		
 		UserVO vo = userService.searchUser(userId);
 		model.addAttribute("vo", vo);
@@ -69,12 +59,9 @@ public class UserController {
 	
 	// 회원 정보 수정
 	@PostMapping("/modify")
-	public String modify(UserVO userVO, HttpServletRequest request) {
+	public String modify(UserVO userVO) {
 		log.info("modify()");
 		UserVO vo = userVO;
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
-		vo.setUserId(userId);
 		log.info(vo);
 		int result = userService.modifyUser(vo);
 		

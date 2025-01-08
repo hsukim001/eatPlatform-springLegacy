@@ -5,7 +5,7 @@ import com.eatplatform.web.domain.UserVO;
 public interface UserService {
 	
 	// 회원 가입
-	int createdUser(UserVO userVO, int flagNum);
+	int createdUser(UserVO userVO);
 	// 회원 검색
 	UserVO searchUser(String userId);
 	// 회원 수정
