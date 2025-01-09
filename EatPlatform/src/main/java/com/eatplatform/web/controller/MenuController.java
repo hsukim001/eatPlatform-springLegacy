@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,15 +33,14 @@ public class MenuController {
 	
 
 	@GetMapping("/newMenu")
-	public String newMenu(@RequestParam("storeId") int storeId, Model model, HttpServletRequest request) {
+	public String newMenu(@RequestParam("storeId") int storeId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		log.info("newMenu()");
 		
-		HttpSession session = request.getSession();
-		String sessionUserId = (String) session.getAttribute("userId");
+		String currentUserId = userDetails.getUsername();
 		String dbUserId = storeService.getUserIdByStoreId(storeId);
-		log.info("sessionUserId : " + sessionUserId + "// dbUserId : " + dbUserId);
+		log.info("currentUserId : " + currentUserId + "// dbUserId : " + dbUserId);
 		
-		if (dbUserId != null && dbUserId.equals(sessionUserId)) {
+		if (dbUserId != null && dbUserId.equals(currentUserId)) {
 			// jsp로 storeId 전달을 위한 세팅
 			MenuVO menuVO = new MenuVO();
 			menuVO.setStoreId(storeId);
@@ -67,12 +68,24 @@ public class MenuController {
 	
 
 	@PostMapping("/register")
-	public String register(MenuVO menuVO, Model model) {
-		int result = menuService.registerMenu(menuVO);
-		log.info(menuVO);
+	public String register(MenuVO menuVO, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+		String currentUserId = userDetails.getUsername();
+		String dbUserId = storeService.getUserIdByStoreId(menuVO.getStoreId());
+		
+		if (dbUserId != null && dbUserId.equals(currentUserId)) {
 
-		model.addAttribute("result", result);
+			int result = menuService.registerMenu(menuVO);
+			log.info(menuVO);
 
-		return "/store/menu/register";
+			model.addAttribute("result", result);
+
+			return "/store/menu/register";
+		} else {
+			String errHandler = "otherUser";
+			log.info(errHandler);
+			log.info("잘못된 User 접근");
+			model.addAttribute("errHandler", errHandler);
+			return "/store/errHandler";
+		}
 	}
 }

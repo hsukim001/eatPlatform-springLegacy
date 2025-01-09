@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="com.eatplatform.web.domain.StoreVO"
 		id="StoreResultMap">
-		<id property="storeId" column="STORE_ID" />
+		<id property="storeId" column="STORE_ID"/>
 		<result property="userId" column="USER_ID" />
 		<result property="storeName" column="STORE_NAME" />
 		<result property="storePhone" column="STORE_PHONE" />
@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeUpdateDate" column="STORE_UPDATE_DATE" />
 	</resultMap>
 
-	<insert id="insertStore">
+	<insert id="insertStore" parameterType="com.eatplatform.web.domain.StoreVO" useGeneratedKeys="true" keyProperty="storeId" keyColumn="STORE_ID">
 		INSERT INTO STORE(
 		STORE_ID, USER_ID, STORE_NAME,
 		STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,

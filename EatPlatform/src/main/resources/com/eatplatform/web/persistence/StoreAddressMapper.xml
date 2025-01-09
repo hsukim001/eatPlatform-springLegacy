@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 <!-- namespace -->
-<mapper namespace="com.eatplatform.web.persistence.AddressMapper">
+<mapper namespace="com.eatplatform.web.persistence.StoreAddressMapper">
 
 	<resultMap type="com.eatplatform.web.domain.StoreAddressVO"
 		id="StoreAddressResultMap">
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="postCode" column="POST_CODE" />
 	</resultMap>
 
-	<insert id="insertAddress">
+	<insert id="insertStoreAddress">
 		INSERT INTO STORE_ADDRESS(
 		STORE_ID, SIDO, SIGUNGU,
 		BNAME1, BNAME2,
@@ -30,16 +30,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		DETAIL_ADDRESS, EXTRA_ADDRESS,
 		POST_CODE
 		) VALUES (
-		${storeId},
-		${sido},
-		${sigungu},
-		${bname1},
-		${bname2},
-		${roadAddress},
-		${jibunAddress},
-		${detailAddress},
-		${extraAddress}.
-		${postCode}
+        #{storeId},
+        #{sido},
+        #{sigungu},
+        #{bname1},
+        #{bname2},
+        #{roadAddress},
+        #{jibunAddress},
+        #{detailAddress},
+        #{extraAddress},
+        #{postCode}
 		)
 	</insert>
 

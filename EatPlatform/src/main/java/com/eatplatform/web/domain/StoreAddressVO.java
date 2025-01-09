@@ -19,5 +19,5 @@ public class StoreAddressVO {
 	private String jibunAddress;
 	private String detailAddress;
 	private String extraAddress;
-	private int postCode;
+	private String postCode;
 }

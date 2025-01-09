@@ -1,10 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <style>
 #otherCategory {
     display: none;
@@ -49,7 +52,7 @@
 <body>
     <h2>여기는 수정 페이지입니다.</h2>
     <form action="modify" method="POST">
-        <input type="hidden" value="${storeVO.userId }" id="userId" name="userId"> 
+    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <input type="hidden" value="${param.storeId }" id="storeId" name="storeId">
     	<input type="hidden" id="businessHour" name="businessHour">  
         

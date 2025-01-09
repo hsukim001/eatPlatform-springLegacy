@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 
 public interface StoreService {
 	
 	// 데이터 추가
-	int registerStore(StoreVO storeVO);
+	int registerStore(StoreVO storeVO, StoreAddressVO storeAddressVO);
 
 	// pageNum과 pageSize를 받아 페이징 처리 결과를 리턴
 	List<StoreVO>getStoresWithPaging(int pageNum, int pageSize, List<String> keywords);

@@ -1,10 +1,5 @@
 @charset "UTF-8";
-
-body {
-	font-family: Arial, sans-serif;
-	margin: 20px;
-}
-
+												
 .calendar-container {
 	text-align: center;
 	margin-bottom: 20px;

@@ -7,8 +7,11 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.persistence.StoreAddressMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -19,14 +22,23 @@ public class StoreServiceImple implements StoreService {
 
 	@Autowired
 	private StoreMapper storeMapper;
-
+	
+	@Autowired
+	private StoreAddressMapper storeAddressMapper;
+	
+	@Transactional(value = "transactionManager")
 	@Override
-	public int registerStore(StoreVO storeVO) {
+	public int registerStore(StoreVO storeVO, StoreAddressVO storeAddressVO) {
 		log.info("registerStore()");
-		int result = storeMapper.insertStore(storeVO);
+		int resultStore = storeMapper.insertStore(storeVO);
+		int storeId = storeVO.getStoreId();
+		storeAddressVO.setStoreId(storeId);
+		int resultAddress = storeAddressMapper.insertStoreAddress(storeAddressVO);
 		log.info(storeVO);
-		log.info(result + "행 삽입 성공");
-		return result;
+		log.info(storeAddressVO);
+		log.info("사용자 정보 " + resultStore + "행 삽입 성공");
+		log.info("주소 정보 " + resultAddress + "행 삽입 성공");
+		return resultStore;
 	}
 
 	@Override
