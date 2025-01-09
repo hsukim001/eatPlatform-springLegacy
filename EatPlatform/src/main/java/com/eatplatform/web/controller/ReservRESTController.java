@@ -8,6 +8,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,14 +37,13 @@ public class ReservRESTController {
 
 	// 페이징 예약 목록 조회(pageNum, userId)
 	@GetMapping("/toDay/{pageNum}")
-	public ResponseEntity<DataResponse> searchPagingToDay(@PathVariable("pageNum") int pageNum, HttpServletRequest request) {
+	public ResponseEntity<DataResponse> searchPagingToDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal UserDetails userDetails) {
 		log.info("searchPagingToDay()");
 		int pageSize = 5;
 		log.info("pageNum = " + pageNum);
 		
 		// session에서 사용자 아이디 로드
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
+		String userId = userDetails.getUsername();
 		
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
@@ -63,13 +64,12 @@ public class ReservRESTController {
 	// 페이징 이전 예약 목록 조회(pageNum, userId)
 	@GetMapping("/prevDay/{pageNum}")
 	public ResponseEntity<DataResponse> searchPagingPrevDay(@PathVariable("pageNum") int pageNum,
-			HttpServletRequest request) {
+			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("searchPagingToDay()");
 		int pageSize = 5;
 		
 		// session에서 사용자 아이디 로드
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
+		String userId = userDetails.getUsername();
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
 
@@ -88,12 +88,11 @@ public class ReservRESTController {
 
 	// 예약 등록
 	@PostMapping("/created")
-	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, HttpServletRequest request) {
+	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, @AuthenticationPrincipal UserDetails userDetails) {
 		log.info("createdReserv()");
 		ReservVO vo = reservVO;
 		
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
+		String userId = userDetails.getUsername();
 		vo.setUserId(userId);
 		int result = reservService.createdReserv(vo);
 		

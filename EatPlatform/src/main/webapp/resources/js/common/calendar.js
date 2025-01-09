@@ -31,6 +31,14 @@ $(function () {
 	// 예약
 	let activeTimeList;
 	
+	// ajax CSRF 토큰
+	$(document).ajaxSend(function(e, xhr, opt){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+				
+		xhr.setRequestHeader(header, token);
+	});
+	
 	$('#createdReserv').click(function(){
 	    //updateSelectedTime(); 
 	    //alert(selectTimeHour);

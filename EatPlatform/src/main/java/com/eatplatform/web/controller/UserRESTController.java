@@ -62,13 +62,13 @@ public class UserRESTController {
 			HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		log.info("modifyUserPw()");
 		UserVO vo = userVO;
-		String userId = userDetails.getUsername();
-		String userEmail = userVO.getUserEmail();
-		log.info("userId : " + userId);
-		log.info("email : " + userEmail);
+		log.info(vo);
+		if(userDetails != null) {
+			String userId = userDetails.getUsername();			
+			log.info("userId : " + userId);
+			vo.setUserId(userId);
+		}
 		
-		vo.setUserId(userId);
-		vo.setUserEmail(userEmail);
 		int result = userService.modifyUserPw(vo);
 		
 		Map<String, String> map = new HashMap<>();
@@ -76,7 +76,7 @@ public class UserRESTController {
 		
 		if(result == 1) {
 			map.put("message", "비밀번호가 변경 되었습니다. 다시 로그인 해주세요.");
-			if(userId != null) {
+			if(userDetails != null) {
 				new SecurityContextLogoutHandler().logout(request, response, authentication);			
 			}
 		} else {
