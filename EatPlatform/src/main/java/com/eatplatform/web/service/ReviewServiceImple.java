@@ -28,11 +28,24 @@ public class ReviewServiceImple implements ReviewService{
 	@Autowired
 	private ReviewLikeListMapper reviewLikeListMapper;
 	
+	@Autowired ReviewImageMapper reviewImageMapper;
+	
+	@Transactional(value = "transactionManager")
 	@Override
 	public int createReview(ReviewVO reviewVO) {
 		log.info("createReview()");
 		int result = reviewMapper.insert(reviewVO);
 		log.info(result + "행 리뷰 등록");
+		
+		// 리뷰 이미지 첨부
+		List<ReviewImageVO> reviewImageList = reviewVO.getreviewImageList();
+
+		for(ReviewImageVO reviewImageVO : reviewImageList) {
+			reviewImageVO.setReviewId(reviewMapper.selectLastReviewId());
+			int result2 = reviewImageMapper.insertReviewImage(reviewImageVO);
+			log.info("이미지 등록 : " + reviewImageList);
+			
+		}
 		return 1;
 	}
 
@@ -59,12 +72,18 @@ public class ReviewServiceImple implements ReviewService{
 		
 		// 리뷰 댓글 삭제
 		int deleteReply = replyMapper.deleteByReviewId(reviewId);
-		log.info(deleteReply + "행 댓글 삭제");
+		log.info(deleteReply + "댓글 삭제");
 		
 		// 추천인 목록 삭제
 		int deleteReviewLikeList = reviewLikeListMapper.delete(reviewId);
-		log.info(deleteReviewLikeList + "행 추천 삭제");
+		log.info(deleteReviewLikeList + "추천 삭제");
+		
+		// 첨부된 이미지 데이터 삭제
+		int deleteReviewImage = reviewImageMapper.deleteReviewImageByReviewId(reviewId);
+		log.info(deleteReviewImage + "이미지 삭제");
+		
 		return 1;
+		
 	}
 
 	@Override

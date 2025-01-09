@@ -19,11 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReplyService;
+import com.eatplatform.web.service.ReviewImageService;
 import com.eatplatform.web.service.ReviewService;
 
 import lombok.extern.log4j.Log4j;
@@ -39,10 +38,13 @@ public class ReviewRESTController {
 	@Autowired
 	private ReplyService replyService;
 	
+	@Autowired
+	private ReviewImageService reviewImageService;
+	
 	// 리뷰 등록(회원)
 		@PostMapping
 		public ResponseEntity<Integer> createReview(
-				@ModelAttribute ReviewVO reviewVO, HttpSession session) {
+				@RequestBody ReviewVO reviewVO, HttpSession session) {
 			
 			// 리뷰 내용 길이 제한 (250자 이하) 
 			if (reviewVO.getReviewContent() != null && 
@@ -56,7 +58,6 @@ public class ReviewRESTController {
 			int result = reviewService.createReview(reviewVO);
 			return new ResponseEntity<Integer>(result, HttpStatus.OK);
 		}
-		
 	
 	// 식당별 리뷰 전체 조회
 		@GetMapping("/all/{storeId}")
@@ -105,7 +106,6 @@ public class ReviewRESTController {
 		log.info("deleteReview()");
 		
 		int result = reviewService.deleteReview(reviewId);
-		int deleteReply = replyService.deleteReplyByReview(reviewId);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	

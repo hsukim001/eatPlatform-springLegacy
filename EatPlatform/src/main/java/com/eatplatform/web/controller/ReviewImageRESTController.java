@@ -67,7 +67,6 @@ public class ReviewImageRESTController {
 			
 			list.add(reviewImageVO);
 			
-			
 		}
 		return new ResponseEntity<ArrayList<ReviewImageVO>>(list, HttpStatus.OK);
 		

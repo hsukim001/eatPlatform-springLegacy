@@ -1,24 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <!-- css 파일 불러오기 -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
 <title>리뷰</title>
-
-<script src="https://code.jquery.com/jquery-3.7.1.js">
-</script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 <body>
 	
 	<input type="hidden" id="storeId" value="1">
 	
-	<div style="text-align: center;">
-		<input type="text" id="userId" value="test21" readonly >
+	<input type="text" id="userId" readonly="readonly" value="test21" >
+	<div id="reviewDiv" style="text-align: center;">
 		<input type="number" id="reviewStar" placeholder="별점" min="1" max="5">
 		<input type="text" id="reviewTag" placeholder="태그">
 		<br>
@@ -53,16 +52,26 @@
     <jsp:include page="reportModal.jsp" />
 
 	<script type="text/javascript">
+		// ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정
+	    // ajax 요청을 보낼 때마다 CSRF 토큰을 요청 헤더에 추가하는 코드
+	    $(document).ajaxSend(function(e, xhr, opt){
+	       var token = $("meta[name='_csrf']").attr("content");
+	       var header = $("meta[name='_csrf_header']").attr("content");
+	       
+	       xhr.setRequestHeader(header, token);
+	    });
+		
 		$(document).ready(function(){
 			var pageNumber = 1;  // 페이지 번호
             var pageSize = 5;  // 한 번에 가져올 리뷰의 개수
             var totalReviews = 0; // 전체 리뷰 개수
 			getAllReview();
+            
+            let userId = $('#userId').val();
 			
 			// 리뷰 등록
 			$('#btnAdd').click(function(){
 				var storeId = $('#storeId').val();
-				var userId = $('#userId').val();
 				var reviewStar = $('#reviewStar').val();
 				var reviewContent = $('#reviewContent').val();
 				var reviewTag = $('#reviewTag').val();
@@ -72,77 +81,66 @@
                     return;
                 }
 				
-				var formData = new FormData;
-				
-				formData.append("storeId", storeId);
-			    formData.append("userId", userId);
-			    formData.append("reviewStar", reviewStar);
-			    formData.append("reviewContent", reviewContent);
-			    formData.append("reviewTag", reviewTag);
-			    
-			    // reviewImg-list의 각 input 태그 접근
-	            var i = 0;
-	            $('.reviewImg-list input[name="reviewImageVO"]').each(function(){
-	               console.log(this);
-	               // JSON reviewImageVO 데이터를 object 변경
-	               var reviewImageVO = JSON.parse($(this).val());
-	               // reviewImagePath input 생성
-	               var inputPath = $('<input>').attr('type', 'hidden')
-	                     .attr('name', 'reviewImageList[' + i + '].reviewImagePath');
-	               inputPath.val(reviewImageVO.reviewImagePath);
-	               
-	               // reviewImageRealName input 생성
-	               var inputRealName = $('<input>').attr('type', 'hidden')
-	                     .attr('name', 'reviewImageList[' + i + '].reviewImageRealName');
-	               inputRealName.val(reviewImageVO.reviewImageRealName);
-	               
-	               // reviewImageChgName input 생성
-	               var inputChgName = $('<input>').attr('type', 'hidden')
-	                     .attr('name', 'reviewImageList[' + i + '].reviewImageChgName');
-	               inputChgName.val(reviewImageVO.reviewImageChgName);
-	               
-	               // reviewImageExtension input 생성
-	               var inputExtension = $('<input>').attr('type', 'hidden')
-	                     .attr('name', 'reviewImageList[' + i + '].reviewImageExtension');
-	               inputExtension.val(reviewImageVO.reviewImageExtension);
-	               
-	               // form에 태그 추가
-	               formData.append(reviewImagePath, inputPath);
-	               formData.append(reviewImageRealName, inputRealName);
-	               formData.append(reviewImageChgName, inputChgName);
-	               formData.append(reviewImageExtension, inputExtension);
-	               
-	               i++;
-	               
+				// 리뷰 이미지 처리
+	             var reviewImageList = [];
+	             var i = 0;
+		           
+	          	// reviewImg-list의 각 input 태그 접근
+	            $('.reviewImg-list input[name="reviewImageVO"]').each(function() {
+	            	var reviewImageVO = JSON.parse($(this).val());
+	            	
+	            	// JSON 객체로 ReviewImageVO 배열 구성
+	                reviewImageList.push({
+	                     reviewImagePath: reviewImageVO.reviewImagePath,
+	                     reviewImageRealName: reviewImageVO.reviewImageRealName,
+	                     reviewImageChgName: reviewImageVO.reviewImageChgName,
+	                     reviewImageExtension: reviewImageVO.reviewImageExtension
+	                });
+
+	                i++;
 	            });
-	        
-				$.ajax({
-					type : 'POST',
-					url : '../review',
-					data : formData,
-					processData: false, // FormData는 자동으로 처리되므로 false 설정
-				    contentType: false, // multipart/form-data로 자동 설정
-					success : function(result) {
-						console.log(result);
-						if(result == 1) {
-							alert('리뷰 등록 성공');
-							getAllReview();
-						} else {
-							alert('리뷰 등록에 실패했습니다.');
-						}
-					},
-					error: function(xhr, status, error) {
-				        if (xhr.status == 400) {
-				            alert('리뷰 내용은 250자 이하로 작성해주세요.');
-				        } else {
-				            alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
-				        }
-				    }
-				});
-		
-			}); // end btnAdd.click()
-			
-			// 식당 리뷰 전체 가져오기
+	            console.log("reviewImageList" + reviewImageList);
+	            
+	         	// JSON 데이터 객체 생성
+	            var obj = {
+	            		"storeId" : storeId,
+		                "userId" : userId,
+		                "reviewStar" : reviewStar,
+		                "reviewContent" : reviewContent,
+		                "reviewTag" : reviewTag,
+		                "reviewImageList" : reviewImageList  // 이미지 리스트 추가	
+	         	};
+				console.log(obj);
+	         
+	         	// JSON 데이터를 전송
+	             $.ajax({
+	                 type: 'POST',
+	                 url: '../review',  // 서버의 URL
+	                 headers : {
+							"Content-Type" : "application/json"
+					 },
+	                 data: JSON.stringify(obj),  // JSON 문자열로 변환하여 전송
+	                 success: function(result) {
+	                     if (result == 1) {
+	                         alert('리뷰 등록 성공');
+	                         $('#reviewDiv input, #reviewDiv textarea').val(''); // reviewDiv 값 초기화
+	                         $('.image-list').html(''); // image-list 초기화
+	                         getAllReview();  // 리뷰 목록 다시 불러오기
+	                     } else {
+	                         alert('리뷰 등록에 실패했습니다.');
+	                     }
+	                 },
+	                 error: function(xhr, status, error) {
+	                     if (xhr.status == 400) {
+	                         alert('리뷰 내용은 250자 이하로 작성해주세요.');
+	                     } else {
+	                         alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
+	                     }
+	                 }
+	             });
+	         }); // end btnAdd.click()
+
+	        // 식당 리뷰 전체 가져오기
 			function getAllReview() {
 				
 				var storeId = $('#storeId').val();
@@ -323,7 +321,6 @@
 				console.log(this);
 				
 				var reviewId = $(this).prevAll('#reviewId').val();
-				var userId = "${sessionScope.userId}";
 				
 				$.ajax({
 					type : 'POST', 
@@ -365,7 +362,6 @@
 
 			    if (selectedReason) {
 			      // 신고 내용 처리 (예: 서버로 보내기)
-			      var userId = "${sessionScope.userId}";
 			      var reportMessage = selectedReason;
 			      
 			      var obj3 = {
@@ -387,9 +383,10 @@
 		        	success: function(result) {
 		        		if (result === 0) {
 		        			alert('이미 신고된 리뷰입니다.');
+		        			$('#reportModal').hide(); // 신고 후 모달 닫기
 		        		} else if (result === 1) {
 		          	alert('리뷰 신고가 제출되었습니다.');
-		          	$('#reportModal').hide(); // 신고 후 모달 닫기
+		          	$('#reportModal').hide(); 
 		        		}
 		        	},
 		          error: function(error) {

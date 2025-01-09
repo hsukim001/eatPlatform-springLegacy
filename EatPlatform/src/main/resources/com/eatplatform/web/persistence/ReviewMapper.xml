@@ -25,7 +25,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{storeId}, #{userId},
 		#{reviewStar}, #{reviewContent}, #{reviewTag})
 	</insert>
-
+	
+	<!-- 이미지 첨부 시 reviewId 반환 -->
+	<select id="selectLastReviewId" resultType="Integer">
+	      SELECT REVIEW_SEQ.CURRVAL
+	      FROM DUAL
+	</select>
+	
 	<select id="selectListByStoreId" resultMap="reviewResultMap">
 		SELECT * FROM REVIEW
 		WHERE STORE_ID = #{storeId}
