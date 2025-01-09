@@ -1,8 +1,5 @@
 package com.eatplatform.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,14 +83,6 @@ public class UserController {
 	@GetMapping("/searchPw")
 	public void searchPw() {
 		log.info("searchPw()");
-	}
-	
-	// 이메일 인증 화면 호출
-	@GetMapping("/authUser")
-	public void authUser(@RequestParam("userId") String userId, @RequestParam String userEmail, Model model) {
-		log.info("authUser()");
-		model.addAttribute("userId", userId);
-		model.addAttribute("userEmail", userEmail);
 	}
 	
 	// 아이디 찾기 화면 호출

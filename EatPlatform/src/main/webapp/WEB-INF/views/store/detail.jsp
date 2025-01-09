@@ -20,8 +20,19 @@
 		$(function(){
 			
 			$('#reservBtn').click(function(){
-				$('#calendar-wrap > div').stop().fadeToggle(400);
-				$('#calendar-wrap').stop().slideToggle(500);
+				fetch('../access/auth/status', { method : 'get', credentials: 'include' })
+					.then(response => response.json())
+					.then(isAuthenticated => {
+						if(isAuthenticated) {
+							$('#calendar-wrap > div').stop().fadeToggle(400);
+							$('#calendar-wrap').stop().slideToggle(500);							
+						} else {
+							alert('로그인이 필요합니다.');
+						}
+					})
+					.catch(error => {
+						console.error("Error checking authentication status:", error);
+					});
 			}); // End #reservBtnWrap input.click
 			
 			$('#scoreWrap img').click(function () {

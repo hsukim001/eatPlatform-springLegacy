@@ -1,6 +1,7 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <div id="calendar-wrap">
 	<div class="calendar-container">
@@ -38,6 +39,11 @@
 	<input type="time" id="start-time" class="hidden-input"
 		value="${startTime }"> <input type="time" id="end-time"
 		class="hidden-input" value="${endTime }">
-		
-	<input id="createdReserv" type="button" value="등록">
+	
+	<sec:authorize access="isAnonymous()">
+		<input type="button" value="로그인" onclick="location.href='../access/login'">
+	</sec:authorize>
+	<sec:authorize access="isAuthenticated()">
+		<input id="createdReserv" type="button" value="등록">		
+	</sec:authorize>
 </div>

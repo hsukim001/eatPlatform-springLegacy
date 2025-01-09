@@ -4,9 +4,18 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="_csrf" content="${_csrf.token}"/>
+		<meta name="_csrf_header" content="${_csrf.headerName}"/>
 		<title>비밀번호 수정</title>
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script type="text/javascript">
+			// ajax CSRF 토큰
+			$(document).ajaxSend(function(e, xhr, opt){
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");			
+				xhr.setRequestHeader(header, token);
+			});
+			
 			$(document).ready(function(){
 				let isPwChk = false;
 				

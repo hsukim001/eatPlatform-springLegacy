@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,11 +58,11 @@ public class UserRESTController {
 	
 	// 비밀번호 수정
 	@PutMapping("/modify/password")
-	public ResponseEntity<Map<String, String>> modifyUserPw(@RequestBody UserVO userVO, HttpServletRequest request) {
+	public ResponseEntity<Map<String, String>> modifyUserPw(@RequestBody UserVO userVO, @AuthenticationPrincipal UserDetails userDetails, 
+			HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		log.info("modifyUserPw()");
 		UserVO vo = userVO;
-		HttpSession session = request.getSession();
-		String userId = (String) session.getAttribute("userId");
+		String userId = userDetails.getUsername();
 		String userEmail = userVO.getUserEmail();
 		log.info("userId : " + userId);
 		log.info("email : " + userEmail);
@@ -78,7 +77,7 @@ public class UserRESTController {
 		if(result == 1) {
 			map.put("message", "비밀번호가 변경 되었습니다. 다시 로그인 해주세요.");
 			if(userId != null) {
-				session.invalidate();				
+				new SecurityContextLogoutHandler().logout(request, response, authentication);			
 			}
 		} else {
 			map.put("message", "비밀번호 변경에 실패하였습니다.");
