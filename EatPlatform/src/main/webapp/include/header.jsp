@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>       
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
        
         <!-- Header -->
         <header>
@@ -12,14 +13,28 @@
                 <input type="text" name="search_input" id="search_input" placeholder="#논현동 맛집">
             </div>
             <div class="login_form">
-                <ul>
-                    <li>
-                    	<a href="/web/access/login">
-                    		로그인
-                    	</a>
-                    </li>
-                    <li>마이페이지</li>
-                </ul>
+                <sec:authorize access="isAnonymous()">
+	                <ul>
+	    	                <li>
+		                    	<a href="/web/access/login">
+		                    		로그인
+		                    	</a>                    		
+		                    </li>
+	                </ul>
+                </sec:authorize>
+                <sec:authorize access="isAuthenticated()">
+                	<ul>
+                		<li>
+                			<form action="../access/logout" method="post">
+                				<input type="submit" value="로그아웃">
+                				<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+                			</form>
+                		</li>
+                    	<li>
+                    		<a href="../user/detail">마이페이지</a>
+                    	</li>         	
+                	</ul>
+                </sec:authorize>
             </div>
         </header>
         <!-- Header 여백 공간 채우기 -->

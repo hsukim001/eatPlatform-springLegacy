@@ -96,7 +96,8 @@ public class UserRESTController {
 	
 	// 회원 삭제
 	@PutMapping ("/delete/{status}")
-	public ResponseEntity<ResultMsgResponse> deleteUser(@PathVariable("status") char status, @AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+	public ResponseEntity<ResultMsgResponse> deleteUser(@PathVariable("status") char status, @AuthenticationPrincipal UserDetails userDetails, 
+			HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		log.info("deleteUser()");
 		String userId = userDetails.getUsername();
 		
