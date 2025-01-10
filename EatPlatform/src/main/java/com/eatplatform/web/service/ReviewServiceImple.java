@@ -42,7 +42,7 @@ public class ReviewServiceImple implements ReviewService{
 
 		for(ReviewImageVO reviewImageVO : reviewImageList) {
 			reviewImageVO.setReviewId(reviewMapper.selectLastReviewId());
-			int result2 = reviewImageMapper.insertReviewImage(reviewImageVO);
+			int imageResult = reviewImageMapper.insertReviewImage(reviewImageVO);
 			log.info("이미지 등록 : " + reviewImageList);
 			
 		}
@@ -76,11 +76,11 @@ public class ReviewServiceImple implements ReviewService{
 		
 		// 추천인 목록 삭제
 		int deleteReviewLikeList = reviewLikeListMapper.delete(reviewId);
-		log.info(deleteReviewLikeList + "추천 삭제");
+		log.info(deleteReviewLikeList + "추천 목록 삭제");
 		
 		// 첨부된 이미지 데이터 삭제
 		int deleteReviewImage = reviewImageMapper.deleteReviewImageByReviewId(reviewId);
-		log.info(deleteReviewImage + "이미지 삭제");
+		log.info(deleteReviewImage + "이미지 데이터 삭제");
 		
 		return 1;
 		

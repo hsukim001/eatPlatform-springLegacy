@@ -4,6 +4,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.eatplatform.web.persistence.ReviewReportListMapper">
+
+	<resultMap type="com.eatplatform.web.domain.ReviewReportListVO" 
+		id="reviewReportListResultMap">
+		<id property="reviewReportListId" column="REVIEW_REPORT_LIST_ID" />
+		<result property="reviewId" column="REVIEW_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="reviewReportMessage" column="REVIEW_REPORT_MESSAGE" />
+		<result property="reviewContent" column="REVIEW_CONTENT" />
+		<result property="reviewReportDate" column="REVIEW_REPORT_DATE" />
+	</resultMap>
 	
 	<select id="checkReport" resultType="Integer">
 		SELECT COUNT (*) FROM REVIEW_REPORT_LIST
@@ -12,8 +22,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<insert id="insert">
 		INSERT INTO REVIEW_REPORT_LIST 
-		(REVIEW_ID, USER_ID, REPORT_MESSAGE) 
-		VALUES (#{reviewId}, #{userId}, #{reportMessage})
+		(REVIEW_REPORT_LIST_ID, REVIEW_ID, USER_ID, 
+		REVIEW_REPORT_MESSAGE, REVIEW_CONTENT) 
+		VALUES (REVIEW_REPORT_LIST_SEQ.NEXTVAL, #{reviewId}, #{userId}, 
+		#{reviewReportMessage}, #{reviewContent})
 	</insert>
 	
 </mapper>

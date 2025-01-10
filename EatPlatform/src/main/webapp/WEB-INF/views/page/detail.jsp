@@ -99,7 +99,6 @@
 
 	                i++;
 	            });
-	            console.log("reviewImageList" + reviewImageList);
 	            
 	         	// JSON 데이터 객체 생성
 	            var obj = {
@@ -163,7 +162,7 @@
 						var list = '';
 						$(data.list).each(function(){
 							console.log(this); // 인덱스 데이터
-							console.log(this.reviewId);
+							
 							// 문자열 형태를 날짜 형태로 변환
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
 		                  	
@@ -186,6 +185,7 @@
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
+								+ '<div class="image-view"></div>'
 								+ '</pre>'
 								+ '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' // 리뷰 댓글 표시
 								+ '</div>' 
@@ -345,7 +345,7 @@
 			
 			// 리뷰 신고 버튼 클릭 시 모달 열기
 			$(document).on('click', '.btn_report', function() {
-				console.log($(this).prevAll('#reviewContent').val());
+	
 			  var reviewContent = $(this).prevAll('#reviewContent').val();
 			  var reviewId = $(this).data('review-id');
 			  $('#reportModal').show();
@@ -362,12 +362,12 @@
 
 			    if (selectedReason) {
 			      // 신고 내용 처리 (예: 서버로 보내기)
-			      var reportMessage = selectedReason;
+			      var reviewReportMessage = selectedReason;
 			      
 			      var obj3 = {
 			    		  'reviewId' : reviewId,
 							'userId' : userId,
-							'reportMessage' : reportMessage,
+							'reviewReportMessage' : reviewReportMessage,
 							'reviewContent' : reviewContent
 					}
 					console.log(obj3);
@@ -409,6 +409,22 @@
 		  if (event.target == document.getElementById('reportModal')) {
 		    $('#reportModal').hide();
 		  }
+		});
+		
+		// 첨부된 이미지 조회
+		$('#image-view').each(function() {
+			
+			var reviewId = this.reviewId;
+			var url = '../image/get/' + reviewId;
+			
+			if(reviewImageVO.reviewImageExtension == 'jpg') {
+				$.getJSON(
+						url, 
+						function(data){
+							consol.log(data);
+						})
+			}
+		
 		});
 					
 			// 선택된 리뷰에 댓글 등록(사업자)
