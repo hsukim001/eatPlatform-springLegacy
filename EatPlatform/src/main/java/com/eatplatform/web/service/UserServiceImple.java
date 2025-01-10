@@ -45,7 +45,7 @@ public class UserServiceImple implements UserService{
 		vo.setUserPw(encodePassword);
 
 		vo.setUserAuth("ROLE_MEMBER");
-		vo.setUserActiveYn('Y');
+		vo.setUserActive(1);
 		
 		log.info(vo);
 		
@@ -74,7 +74,7 @@ public class UserServiceImple implements UserService{
 		log.info("login()");
 		UserVO vo = new UserVO();
 		vo.setUserId(userId);
-		vo.setUserActiveYn('Y');
+		vo.setUserActive(1);
 		int result = userMapper.checkUserByUserId(vo);
 		if(result == 1) {
 			vo = userMapper.selectUserByUserId(userId);
@@ -118,9 +118,9 @@ public class UserServiceImple implements UserService{
 		UserVO vo = new UserVO();
 		vo.setUserId(userId);
 		if(!type.equals("회원가입")) {
-			vo.setUserActiveYn('Y');
+			vo.setUserActive(1);
 		}
-		log.info("active YN : " + vo.getUserActiveYn());
+		log.info("active : " + vo.getUserActive());
 		return userMapper.checkUserByUserId(vo);
 	}
 
@@ -138,12 +138,12 @@ public class UserServiceImple implements UserService{
 		return chUserId;
 	}
 
-	// 회원 삭제
+	// 회원 비활성화
 	@Override
-	public int deleteUser(char status, String userId) {
+	public int deleteUser(int status, String userId) {
 		log.info("deleteUser()");
 		UserVO vo = new UserVO();
-		vo.setUserActiveYn(status);
+		vo.setUserActive(status);
 		vo.setUserId(userId);
 		return userMapper.updateActiveYnByUserId(vo);
 	}
@@ -151,11 +151,11 @@ public class UserServiceImple implements UserService{
 	// 회원 목록 삭제
 	@Transactional(value = "transactionManager")
 	@Override
-	public int deleteUserList(char userActiveYn) {
+	public int deleteUserList(int userActive) {
 		log.info("deleteUserList()");
-		log.info(userActiveYn);
+		log.info(userActive);
 		
-		List<UserVO> userList = userMapper.selectUserListByUserActiveYn(userActiveYn);
+		List<UserVO> userList = userMapper.selectUserListByUserActive(userActive);
 		
 		int insertDelTableResult = 0;
 		int deleteUserTableResult = 0;
@@ -175,5 +175,13 @@ public class UserServiceImple implements UserService{
 		
 		return 1;
 	}
+
+	@Override
+	public int permanentDeleteUserInfo() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
 	
 }

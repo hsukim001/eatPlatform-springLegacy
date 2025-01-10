@@ -18,8 +18,10 @@ public interface UserService {
 	int checkUserByUserId(String userId, String type);
 	// 아이디 찾기
 	String searchUserId(String userEmail);
-	// 회원 삭제
-	int deleteUser(char status, String userId);
+	// 회원 비활성화
+	int deleteUser(int status, String userId);
 	// 회원 목록 삭제
-	int deleteUserList(char userActiveYn);
+	int deleteUserList(int userActive);
+	// 회원 정보 영구 삭제
+	int permanentDeleteUserInfo();
 }

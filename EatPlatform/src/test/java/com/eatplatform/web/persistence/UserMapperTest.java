@@ -30,9 +30,9 @@ public class UserMapperTest {
 	
 	private void selectList() {
 		log.info("selectList()");
-		char userActiveYn = 'N';
+		char userActive = 0;
 		List<UserVO> list = new ArrayList<>();
-		list = userMapper.selectUserListByUserActiveYn(userActiveYn);
+		list = userMapper.selectUserListByUserActive(userActive);
 		for(int i = 0; i < list.size(); i++) {
 			log.info(list.get(i));
 		}

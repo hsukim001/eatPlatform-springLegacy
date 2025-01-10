@@ -305,27 +305,31 @@ $(function () {
 	// 예약 등록
 	function createdReserv(){
 		let storeId = $('#storeId').val();
-		let timeSplit = timeValue.split(':');
-		$.ajax({
-			url : '../reserv/created',
-			type : 'post',
-			headers : {
-				"Content-Type" : "application/json"
-			},
-			data : JSON.stringify({
-				"storeId" : storeId,
-				"reservDate" : dateText,
-				"reservHour" : timeSplit[0],
-				"reservMin" : timeSplit[1],
-				"reservPersonnel" : personnel
-			}),
-			success : function(response){
-				if(response == 1) {
-					alert("예약이 완료되었습니다.");
-					location.href='detail?storeId=' + storeId;
+		if(timeValue) {
+			let timeSplit = timeValue.split(':');
+			$.ajax({
+				url : '../reserv/created',
+				type : 'post',
+				headers : {
+					"Content-Type" : "application/json"
+				},
+				data : JSON.stringify({
+					"storeId" : storeId,
+					"reservDate" : dateText,
+					"reservHour" : timeSplit[0],
+					"reservMin" : timeSplit[1],
+					"reservPersonnel" : personnel
+				}),
+				success : function(response){
+					if(response == 1) {
+						alert("예약이 완료되었습니다.");
+						location.href='detail?storeId=' + storeId;
+					}
 				}
-			}
-		});
+			});
+		} else {
+			alert("예약 시간을 선택해주세요.");
+		}
 	}
 
     generateCalendar(currentMonth, currentYear);

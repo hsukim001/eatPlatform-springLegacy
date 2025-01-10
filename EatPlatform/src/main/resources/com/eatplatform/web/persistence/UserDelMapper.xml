@@ -13,8 +13,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="userPhone" column="USER_PHONE"/>
 		<result property="userName" column="USER_NAME"/>
 		<result property="userAuth" column="USER_AUTH"/>
-		<result property="userActiveYn" column="USER_ACTIVE_YN"/>
+		<result property="userActive" column="USER_ACTIVE"/>
 		<result property="userRegDate" column="USER_REG_DATE"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.UserDelVO" id="userDelResultMap">
+		<id property="userId" column="USER_ID" />
+		<result property="userPw" column="USER_PW"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="userPhone" column="USER_PHONE"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userAuth" column="USER_AUTH"/>
+		<result property="userActive" column="USER_ACTIVE"/>
+		<result property="userRegDate" column="USER_REG_DATE"/>
+		<result property="userDelRegDate" column="USER_DEL_REG_DATE"/>
 	</resultMap>
 
 	<insert id="insertUser">
@@ -27,8 +39,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			#{userPhone},
 			#{userName},
 			#{userAuth},
-			#{userActiveYn},
+			#{userActive},
+			#{userRegDate},
 			SYSDATE
 		)
 	</insert>
+	
+	<delete id="permanentDeleteUserInfo">
+		DELETE FROM USER_DEL_LIST
+		WHERE TRUNC(USER_DEL_REG_DATE) = #{deadline}
+	</delete>
 </mapper>

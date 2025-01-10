@@ -19,5 +19,5 @@ public interface UserMapper {
 	int checkUserByUserIdUserEmail(UserVO userVO);
 	UserVO selectUserIdByUserEmail(String userEmail);
 	int updateActiveYnByUserId(UserVO userVO);
-	List<UserVO> selectUserListByUserActiveYn(char userActiveYn);
+	List<UserVO> selectUserListByUserActive(int userActive);
 }

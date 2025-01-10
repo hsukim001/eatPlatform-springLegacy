@@ -53,7 +53,7 @@
 				    
 			        tableRows += '<tr>'+
 			                '<td class="reserv_id">'+ list.reservId+'</td>'+
-			                '<td><a href="../store/list">'+ list.storeName +'</a></td>'+
+			                '<td><a href="../store/detail?storeId='+ list.storeId +'">'+ list.storeName +'</a></td>'+
 			                '<td>'+ list.reservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
 			                '<td>'+ list.reservPersonnel +'</td>'+
 			                '<td>'+ createdDate +'</td>'+
@@ -91,7 +91,7 @@
 			    	
 			        tableRows += '<tr>'+
 			                '<td>'+ list.reservId+'</td>'+
-			                '<td><a href="../store/list">'+ list.storeName+'</a></td>'+
+			                '<td><a href="../store/detail?storeId='+ list.storeId +'">'+ list.storeName+'</a></td>'+
 			                '<td>'+ list.reservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
 			                '<td>'+ list.reservPersonnel +'</td>'+
 			                '<td>'+ createdDate +'</td>'+

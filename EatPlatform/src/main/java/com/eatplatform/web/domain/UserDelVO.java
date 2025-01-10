@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserVO {
+public class UserDelVO {
 	private String userId;
 	private String userPw;
 	private String userEmail;
@@ -20,4 +20,5 @@ public class UserVO {
 	private String userAuth;
 	private int userActive;
 	private Date userRegDate;
+	private Date userDelRegDate;
 }

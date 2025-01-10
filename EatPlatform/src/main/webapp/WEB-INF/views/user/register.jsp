@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>회원 가입</title>
 <style>
 	.divHide {
@@ -22,6 +24,14 @@
 			.replace(/[^0-9]/g, '')
 			.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
 	}
+	
+	// ajax CSRF 토큰
+	$(document).ajaxSend(function(e, xhr, opt){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+					
+		xhr.setRequestHeader(header, token);
+	});
 
 	$(document).ready(function() {
 		let isUserId = false;

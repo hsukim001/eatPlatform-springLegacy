@@ -83,14 +83,6 @@ public class ReservServiceImple implements ReservService{
 	@Override
 	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel) {
 		log.info("searchSchedule()");
-//		try {
-//			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-//			Date reservDate = format.parse(date);
-//			
-//			storeScheduleVO.setReservDate(reservDate);
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		}
 		log.info(storeScheduleVO.getReservDate());
 		
 		List<StoreScheduleVO> list = reservMapper.selectSchedule(storeScheduleVO);
@@ -98,6 +90,7 @@ public class ReservServiceImple implements ReservService{
 		
 		for(int i = 0; i < list.size(); i++) {
 			int totalPersonnel = list.get(i).getTotalPersonnel();
+			log.info(list.get(i).getReservDate());
 			
 			if(totalPersonnel < reservLimit) {
 				int maxPeople = reservLimit - totalPersonnel;

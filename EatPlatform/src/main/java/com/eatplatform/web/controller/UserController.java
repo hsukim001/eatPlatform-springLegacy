@@ -33,6 +33,7 @@ public class UserController {
 	@PostMapping("/created")
 	public String created(UserVO userVO) {
 		log.info("created()");
+		log.info(userVO);
 		
 		int result = userService.createdUser(userVO);
 		

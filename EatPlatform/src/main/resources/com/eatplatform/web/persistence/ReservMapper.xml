@@ -21,6 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.StoreScheduleVO" id="storeScheduleResultMap">
 		<id property="hour" column="HOUR"/>
 		<result property="min" column="MIN"/>
+		<result property="reservDate" column="reservDate"/>
 		<result property="totalPersonnel" column="TOTAL_PERSONNEL"/>
 	</resultMap>
 	

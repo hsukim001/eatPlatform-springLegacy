@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeRequests()
 				.antMatchers("/user/register").permitAll()
+				.antMatchers("/user/created").permitAll()
 				.antMatchers("/user/searchPw").permitAll()
 				.antMatchers("/user/searchId").permitAll()
 				.antMatchers("/user/modifyPw").permitAll()
@@ -38,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers("/store/detail").permitAll()
 				.antMatchers("/store/**").access("hasRole('ROLE_STORE')")
 				.antMatchers("/review/*").permitAll()
-				.antMatchers("/reserv/list").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')");
+				.antMatchers("/reserv/list").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')")
+				.antMatchers("/email/**").permitAll();
 
 		// 접근 제한 경로 설정
 		httpSecurity.exceptionHandling().accessDeniedPage("/access/accessDenied");

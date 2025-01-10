@@ -119,6 +119,9 @@ public class ReservRESTController {
 		vo.setReservLimit(reservLimit);
 		vo.setReservDate(reservDate);
 		List<StoreScheduleVO> list = reservService.searchSchedule(vo, personnel);
+		for(int i = 0; i < list.size(); i++) {
+			log.info(list.get(i).getReservDate());
+		}
 		
 		return new ResponseEntity<List<StoreScheduleVO>>(list, HttpStatus.OK);
 	}
