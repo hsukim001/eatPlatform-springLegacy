@@ -7,7 +7,7 @@ import com.eatplatform.web.domain.StoreAddressVO;
 
 @Mapper
 public interface StoreAddressMapper {
-	// 데이터 추가
+	// 데이터 추가.
 	int insertStoreAddress(StoreAddressVO storeAddressVO);
 
 }
