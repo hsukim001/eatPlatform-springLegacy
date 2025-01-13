@@ -25,15 +25,6 @@ public class ReviewReportListServiceImple implements ReviewReportListService {
 	public int createReviewReportList(ReviewReportListVO reviewReportListVO) {
 		log.info("createReviewReportList()");
 		
-		// 신고여부 확인
-		int checkResult = reviewReportListMapper
-				.checkReport(reviewReportListVO.getReviewId(), 
-						reviewReportListVO.getUserId());
-		if(checkResult > 0) {
-			log.info("이미 신고된 리뷰입니다.");
-			return 0;
-		}
-		
 		int result = reviewReportListMapper.insert(reviewReportListVO);
 		log.info(result + "행 신고 등록");
 		
@@ -43,6 +34,22 @@ public class ReviewReportListServiceImple implements ReviewReportListService {
 		log.info(updateReport);
 		
 		return 1;
+	}
+
+	// 신고여부 확인
+	@Override
+	public int isReviewReported(int reviewId, String userId) {
+		log.info("isReviewReported()");
+		
+		ReviewReportListVO reviewReportListVO = new ReviewReportListVO();
+		reviewReportListVO.setReviewId(reviewId);
+		reviewReportListVO.setUserId(userId);
+		
+		int result = reviewReportListMapper.checkReport(reviewReportListVO);
+		if(result > 0) {
+			log.info("이미 신고된 리뷰입니다.");
+		}
+		return result;
 	}
 	
 }

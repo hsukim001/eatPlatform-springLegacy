@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -160,6 +161,7 @@
 						}
 						
 						var list = '';
+		
 						$(data.list).each(function(){
 							console.log(this); // 인덱스 데이터
 							
@@ -185,7 +187,6 @@
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
-								+ '<div class="image-view"></div>'
 								+ '</pre>'
 								+ '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' // 리뷰 댓글 표시
 								+ '</div>' 
@@ -195,7 +196,7 @@
 								+ '<button class="btn_reply" >댓글 입력</button>'
 								+ '</div>'
 								+ '</div>';
-								
+							
 							getReplies(this.reviewId);
 
 						}); // end each()
@@ -224,6 +225,12 @@
                 pageNumber++;  // 페이지 번호 증가
                 getAllReview();  // 다음 페이지의 리뷰 로드
             });
+			
+         // 리뷰에 대한 이미지를 가져오는 함수
+         
+ 
+			
+			
 			
 			// 리뷰에 대한 댓글을 가져오는 함수
 			function getReplies(reviewId) {
@@ -348,8 +355,25 @@
 	
 			  var reviewContent = $(this).prevAll('#reviewContent').val();
 			  var reviewId = $(this).data('review-id');
-			  $('#reportModal').show();
-			  $('#reportText').val(''); // 기존 입력값 초기화
+			  
+			// 신고여부 확인
+			  $.ajax({
+				  type : 'GET',
+				  url : '../review/report/' + reviewId + '/user/' + userId,
+				  headers : {
+					  'Content-Type' : 'application/json'
+				  },
+				  success : function(response) {
+					  console.log(response);
+					  if(response === 0) {
+						  $('#reportModal').show();
+						  $('#reportText').val(''); // 기존 입력값 초기화
+					  } else {
+						  alert('이미 신고된 리뷰입니다.');
+					  }
+				  }
+			  });
+			
 			  
 			// 신고 제출 버튼 클릭 시 처리
 			  $('input[name="reportReason"]').on('change', function() {
@@ -381,16 +405,14 @@
 					},
 					data : JSON.stringify(obj3),
 		        	success: function(result) {
-		        		if (result === 0) {
-		        			alert('이미 신고된 리뷰입니다.');
+		        		if (result === 1) {
+		        			alert('리뷰 신고가 제출되었습니다.');
 		        			$('#reportModal').hide(); // 신고 후 모달 닫기
-		        		} else if (result === 1) {
-		          	alert('리뷰 신고가 제출되었습니다.');
-		          	$('#reportModal').hide(); 
 		        		}
 		        	},
 		          error: function(error) {
 		          alert('신고 제출에 실패했습니다. 다시 시도해주세요.');
+		          $('#reportModal').hide(); 
 		        }
 		      });
 		    } else {
@@ -409,22 +431,6 @@
 		  if (event.target == document.getElementById('reportModal')) {
 		    $('#reportModal').hide();
 		  }
-		});
-		
-		// 첨부된 이미지 조회
-		$('#image-view').each(function() {
-			
-			var reviewId = this.reviewId;
-			var url = '../image/get/' + reviewId;
-			
-			if(reviewImageVO.reviewImageExtension == 'jpg') {
-				$.getJSON(
-						url, 
-						function(data){
-							consol.log(data);
-						})
-			}
-		
 		});
 					
 			// 선택된 리뷰에 댓글 등록(사업자)

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -108,11 +110,14 @@ public class ReviewImageRESTController {
 		return entity;
 	}
 	
-	@GetMapping("/get")
-	public ResponseEntity<byte[]> getImage(int reviewImageId, String reviewImageExtension) {
+	@GetMapping("/get/{reviewId}")
+	public ResponseEntity<byte[]> getImage(
+			@RequestParam("reviewId") int reviewId, 
+			@RequestParam("reviewImageExtension") String reviewImageExtension) {
 		log.info("getImage()");
 		
-		ReviewImageVO reviewImageVO = reviewImageService.getReviewImageById(reviewImageId);
+		List<ReviewImageVO> reviewImageList = reviewImageService.getImageListByReviewId(reviewId);
+		ReviewImageVO reviewImageVO = new ReviewImageVO();
 		ResponseEntity<byte[]> entity = null;
 		
 		try {

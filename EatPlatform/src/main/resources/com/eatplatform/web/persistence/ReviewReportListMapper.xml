@@ -15,11 +15,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewReportDate" column="REVIEW_REPORT_DATE" />
 	</resultMap>
 	
-	<select id="checkReport" resultType="Integer">
-		SELECT COUNT (*) FROM REVIEW_REPORT_LIST
-		WHERE REVIEW_ID = #{reviewId} AND USER_ID = #{userId}
-	</select>
-	
 	<insert id="insert">
 		INSERT INTO REVIEW_REPORT_LIST 
 		(REVIEW_REPORT_LIST_ID, REVIEW_ID, USER_ID, 
@@ -27,5 +22,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		VALUES (REVIEW_REPORT_LIST_SEQ.NEXTVAL, #{reviewId}, #{userId}, 
 		#{reviewReportMessage}, #{reviewContent})
 	</insert>
+	
+	<!-- 신고여부 확인 -->
+	<select id="checkReport" resultType="Integer">
+		SELECT COUNT (*) FROM REVIEW_REPORT_LIST
+		WHERE REVIEW_ID = #{reviewId} AND USER_ID = #{userId}
+	</select>
 	
 </mapper>
