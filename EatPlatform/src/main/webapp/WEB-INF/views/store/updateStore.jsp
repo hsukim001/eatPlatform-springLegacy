@@ -14,11 +14,12 @@
 }
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
     $(function() { 
         // "기타" 선택 관련 input 컨트롤
         $('#foodCategory').change(function() {  
-            let selectedCategory = $(this).val();
+            var selectedCategory = $(this).val();
             
             if (selectedCategory === '기타') {
                 $('#otherCategory').show(); 
@@ -30,9 +31,9 @@
 
         // 폼 제출 시 "기타" 입력값을 hidden input에 저장
         $('form').submit(function() { 
-            let category = $('#foodCategory').val();
+            var category = $('#foodCategory').val();
             if (category === '기타') {
-                var otherCategoryInput = $('#otherCategoryInput').val();
+                let otherCategoryInput = $('#otherCategoryInput').val();
                 $('#hiddenFoodCategory').val(otherCategoryInput);
             } else {
                 $('#hiddenFoodCategory').val(category);
@@ -46,6 +47,60 @@
             $("#businessHour").val(businessHour);
         }); // End form.submit
     }); // End $function
+</script>
+<script>
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+            	let postCode = data.zonecode;
+            	let jibunAddress = data.jibunAddress;
+                let roadAddress = data.roadAddress;
+                let sido = data.sido;
+                let sigungu = data.sigungu;
+                let bname1 = data.bname1;
+                let bname2 = data.bname2;
+                let extraAddress = '';
+                
+
+                $('#postCode').val(postCode);
+				$('#jibunAddress').val(jibunAddress);
+                $('#sido').val(sido);
+				$('#sigungu').val(sigungu);
+                $('#bname2').val(bname2);
+				
+                if (roadAddress !== '') {
+                	$('#roadAddress').val(roadAddress);
+                } else {
+                	$('#roadAddress').val(jibunAddress);
+                }
+
+                if(bname1 !== ''){
+                    $('#bname1').val(bname1);
+                } else {
+                	 $('#bname1').val("");;
+                }           
+                
+                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                	extraAddress += data.bname;
+                }
+                                           
+                if(data.buildingName !== '' && data.apartment === 'Y'){
+                	extraAddress += (extraAddress !== '' ? ', ' + data.buildingName : data.buildingName);
+                }
+                
+                if(extraAddress !== ''){
+                	extraAddress = ' (' + extraAddress + ')';
+                	$('#extraAddress').val(extraAddress)
+                }
+               
+
+            }
+        }).open({
+        		autoClose: true,
+        		popupTitle: '우편번호 검색'
+        	}
+        );
+    }
 </script>
 <title>식당 수정 페이지</title>
 </head>
@@ -104,6 +159,20 @@
             <textarea id="description" name="description" maxlength="250" placeholder="250자까지 입력 가능합니다.">${storeVO.description }
             </textarea>
         </label>
+               
+		<input type="text" id="postCode" name="postCode" placeholder="우편번호" value="${storeAddressVO.postCode }" required>
+		<input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
+		<input type="text" id="roadAddress" name="roadAddress" placeholder="도로명주소"  value="${storeAddressVO.roadAddress }">
+		<input type="text" id="jibunAddress" name="jibunAddress" placeholder="지번주소"required  value="${storeAddressVO.jibunAddress }">
+		<input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소"  value="${storeAddressVO.detailAddress }">
+		<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" value="${storeAddressVO.extraAddress }">
+		<br>
+		<input type="text" id="sido" name="sido" placeholder="sido" required value="${storeAddressVO.sido }">
+		<input type="text" id="sigungu" name="sigungu" placeholder="sigungu" required value="${storeAddressVO.sigungu }">
+		<input type="text" id="bname1" name="bname1" placeholder="bname1" value="${storeAddressVO.bname1 }">
+		<input type="text" id="bname2" name="bname2" placeholder="bname2" value="${storeAddressVO.bname2 }">
+		<br><br>
+		
         <input type="submit" value="식당 정보 수정">
     </form>
 </body>

@@ -16,7 +16,7 @@ header {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 99;
     border-top: 1px solid #e7e7e7;
     border-bottom: 1px solid #e7e7e7;
     background: #fbfbfb;
@@ -116,7 +116,7 @@ header {
     width: 100%;
     display: inline-block;
     position: relative;
-    margin: 10px auto;
+    margin: 0 auto;
 }
 
 /* Footer */

@@ -6,7 +6,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
 <!-- namespace -->
-<mapper namespace="com.eatplatform.web.persistence.StoreAddressMapper">
+<mapper
+	namespace="com.eatplatform.web.persistence.StoreAddressMapper">
 
 	<resultMap type="com.eatplatform.web.domain.StoreAddressVO"
 		id="StoreAddressResultMap">
@@ -27,20 +28,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		STORE_ID, SIDO, SIGUNGU,
 		BNAME1, BNAME2,
 		ROAD_ADDRESS, JIBUN_ADDRESS,
-		DETAIL_ADDRESS, EXTRA_ADDRESS,
+		DETAIL_ADDRESS,
+		EXTRA_ADDRESS,
 		POST_CODE
 		) VALUES (
-        #{storeId},
-        #{sido},
-        #{sigungu},
-        #{bname1},
-        #{bname2},
-        #{roadAddress},
-        #{jibunAddress},
-        #{detailAddress},
-        #{extraAddress},
-        #{postCode}
+		#{storeId},
+		#{sido},
+		#{sigungu},
+		#{bname1},
+		#{bname2},
+		#{roadAddress},
+		#{jibunAddress},
+		#{detailAddress},
+		#{extraAddress},
+		#{postCode}
 		)
 	</insert>
+
+	<select id="selectStoreAddressById"
+		resultMap="StoreAddressResultMap">
+		SELECT *
+		FROM STORE_ADDRESS
+		WHERE
+		STORE_ID = #{storeId}
+	</select>
+
+	<update id="updateStoreAddress">
+		UPDATE STORE_ADDRESS
+		SET
+		SIDO = #{sido},
+		SIGUNGU = #{sigungu},
+		BNAME1 = #{bname1},
+		BNAME2 = #{bname2},
+		ROAD_ADDRESS = #{roadAddress},
+		JIBUN_ADDRESS = #{jibunAddress},
+		DETAIL_ADDRESS = #{detailAddress},
+		EXTRA_ADDRESS = #{extraAddress},
+		POST_CODE = #{postCode}
+		WHERE STORE_ID = #{storeId}
+	</update>
 
 </mapper>

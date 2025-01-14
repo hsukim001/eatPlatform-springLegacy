@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+body {
+	max-height: 100vh;
+	overflow: hidden;
+}
+
+#container {
+    width: 100%;
+    display: inline-block;
+    margin: 0 auto;
+    position: relative;
+}
+
+#mapController {
+	width: 19.9vw;
+	float: left;
+}
+
+#map {
+	width: 80vw;
+	float: left;
+}
+
+#storeList {
+	height: 20vh;
+	overflow: scroll;
+}

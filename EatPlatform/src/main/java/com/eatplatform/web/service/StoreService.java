@@ -24,5 +24,5 @@ public interface StoreService {
 	// 전체 게시글 카운트
 	int getTotalStoresCount(List<String> keywords);
 	
-	int modifyStore(StoreVO storeVO);
+	int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO);
 }

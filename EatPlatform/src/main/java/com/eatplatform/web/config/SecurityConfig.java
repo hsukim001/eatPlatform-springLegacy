@@ -37,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers("/user/*").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')")
 				.antMatchers("/store/list").permitAll()
 				.antMatchers("/store/detail").permitAll()
+				.antMatchers("/store/map").permitAll()
+				.antMatchers("/store/map/**").permitAll()
 				.antMatchers("/store/**").access("hasRole('ROLE_STORE')")
 				.antMatchers("/review/*").permitAll()
 				.antMatchers("/reserv/list").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')")

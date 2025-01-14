@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +20,7 @@ import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.MenuService;
+import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.util.BusinessHourUtil;
 
@@ -36,6 +33,9 @@ public class StoreController {
 
 	@Autowired
 	private StoreService storeService;
+	
+	@Autowired
+	private StoreAddressService storeAddressService;
 
 	@Autowired
 	private MenuService menuService;
@@ -90,10 +90,17 @@ public class StoreController {
 		return "/store/list";
 	}
 
+	@GetMapping("/map")
+	public String map() {
+		log.info("map()");
+		return "/store/map";
+	}
+	
 	@GetMapping("/updateStore")
 	public String updateStore(@RequestParam("storeId") int storeId, Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		StoreVO storeVO = storeService.selectStoreById(storeId);
+		StoreAddressVO storeAddressVO = storeAddressService.selectStoreAddressById(storeId);
 
 		String currentUserId = userDetails.getUsername();
 		String dbUserId = storeService.getUserIdByStoreId(storeVO.getStoreId());
@@ -116,6 +123,7 @@ public class StoreController {
 			String endTime = times[1];
 
 			model.addAttribute("storeVO", storeVO);
+			model.addAttribute("storeAddressVO", storeAddressVO);
 			model.addAttribute("categories", categories);
 			model.addAttribute("startTime", startTime);
 			model.addAttribute("endTime", endTime);
@@ -130,17 +138,21 @@ public class StoreController {
 	}
 
 	@PostMapping("/modify")
-	public String modify(@ModelAttribute StoreVO storeVO, Model model,
+	public String modify(
+			@ModelAttribute StoreVO storeVO,
+			@ModelAttribute StoreAddressVO storeAddressVO,
+			Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("modify()");
-		log.info(storeVO);
+		log.info(storeVO + "기본 정보");
+		log.info(storeAddressVO + "주소");
 
 		String currentUserId = userDetails.getUsername();
 		String dbUserId = storeService.getUserIdByStoreId(storeVO.getStoreId());
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
 			storeVO.setUserId(dbUserId);
 
-			int result = storeService.modifyStore(storeVO);
+			int result = storeService.modifyStore(storeVO, storeAddressVO);
 			if (result == 1) {
 				log.info("가게 수정 성공");
 			}

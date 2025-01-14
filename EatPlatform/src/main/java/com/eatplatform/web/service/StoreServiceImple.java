@@ -75,12 +75,14 @@ public class StoreServiceImple implements StoreService {
 
 
 	@Override
-	public int modifyStore(StoreVO storeVO) {
+	public int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO) {
 		log.info("modifyStore()");
-		int result = storeMapper.updateStore(storeVO);
+		int resultStore = storeMapper.updateStore(storeVO);
+		int resultAddress = storeAddressMapper.updateStoreAddress(storeAddressVO);
 		log.info(storeVO);
-		log.info(result + "행 수정성공");
-		return result;
+		log.info(resultStore + "행 정보 수정 성공");
+		log.info(resultAddress + "행 주소 정보 수정 성공");
+		return resultStore;
 	}
 
 
