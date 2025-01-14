@@ -7,12 +7,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="com.eatplatform.web.domain.ReviewImageVO" 
 		id="reviewImageResultMap">
-		<id property="reviweImageId" column="REVIEW_IMAGE_ID" />
+		<id property="reviewImageId" column="REVIEW_IMAGE_ID" />
 		<result property="reviewId" column="REVIEW_ID" />
 		<result property="reviewImagePath" column="REVIEW_IMAGE_PATH" />
 		<result property="reviewImageRealName" column="REVIEW_IMAGE_REAL_NAME" />
 		<result property="reviewImageChgName" column="REVIEW_IMAGE_CHG_NAME" />
 		<result property="reviewImageExtension" column="REVIEW_IMAGE_EXTENSION" />
+		<result property="reviewImageDate" column="REVIEW_IMAGE_DATE" />
 	</resultMap>
 	
 	<insert id="insertReviewImage">
@@ -31,6 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectListByReviewId" resultMap="reviewImageResultMap">
 		SELECT * FROM REVIEW_IMAGE 
 		WHERE REVIEW_ID = #{reviewId}
+		ORDER BY REVIEW_IMAGE_ID
 	</select>
 	
 	<delete id="deleteReviewImageByReviewId">

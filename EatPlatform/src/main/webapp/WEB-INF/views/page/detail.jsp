@@ -164,10 +164,10 @@
 		
 						$(data.list).each(function(){
 							console.log(this); // 인덱스 데이터
-							
+					
 							// 문자열 형태를 날짜 형태로 변환
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
-		                  	
+							var reviewImageDate = new Date(this.reviewImageDate).toLocaleString();
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
@@ -187,8 +187,21 @@
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
+							
+							// 이미지 조회
+							$(this.reviewImageList).each(function(){
+								console.log(this);
+								
+							list += '<div class="image-view">'
+								+ '<a href="../image/get/' + this.reviewId + '/reviewImageExtension/' + this.reviewImageExtension + '"  target="_blank">'
+								+ '<img width="100px" height="100px" src="../image/get/' + this.reviewId + '/reviewImageExtension/' + this.reviewImageExtension + '" />'
+								+ '</a>'
+								+ '</div>'
 								+ '</pre>'
-								+ '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' // 리뷰 댓글 표시
+								});
+								
+							// 리뷰 댓글 표시
+							list += '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' 
 								+ '</div>' 
 								+ '<div class="review_reply">' // 리뷰 댓글 입력창
 								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
@@ -196,7 +209,7 @@
 								+ '<button class="btn_reply" >댓글 입력</button>'
 								+ '</div>'
 								+ '</div>';
-							
+						
 							getReplies(this.reviewId);
 
 						}); // end each()
@@ -226,12 +239,7 @@
                 getAllReview();  // 다음 페이지의 리뷰 로드
             });
 			
-         // 리뷰에 대한 이미지를 가져오는 함수
-         
- 
-			
-			
-			
+		
 			// 리뷰에 대한 댓글을 가져오는 함수
 			function getReplies(reviewId) {
 				

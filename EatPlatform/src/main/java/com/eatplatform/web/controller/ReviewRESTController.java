@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.service.ReviewImageService;
 import com.eatplatform.web.service.ReviewService;
 
 import lombok.extern.log4j.Log4j;
@@ -31,6 +33,9 @@ public class ReviewRESTController {
 	
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private ReviewImageService reviewImageService;
 	
 	// 리뷰 등록(회원)
 		@PostMapping
@@ -66,6 +71,14 @@ public class ReviewRESTController {
 			int end = pageNumber * pageSize;
 			
 			List<ReviewVO> list = reviewService.getAllReviewsByStoreId(storeId, start, end);
+			
+			// 첨부된 이미지 데이터 조회
+			for(ReviewVO reviewVO : list) {
+				int reviewId = reviewVO.getReviewId();
+				List<ReviewImageVO> reviewImageList = reviewImageService.getImageListByReviewId(reviewId);
+				reviewVO.setReviewImageList(reviewImageList);
+			}
+			
 			log.info("list : " + list);
 			log.info("start : " + start);
 			log.info("end : " + end);
