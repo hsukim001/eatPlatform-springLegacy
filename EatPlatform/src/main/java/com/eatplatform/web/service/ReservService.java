@@ -20,7 +20,7 @@ public interface ReservService {
 	// store 상세 정보 조회
 	StoreVO searchStoreByStoreId(int storeId);
 	// 예약 등록
-	int createdReserv(ReservVO reservVO);
+	int createdReserv(ReservVO reservVO, int reservLimit);
 	// 예약 취소
 	int cancelReserv(int reservId);
 	// 예약 가능 시간 조회

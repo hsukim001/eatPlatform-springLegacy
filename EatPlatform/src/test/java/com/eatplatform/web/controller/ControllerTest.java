@@ -15,6 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.eatplatform.web.config.SecurityConfig;
 import com.eatplatform.web.config.ServletConfig;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.service.UserService;
 
 import lombok.extern.log4j.Log4j;
@@ -23,7 +24,7 @@ import lombok.extern.log4j.Log4j;
 @ContextConfiguration(classes = {ServletConfig.class, SecurityConfig.class})
 @WebAppConfiguration
 @Log4j
-public class UserControllerTest {
+public class ControllerTest {
 	
 	@Autowired
 	private WebApplicationContext wac;
@@ -31,21 +32,24 @@ public class UserControllerTest {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private ReservService reservService;
+	
 	private MockMvc mock;
 	
 	@Test
 	public void test() {
-//		insert();
-		check();
+		insert();
+//		check();
 	}
 	
 	private void insert() {
 		log.info("insertTest");
 		UserVO vo = new UserVO();
-		vo.setUserId("test3");
-		vo.setUserPw("test");
-		vo.setUserEmail("test3@test.com");
-		vo.setUserName("test3");
+		vo.setUserId("store02");
+		vo.setUserPw("store");
+		vo.setUserEmail("test@test.com");
+		vo.setUserName("store02");
 		vo.setUserPhone("010-123-0000");
 		
 		log.info(vo);
@@ -60,5 +64,9 @@ public class UserControllerTest {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		String formatToday = dateFormat.format(toDay);
 		log.info(formatToday);
+	}
+	
+	private void reservInsert() {
+		
 	}
 }

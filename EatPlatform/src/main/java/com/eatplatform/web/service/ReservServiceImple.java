@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
@@ -64,10 +67,55 @@ public class ReservServiceImple implements ReservService{
 	}
 	
 	// 예약 등록
+	@Transactional(value = "transactionManager", isolation = Isolation.SERIALIZABLE)
 	@Override
-	public int createdReserv(ReservVO reservVO) {
+	public int createdReserv(ReservVO reservVO, int reservLimit) {
 		log.info("insertReserv()");
-		int result = reservMapper.insert(reservVO);
+		int maxRetries = 3;
+		int attempts = 0;
+		
+		while (attempts < maxRetries) {
+			try {
+				return insertTransaction(reservVO, reservLimit);
+			} catch (Exception e) {
+				attempts++;
+				log.info("동시성 충돌 재시도");
+				
+				if(attempts >= maxRetries) {
+					log.error("최대 재시도 횟수 초과");
+				}
+			}
+		}
+		
+		return 0;
+	}
+	
+	// 트랜잭션을 활용한 등록
+	@Transactional(value = "transactionManager", isolation = Isolation.SERIALIZABLE)
+	private int insertTransaction(ReservVO reservVO, int reservLimit) {
+		log.info("insertTransaction()");
+		List<ReservVO> list = reservMapper.selectScheduleForUpdate(reservVO, reservLimit);
+		int reservTotalPersonnel = 0;
+		int result = 0;
+		int maxPersonnel = reservLimit;
+		
+		log.info(list);
+		
+		if(!ObjectUtils.isEmpty(list)) {
+			for(int i = 0; i < list.size(); i++) {
+				reservTotalPersonnel += list.get(i).getReservPersonnel();
+			}			
+			maxPersonnel -= reservTotalPersonnel;
+		}
+		
+		log.info("남은 인원 : " + maxPersonnel);
+		if(reservVO.getReservPersonnel() <= maxPersonnel) {
+			result = reservMapper.insert(reservVO);
+			log.info("예약 등록 성공");
+		} else {
+			log.info("예약 실패 : 인원 초과");
+		}
+		
 		return result;
 	}
 

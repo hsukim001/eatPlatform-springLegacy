@@ -87,14 +87,14 @@ public class ReservRESTController {
 	}
 
 	// 예약 등록
-	@PostMapping("/created")
-	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, @AuthenticationPrincipal UserDetails userDetails) {
+	@PostMapping("/created/{reservLimit}")
+	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, @AuthenticationPrincipal UserDetails userDetails, @PathVariable("reservLimit") int reservLimit) {
 		log.info("createdReserv()");
 		ReservVO vo = reservVO;
 		
 		String userId = userDetails.getUsername();
 		vo.setUserId(userId);
-		int result = reservService.createdReserv(vo);
+		int result = reservService.createdReserv(vo, reservLimit);
 		
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}

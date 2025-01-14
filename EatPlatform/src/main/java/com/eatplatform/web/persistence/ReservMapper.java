@@ -3,6 +3,7 @@ package com.eatplatform.web.persistence;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
@@ -24,4 +25,6 @@ public interface ReservMapper {
 	int delete(int reservId);
 	// 예약 가능시간 조회
 	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
+	// 예약 가능 확인
+	List<ReservVO> selectScheduleForUpdate(@Param("vo") ReservVO reservVO, @Param("reservLimit") int reservLimit);
 }

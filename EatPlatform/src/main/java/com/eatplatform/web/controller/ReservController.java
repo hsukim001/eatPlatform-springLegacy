@@ -50,7 +50,7 @@ public class ReservController {
 		
 		vo.setUserId(userId);
 		
-		int result = reservService.createdReserv(vo);
+		int result = reservService.createdReserv(vo, 1);
 		if(result == 1) {
 			log.info("예약 등록 성공");
 		}

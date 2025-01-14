@@ -99,4 +99,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		ORDER BY HOUR
 	</select>
 	
+	<select id="selectScheduleForUpdate" parameterType="map" resultMap="reservResultMap">
+		SELECT *
+		FROM RESERV
+		WHERE STORE_ID = #{vo.storeId}
+		  AND RESERV_DATE = #{vo.reservDate}
+		  AND RESERV_HOUR = #{vo.reservHour}
+		  AND RESERV_MIN = #{vo.reservMin}
+		  AND (
+		    SELECT SUM(RESERV_PERSONNEL)
+		    FROM RESERV
+		    WHERE STORE_ID = #{vo.storeId}
+		      AND RESERV_DATE = #{vo.reservDate}
+		      AND RESERV_HOUR = #{vo.reservHour}
+		      AND RESERV_MIN = #{vo.reservMin}
+		  ) <![CDATA[<=]]> #{reservLimit}
+		FOR UPDATE WAIT 60
+	</select>
+	
 </mapper>

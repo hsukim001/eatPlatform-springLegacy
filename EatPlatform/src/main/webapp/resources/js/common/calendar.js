@@ -308,7 +308,7 @@ $(function () {
 		if(timeValue) {
 			let timeSplit = timeValue.split(':');
 			$.ajax({
-				url : '../reserv/created',
+				url : '../reserv/created/' + reservLimit,
 				type : 'post',
 				headers : {
 					"Content-Type" : "application/json"
