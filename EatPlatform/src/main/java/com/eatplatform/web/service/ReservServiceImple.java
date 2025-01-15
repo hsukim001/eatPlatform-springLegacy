@@ -76,12 +76,47 @@ public class ReservServiceImple implements ReservService{
 		
 		while (attempts < maxRetries) {
 			try {
-				return insertTransaction(reservVO, reservLimit);
+//				return insertTransaction(reservVO, reservLimit);
+				reservMapper.lockReservTable();
+				int currentReservPersonnel = 0;
+				int result = 0;
+				
+				int dummy = reservMapper.insertDummyIfNotMatched(reservVO);
+				log.info("Dummy result : " + dummy);
+				
+				List<ReservVO> list = reservMapper.selectScheduleForUpdate(reservVO, reservLimit);
+				if(!ObjectUtils.isEmpty(list)) {
+					log.info("list is not null");
+					for(int i = 0; i < list.size(); i++) {
+						currentReservPersonnel += list.get(i).getReservPersonnel();
+					}
+				} else {
+					log.info("데이터 없음");
+				}
+				
+				int totalPersonnel = currentReservPersonnel + reservVO.getReservPersonnel();
+				log.info("인원 : " + totalPersonnel);
+				
+				if(totalPersonnel <= reservLimit) {
+					if(dummy == 0) {
+						result = reservMapper.insert(reservVO);		
+					} else {
+						int reservId = reservMapper.selectSequenceCurrval();
+						reservVO.setReservId(reservId);
+						result = reservMapper.updateDummy(reservVO);
+					}
+					log.info("예약 등록 성공");
+				} else {
+					log.info("예약 실패 : 인원 초과");
+				}
+				
+				return result;
 			} catch (Exception e) {
 				attempts++;
 				log.info("동시성 충돌 재시도");
 				
 				if(attempts >= maxRetries) {
+//					throw e;
 					log.error("최대 재시도 횟수 초과");
 				}
 			}
@@ -94,23 +129,32 @@ public class ReservServiceImple implements ReservService{
 	@Transactional(value = "transactionManager", isolation = Isolation.SERIALIZABLE)
 	private int insertTransaction(ReservVO reservVO, int reservLimit) {
 		log.info("insertTransaction()");
-		List<ReservVO> list = reservMapper.selectScheduleForUpdate(reservVO, reservLimit);
-		int reservTotalPersonnel = 0;
-		int result = 0;
-		int maxPersonnel = reservLimit;
+		int dummy = reservMapper.insertDummyIfNotMatched(reservVO);
+		log.info("Dummy result : " + dummy);
 		
-		log.info(list);
+		List<ReservVO> list = reservMapper.selectScheduleForUpdate(reservVO, reservLimit);
+		int currentReservPersonnel = 0;
+		int result = 0;
 		
 		if(!ObjectUtils.isEmpty(list)) {
+			log.info("list is not null");
 			for(int i = 0; i < list.size(); i++) {
-				reservTotalPersonnel += list.get(i).getReservPersonnel();
-			}			
-			maxPersonnel -= reservTotalPersonnel;
+				currentReservPersonnel += list.get(i).getReservPersonnel();
+			}
+		} else {
+			log.info("데이터 없음");
 		}
 		
-		log.info("남은 인원 : " + maxPersonnel);
-		if(reservVO.getReservPersonnel() <= maxPersonnel) {
-			result = reservMapper.insert(reservVO);
+		int totalPersonnel = currentReservPersonnel + reservVO.getReservPersonnel();
+		log.info("인원 : " + totalPersonnel);
+		if(totalPersonnel <= reservLimit) {
+			if(dummy == 0) {
+				result = reservMapper.insert(reservVO);		
+			} else {
+				int reservId = reservMapper.selectSequenceCurrval();
+				reservVO.setReservId(reservId);
+				result = reservMapper.updateDummy(reservVO);
+			}
 			log.info("예약 등록 성공");
 		} else {
 			log.info("예약 실패 : 인원 초과");
