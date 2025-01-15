@@ -3,5 +3,5 @@
 
 .metadata
 Servers
-EatPlatform/target
-.pom.properties
+EatPlatform/target/
+
