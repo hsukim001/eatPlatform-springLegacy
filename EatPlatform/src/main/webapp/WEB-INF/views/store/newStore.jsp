@@ -15,6 +15,7 @@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
     $(function() { 
         // "기타" 선택 관련 input 컨트롤
         $('#foodCategory').change(function() {  
@@ -103,7 +104,7 @@
 </script>
 <title>식당 등록 페이지</title>
 </head>
-<body>
+<body onpageshow="if(event.persisted) noBack();">
     <h2>여기는 가게 등록 페이지입니다.</h2>
     <form action="register" method="POST">
     	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />

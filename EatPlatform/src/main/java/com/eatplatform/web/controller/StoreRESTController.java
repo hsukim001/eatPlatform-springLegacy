@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
+import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 
 import lombok.extern.log4j.Log4j;
@@ -47,21 +48,24 @@ public class StoreRESTController {
 	    log.info(keywords);
 	    log.info("keywords type: " + keywords.getClass().getName());
 
-	    // 최근 데이터 가져오기
 	    List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keywords);
-
-	    // 전체 데이터 개수 가져오기
+	    Map<Integer, StoreAddressVO> storeAddressesMap = new HashMap<>();
+	    for (StoreVO store : recentStores) {
+	        int storeId = store.getStoreId();
+	        StoreAddressVO storeAddress = storeAddressService.selectStoreAddressById(storeId);
+	        storeAddressesMap.put(storeId, storeAddress); 
+	    }
+	    
 	    int totalStoresCount = storeService.getTotalStoresCount(keywords);
-
-	    // 전체 페이지 수 계산
 	    int totalPages = (int) Math.ceil((double) totalStoresCount / pageSize);
 
 	    Map<String, Object> response = new HashMap<>();
-	    response.put("totalPages", totalPages);         // 전체 페이지 수
-	    response.put("currentPage", pageNum);           // 현재 페이지 번호
-	    response.put("recentStores", recentStores);    // 현재 페이지에 해당하는 데이터
-	    response.put("totalStoresCount", totalStoresCount);  // 전체 데이터 개수
-	    response.put("keyword", keyword);               // 검색어
+	    response.put("totalPages", totalPages);
+	    response.put("currentPage", pageNum);
+	    response.put("recentStores", recentStores);
+	    response.put("storeAddresses", storeAddressesMap);
+	    response.put("totalStoresCount", totalStoresCount);
+	    response.put("keyword", keyword);
 
 	    log.info(recentStores);
 

@@ -34,6 +34,9 @@
 	    let totalDataCount = 0;
 	    let loadedDataCount = 0;
 	    let loading = false;
+	    
+	    let marker, infowindow, overlay;
+	    
 	    const maxItemsPerPage = 30;
 
 	    function loadStores(pageNum) {
@@ -48,7 +51,7 @@
 	                keyword: $('#keywordInput').val()
 	            },
 	            success: function(response) {
-	                appendStoresToPage(response.recentStores);
+	                appendStoresToPage(response.recentStores, response.storeAddresses);
 	                totalDataCount = response.totalStoresCount;
 	                updatePagination(totalDataCount, pageNum);
 	                loading = false;
@@ -90,17 +93,22 @@
 	        $('#currentPage').text(currentPage);
 	    }
 
-	    function appendStoresToPage(stores) {
+	    function appendStoresToPage(stores, storeAddresses) {
 	        if (Array.isArray(stores)) {
 	            stores.forEach(function(store) {
 	                if (loadedDataCount >= maxItemsPerPage) {
 	                    return;
 	                }
 
+	                const storeAddress = storeAddresses[store.storeId]; // storeId를 키로 주소 가져오기
 	                const storeHtml = 
-	                    '<div class="store">' +
+	                    '<div class="store" data-store-id =' + store.storeId +'>' +
 	                        '<h3>' + store.storeName + '</h3>' +
-	                        '<p>' + (store.description && store.description.trim() !== '' ? store.description : '작성된 소개 글이 없습니다.') + '</p>' +
+	                        '<p> <span class="address_mark">지번 </span> <span class="jibun">' + storeAddress.jibunAddress + '</span></p>' + 
+	                        '<p> <span class="address_mark">도로명 </span> <span class="road">' + storeAddress.roadAddress + '</span></p>' + 	                       
+	                        '<p class="store_comment">' + (store.storeComment && store.storeComment.trim() !== '' ? store.storeComment : '작성된 소개 글이 없습니다.') + '</p>' + 
+	                        '<p class="store_phone">' + store.storePhone + '</p>' + 
+	                        '<button><a href="detail?storeId=' + store.storeId + '">상세페이지 이동</a></button>' + 
 	                    '</div>';
 
 	                $('#storeList').append(storeHtml);
@@ -143,7 +151,7 @@
 	    		$('#searchButton').trigger('click');
 	    	}
 	    });
-
+		
 		
 		navigator.geolocation.getCurrentPosition((position) => {
 			const latitude = position.coords.latitude;
@@ -164,41 +172,90 @@
 			
 			// 지오코더
 			var geocoder = new kakao.maps.services.Geocoder();
-			
-			// 마커
-			var markerPosition  = new kakao.maps.LatLng(latitude, longitude); 
 
-			// 마커 생성
-			var marker = new kakao.maps.Marker({
-			    position: markerPosition
+			$('#storeList').on('click', '.store', function(){
+				
+				let selectedStoreName = $(this).find('h3').text();
+				let selectedJibunAddress = $(this).find('.jibun').text();
+				let selectedRoadAddress = $(this).find('.road').text();
+				let selectedStoreComment = $(this).find('.store_comment').text();
+				let selectedStorePhone = $(this).find('.store_phone').text();
+				
+				if($(this).find('.road').text() !== '' && $(this).find('.road').text() !== null) {
+					searchAddress = $(this).find('.road').text();	
+				} else {
+					searchAddress = $(this).find('.jibun').text();
+				}
+				// 주소 검색
+				geocoder.addressSearch(searchAddress, function(result, status) {
+
+				    // 정상적으로 검색이 완료됐으면 
+				     if (status === kakao.maps.services.Status.OK) {
+				        
+				        if(marker) {
+				        	marker.setMap(null);
+				        	overlay.setMap(null);
+				        }
+
+
+
+				        let content =
+				        	'<div class="detail_text">' + 
+			    				'<p class="store_name higtlight">' +
+		           					selectedStoreName +
+		            			'<p/>' +
+		                        '<p class="store_address">' + 
+		                        	'<span class="address_mark">' +
+		                       			 '지번' + 
+		                       		'</span>' +
+		                        	'<span class="jibun">' + 
+		                        		selectedJibunAddress +
+		                        	'</span>' +
+		                       	'</p>' + 
+		                        '<p class="store_address">' + 
+		                       		'<span class="address_mark">' +
+		                        		'도로명' + 
+		                        	'</span>' +
+		                       		'<span class="road">' + 
+		                       			selectedRoadAddress + 
+		                       		'</span>' +
+		                       	'</p>' + 
+		                       	'<p class="store_comment">' + 
+		                       		selectedStoreComment + 
+		                       	'</p>' + 
+		                       	'<p class="store_phone">' + 
+		                       		selectedStorePhone + 
+		                       	'</p>' + 
+				        	'</div>';
+
+
+					    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+					    
+					    // 결과값으로 받은 위치를 마커로 표시합니다
+				        marker = new kakao.maps.Marker({
+				            map: map,
+					        position: coords
+					    });
+					     
+					    map.setCenter(coords);
+				        overlay = new kakao.maps.CustomOverlay({
+				           	 content: content,
+				           	 map: map,
+				           	 position: marker.getPosition()       
+				         });
+				          	
+				        kakao.maps.event.addListener(marker, 'click', function() {
+				        	overlay.setMap(map);
+				        });
+
+				        function closeOverlay() {
+				          	overlay.setMap(null);     
+				        }
+				            	
+				    } 
+				});    
 			});
 			
-			// 주소 검색
-			geocoder.addressSearch('전남 완도군 청산면 청계리 429', function(result, status) {
-
-			    // 정상적으로 검색이 완료됐으면 
-			     if (status === kakao.maps.services.Status.OK) {
-
-			        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-			        // 결과값으로 받은 위치를 마커로 표시합니다
-			        var marker = new kakao.maps.Marker({
-			            map: map,
-			            position: coords
-			        });
-
-			        // 인포윈도우로 장소에 대한 설명을 표시합니다
-			        var infowindow = new kakao.maps.InfoWindow({
-			            content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
-			        });
-			        infowindow.open(map, marker);
-
-			        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-			        map.setCenter(coords);
-			    } 
-			});    
-			// 마커 표시
-			marker.setMap(map);
 		}, (error) => {
 			console.error("위치 정보를 가져오는 데 실패했습니다.", error);
 		});

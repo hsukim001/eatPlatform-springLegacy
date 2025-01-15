@@ -9,6 +9,7 @@
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script>
+	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
 	$(function(){
 		let representCount = <%= representMenuCount %>;
 
@@ -24,7 +25,7 @@
 </script>
 <title>메뉴 등록</title>
 </head>
-<body>
+<body onpageshow="if(event.persisted) noBack();">
 	<h2>${storeName } 의 메뉴 등록 페이지입니다.</h2>
 
 	<form action="register" method="POST">
