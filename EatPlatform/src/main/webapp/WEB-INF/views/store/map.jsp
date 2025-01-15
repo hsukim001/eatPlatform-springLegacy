@@ -133,8 +133,15 @@
 	    $('#searchButton').click(function() {
 	        currentPage = 1;
 	        loadedDataCount = 0;
+	        scrollPage = 1;
 	        $('#storeList').empty();
 	        loadStores(currentPage);
+	    });
+	    
+	    $('#keywordInput').keyup(function(){
+	    	if(event.keyCode == 13) {
+	    		$('#searchButton').trigger('click');
+	    	}
 	    });
 
 		
