@@ -7,15 +7,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<resultMap type="com.eatplatform.web.domain.ReplyVO" id="replyResultMap">
       <id property="replyId" column="REPLY_ID" /> 
-      <result property="storeId" column="STORE_ID" /> 
+      <result property="userId" column="USER_ID" />
       <result property="reviewId" column="REVIEW_ID" />
       <result property="replyContent" column="REPLY_CONTENT" />
       <result property="replyDate" column="REPLY_DATE" />
    </resultMap>
 
 	<insert id="insert">
-		INSERT INTO REPLY (REPLY_ID, STORE_ID, REVIEW_ID, REPLY_CONTENT)
-		VALUES (REPLY_SEQ.NEXTVAL, #{storeId}, #{reviewId}, #{replyContent})
+		INSERT INTO REPLY (REPLY_ID, USER_ID, REVIEW_ID, REPLY_CONTENT)
+		VALUES (REPLY_SEQ.NEXTVAL, #{userId}, #{reviewId}, #{replyContent})
 	</insert>
 	
 	<select id="selectByReviewId" resultMap="replyResultMap">

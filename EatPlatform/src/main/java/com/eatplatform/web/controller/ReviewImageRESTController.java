@@ -6,11 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -112,18 +109,15 @@ public class ReviewImageRESTController {
 		return entity;
 	}
 	
-	@GetMapping("/get/{reviewId}/reviewImageExtension/{reviewImageExtension}")
+	@GetMapping("/get/{reviewImageId}/reviewImageExtension/{reviewImageExtension}")
 	public ResponseEntity<byte[]> getImage(
-			@PathVariable("reviewId") int reviewId,
+			@PathVariable("reviewImageId") int reviewImageId,
 			@PathVariable("reviewImageExtension") String reviewImageExtension) {
 		log.info("getImage()");
 		
 		ResponseEntity<byte[]> entity = null;
 		
-		List<ReviewImageVO> reviewImageList = reviewImageService.getImageListByReviewId(reviewId);
-		log.info("reviewImageList : " + reviewImageList);
-		
-		for(ReviewImageVO reviewImageVO : reviewImageList) {
+		ReviewImageVO reviewImageVO = reviewImageService.getReviewImageById(reviewImageId);
 		
 			try {
 				// 파일을 읽어와서 byte 배열로 변환
@@ -146,14 +140,12 @@ public class ReviewImageRESTController {
 				HttpHeaders httpHeaders = new HttpHeaders();
 				httpHeaders.setContentType(MediaType.parseMediaType(contentType));
 				entity = new ResponseEntity<byte[]>(imageBytes, httpHeaders, HttpStatus.OK);
-				
 			} catch (IOException e) {
 				// 파일을 읽는 중에 예외 발생 시 예외 처리
 				e.printStackTrace();
 				return ResponseEntity.notFound().build(); // 파일을 찾을 수 없음을 클라이언트에게 알림
 			}
-		}
-		return entity;
+			return entity;
 		
 	}
 	

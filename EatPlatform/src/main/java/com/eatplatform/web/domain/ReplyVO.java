@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 public class ReplyVO {
 	private int replyId;
-	private int storeId;
+	private String userId;
 	private int reviewId;
 	private String replyContent;
 	private Date replyDate;

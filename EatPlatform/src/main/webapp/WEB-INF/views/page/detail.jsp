@@ -49,8 +49,9 @@
 		<button id="loadMoreBtn">더보기</button>
 	</div>
 	
-	<!-- 리뷰 신고 모달 포함 -->
+	<!-- 모달 포함 -->
     <jsp:include page="reportModal.jsp" />
+    <jsp:include page="replyUpdateModal.jsp" />
 
 	<script type="text/javascript">
 		// ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정
@@ -142,6 +143,7 @@
 
 	        // 식당 리뷰 전체 가져오기
 			function getAllReview() {
+	        	 
 				
 				var storeId = $('#storeId').val();
 				
@@ -168,6 +170,7 @@
 							// 문자열 형태를 날짜 형태로 변환
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
 							var reviewImageDate = new Date(this.reviewImageDate).toLocaleString();
+				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
@@ -192,26 +195,30 @@
 							$(this.reviewImageList).each(function(){
 								console.log(this);
 								
-							list += '<div class="image-view">'
-								+ '<a href="../image/get/' + this.reviewId + '/reviewImageExtension/' + this.reviewImageExtension + '"  target="_blank">'
-								+ '<img width="100px" height="100px" src="../image/get/' + this.reviewId + '/reviewImageExtension/' + this.reviewImageExtension + '" />'
+								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
+								
+							list += '<div class="image-view" >'
+								+ '<div class="review-image">'
+								+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
+								+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
 								+ '</a>'
+								+ '</div>'
 								+ '</div>'
 								+ '</pre>'
 								});
-								
+
 							// 리뷰 댓글 표시
 							list += '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' 
 								+ '</div>' 
 								+ '<div class="review_reply">' // 리뷰 댓글 입력창
-								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
+								+ '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요"></textarea>'
 								+ '&nbsp;&nbsp;'
-								+ '<button class="btn_reply" >댓글 입력</button>'
+								+ '<button class="btn_reply" >댓글 작성</button>'
 								+ '</div>'
 								+ '</div>';
 						
 							getReplies(this.reviewId);
-
+						
 						}); // end each()
 						
 						// 첫 페이지 = 초기화 / 그 외는 붙이기
@@ -255,8 +262,10 @@
 						
 							repliesList += '<div class="reply_item">'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
+								+ this.userId
+								+ '&nbsp;&nbsp;'
 								+ '<input type="hidden" id="replyId" value="'+ this.replyId +'">'
-								+ '<input type="text" id="replyContent" value="'+ this.replyContent +'">'
+								+ '<input type="text" id="replyContent" readonly="readonly" value="'+ this.replyContent +'">'
 								+ '&nbsp;&nbsp;'
 								+ replyDate
 								+ '&nbsp;&nbsp;'
@@ -404,28 +413,28 @@
 					}
 					console.log(obj3);
 			  
-			// 서버로 신고 데이터 보내기
-		      $.ajax({
-		    	  type: 'POST',
-		          url: '../review/report/' + reviewId, // 실제 서버 URL로 변경
-		          headers : {
-						'Content-Type' : 'application/json'
-					},
-					data : JSON.stringify(obj3),
-		        	success: function(result) {
-		        		if (result === 1) {
-		        			alert('리뷰 신고가 제출되었습니다.');
-		        			$('#reportModal').hide(); // 신고 후 모달 닫기
-		        		}
-		        	},
-		          error: function(error) {
-		          alert('신고 제출에 실패했습니다. 다시 시도해주세요.');
-		          $('#reportModal').hide(); 
-		        }
-		      });
-		    } else {
-		      alert('신고 사유를 선택해주세요.');
-		    }
+				// 서버로 신고 데이터 보내기
+			      $.ajax({
+			    	  type: 'POST',
+			          url: '../review/report/' + reviewId, // 실제 서버 URL로 변경
+			          headers : {
+							'Content-Type' : 'application/json'
+						},
+						data : JSON.stringify(obj3),
+			        	success: function(result) {
+			        		if (result === 1) {
+			        			alert('리뷰 신고가 제출되었습니다.');
+			        			$('#reportModal').hide(); // 신고 후 모달 닫기
+			        		}
+			        	},
+			          error: function(error) {
+			          alert('신고 제출에 실패했습니다. 다시 시도해주세요.');
+			          $('#reportModal').hide(); 
+			        }
+			      });
+			    } else {
+			      alert('신고 사유를 선택해주세요.');
+		    	}
 		  });
 		});
 
@@ -441,16 +450,16 @@
 		  }
 		});
 					
-			// 선택된 리뷰에 댓글 등록(사업자)
-			$('#reviews').on('click', '.review_item .btn_reply', function(){
-				console.log(this);
+		// 선택된 리뷰에 댓글 등록(사업자)
+		$('#reviews').on('click', '.review_item .btn_reply', function(){
+			$('#review_reply').hide();
+			console.log(this);
 				
-				var storeId = $('#storeId').val();
-				var reviewId = $(this).closest('.review_item').find('#reviewId').val();  // 리뷰 아이디 가져오기
-	            var replyContent = $(this).siblings('#replyContent').val();  // 댓글 내용 가져오기
+			var reviewId = $(this).closest('.review_item').find('#reviewId').val();  // 리뷰 아이디 가져오기
+	        var replyContent = $(this).siblings('#replyContent').val();  // 댓글 내용 가져오기
 
 				var obj4 = {
-						'storeId' : storeId,
+	            		'userId' : userId,
 						'reviewId' : reviewId,
 						'replyContent' : replyContent
 				}
@@ -474,35 +483,71 @@
 				
 			}); // end reviews.on()
 			
-			// 선택된 댓글 수정
-			$('#reviews').on('click', '.reply_item .btn_update_reply', function(){
-				console.log(this);
-				
+		// 댓글 수정 버튼 클릭 시 모달 열기
+		$('#reviews').on('click', '.reply_item .btn_update_reply', function(){
+			
 				var reviewId = $(this).closest('.review_item').find('#reviewId').val();
 				var replyId = $(this).closest('.reply_item').find('#replyId').val();
-				var replyContent = $(this).closest('.reply_item').find('#replyContent').val(); 
+				var replyContent = $(this).closest('.reply_item').find('#replyContent').val();
 				console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + replyId + ", 댓글 내용 : " + replyContent);
 				
-				$.ajax({
-					type : 'PUT', 
-					url : '../reply/' + replyId,
-					headers : {
-						'Content-Type' : 'application/json'
-					},
-					data : replyContent,  
-					success : function(result) {
-						console.log(result);
-						if(result == 1) {
-							alert('댓글 수정 성공!');
-							getReplies(reviewId);
-						}
+				$('#replyUpdateModal').show();
+				$('#replyUpdateContent').val(''); // 기존 입력값 초기화
+				
+				
+				// 댓글 수정 버튼 클릭 시 처리
+				$('textarea[id="replyUpdateContent"]').on('change', function(){
+			
+				});
+				
+
+				$('#submitreply').off('click').on('click', function(){
+					
+					var replyContent = $('textarea[id="replyUpdateContent"]').val();
+					
+					if(replyContent != null) {
+					
+						$.ajax({
+							type : 'PUT', 
+							url : '../reply/' + replyId,
+							headers : {
+								'Content-Type' : 'application/json'
+							},
+							data : replyContent,  
+							success : function(result) {
+								console.log(result);
+								if(result == 1) {
+									alert('댓글 수정 성공!');
+									$('#replyUpdateModal').hide();
+									getReplies(reviewId);
+								} 
+							},
+							error: function(xhr, status, error) {
+								console.log(error);
+								alert('수정할 내용을 입력해주세요.');
+							}
+							});
+					} else {
+						alert('수정할 내용을 입력해주세요.');
 					}
 					
-				}); 
-				
+				});
+		
 			}); // end reviews.on() 
 			
-			// 선택된 댓글 삭제
+			// 모달 닫기 버튼 클릭 시 모달 닫기
+			$('#replycloseBtn').on('click', function() {
+			  $('#replyUpdateModal').hide();
+			});
+
+			// 모달 외부 클릭 시 모달 닫기
+			$(window).on('click', function(event) {
+			  if (event.target == document.getElementById('replyUpdateModal')) {
+			    $('#replyUpdateModal').hide();
+			  }
+			});
+			
+		// 선택된 댓글 삭제
 			$('#reviews').on('click', '.reply_item .btn_delete_reply', function(){
 				console.log(this);
 				
