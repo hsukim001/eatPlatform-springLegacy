@@ -72,9 +72,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<insert id="insert">
+		<selectKey resultType="Integer" keyProperty="reservId" order="BEFORE">
+			SELECT (NVL(MAX(RESERV_ID), 0) + 1) AS RESERV_ID FROM RESERV
+		</selectKey>
 		INSERT INTO RESERV
 		VALUES(
-			RESERV_SEQ.NEXTVAL,
+			#{reservId},
 			#{storeId},
 			#{userId},
 			#{reservDate},
@@ -99,58 +102,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		ORDER BY HOUR
 	</select>
 	
-	<select id="selectScheduleForUpdate" parameterType="map" resultMap="reservResultMap">
+	<select id="selectScheduleForUpdate" resultMap="reservResultMap">
 		SELECT *
 		FROM RESERV
-		WHERE STORE_ID = #{vo.storeId}
-		  AND RESERV_DATE = #{vo.reservDate}
-		  AND RESERV_HOUR = #{vo.reservHour}
-		  AND RESERV_MIN = #{vo.reservMin}
-		FOR UPDATE NO WAIT
-	</select>
-	
-	<insert id="insertDummyIfNotMatched">
-		MERGE INTO RESERV r
-		USING DUAL
-		ON (
-		    r.STORE_ID = #{storeId} 
-		    AND r.RESERV_DATE = #{reservDate} 
-		    AND r.RESERV_HOUR = #{reservHour}
-		    AND r.RESERV_MIN = #{reservMin}
-		    )
-		WHEN NOT MATCHED THEN
-		INSERT (
-			r.RESERV_ID, 
-			r.STORE_ID, 
-			r.USER_ID, 
-			r.RESERV_DATE, 
-			r.RESERV_HOUR, 
-			r.RESERV_MIN, 
-			r.RESERV_PERSONNEL
-			)
-		VALUES (
-			RESERV_SEQ.NEXTVAL,
-			 #{storeId}, 
-			 #{userId}, 
-			 #{reservDate}, 
-			 #{reservHour}, 
-			 #{reservMin}, 
-			 0
-			)
-	</insert>
-	
-	<update id="updateDummy">
-		UPDATE RESERV
-		SET RESERV_PERSONNEL = #{reservPersonnel}
-		WHERE RESERV_ID = #{reservId}
-	</update>
-	
-	<select id="selectSequenceCurrval" resultType="Integer">
-		SELECT RESERV_SEQ.CURRVAL FROM DUAL
-	</select>
-	
-	<select id="lockReservTable">
-		LOCK TABLE RESERV IN EXCLUSIVE MODE
+		WHERE STORE_ID = #{storeId}
+		  AND RESERV_DATE = #{reservDate}
+		  AND RESERV_HOUR = #{reservHour}
+		  AND RESERV_MIN = #{reservMin}
+		FOR UPDATE WAIT 60
 	</select>
 	
 </mapper>

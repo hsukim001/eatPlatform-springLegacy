@@ -26,10 +26,6 @@ public interface ReservMapper {
 	// 예약 가능시간 조회
 	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
 	// 예약 가능 확인
-	List<ReservVO> selectScheduleForUpdate(@Param("vo") ReservVO reservVO, @Param("reservLimit") int reservLimit);
-	// 예약 목록 확인 및 데이터가 없을 경우 더미데이터 등록
-	int insertDummyIfNotMatched(ReservVO reservVO);
-	int updateDummy(ReservVO reservVO);
-	int selectSequenceCurrval();
-	void lockReservTable();
+	List<ReservVO> selectScheduleForUpdate(ReservVO reservVO);
+	
 }

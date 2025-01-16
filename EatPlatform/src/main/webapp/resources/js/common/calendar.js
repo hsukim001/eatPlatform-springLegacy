@@ -114,6 +114,7 @@ $(function () {
     }
 
 	function generateTimeSlots() {
+		console.log(activeTimeList);
 	    const morningSlotsContainer = $('#morning-slots');
 	    const afternoonSlotsContainer = $('#afternoon-slots');
 	
@@ -148,7 +149,7 @@ $(function () {
 	        endTimeObject.setDate(endTimeObject.getDate() + 1);
 	    }
 	
-		console.log(activeTimeList);
+		//console.log(activeTimeList);
 	    while (currentTime <= endTimeObject) {
 		    const timeSlotText = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
 		    
@@ -240,12 +241,13 @@ $(function () {
 		if(personnel == 1) {
 			personnel = 1;
 			$('#personnel').text(personnel);
-			reservSchedule(selectedDateValue);
+			observeDOMChanges();
 		} else {
 			personnel -= 1;
 			$('#personnel').text(personnel);
-			reservSchedule(selectedDateValue);
+			observeDOMChanges();
 		}
+		reservSchedule(dateText);
 	});
 		
 	// "+" 버튼 클릭 이벤트
@@ -253,12 +255,14 @@ $(function () {
 		if(personnel == reservLimit) {
 			personnel = reservLimit
 			$('#personnel').text(personnel);
-			reservSchedule(selectedDateValue);
+			observeDOMChanges();
 		} else {
 			personnel += 1;
+			console.log(activeTimeList);
 			$('#personnel').text(personnel);
-			reservSchedule(selectedDateValue);
+			observeDOMChanges();
 		}
+		reservSchedule(dateText);
 	});
 		
 	// 적용 버튼 클릭 이벤트
@@ -266,6 +270,7 @@ $(function () {
 		inputPersonnel = $('#inputPersonnel').val()
 		personnelCheck();
 		reservSchedule(selectedDateValue);
+		observeDOMChanges();
 	});
 		
 	// 예약인원 직접입력 함수
@@ -284,6 +289,23 @@ $(function () {
 		}
 	}
 	
+	function observeDOMChanges() {
+    const observer = new MutationObserver(function(mutationsList, observer) {
+	        // 'button2'가 DOM에 추가되었는지 감지
+	        let preSelected = $('.time-slots div button[data-time-value="' + timeValue + '"]');
+	        if (preSelected.length > 0) {
+	            $(preSelected).trigger('click');
+	            observer.disconnect();  // DOM 감지 종료
+	        }
+	    });
+
+	    // 감지할 대상과 옵션 설정
+	    observer.observe(document.querySelector('.time-slots'), {
+	        childList: true,   // 자식 노드 추가/삭제를 감지
+	        subtree: true      // 자식 노드들까지 감지
+	    });
+	}
+	
 	// 예약 가능 유무 조회
 	function reservSchedule(dateValue){
 		let storeId = $('#storeId').val();
@@ -295,8 +317,9 @@ $(function () {
 				"Content-Type" : "application/json"
 			},
 			success : function(response){
-				console.log("예약 목록 조회");
+				console.log(personnel);
 				activeTimeList = response;
+				console.log("고양이 : " + activeTimeList);
 				generateTimeSlots();  // 날짜 선택 시 시간 슬롯 갱신
 			}
 		});
@@ -324,6 +347,10 @@ $(function () {
 					if(response == 1) {
 						alert("예약이 완료되었습니다.");
 						location.href='detail?storeId=' + storeId;
+					} else {
+						alert("예약에 실패하였습니다. 다시 시도해주세요");
+						
+						$('#calendar-days div.selected').trigger('click');
 					}
 				}
 			});

@@ -38,8 +38,8 @@ public class ServiceConcurrencyTest {
 					ReservVO vo = new ReservVO();
 					vo.setUserId("test");
 					vo.setStoreId(131);
-					vo.setReservDate("2025-01-15");
-					vo.setReservHour("13");
+					vo.setReservDate("2025-01-16");
+					vo.setReservHour("15");
 					vo.setReservMin("00");
 					vo.setReservPersonnel(3);
 					int reservLimit = 10;
