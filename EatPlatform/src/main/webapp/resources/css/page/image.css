@@ -40,7 +40,7 @@
 }
 
 /* 업로드된 이미지를 조회하는 영역에 대한 스타일 */
-.image-view {
+.review-image {
     margin-top: 20px; /* 상단 여백 */
     background-color: #f9f9f9; /* 배경색 */
     border: 1px solid #ddd; /* 실선 테두리 */

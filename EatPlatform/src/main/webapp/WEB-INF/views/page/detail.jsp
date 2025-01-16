@@ -51,7 +51,6 @@
 	
 	<!-- 모달 포함 -->
     <jsp:include page="reportModal.jsp" />
-    <jsp:include page="replyUpdateModal.jsp" />
 
 	<script type="text/javascript">
 		// ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정
@@ -190,30 +189,29 @@
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
-							
+								
+								
 							// 이미지 조회
 							$(this.reviewImageList).each(function(){
 								console.log(this);
 								
 								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
 								
-							list += '<div class="image-view" >'
-								+ '<div class="review-image">'
+							list += '<div class="review-image">'
 								+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
 								+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
 								+ '</a>'
 								+ '</div>'
-								+ '</div>'
+							});
 								+ '</pre>'
-								});
-
+			
 							// 리뷰 댓글 표시
 							list += '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' 
 								+ '</div>' 
 								+ '<div class="review_reply">' // 리뷰 댓글 입력창
-								+ '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요"></textarea>'
 								+ '&nbsp;&nbsp;'
 								+ '<button class="btn_reply" >댓글 작성</button>'
+								+ '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요" ></textarea>'
 								+ '</div>'
 								+ '</div>';
 						
@@ -269,8 +267,9 @@
 								+ '&nbsp;&nbsp;'
 								+ replyDate
 								+ '&nbsp;&nbsp;'
-								+ '<button class="btn_update_reply" >댓글 수정</button>'
-								+ '<button class="btn_delete_reply" >댓글 삭제</button>'
+								+ '<button class="btn_save_reply" style="display: none;" >저장</button>'
+								+ '<button class="btn_update_reply" >수정</button>'
+								+ '<button class="btn_delete_reply" >삭제</button>'
 								+ '</div>';
 						}); // end each()
 						
@@ -452,12 +451,17 @@
 					
 		// 선택된 리뷰에 댓글 등록(사업자)
 		$('#reviews').on('click', '.review_item .btn_reply', function(){
-			$('#review_reply').hide();
+			
 			console.log(this);
 				
 			var reviewId = $(this).closest('.review_item').find('#reviewId').val();  // 리뷰 아이디 가져오기
 	        var replyContent = $(this).siblings('#replyContent').val();  // 댓글 내용 가져오기
 
+	        if (!replyContent) {
+                alert("댓글을 입력해주세요.");
+                return;
+            }
+	        
 				var obj4 = {
 	            		'userId' : userId,
 						'reviewId' : reviewId,
@@ -477,75 +481,56 @@
 						if(result == 1) {
 							alert('댓글 입력 성공');
 							getReplies(reviewId);
+							
 						}
 					}
 				});
 				
 			}); // end reviews.on()
 			
-		// 댓글 수정 버튼 클릭 시 모달 열기
-		$('#reviews').on('click', '.reply_item .btn_update_reply', function(){
-			
+			// 선택된 댓글 수정
+			$('#reviews').on('click', '.reply_item .btn_update_reply', function(){
+				console.log(this);
+				
 				var reviewId = $(this).closest('.review_item').find('#reviewId').val();
-				var replyId = $(this).closest('.reply_item').find('#replyId').val();
+				var replyId = $(this).closest('.review_item').find('#replyId').val();
 				var replyContent = $(this).closest('.reply_item').find('#replyContent').val();
-				console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + replyId + ", 댓글 내용 : " + replyContent);
-				
-				$('#replyUpdateModal').show();
-				$('#replyUpdateContent').val(''); // 기존 입력값 초기화
-				
-				
-				// 댓글 수정 버튼 클릭 시 처리
-				$('textarea[id="replyUpdateContent"]').on('change', function(){
 			
-				});
 				
-
-				$('#submitreply').off('click').on('click', function(){
+				// 선택된 버튼을 포함한 .reply_item에서만 수정
+				var replyItem = $(this).closest('.reply_item');
+				
+				replyItem.find('#replyContent').attr('readonly', false);
+				
+				replyItem.find('.btn_update_reply').hide();
+				replyItem.find('.btn_save_reply').show();
+				
+				// 저장 버튼 눌렀을 때
+				replyItem.find('.btn_save_reply').on('click', function(){
+					let updateReplyId = $(this).siblings('#replyId').first().val();
+					var updatedContent = replyItem.find('#replyContent').val();
+					console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + updateReplyId + ", 댓글 내용 : " + updatedContent);
 					
-					var replyContent = $('textarea[id="replyUpdateContent"]').val();
-					
-					if(replyContent != null) {
-					
-						$.ajax({
-							type : 'PUT', 
-							url : '../reply/' + replyId,
-							headers : {
-								'Content-Type' : 'application/json'
-							},
-							data : replyContent,  
-							success : function(result) {
-								console.log(result);
-								if(result == 1) {
-									alert('댓글 수정 성공!');
-									$('#replyUpdateModal').hide();
-									getReplies(reviewId);
-								} 
-							},
-							error: function(xhr, status, error) {
-								console.log(error);
-								alert('수정할 내용을 입력해주세요.');
+					$.ajax({
+						type : 'PUT', 
+						url : '../reply/' + updateReplyId,
+						headers : {
+							'Content-Type' : 'application/json'
+						},
+						data : JSON.stringify({"replyContent" : updatedContent}),  
+						success : function(result) {
+							console.log(result);
+							if(result == 1) {
+								alert('댓글 수정 성공!');
+								getReplies(reviewId);
 							}
-							});
-					} else {
-						alert('수정할 내용을 입력해주세요.');
-					}
-					
-				});
-		
+						}
+						
+					}); 
+				}); // end btn_save_reply.on()
+				
 			}); // end reviews.on() 
 			
-			// 모달 닫기 버튼 클릭 시 모달 닫기
-			$('#replycloseBtn').on('click', function() {
-			  $('#replyUpdateModal').hide();
-			});
-
-			// 모달 외부 클릭 시 모달 닫기
-			$(window).on('click', function(event) {
-			  if (event.target == document.getElementById('replyUpdateModal')) {
-			    $('#replyUpdateModal').hide();
-			  }
-			});
 			
 		// 선택된 댓글 삭제
 			$('#reviews').on('click', '.reply_item .btn_delete_reply', function(){

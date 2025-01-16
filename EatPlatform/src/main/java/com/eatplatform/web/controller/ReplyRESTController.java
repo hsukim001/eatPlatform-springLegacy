@@ -49,10 +49,10 @@ public class ReplyRESTController {
 	// 댓글 수정
 	@PutMapping("/{replyId}")
 	public ResponseEntity<Integer> updateReply(
-			@PathVariable("replyId") int replyId, @RequestBody String replyContent) {
+			@PathVariable("replyId") int replyId, @RequestBody ReplyVO replyVO) {
 		log.info("updateReply()");
 		
-		int result = replyService.updateReply(replyId, replyContent);
+		int result = replyService.updateReply(replyId, replyVO.getReplyContent());
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
