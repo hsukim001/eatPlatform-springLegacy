@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	  SELECT *
 	  FROM (
 	    SELECT
-	      store.*, ROW_NUMBER() OVER (ORDER BY STORE_REG_DATE DESC) AS RN
+	      store.*, ROW_NUMBER() OVER (ORDER BY store.STORE_REG_DATE DESC, store.STORE_ID DESC) AS RN
 	    FROM STORE store
 	    LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
        <where>

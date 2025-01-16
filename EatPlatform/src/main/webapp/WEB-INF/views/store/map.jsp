@@ -65,33 +65,99 @@
 
 	    loadStores(currentPage);
 
+	    // 넘버링 페이징 처리
 	    function updatePagination(totalDataCount, currentPage) {
-	        const totalPages = Math.ceil(totalDataCount / maxItemsPerPage);
+		    const totalPages = Math.ceil(totalDataCount / maxItemsPerPage);
+		    const paginationContainer = $('#pagination');
+		    paginationContainer.empty();
+		
+		    let paginationNum = Math.floor(currentPage / 6) + 1;
+		
+		    let startPage = Math.floor((paginationNum - 1) / 5) * 5 + 1;
+		    let endPage = startPage + 4;
+		
+		    if (endPage > totalPages) {
+		        endPage = totalPages;
+		    }
+		
+		    // 페이지 수가 적으면 모든 페이지를 표시
+		    if (totalPages <= 5) {
+		        for (let i = 1; i <= totalPages; i++) {
+		            const pageButton = $('<button>')
+		                .text(i)
+		                .on('click', function() {
+		                    currentPage = ((i-1)* 5) + 1;
+		                    loadedDataCount = 0;
+		                    scrollPage = currentPage;
+		                    $('#storeList').empty();
+		                    loadStores(currentPage);
+		                });
+		            paginationContainer.append(pageButton);
+		        }
+		    } else {
+		        // 마지막 페이지 근처의 예외 처리
+		        if (paginationNum <= 3) {
+		            let startRange = Math.max(paginationNum - 2, 1);
+		            let endRange = Math.min(paginationNum + 2, totalPages);
+		            for (let i = startRange; i <= endRange; i++) {
+		                const pageButton = $('<button>')
+		                    .text(i)
+		                    .on('click', function() {
+		                        currentPage = ((i-1)* 5) + 1;
+		                        loadedDataCount = 0;
+		                        scrollPage = currentPage;
+		                        $('#storeList').empty();
+		                        loadStores(currentPage);
+		                    });
+		                paginationContainer.append(pageButton);
+		            }
+		        } else {
+		            // 마지막 페이지 근처 처리
+		            let startRange = Math.max(paginationNum - 2, 1);
+		            let endRange = Math.min(paginationNum + 2, totalPages);
+		
+		            // 마지막 페이지 근처에서 버튼 범위를 조정
+		            if (totalPages - paginationNum < 2) {
+		                startRange = totalPages - 4 > 0 ? totalPages - 4 : 1;
+		                endRange = totalPages;
+		            }
+		
+		            for (let i = startRange; i <= endRange; i++) {
+		                const pageButton = $('<button>')
+		                    .text(i)
+		                    .on('click', function() {
+		                        currentPage = ((i-1)* 5) + 1;
+		                        loadedDataCount = 0;
+		                        scrollPage = currentPage;
+		                        $('#storeList').empty();
+		                        loadStores(currentPage);
+		                    });
+		                paginationContainer.append(pageButton);
+		            }
+		        }
+		
+		        // 마지막 페이지와 그 직전 페이지의 버튼을 처리
+		        if (currentPage === totalPages * 6 - 6) {
+		            // 마지막 페이지에서 버튼 범위 표시: 4, 5, 6, 7, 8
+		            let rangeStart = Math.max(totalPages - 4, 1);
+		            let rangeEnd = totalPages;
+		            for (let i = rangeStart; i <= rangeEnd; i++) {
+		                const pageButton = $('<button>')
+		                    .text(i)
+		                    .on('click', function() {
+		                        currentPage = ((i-1)* 5) + 1;
+		                        loadedDataCount = 0;
+		                        scrollPage = currentPage;
+		                        $('#storeList').empty();
+		                        loadStores(currentPage);
+		                    });
+		                paginationContainer.append(pageButton);
+		            }
+		        }
+		    }
+		}
 
-	        $('#pagination').empty();
 
-	        for (let i = 1; i <= totalPages; i++) {
-	            const pageButton = $('<button>')
-	                .text(i)
-	                .on('click', function() {
-	                    if (i === 1) {
-	                        currentPage = 1;
-	                        loadedDataCount = 0;
-	                        scrollPage = 1;
-	                    } else {
-	                        currentPage = (i - 1) * 6;
-	                        loadedDataCount = (currentPage - 2) * pageSize;
-	                        scrollPage = currentPage;
-	                    }
-	                    $('#storeList').empty();
-	                    loadStores(currentPage);
-	                });
-
-	            $('#pagination').append(pageButton);
-	        }
-
-	        $('#currentPage').text(currentPage);
-	    }
 
 	    function appendStoresToPage(stores, storeAddresses) {
 	        if (Array.isArray(stores)) {
