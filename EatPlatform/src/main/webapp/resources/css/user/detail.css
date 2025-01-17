@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+.right {
+	width: 85%; /* 나머지 75%를 차지 */
+	background-color: #fff; /* 흰색 배경 */
+	padding: 20px;
+	box-sizing: border-box;
+	float: left;
+}
+
+.no-cursor {
+	background: #aaa;
+	pointer-events: none; /* 클릭 및 커서 비활성화 */
+	user-select: none; /* 텍스트 선택 방지 */
+}

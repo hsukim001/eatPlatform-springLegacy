@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.eatplatform.web.domain.CustomUser;
+import com.eatplatform.web.domain.UserRoleVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.UserMapper;
 
@@ -30,6 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     	log.info(username);
         // 사용자 ID를 이용하여 회원 정보와 권한 정보를 조회
         UserVO user = userMapper.selectUserByUserId(username);
+        UserRoleVO role = userMapper.selectUserRoleByUserId(username);
         
         // 조회된 회원 정보가 없을 경우 예외 처리
         if (user == null) {
@@ -38,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         
         // 회원의 역할을 Spring Security의 GrantedAuthority 타입으로 변환하여 리스트에 추가
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(user.getUserAuth()));
+        authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
         
         // UserDetails 객체를 생성하여 회원 정보와 역할 정보를 담아 반환
         UserDetails userDetails = new CustomUser(user, authorities);

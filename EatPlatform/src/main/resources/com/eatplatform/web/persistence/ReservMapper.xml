@@ -102,14 +102,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		ORDER BY HOUR
 	</select>
 	
-	<select id="selectScheduleForUpdate" resultMap="reservResultMap">
-		SELECT *
+	<select id="selectTotalPersonnelByStoreIdDateHourMin" resultType="Integer">
+		SELECT NVL(SUM(RESERV_PERSONNEL), 0) AS TOTAL_PERSONNEL
 		FROM RESERV
 		WHERE STORE_ID = #{storeId}
 		  AND RESERV_DATE = #{reservDate}
 		  AND RESERV_HOUR = #{reservHour}
 		  AND RESERV_MIN = #{reservMin}
-		FOR UPDATE WAIT 60
 	</select>
 	
 </mapper>

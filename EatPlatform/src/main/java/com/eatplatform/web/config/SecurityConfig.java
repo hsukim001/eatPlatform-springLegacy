@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.invalidateHttpSession(true); // 세션 무효화 설정
 
 		// header 정보에 xssProtection 기능 설정
+		// 외부 링크 차단
 //			httpSecurity.headers().xssProtection().block(true);
 //			httpSecurity.headers().contentSecurityPolicy("script-src 'self' https://code.jquery.com 'unsafe-inline' 'unsafe-eval'");
 

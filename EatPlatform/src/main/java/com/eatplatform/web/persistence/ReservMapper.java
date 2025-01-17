@@ -26,6 +26,6 @@ public interface ReservMapper {
 	// 예약 가능시간 조회
 	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
 	// 예약 가능 확인
-	List<ReservVO> selectScheduleForUpdate(ReservVO reservVO);
+	int selectTotalPersonnelByStoreIdDateHourMin(ReservVO reservVO);
 	
 }

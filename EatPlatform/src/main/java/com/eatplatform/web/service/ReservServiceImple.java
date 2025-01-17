@@ -23,14 +23,14 @@ import lombok.extern.log4j.Log4j;
 
 @Service
 @Log4j
-public class ReservServiceImple implements ReservService{
-	
+public class ReservServiceImple implements ReservService {
+
 	@Autowired
 	private ReservMapper reservMapper;
-	
+
 	@Autowired
 	private StoreMapper storeMapper;
-	
+
 	// 페이징 예약 목록 조회
 	@Override
 	public List<ReservVO> searchToDayList(Pagination pagination) {
@@ -58,78 +58,51 @@ public class ReservServiceImple implements ReservService{
 		log.info("searchPrevDayTotalCountByReservDateUserId()");
 		return reservMapper.selectPrevDayTotalCount(userId);
 	}
-	
-	// store 상세
-	@Override
-	public StoreVO searchStoreByStoreId(int storeId) {
-		log.info("searchStoreByStoreId()");;
-		return storeMapper.selectStoreById(storeId);
-	}
-	
+
 	// 예약 등록
-	@Transactional(value = "transactionManager", isolation = Isolation.SERIALIZABLE)
 	@Override
 	public int createdReserv(ReservVO reservVO, int reservLimit) {
 		log.info("insertReserv()");
-		int maxRetries = 3;
-		int attempts = 0;
 		
-		while (attempts < maxRetries) {
-			try {
-				
-				int currentReservPersonnel = 0;
-				int result = 0;
-				
-				Date nowDate = new Date();
-				
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				String nowDateFormat = formatter.format(nowDate);
-				String dateTime = reservVO.getReservDate() + " " + reservVO.getReservHour() + ":" + reservVO.getReservMin();
-				
-				Date now = formatter.parse(nowDateFormat);
-				Date reservDateTime = formatter.parse(dateTime);
-				
-				// 현재시간보다 이전의 시간 예외
-				if(now.after(reservDateTime)) {
-					log.info("예약할수 없는 시간입니다.");
-					return result;
-				}
-				
-				List<ReservVO> list = reservMapper.selectScheduleForUpdate(reservVO);
-				log.info("list : " + list);
-				
-				if(!ObjectUtils.isEmpty(list)) {
-					log.info("list is not null");
-					for(int i = 0; i < list.size(); i++) {
-						currentReservPersonnel += list.get(i).getReservPersonnel();
-					}
-				} else {
-					log.info("데이터 없음");
-				}
-				
-				int totalPersonnel = currentReservPersonnel + reservVO.getReservPersonnel();
-				log.info("인원 : " + totalPersonnel);
-				
-				if(totalPersonnel <= reservLimit) {
-						result = reservMapper.insert(reservVO);
-					log.info("예약 등록 성공");
-				} else {
-					log.info("예약 실패 : 인원 초과");
-				}
-				
+		int currentReservPersonnel = 0;
+		int result = 0;
+		
+		try {
+			
+			Date nowDate = new Date();
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			String nowDateFormat = formatter.format(nowDate);
+			String dateTime = reservVO.getReservDate() + " " + reservVO.getReservHour() + ":" + reservVO.getReservMin();
+			
+			Date now = formatter.parse(nowDateFormat);
+			Date reservDateTime = formatter.parse(dateTime);
+			
+			// 현재시간보다 이전의 시간 예외
+			if (now.after(reservDateTime)) {
+				log.info("예약할수 없는 시간입니다.");
 				return result;
-			} catch (Exception e) {
-				attempts++;
-				log.info("재시도");
-				
-				if(attempts >= maxRetries) {
-//					throw e;
-					log.error("재시도 횟수 초과");
-				}
 			}
+			
+			currentReservPersonnel = reservMapper.selectTotalPersonnelByStoreIdDateHourMin(reservVO);
+			log.info("currentReservPersonnel : " + currentReservPersonnel);
+			
+			int totalPersonnel = currentReservPersonnel + reservVO.getReservPersonnel();
+			log.info("인원 : " + totalPersonnel);
+			
+			if (totalPersonnel <= reservLimit) {
+				result = reservMapper.insert(reservVO);
+				log.info("예약 등록 성공");
+			} else {
+				log.info("예약 실패 : 인원 초과");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		return 0;
+
+		return result;
+
 	}
 
 	// 예약 취소
@@ -145,24 +118,24 @@ public class ReservServiceImple implements ReservService{
 	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel) {
 		log.info("searchSchedule()");
 		log.info(storeScheduleVO.getReservDate());
-		
+
 		List<StoreScheduleVO> list = reservMapper.selectSchedule(storeScheduleVO);
 		int reservLimit = storeScheduleVO.getReservLimit();
-		
-		for(int i = 0; i < list.size(); i++) {
+
+		for (int i = 0; i < list.size(); i++) {
 			int totalPersonnel = list.get(i).getTotalPersonnel();
 			log.info(list.get(i).getReservDate());
-			
-			if(totalPersonnel < reservLimit) {
+
+			if (totalPersonnel < reservLimit) {
 				int maxPeople = reservLimit - totalPersonnel;
-				
-				if(personnel <= maxPeople) {
+
+				if (personnel <= maxPeople) {
 					list.get(i).setActive(true);
 				}
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 }

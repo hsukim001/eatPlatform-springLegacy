@@ -269,8 +269,15 @@ $(function () {
 	$('#applyBtn').click(function(){
 		inputPersonnel = $('#inputPersonnel').val()
 		personnelCheck();
-		reservSchedule(selectedDateValue);
+		reservSchedule(dateText);
 		observeDOMChanges();
+	});
+	
+	// 예약 인원 input 이벤트
+	$('#inputPersonnel').keydown(function(event){
+		if(event.keyCode == 13) {
+			$('#applyBtn').trigger('click');
+		}
 	});
 		
 	// 예약인원 직접입력 함수

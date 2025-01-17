@@ -17,7 +17,6 @@ public class UserVO {
 	private String userEmail;
 	private String userPhone;
 	private String userName;
-	private String userAuth;
 	private int userActive;
 	private Date userRegDate;
 }

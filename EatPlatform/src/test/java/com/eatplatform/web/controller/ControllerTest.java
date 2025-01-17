@@ -45,8 +45,8 @@ public class ControllerTest {
 	
 	@Test
 	public void test() {
-		insertStore();
-//		insert();
+//		insertStore();
+		insertUser();
 //		check();
 	}
 	
@@ -58,7 +58,7 @@ public class ControllerTest {
 			StoreAddressVO storeAddressVO = new StoreAddressVO();
 			
 			
-			storeVO.setStoreName("고양이" + i);
+			storeVO.setStoreName("강아지" + i);
 			storeVO.setStorePhone("1111");
 			storeVO.setBusinessHour("10:00 - 23:00");
 			storeVO.setFoodCategory("한식");
@@ -87,14 +87,14 @@ public class ControllerTest {
 		
 	}
 	
-	private void insert() {
+	private void insertUser() {
 		log.info("insertTest");
 		UserVO vo = new UserVO();
-		vo.setUserId("store02");
-		vo.setUserPw("store");
-		vo.setUserEmail("test@test.com");
-		vo.setUserName("store02");
-		vo.setUserPhone("010-123-0000");
+		vo.setUserId("q");
+		vo.setUserPw("q");
+		vo.setUserEmail("q@q");
+		vo.setUserName("q");
+		vo.setUserPhone("010-1111-1111");
 		
 		log.info(vo);
 		int result = userService.createdUser(vo);

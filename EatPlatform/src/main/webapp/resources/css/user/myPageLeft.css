@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.left {
+	width: 15%; /* 너비를 25%로 설정 */
+	height: 100vh;
+  	background-color: #f4f4f4; /* 밝은 회색 배경 */
+  	padding: 20px; /* 내부 여백 */
+  	border-right: 1px solid #ddd; /* 오른쪽에 구분선 추가 */
+  	box-sizing: border-box; /* 패딩 포함 크기 설정 */
+  	float: left;
+}

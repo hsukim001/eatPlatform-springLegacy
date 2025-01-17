@@ -30,16 +30,6 @@ public class ReservController {
 		log.info("reservList()");
 	}
 	
-	// 예약 등록 페이지 호출
-	@GetMapping("/register")
-	public void register(Model model, int storeId) {
-		log.info("register()");
-		
-		StoreVO vo = reservService.searchStoreByStoreId(storeId);
-		log.info(vo);
-		model.addAttribute("store", vo);
-	}
-	
 	@PostMapping("/register")
 	public String registerPOST(ReservVO reservVO, HttpServletRequest request) {
 		log.info("registerPOST()");

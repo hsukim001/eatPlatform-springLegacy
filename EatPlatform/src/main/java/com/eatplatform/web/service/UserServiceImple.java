@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eatplatform.web.domain.UserRoleVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.UserDelMapper;
 import com.eatplatform.web.persistence.UserMapper;
@@ -31,6 +32,7 @@ public class UserServiceImple implements UserService{
 	}
 
 	// 회원 등록
+	@Transactional
 	@Override
 	public int createdUser(UserVO userVO) {
 		log.info("createdUserList()");
@@ -43,13 +45,15 @@ public class UserServiceImple implements UserService{
 		
 		UserVO vo = userVO;
 		vo.setUserPw(encodePassword);
-
-		vo.setUserAuth("ROLE_MEMBER");
 		vo.setUserActive(1);
-		
 		log.info(vo);
 		
-		return userMapper.insertUser(vo);
+		int userCreated = userMapper.insertUser(vo);
+		int userRoleCreated = userMapper.insertUserRole(vo.getUserId());
+		log.info("회원 정보 " + userCreated + "행 등록 성공");
+		log.info("회원 권한 " + userRoleCreated + "행 등록 성공");
+				
+		return 1;
 	}
 
 	// 회원 검색(회원 아이디)
