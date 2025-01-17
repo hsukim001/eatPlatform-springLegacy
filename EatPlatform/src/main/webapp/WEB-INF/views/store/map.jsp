@@ -34,8 +34,9 @@
 	    let totalDataCount = 0;
 	    let loadedDataCount = 0;
 	    let loading = false;
+	    let pageNum = 1;
 	    
-	    let marker, infowindow, overlay;
+	    let marker, infowindow, overlay, mapContainer, geocoder;
 	    
 	    const maxItemsPerPage = 30;
 
@@ -54,108 +55,148 @@
 	                appendStoresToPage(response.recentStores, response.storeAddresses);
 	                totalDataCount = response.totalStoresCount;
 	                updatePagination(totalDataCount, pageNum);
+	                markingToloadData(response.recentStores, response.storeAddresses, pageNum, maxItemsPerPage);
 	                loading = false;
 	            },
 	            error: function(xhr, status, error) {
-	                console.error('Data load failed', status, error);
+	                console.error('데이터를 불러오지 못했쪄용', status, error);
 	                loading = false;
 	            }
 	        });
 	    }
 
 	    loadStores(currentPage);
+	    
+	    // 현재 리스트 위치 마킹
+		async function markingToloadData(stores, storeAddresses, pageNum, maxItemsPerPage) {
+		    const startIndex = (pageNum - 1) * maxItemsPerPage;
+		    const endIndex = startIndex + maxItemsPerPage;
+		
+		    console.log('startIndex:', startIndex, 'endIndex:', endIndex); // startIndex와 endIndex 확인
+		    console.log('Total stores:', stores.length); // stores 배열 길이 확인
+		
+		    let positions = [];
+		
+		    // stores 배열을 slice 해서 마킹할 데이터 찾기
+		    for (let i = startIndex; i < endIndex && i < stores.length; i++) {
+		        const store = stores[i];
+		        console.log('Processing store:', store.storeId, store.storeName); // 현재 처리 중인 store 확인
+		        const geocoder = new kakao.maps.services.Geocoder();
+		        const storeAddress = storeAddresses[store.storeId];
+		        const jibun = storeAddress.jibunAddress;
+		
+		        if (storeAddress) {
+		            console.log('storeAddress:', storeAddress); // storeAddress 값 확인
+		
+		            // jibun이 주소일 경우 geocoder 사용
+		            if (jibun) {
+		                console.log('Address:', jibun); // jibun 값 확인
+		
+		                try {
+		                    // 주소를 위도, 경도로 변환
+		                    const result = await new Promise((resolve, reject) => {
+		                        geocoder.addressSearch(jibun, function(result, status) {
+		                            if (status === kakao.maps.services.Status.OK) {
+		                                resolve(result);
+		                            } else {
+		                                reject('주소를 변환할 수 없습니다.');
+		                            }
+		                        });
+		                    });
+		
+		                    const latitude = result[0].y;  // 위도
+		                    const longitude = result[0].x; // 경도
+		
+		                    console.log('Latitude:', latitude, 'Longitude:', longitude);
+		
+		                    positions.push({
+		                        title: store.storeName,
+		                        latlng: new kakao.maps.LatLng(latitude, longitude)
+		                    });
+		                } catch (error) {
+		                    console.log(error); // 에러 처리
+		                }
+		            } else {
+		                console.log('No jibunAddress found for storeId:', store.storeId); // jibun이 없을 때
+		            }
+		        } else {
+		            console.log('No address found for storeId:', store.storeId); // storeAddress가 없는 경우
+		        }
+		    }
+		
+		    // 마커 마킹 로직 추가 (positions 배열 사용)
+		    positions.forEach(function(position) {
+		        const marker = new kakao.maps.Marker({
+		            map: map, 
+		            position: position.latlng, 
+		            title: position.title
+		        });
+		
+		        kakao.maps.event.addListener(marker, 'click', function() {
+		            if (overlay) {
+		                overlay.setMap(null);
+		            }
+		            overlay = new kakao.maps.CustomOverlay({
+		                content: '<div class="info">' + position.title + '</div>',
+		                map: map,
+		                position: marker.getPosition()
+		            });
+		            overlay.setMap(map);
+		        });
+		    });
+		}
+
+
+
+
+
 
 	    // 넘버링 페이징 처리
-	    function updatePagination(totalDataCount, currentPage) {
+		function updatePagination(totalDataCount, currentPage) {
 		    const totalPages = Math.ceil(totalDataCount / maxItemsPerPage);
 		    const paginationContainer = $('#pagination');
 		    paginationContainer.empty();
 		
-		    let paginationNum = Math.floor(currentPage / 6) + 1;
+		    let startPage = Math.max(pageNum - 2, 1); 
+		    let endPage = Math.min(pageNum + 2, totalPages); 
 		
-		    let startPage = Math.floor((paginationNum - 1) / 5) * 5 + 1;
-		    let endPage = startPage + 4;
-		
-		    if (endPage > totalPages) {
+		    if (totalPages <= 5) {
+		        startPage = 1;
 		        endPage = totalPages;
+		    } else {
+		        if (pageNum <= 2) {
+		            startPage = 1;
+		            endPage = Math.min(5, totalPages);
+		        }
+		        if (pageNum >= totalPages - 1) {
+		            startPage = Math.max(totalPages - 4, 1);
+		            endPage = totalPages;
+		        }
 		    }
 		
-		    // 페이지 수가 적으면 모든 페이지를 표시
-		    if (totalPages <= 5) {
-		        for (let i = 1; i <= totalPages; i++) {
-		            const pageButton = $('<button>')
-		                .text(i)
-		                .on('click', function() {
-		                    currentPage = ((i-1)* 5) + 1;
-		                    loadedDataCount = 0;
-		                    scrollPage = currentPage;
-		                    $('#storeList').empty();
-		                    loadStores(currentPage);
-		                });
-		            paginationContainer.append(pageButton);
-		        }
-		    } else {
-		        // 마지막 페이지 근처의 예외 처리
-		        if (paginationNum <= 3) {
-		            let startRange = Math.max(paginationNum - 2, 1);
-		            let endRange = Math.min(paginationNum + 2, totalPages);
-		            for (let i = startRange; i <= endRange; i++) {
-		                const pageButton = $('<button>')
-		                    .text(i)
-		                    .on('click', function() {
-		                        currentPage = ((i-1)* 5) + 1;
-		                        loadedDataCount = 0;
-		                        scrollPage = currentPage;
-		                        $('#storeList').empty();
-		                        loadStores(currentPage);
-		                    });
-		                paginationContainer.append(pageButton);
-		            }
-		        } else {
-		            // 마지막 페이지 근처 처리
-		            let startRange = Math.max(paginationNum - 2, 1);
-		            let endRange = Math.min(paginationNum + 2, totalPages);
+		    // 페이지 버튼 생성
+		    for (let i = startPage; i <= endPage; i++) {
+		        const pageButton = $('<button>')
+		            .text(i)
+		            .on('click', function() {
+		                pageNum = i;
+		                currentPage = (i - 1) * 5 + 1;
+		                loadedDataCount = 0;
+		                scrollPage = currentPage;
+		                $('#storeList').empty();
+		                loadStores(currentPage);
 		
-		            // 마지막 페이지 근처에서 버튼 범위를 조정
-		            if (totalPages - paginationNum < 2) {
-		                startRange = totalPages - 4 > 0 ? totalPages - 4 : 1;
-		                endRange = totalPages;
-		            }
+		                updatePagination(totalDataCount, pageNum);
+		            });
 		
-		            for (let i = startRange; i <= endRange; i++) {
-		                const pageButton = $('<button>')
-		                    .text(i)
-		                    .on('click', function() {
-		                        currentPage = ((i-1)* 5) + 1;
-		                        loadedDataCount = 0;
-		                        scrollPage = currentPage;
-		                        $('#storeList').empty();
-		                        loadStores(currentPage);
-		                    });
-		                paginationContainer.append(pageButton);
-		            }
+		        if (i === pageNum) {
+		            pageButton.addClass('active');
 		        }
 		
-		        // 마지막 페이지와 그 직전 페이지의 버튼을 처리
-		        if (currentPage === totalPages * 6 - 6) {
-		            // 마지막 페이지에서 버튼 범위 표시: 4, 5, 6, 7, 8
-		            let rangeStart = Math.max(totalPages - 4, 1);
-		            let rangeEnd = totalPages;
-		            for (let i = rangeStart; i <= rangeEnd; i++) {
-		                const pageButton = $('<button>')
-		                    .text(i)
-		                    .on('click', function() {
-		                        currentPage = ((i-1)* 5) + 1;
-		                        loadedDataCount = 0;
-		                        scrollPage = currentPage;
-		                        $('#storeList').empty();
-		                        loadStores(currentPage);
-		                    });
-		                paginationContainer.append(pageButton);
-		            }
-		        }
+		        paginationContainer.append(pageButton);
 		    }
 		}
+
 
 
 
@@ -222,22 +263,20 @@
 		navigator.geolocation.getCurrentPosition((position) => {
 			const latitude = position.coords.latitude;
 			const longitude = position.coords.longitude;
-			console.log("위도 : " + latitude);
-			console.log("경도 : " + longitude);
 			console.log(position);
 
 			// 위치 정보를 받은 후 지도 설정
-			let mapContainer = document.getElementById('map'),
+			mapContainer = document.getElementById('map'),
 			    mapOption = { 
 			        center: new kakao.maps.LatLng(latitude, longitude), // 지도의 초기 좌표
 			        level: 3 // 줌 레벨
 			    };
 
 			// 지도 생성
-			let map = new kakao.maps.Map(mapContainer, mapOption); 
+			map = new kakao.maps.Map(mapContainer, mapOption);  
 			
 			// 지오코더
-			var geocoder = new kakao.maps.services.Geocoder();
+			geocoder = new kakao.maps.services.Geocoder();
 
 			$('#storeList').on('click', '.store', function(){
 				

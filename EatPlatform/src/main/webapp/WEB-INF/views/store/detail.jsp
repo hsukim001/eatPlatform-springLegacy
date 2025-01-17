@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
