@@ -90,11 +90,11 @@ public class ControllerTest {
 	private void insertUser() {
 		log.info("insertTest");
 		UserVO vo = new UserVO();
-		vo.setUserId("q");
-		vo.setUserPw("q");
-		vo.setUserEmail("q@q");
-		vo.setUserName("q");
-		vo.setUserPhone("010-1111-1111");
+		vo.setUserId("user");
+		vo.setUserPw("user");
+		vo.setUserEmail("user@test.com");
+		vo.setUserName("사용자");
+		vo.setUserPhone("010-0001-1111");
 		
 		log.info(vo);
 		int result = userService.createdUser(vo);

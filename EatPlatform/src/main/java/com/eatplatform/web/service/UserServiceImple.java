@@ -1,14 +1,23 @@
 package com.eatplatform.web.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eatplatform.web.domain.UserRoleVO;
+import com.eatplatform.web.domain.BusinessRequestVO;
+import com.eatplatform.web.domain.StoreAddressVO;
+import com.eatplatform.web.domain.StoreApprovalsVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.persistence.BusinessRequestMapper;
+import com.eatplatform.web.persistence.StoreAddressMapper;
+import com.eatplatform.web.persistence.StoreApprovalsMapper;
+import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.persistence.UserDelMapper;
 import com.eatplatform.web.persistence.UserMapper;
 
@@ -26,6 +35,18 @@ public class UserServiceImple implements UserService{
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private BusinessRequestMapper businessRequestMapper;
+	
+	@Autowired
+	private StoreApprovalsMapper storeApprovalsMapper;
+	
+	@Autowired
+	private StoreMapper storeMapper;
+	
+	@Autowired
+	private StoreAddressMapper storeAddressMapper;
 	
 	public String encryptPassword(String password) {
 		return passwordEncoder.encode(password);
@@ -184,6 +205,49 @@ public class UserServiceImple implements UserService{
 	public int permanentDeleteUserInfo() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	// 사업자 등급 신청
+	@Transactional
+	@Override
+	public int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO) {
+		log.info("businessUpgradeForm()");
+		
+		int insertStore = storeMapper.insertStore(storeVO);
+		int storeId = storeVO.getStoreId();
+		log.info("storeId : " + storeId);
+		
+		storeAddressVO.setStoreId(storeId);
+		int insertStoreAddress = storeAddressMapper.insertStoreAddress(storeAddressVO);
+		
+		BusinessRequestVO businessRequestVO = new BusinessRequestVO();
+		businessRequestVO.setStoreId(storeId);
+		businessRequestVO.setUserId(storeVO.getUserId());
+		businessRequestVO.setRequestApprovals(0);
+		int insertBusinessRequest = businessRequestMapper.insertBusinessRequest(businessRequestVO);
+		
+		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
+		storeApprovalsVO.setStoreId(storeId);
+		storeApprovalsVO.setStoreApprovals(0);
+		int insertStoreApprovals = storeApprovalsMapper.insertStoreApprovals(storeApprovalsVO);
+		
+		log.info("Store : " + insertStore + "행 등록 성공");
+		log.info("StoreAddress : " + insertStoreAddress + "행 등록 성공");
+		log.info("businessRequest : " + insertBusinessRequest + "행 등록 성공" );
+		log.info("StoreApprovals : " + insertStoreApprovals + "행 등록 성공");
+		
+		return 1;
+	}
+	
+	// 사업자 등록 신청 정보 조회
+	@Override
+	public Map<String, String> searchBusinessRequest(int businessRequestId) {
+		Map<String, String> map = new HashMap<>();
+		
+		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
+		StoreApprovalsVO storeApprovalsVO = storeApprovalsMapper.selectStoreApprovalsByStoreId(businessRequestId);
+		
+		return null;
 	}
 	
 	

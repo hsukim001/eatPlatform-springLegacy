@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.StoreApprovalsMapper">
+
+	<resultMap type="com.eatplatform.web.domain.StoreApprovalsVO" id="storeApprovalsResultMap">
+		<id property="storeId" column="STORE_ID"/>
+		<result property="storeApprovals" column="STORE_APPROVALS"/>
+		<result property="storeApprovalsRegDate" column="STORE_APPROVALS_REG_DATE"/>
+	</resultMap>
+	
+	<insert id="insertStoreApprovals">
+		INSERT INTO STORE_APPROVALS
+		VALUES(
+			#{storeId},
+			#{storeApprovals},
+			SYSDATE
+		)
+	</insert>
+
+</mapper>

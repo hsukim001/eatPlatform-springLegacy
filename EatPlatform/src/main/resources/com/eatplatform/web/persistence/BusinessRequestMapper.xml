@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.BusinessRequestMapper">
+
+	<resultMap type="com.eatplatform.web.domain.BusinessRequestVO" id="businessRequestResultMap">
+		<id property="businessRequestId" column="BUSINESS_REQUEST_ID" />
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID" />
+		<result property="requestApprovals" column="REQUEST_APPROVALS"/>
+		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
+	</resultMap>
+	
+	<insert id="insertBusinessRequest" useGeneratedKeys="true" keyProperty="businessRequestId" keyColumn="BUSINESS_REQUEST_ID">
+		INSERT INTO BUSINESS_REQUEST
+		VALUES(
+			BUSINESS_REQUEST_SEQ.NEXTVAL,
+			#{storeId},
+			#{userId},
+			#{requestApprovals},
+			SYSDATE
+		)
+	</insert>
+	
+	<select id="selectBusinessRequestByBusinessRequestId" resultType=""></select>
+	
+</mapper>

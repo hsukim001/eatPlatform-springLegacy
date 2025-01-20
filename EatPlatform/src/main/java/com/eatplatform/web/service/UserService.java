@@ -1,5 +1,10 @@
 package com.eatplatform.web.service;
 
+import java.util.Map;
+
+import com.eatplatform.web.domain.BusinessRequestVO;
+import com.eatplatform.web.domain.StoreAddressVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
 
 public interface UserService {
@@ -24,4 +29,8 @@ public interface UserService {
 	int deleteUserList(int userActive);
 	// 회원 정보 영구 삭제
 	int permanentDeleteUserInfo();
+	// 사업자 등록 신청
+	int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO);
+	// 사업자 등록 신청 상세 정보 조회
+	Map<String, String> searchBusinessRequest(int businessRequestId);
 }

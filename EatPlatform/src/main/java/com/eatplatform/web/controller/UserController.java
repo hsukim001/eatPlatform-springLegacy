@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.eatplatform.web.domain.BusinessRequestVO;
+import com.eatplatform.web.domain.StoreAddressVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.service.UserService;
 
@@ -90,6 +93,43 @@ public class UserController {
 	@GetMapping("/searchId")
 	public void searchId() {
 		log.info("searchId()");
+	}
+	
+	// 사업자 등록 신청 화면 호출
+	@GetMapping("/business/requestForm")
+	public void businessRequestForm(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+		log.info("businessRequestForm()");
+		String userId = userDetails.getUsername();
+		UserVO vo = userService.searchUser(userId);
+		
+		model.addAttribute("ownerName", vo.getUserName());
+	}
+	
+	// 사업자 등록 신청
+	@PostMapping("/business/request")
+	public String businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, @AuthenticationPrincipal UserDetails userDetails) {
+		log.info("businessRequest()");
+		String userId = userDetails.getUsername();
+		storeVO.setUserId(userId);
+		log.info("userId : " + storeVO.getUserId());
+		int result = userService.businessRequest(storeVO, storeAddressVO);
+		if(result == 1) {
+			log.info("사업자 등록 신청 성공");
+		}
+		return "redirect:/";
+	}
+	
+	// 사업자 등록 요청 리스트 화면 호출
+	@GetMapping("/business/requestList")
+	public void businessRequestList() {
+		log.info("businessRequestList()");
+	}
+	
+	// 사업자 등록 요청 상세 화면 호출
+	@GetMapping("/business/requestInfo")
+	public void businessRequestInfo(@RequestParam("businessRequestId") int businessRequestId) {
+		log.info("businessRequestInfo()");
+		
 	}
 	
 }
