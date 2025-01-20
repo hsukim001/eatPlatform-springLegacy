@@ -269,6 +269,7 @@
 								+ '&nbsp;&nbsp;'
 								+ '<button class="btn_save_reply" style="display: none;" >저장</button>'
 								+ '<button class="btn_update_reply" >수정</button>'
+								+ '<button class="btn_return_reply" style="display: none;" >취소</button>'
 								+ '<button class="btn_delete_reply" >삭제</button>'
 								+ '</div>';
 						}); // end each()
@@ -481,7 +482,7 @@
 						if(result == 1) {
 							alert('댓글 입력 성공');
 							getReplies(reviewId);
-							
+							$('#replyContent').val("");
 						}
 					}
 				});
@@ -503,13 +504,20 @@
 				replyItem.find('#replyContent').attr('readonly', false);
 				
 				replyItem.find('.btn_update_reply').hide();
+				replyItem.find('.btn_delete_reply').hide();
 				replyItem.find('.btn_save_reply').show();
+				replyItem.find('.btn_return_reply').show();
 				
 				// 저장 버튼 눌렀을 때
 				replyItem.find('.btn_save_reply').on('click', function(){
 					let updateReplyId = $(this).siblings('#replyId').first().val();
 					var updatedContent = replyItem.find('#replyContent').val();
 					console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + updateReplyId + ", 댓글 내용 : " + updatedContent);
+					
+					if(replyContent == updatedContent) {
+						alert("수정할 댓글을 입력해주세요.");
+		                return;
+					}
 					
 					$.ajax({
 						type : 'PUT', 
@@ -528,6 +536,16 @@
 						
 					}); 
 				}); // end btn_save_reply.on()
+				
+				// 취소 버튼 눌렀을 때
+				replyItem.find('.btn_return_reply').on('click', function(){
+				
+					replyItem.find('#replyContent').attr('readonly', true);
+					replyItem.find('.btn_update_reply').show();
+					replyItem.find('.btn_delete_reply').show();
+					replyItem.find('.btn_save_reply').hide();
+					replyItem.find('.btn_return_reply').hide();
+				}); // end btn_return_reply.on()
 				
 			}); // end reviews.on() 
 			

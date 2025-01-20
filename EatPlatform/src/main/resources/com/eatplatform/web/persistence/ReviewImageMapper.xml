@@ -40,5 +40,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE REVIEW_ID = #{reviewId}
 	</delete>
 
+	<!-- 이미지 파일 삭제 -->
+	<select id="selectListByReviewImagePath" resultMap="reviewImageResultMap">
+		SELECT * FROM REVIEW_IMAGE
+		WHERE REVIEW_IMAGE_PATH = #{reviewImageDate}
+	</select>
+
 </mapper>
 	
