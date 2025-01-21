@@ -185,7 +185,7 @@
 								+ '&nbsp;&nbsp;'
 								+ this.reviewLike // 추천 수 표시
 								+ '&nbsp;&nbsp;'
-								+ '<button class="btn_update" >수정</button>'
+								+ '<button id="btn_update" >수정</button>'
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
@@ -298,8 +298,8 @@
 				console.log(obj2);
 				
 				$.ajax({
-					type : 'PUT', 
-					url : '../review/' + reviewId,
+					type : 'GET', 
+					url : '../review/',
 					headers : {
 						'Content-Type' : 'application/json'
 					},
@@ -315,7 +315,7 @@
 				}); 
 				
 			}); // end reviews.on()
-			
+		
 			// 리뷰 삭제
 			$('#reviews').on('click', '.review_item .btn_delete', function(){
 				console.log(this);

@@ -55,6 +55,12 @@ public class ReviewServiceImple implements ReviewService{
 		return reviewMapper.selectListByStoreId(storeId);
 		
 	}
+	
+	@Override
+	public ReviewVO getReviewById(int reviewId) {
+		log.info("getReviewById()");
+		return reviewMapper.selectByReviewId(reviewId);
+	}
 
 	@Override
 	public int updateReview(ReviewVO reviewVO) {

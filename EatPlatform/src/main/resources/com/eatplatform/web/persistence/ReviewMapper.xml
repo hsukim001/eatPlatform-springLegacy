@@ -37,6 +37,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE STORE_ID = #{storeId}
 		ORDER BY REVIEW_ID
 	</select>
+	
+	<!-- reviewId 조회 -->
+	<select id="selectByReviewId" resultMap="reviewResultMap">
+		SELECT * FROM REVIEW
+		WHERE REVIEW_ID = #{reviewId}
+	</select>
 
 	<update id="update">
 		UPDATE REVIEW SET
