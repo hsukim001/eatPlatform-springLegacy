@@ -66,41 +66,44 @@
 	</head>
 	<body>
 		<sec:authentication property="principal" var="principal"/>
-		<div id="container">
-			<%-- <jsp:include page="/include/header.jsp"></jsp:include> --%>
-			<jsp:include page="/include/myPageLeft.jsp" />
+		<div id="wrap">
+			<jsp:include page="/include/header.jsp"></jsp:include>
 			
-			<div class="right">
-				<h1>가입 정보</h1>
-				<form action="modify" method="post">
+			<div id="container">
+				<jsp:include page="/include/myPageLeft.jsp" />
+				
+				<div class="right">
+					<h1>가입 정보</h1>
+					<form action="modify" method="post">
+						<div>
+							<span>아이디 : </span>
+							<input class="no-cursor" type="text" id="userId" name="userId" readonly="readonly" value="${vo.userId }">
+						</div>
+						<div>
+							<span>이름 : </span>
+							<input type="text" id="userName" name="userName" required="required" value="${vo.userName }">
+						</div>
+						<div>
+							<span>이메일 : </span>
+							<input class="no-cursor" type="email" id="userEmail" name="userEmail" required="required" readonly="readonly" value="${vo.userEmail }">
+						</div>
+						<div>
+							<span>휴대폰 : </span>
+							<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" value="${vo.userPhone }" maxlength="13">
+						</div>
+						<input type="submit" value="수정">
+						<!-- CSRF 토큰 -->
+				   		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">	
+					</form>
 					<div>
-						<span>아이디 : </span>
-						<input class="no-cursor" type="text" id="userId" name="userId" readonly="readonly" value="${vo.userId }">
+						<button onclick="location.href='modifyPw'">비밀번호 변경</button>
+						<button onclick="location.href='../'">취소</button>
+						<button onclick="location.href=''">사업자 등록 신청</button>
 					</div>
 					<div>
-						<span>이름 : </span>
-						<input type="text" id="userName" name="userName" required="required" value="${vo.userName }">
-					</div>
-					<div>
-						<span>이메일 : </span>
-						<input class="no-cursor" type="email" id="userEmail" name="userEmail" required="required" readonly="readonly" value="${vo.userEmail }">
-					</div>
-					<div>
-						<span>휴대폰 : </span>
-						<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" value="${vo.userPhone }" maxlength="13">
-					</div>
-					<input type="submit" value="수정">
-					<!-- CSRF 토큰 -->
-			   		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">	
-				</form>
-				<div>
-					<button onclick="location.href='modifyPw'">비밀번호 변경</button>
-					<button onclick="location.href='../'">취소</button>
-					<button onclick="location.href=''">사업자 등록 신청</button>
+						<button id="memWithdrawal">회원 탈퇴</button>
+					</div>		
 				</div>
-				<div>
-					<button id="memWithdrawal">회원 탈퇴</button>
-				</div>		
 			</div>
 		</div>
 	</body>

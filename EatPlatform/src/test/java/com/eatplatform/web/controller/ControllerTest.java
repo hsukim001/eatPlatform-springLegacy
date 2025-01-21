@@ -90,10 +90,10 @@ public class ControllerTest {
 	private void insertUser() {
 		log.info("insertTest");
 		UserVO vo = new UserVO();
-		vo.setUserId("user");
-		vo.setUserPw("user");
-		vo.setUserEmail("user@test.com");
-		vo.setUserName("사용자");
+		vo.setUserId("test");
+		vo.setUserPw("test");
+		vo.setUserEmail("test@test.com");
+		vo.setUserName("test");
 		vo.setUserPhone("010-0001-1111");
 		
 		log.info(vo);

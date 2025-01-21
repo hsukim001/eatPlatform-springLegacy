@@ -7,8 +7,11 @@
 		<meta charset="UTF-8">
 		<meta name="_csrf" content="${_csrf.token}"/>
 		<meta name="_csrf_header" content="${_csrf.headerName}"/>
-		<title>예약 목락</title>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+		<title>예약 목락</title>
 		<script type="text/javascript">
 			// ajax CSRF 토큰
 			$(document).ajaxSend(function(e, xhr, opt){
@@ -158,6 +161,9 @@
 		</script>
 	</head>
 	<body>
+	<div id="wrap">
+		<jsp:include page="/include/header.jsp" />
+		
 		<h1>예약 목록</h1>
 		<div>
 			<h2>예정 예약 목록</h2>
@@ -201,6 +207,7 @@
 		<div id="prevPagination">
 			<!-- ajax로 pagination load -->
 		</div>
+	</div>
 	
 	</body>
 

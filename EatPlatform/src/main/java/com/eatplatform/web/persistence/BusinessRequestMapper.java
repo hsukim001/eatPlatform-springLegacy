@@ -10,6 +10,8 @@ import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface BusinessRequestMapper {
+	// 사업자 등록 요청 정보 조회
+	BusinessRequestVO selectBusinessRequest(int businessRequestId);
 	// 사업자 등록 신청
 	int insertBusinessRequest(BusinessRequestVO businessRequestVO);
 	// 사업자 등록 신청 목록
@@ -18,4 +20,8 @@ public interface BusinessRequestMapper {
 	int selectTotalCount();
 	// 사업자 등록 신청 상세
 	BusinessRequestInfoVO selectBusinessRequestByBusinessRequestId(int businessRequestId);
+	// 사업자 등록 신청 조회(userId)
+	int selectBusinessRequestIdByuserId(String userId);
+	// 사업자 등록 요청 정보 삭제
+	int deleteBusinessRequestByBusinessRequestId(int businessRequestId);
 }

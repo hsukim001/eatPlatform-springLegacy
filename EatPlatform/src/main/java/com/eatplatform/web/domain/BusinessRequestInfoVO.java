@@ -1,5 +1,7 @@
 package com.eatplatform.web.domain;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.ToString;
 import lombok.Setter;
@@ -20,5 +22,6 @@ public class BusinessRequestInfoVO {
 	private String description;
 	private String roadAddress;
 	private String jibunAddress;
+	private Date businessRequestRegDate;
 	
 }

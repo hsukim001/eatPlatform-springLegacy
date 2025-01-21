@@ -3,29 +3,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
-<head>
-	<title>Home</title>
-</head>
-<body>
-<h1>
-	Hello world!  
-</h1>
-
-<P>  The time on the server is ${serverTime}. </P>
-<button onclick="location.href='user/register'">회원가입</button>
-<sec:authorize access="isAnonymous()">
-	<button onclick="location.href='access/login'">로그인</button>
-	<button onclick="location.href='store/list'">식당리스트</button>
-</sec:authorize>
-
-<sec:authorize access="isAuthenticated()">
-	<button onclick="location.href='user/detail'"><sec:authentication property="principal.username"/>님</button>
-	<button onclick="location.href='store/list'">식당리스트</button>
-	<form action="access/logout" method="post">
-		<input type="submit" value="로그아웃">
-		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-	</form>
-</sec:authorize>
-
-</body>
+	<head>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/myPageLeft.css">
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/detail.css">
+		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+		<title>Home</title>
+	</head>
+	<body>
+		<div id="wrap">
+			<jsp:include page="/include/header.jsp" />
+			
+			<h1>Home</h1>
+			<button onclick="location.href='store/list'">맛집 목록</button>
+		</div>
+	</body>
 </html>

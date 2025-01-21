@@ -25,13 +25,13 @@
                 <sec:authorize access="isAuthenticated()">
                 	<ul>
                 		<li>
-                			<form action="../access/logout" method="post">
+                			<form action="/web/access/logout" method="post">
                 				<input type="submit" value="로그아웃">
                 				<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
                 			</form>
                 		</li>
                     	<li>
-                    		<a href="../user/detail">마이페이지</a>
+                    		<a href="/web/user/detail">마이페이지</a>
                     	</li>         	
                 	</ul>
                 </sec:authorize>

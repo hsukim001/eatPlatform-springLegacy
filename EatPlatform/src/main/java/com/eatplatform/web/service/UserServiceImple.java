@@ -14,6 +14,7 @@ import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.domain.UserRoleVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.BusinessRequestMapper;
 import com.eatplatform.web.persistence.StoreAddressMapper;
@@ -260,7 +261,42 @@ public class UserServiceImple implements UserService{
 	// 사업자 등록 신청 목록 총 건수
 	@Override
 	public int getBusinessRequestTotalCount() {
+		log.info("getBusinessRequestTotalCount()");
 		return businessRequestMapper.selectTotalCount();
+	}
+
+	// 사업자 등록 신청 조회(userId)
+	@Override
+	public int getBusinessRequestId(String userId) {
+		log.info("getBusinessRequestId()");
+		return businessRequestMapper.selectBusinessRequestIdByuserId(userId);
+	}
+
+	@Transactional
+	@Override
+	public int businessReqeustApprovals(int businessRequestId, int storeId) {
+		log.info("businessReqeustApprovals()");
+		
+		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequest(businessRequestId);
+		String userId = businessRequestVO.getUserId();
+		
+		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequestByBusinessRequestId(businessRequestId);
+		
+		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
+		storeApprovalsVO.setStoreId(storeId);
+		storeApprovalsVO.setStoreApprovals(1);
+		int updateStoreApprovals = storeApprovalsMapper.updateStoreApprovals(storeApprovalsVO);
+		
+		UserRoleVO userRoleVO = new UserRoleVO();
+		userRoleVO.setUserId(userId);
+		userRoleVO.setRoleName("ROLE_STORE");
+		int updateUserRole = userMapper.updateUserRoleName(userRoleVO);
+		
+		log.info("사업자 등록 요청 정보 : " + deleteBusinessRequest + "행 삭제");
+		log.info("식당 등록 요청 정보 : " + updateStoreApprovals + "행 수정");
+		log.info("회원 권한 : " + updateUserRole + "행 수정");
+		
+		return 1;
 	}
 	
 	

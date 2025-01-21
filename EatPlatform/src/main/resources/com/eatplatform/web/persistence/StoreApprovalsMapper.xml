@@ -20,5 +20,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			SYSDATE
 		)
 	</insert>
+	
+	<update id="updateStoreApprovals">
+		UPDATE STORE_APPROVALS
+		SET STORE_APPROVALS = #{storeApprovals}
+		WHERE STORE_ID = #{storeId}
+	</update>
 
 </mapper>

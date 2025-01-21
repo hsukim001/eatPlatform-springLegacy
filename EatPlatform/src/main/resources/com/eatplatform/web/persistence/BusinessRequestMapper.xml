@@ -26,7 +26,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="description" column="DESCRIPTION"/>
 		<result property="roadAddress" column="ROAD_ADDRESS"/>
 		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
+		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE"/>
 	</resultMap>
+	
+	<select id="selectBusinessRequest" resultMap="businessRequestResultMap">
+		SELECT * FROM BUSINESS_REQUEST
+		WHERE BUSINESS_REQUEST_ID = #{businessRequestId}
+	</select>
 	
 	<insert id="insertBusinessRequest" useGeneratedKeys="true" keyProperty="businessRequestId" keyColumn="BUSINESS_REQUEST_ID">
 		INSERT INTO BUSINESS_REQUEST
@@ -42,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectBusinessRequestByBusinessRequestId" resultMap="infoResultMap">
 		SELECT b.BUSINESS_REQUEST_ID, 
 			b.STORE_ID, 
+			b.BUSINESS_REQUEST_REG_DATE, 
 			s.STORE_NAME, 
 			s.OWNER_NAME, 
 			s.STORE_PHONE, 
@@ -62,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectBusinessRequestListByPagination" resultMap="infoResultMap">
 		SELECT b.BUSINESS_REQUEST_ID, 
 			b.STORE_ID, 
+			b.BUSINESS_REQUEST_REG_DATE,
 			s.STORE_NAME, 
 			s.OWNER_NAME, 
 			s.STORE_PHONE, 
@@ -81,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		INNER JOIN STORE_ADDRESS a
 		ON a.STORE_ID = b.STORE_ID
 		WHERE b.RN BETWEEN #{start} AND #{end}
+		ORDER BY BUSINESS_REQUEST_ID DESC
 	</select>
 	
 	<select id="selectTotalCount" resultType="Integer">
@@ -88,4 +97,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM BUSINESS_REQUEST
 	</select>
 	
+	<select id="selectBusinessRequestIdByuserId" resultType="Integer">
+		SELECT NVL(
+			(SELECT BUSINESS_REQUEST_ID
+			FROM BUSINESS_REQUEST
+			WHERE USER_ID = #{userId}), 0
+		) AS ID
+		FROM DUAL
+	</select>
+	
+	<delete id="deleteBusinessRequestByBusinessRequestId">
+		DELETE FROM BUSINESS_REQUEST
+		WHERE BUSINESS_REQUEST_ID = #{businessRequestId}
+	</delete>
 </mapper>

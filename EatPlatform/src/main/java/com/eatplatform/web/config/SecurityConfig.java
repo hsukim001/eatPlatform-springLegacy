@@ -2,6 +2,7 @@ package com.eatplatform.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers("/user/searchId").permitAll()
 				.antMatchers("/user/modifyPw").permitAll()
 				.antMatchers("/user/gradeUpgradeForm").access("hasRole('ROLE_MEMBER')")
+				.antMatchers(HttpMethod.GET, "/user/business/requestInfo").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')")
+				.antMatchers(HttpMethod.POST, "/user/business/requestInfo").access("hasRole('ROLE_ADMIN')")
 				.antMatchers("/user/*").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE') or hasRole('ROLE_ADMIN')")
 				.antMatchers("/store/list").permitAll()
 				.antMatchers("/store/detail").permitAll()

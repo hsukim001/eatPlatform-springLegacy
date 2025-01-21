@@ -40,4 +40,8 @@ public interface UserService {
 	BusinessRequestInfoVO searchBusinessRequestInfo(int businessRequestId);
 	// 사업자 등록 신청 목록 총 건수
 	int getBusinessRequestTotalCount();
+	// 사업자 등록 신청 조회(userId)
+	int getBusinessRequestId(String userId);
+	// 사업자 등록 요청 승인
+	int businessReqeustApprovals(int businessRequestId, int storeId);
 }
