@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eatplatform.web.domain.BusinessRequestInfoVO;
 import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
@@ -20,6 +21,7 @@ import com.eatplatform.web.persistence.StoreApprovalsMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.persistence.UserDelMapper;
 import com.eatplatform.web.persistence.UserMapper;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -241,15 +243,25 @@ public class UserServiceImple implements UserService{
 	
 	// 사업자 등록 신청 정보 조회
 	@Override
-	public Map<String, String> searchBusinessRequest(int businessRequestId) {
-		Map<String, String> map = new HashMap<>();
-		
-		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
-		StoreApprovalsVO storeApprovalsVO = storeApprovalsMapper.selectStoreApprovalsByStoreId(businessRequestId);
-		
-		return null;
+	public BusinessRequestInfoVO searchBusinessRequestInfo(int businessRequestId) {
+		log.info("searchBusinessRequestInfo()");
+		BusinessRequestInfoVO vo = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
+		log.info(vo);
+		return vo;
 	}
-	
+
+	// 사업자 등록 신청 목록
+	@Override
+	public List<BusinessRequestInfoVO> searchBusinessRequestList(Pagination pagination) {
+		log.info("searchBusinessRequestList()");
+		return businessRequestMapper.selectBusinessRequestListByPagination(pagination);
+	}
+
+	// 사업자 등록 신청 목록 총 건수
+	@Override
+	public int getBusinessRequestTotalCount() {
+		return businessRequestMapper.selectTotalCount();
+	}
 	
 	
 }

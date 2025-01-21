@@ -1,11 +1,14 @@
 package com.eatplatform.web.service;
 
+import java.util.List;
 import java.util.Map;
 
+import com.eatplatform.web.domain.BusinessRequestInfoVO;
 import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.util.Pagination;
 
 public interface UserService {
 	
@@ -31,6 +34,10 @@ public interface UserService {
 	int permanentDeleteUserInfo();
 	// 사업자 등록 신청
 	int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO);
+	// 사업자 등록 신청 목록
+	List<BusinessRequestInfoVO> searchBusinessRequestList(Pagination pagination);
 	// 사업자 등록 신청 상세 정보 조회
-	Map<String, String> searchBusinessRequest(int businessRequestId);
+	BusinessRequestInfoVO searchBusinessRequestInfo(int businessRequestId);
+	// 사업자 등록 신청 목록 총 건수
+	int getBusinessRequestTotalCount();
 }

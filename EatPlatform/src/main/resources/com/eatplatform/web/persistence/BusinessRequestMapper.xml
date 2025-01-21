@@ -14,6 +14,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
 	</resultMap>
 	
+	<resultMap type="com.eatplatform.web.domain.BusinessRequestInfoVO" id="infoResultMap">
+		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="storeName" column="STORE_NAME"/>
+		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="storePhone" column="STORE_PHONE"/>
+		<result property="foodCategory" column="FOOD_CATEGORY"/>
+		<result property="businessHour" column="BUSINESS_HOUR"/>
+		<result property="storeComment" column="STORE_COMMENT"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="roadAddress" column="ROAD_ADDRESS"/>
+		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
+	</resultMap>
+	
 	<insert id="insertBusinessRequest" useGeneratedKeys="true" keyProperty="businessRequestId" keyColumn="BUSINESS_REQUEST_ID">
 		INSERT INTO BUSINESS_REQUEST
 		VALUES(
@@ -25,6 +39,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 	
-	<select id="selectBusinessRequestByBusinessRequestId" resultType=""></select>
+	<select id="selectBusinessRequestByBusinessRequestId" resultMap="infoResultMap">
+		SELECT b.BUSINESS_REQUEST_ID, 
+			b.STORE_ID, 
+			s.STORE_NAME, 
+			s.OWNER_NAME, 
+			s.STORE_PHONE, 
+			s.FOOD_CATEGORY, 
+			s.BUSINESS_HOUR, 
+			s.STORE_COMMENT, 
+			s.DESCRIPTION, 
+			a.ROAD_ADDRESS, 
+			a.JIBUN_ADDRESS 
+		FROM BUSINESS_REQUEST b
+		INNER JOIN STORE s
+			ON s.STORE_ID = b.STORE_ID
+		INNER JOIN STORE_ADDRESS a
+			ON a.STORE_ID = b.STORE_ID
+		WHERE b.BUSINESS_REQUEST_ID = #{businessRequestId}
+	</select>
+	
+	<select id="selectBusinessRequestListByPagination" resultMap="infoResultMap">
+		SELECT b.BUSINESS_REQUEST_ID, 
+			b.STORE_ID, 
+			s.STORE_NAME, 
+			s.OWNER_NAME, 
+			s.STORE_PHONE, 
+			s.FOOD_CATEGORY, 
+			s.BUSINESS_HOUR, 
+			s.STORE_COMMENT, 
+			s.DESCRIPTION, 
+			a.ROAD_ADDRESS, 
+			a.JIBUN_ADDRESS 
+		FROM
+		(
+		    SELECT ROW_NUMBER() OVER (ORDER BY BUSINESS_REQUEST_ID DESC)
+		    AS RN, BUSINESS_REQUEST.* FROM BUSINESS_REQUEST
+		) b
+		INNER JOIN STORE s
+		ON s.STORE_ID = b.STORE_ID
+		INNER JOIN STORE_ADDRESS a
+		ON a.STORE_ID = b.STORE_ID
+		WHERE b.RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectTotalCount" resultType="Integer">
+		SELECT COUNT(BUSINESS_REQUEST_ID)
+		FROM BUSINESS_REQUEST
+	</select>
 	
 </mapper>

@@ -1,5 +1,7 @@
 package com.eatplatform.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.eatplatform.web.domain.BusinessRequestInfoVO;
 import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.service.UserService;
+import com.eatplatform.web.util.PageMaker;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -119,17 +124,22 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-	// 사업자 등록 요청 리스트 화면 호출
+	// 사업자 등록 요청 목록 화면 호출
 	@GetMapping("/business/requestList")
-	public void businessRequestList() {
+	public void businessRequestList(Model model, Pagination pagination) {
 		log.info("businessRequestList()");
+		
+		List<BusinessRequestInfoVO> list = userService.searchBusinessRequestList(pagination);
+		int totalCount = userService.getBusinessRequestTotalCount();
+//		PageMaker
 	}
 	
 	// 사업자 등록 요청 상세 화면 호출
 	@GetMapping("/business/requestInfo")
-	public void businessRequestInfo(@RequestParam("businessRequestId") int businessRequestId) {
+	public void businessRequestInfo(Model model, @RequestParam("businessRequestId") int businessRequestId) {
 		log.info("businessRequestInfo()");
-		
+		BusinessRequestInfoVO businessRequestInfo = userService.searchBusinessRequestInfo(businessRequestId);
+		model.addAttribute("info", businessRequestInfo);
 	}
 	
 }
