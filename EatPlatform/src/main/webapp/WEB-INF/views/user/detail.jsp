@@ -98,7 +98,9 @@
 					<div>
 						<button onclick="location.href='modifyPw'">비밀번호 변경</button>
 						<button onclick="location.href='../'">취소</button>
-						<button onclick="location.href=''">사업자 등록 신청</button>
+						<sec:authorize access="hasAuthority('ROLE_MEMBER')">
+							<button onclick="location.href='business/requestForm'">사업자 등록 신청</button>
+						</sec:authorize>
 					</div>
 					<div>
 						<button id="memWithdrawal">회원 탈퇴</button>

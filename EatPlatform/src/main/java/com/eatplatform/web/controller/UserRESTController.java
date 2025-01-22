@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -115,6 +117,14 @@ public class UserRESTController {
 		ResultMsgResponse resultResponse = new ResultMsgResponse(result, msg);
 		
 		return new ResponseEntity<ResultMsgResponse>(resultResponse, HttpStatus.OK);
+	}
+	
+	// 사업자 등록 거부
+	@DeleteMapping("/business/request/denialManagement/{businessRequestId}/{storeId}")
+	public ResponseEntity<Integer> requestDenialManagement(@PathVariable("businessRequestId") int businessRequestId, @PathVariable("storeId") int storeId) {
+		log.info("requestDenialManagement()");
+		int result = userService.businessReqeustDenialManagement(businessRequestId, storeId);
+		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
 }

@@ -6,10 +6,72 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="_csrf" content="${_csrf.token}"/>
+		<meta name="_csrf_header" content="${_csrf.headerName}"/>
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+		<script type="text/javascript">
+		
+			// ajax CSRF 토큰
+			$(document).ajaxSend(function(e, xhr, opt){
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");			
+				xhr.setRequestHeader(header, token);
+			});
+		
+			$(function() {
+				let businessRequestId = $('#businessRequestId').val();
+				let storeId = $('#storeId').val();
+				let buttonType;
+				
+				// 요청 거부 버튼 이벤트리스너
+				$('#deniedBtn').on('click', function(){
+					buttonType = 1;
+					denialManagement();
+				}); // end refusalBtn
+				
+				// 요청 취소 버튼 이벤트리스너
+				$('#requestCancelBtn').on('click', function(){
+					buttonType = 2;
+					denialManagement();
+				}); // end requestCancelBtn
+								
+				// 요청 거부 함수
+				function denialManagement() {
+					$.ajax({
+						url : "request/denialManagement/" + businessRequestId + "/" + storeId,
+						type : 'delete',
+						success : function(response) {
+							if(response == 1) {
+								if(buttonType == 1) {
+									alert("등록 거부가 완료되었습니다.");
+									location.href="requestList";
+								} else if(buttonType == 2) {
+									alert("사업자 등록 요청이 취소되었습니다.");
+									location.href="../user/detail"
+								}
+							} else {
+								if(buttonType == 1) {
+									alert("등록 거부에 실패하였습니다.");									
+								} else if(buttonType == 2) {
+									alert("사업자 등록 요청에 대한 취소가 실패하였습니다.");
+								}
+							}
+						},
+						error : function() {
+							if(buttonType == 1) {
+								alert("승인 거부중 오류가 발생하였습니다.");								
+							} else if(buttonType == 2) {
+								alert("사업자 등록 요청 취소 중 오류가 발생하였습니다.");
+							}
+						}
+					});
+				} // end refusal()
+				
+			}); // end function
+		</script>
 		<title>사업자 등록 요청 상세</title>
 	</head>
 	<body>
@@ -33,12 +95,12 @@
 			<div>
 				<form action="requestInfo" method="post">
 					<sec:authorize access="hasAuthority('ROLE_ADMIN')">
-						<button type="submit">승인</button>
-						<button onclick="refusal()">거부</button>	
+						<button id="submitBtn" type="submit">승인</button>
+						<button id="deniedBtn" type="button">거부</button>	
 						<button onclick="location.href='requestList'" >목록</button>
 					</sec:authorize>
 					<sec:authorize access="hasAuthority('ROLE_MEMBER')">
-						<button onclick="requestCancel()">요청 취소</button>
+						<button id="requestCancelBtn" type="button">요청 취소</button>
 					</sec:authorize>
 					<div>
 						<input type="hidden" id="businessRequestId" name="businessRequestId" value="${info.businessRequestId }">

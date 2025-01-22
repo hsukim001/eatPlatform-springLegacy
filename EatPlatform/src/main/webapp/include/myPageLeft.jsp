@@ -9,7 +9,7 @@
 	<p><a href="../reserv/list">나의 예약 목록</a></p>
 	
 	<sec:authorize access="hasAuthority('ROLE_MEMBER')">
-		<p><a href="../user/business/requestForm">사업자 회원 신청</a></p>		
+		<p><a href="../user/business/requestForm">사업자 등록 신청</a></p>		
 	</sec:authorize>
 	
 	<sec:authorize access="hasAuthority('ROLE_STORE')">

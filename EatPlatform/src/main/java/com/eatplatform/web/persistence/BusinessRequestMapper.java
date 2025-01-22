@@ -23,5 +23,8 @@ public interface BusinessRequestMapper {
 	// 사업자 등록 신청 조회(userId)
 	int selectBusinessRequestIdByuserId(String userId);
 	// 사업자 등록 요청 정보 삭제
-	int deleteBusinessRequestByBusinessRequestId(int businessRequestId);
+	int deleteBusinessRequest(int businessRequestId);
+	
+	// 식당 삭제
+	int deleteStore(int storeId);
 }

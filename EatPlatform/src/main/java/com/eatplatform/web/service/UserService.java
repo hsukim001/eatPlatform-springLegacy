@@ -44,4 +44,6 @@ public interface UserService {
 	int getBusinessRequestId(String userId);
 	// 사업자 등록 요청 승인
 	int businessReqeustApprovals(int businessRequestId, int storeId);
+	// 사업자 등록 요청 거부 관리
+	int businessReqeustDenialManagement(int businessRequestId, int storeId);
 }

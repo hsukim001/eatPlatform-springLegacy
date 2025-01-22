@@ -106,8 +106,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM DUAL
 	</select>
 	
-	<delete id="deleteBusinessRequestByBusinessRequestId">
+	<delete id="deleteBusinessRequest">
 		DELETE FROM BUSINESS_REQUEST
 		WHERE BUSINESS_REQUEST_ID = #{businessRequestId}
+	</delete>
+	
+	<!-- 식당 삭제 -->
+	<delete id="deleteStore">
+		DELETE FROM STORE
+		WHERE STORE_ID = #{storeId}
 	</delete>
 </mapper>

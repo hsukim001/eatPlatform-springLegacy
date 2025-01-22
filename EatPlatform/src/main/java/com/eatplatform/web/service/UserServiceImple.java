@@ -211,7 +211,7 @@ public class UserServiceImple implements UserService{
 	}
 
 	// 사업자 등급 신청
-	@Transactional
+	@Transactional(value = "transactionManager")
 	@Override
 	public int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO) {
 		log.info("businessUpgradeForm()");
@@ -272,7 +272,8 @@ public class UserServiceImple implements UserService{
 		return businessRequestMapper.selectBusinessRequestIdByuserId(userId);
 	}
 
-	@Transactional
+	// 사업자 등록 요청 승인
+	@Transactional(value = "transactionManager")
 	@Override
 	public int businessReqeustApprovals(int businessRequestId, int storeId) {
 		log.info("businessReqeustApprovals()");
@@ -280,7 +281,7 @@ public class UserServiceImple implements UserService{
 		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequest(businessRequestId);
 		String userId = businessRequestVO.getUserId();
 		
-		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequestByBusinessRequestId(businessRequestId);
+		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
 		
 		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
 		storeApprovalsVO.setStoreId(storeId);
@@ -292,9 +293,23 @@ public class UserServiceImple implements UserService{
 		userRoleVO.setRoleName("ROLE_STORE");
 		int updateUserRole = userMapper.updateUserRoleName(userRoleVO);
 		
-		log.info("사업자 등록 요청 정보 : " + deleteBusinessRequest + "행 삭제");
+		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
 		log.info("식당 등록 요청 정보 : " + updateStoreApprovals + "행 수정");
 		log.info("회원 권한 : " + updateUserRole + "행 수정");
+		
+		return 1;
+	}
+
+	// 사업자 등록 요청 거부
+	@Transactional(value = "transactionManager")
+	@Override
+	public int businessReqeustDenialManagement(int businessRequestId, int storeId) {
+		log.info("businessReqeustDenied()");
+		
+		int deleteStore = businessRequestMapper.deleteStore(storeId);
+		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
+		log.info("식당 : " + deleteStore + "행 삭제");
+		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
 		
 		return 1;
 	}
