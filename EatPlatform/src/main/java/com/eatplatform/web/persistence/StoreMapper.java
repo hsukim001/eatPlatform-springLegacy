@@ -28,4 +28,6 @@ public interface StoreMapper {
 	int getTotalStoresCount(Map<String, Object> params);
 
 	int updateStore(StoreVO storeVO);
+	
+	int deleteStore(int storeid);
 }

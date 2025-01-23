@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eatplatform.web.domain.BusinessRequestInfoVO;
+import com.eatplatform.web.domain.RequestInfoVO;
 import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
@@ -231,7 +231,7 @@ public class UserServiceImple implements UserService{
 		
 		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
 		storeApprovalsVO.setStoreId(storeId);
-		storeApprovalsVO.setStoreApprovals(0);
+		storeApprovalsVO.setApprovals(0);
 		int insertStoreApprovals = storeApprovalsMapper.insertStoreApprovals(storeApprovalsVO);
 		
 		log.info("Store : " + insertStore + "행 등록 성공");
@@ -244,16 +244,16 @@ public class UserServiceImple implements UserService{
 	
 	// 사업자 등록 신청 정보 조회
 	@Override
-	public BusinessRequestInfoVO searchBusinessRequestInfo(int businessRequestId) {
+	public RequestInfoVO searchBusinessRequestInfo(int businessRequestId) {
 		log.info("searchBusinessRequestInfo()");
-		BusinessRequestInfoVO vo = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
+		RequestInfoVO vo = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
 		log.info(vo);
 		return vo;
 	}
 
 	// 사업자 등록 신청 목록
 	@Override
-	public List<BusinessRequestInfoVO> searchBusinessRequestList(Pagination pagination) {
+	public List<RequestInfoVO> searchBusinessRequestList(Pagination pagination) {
 		log.info("searchBusinessRequestList()");
 		return businessRequestMapper.selectBusinessRequestListByPagination(pagination);
 	}
@@ -285,7 +285,7 @@ public class UserServiceImple implements UserService{
 		
 		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
 		storeApprovalsVO.setStoreId(storeId);
-		storeApprovalsVO.setStoreApprovals(1);
+		storeApprovalsVO.setApprovals(1);
 		int updateStoreApprovals = storeApprovalsMapper.updateStoreApprovals(storeApprovalsVO);
 		
 		UserRoleVO userRoleVO = new UserRoleVO();
@@ -306,7 +306,7 @@ public class UserServiceImple implements UserService{
 	public int businessReqeustDenialManagement(int businessRequestId, int storeId) {
 		log.info("businessReqeustDenied()");
 		
-		int deleteStore = businessRequestMapper.deleteStore(storeId);
+		int deleteStore = storeMapper.deleteStore(storeId);
 		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
 		log.info("식당 : " + deleteStore + "행 삭제");
 		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");

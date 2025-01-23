@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.eatplatform.web.domain.BusinessRequestInfoVO;
+import com.eatplatform.web.domain.RequestInfoVO;
 import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -144,7 +144,7 @@ public class UserController {
 	public void businessRequestList(Model model, Pagination pagination) {
 		log.info("businessRequestList()");
 		
-		List<BusinessRequestInfoVO> list = userService.searchBusinessRequestList(pagination);
+		List<RequestInfoVO> list = userService.searchBusinessRequestList(pagination);
 		int totalCount = userService.getBusinessRequestTotalCount();
 		
 		PageMaker pageMaker = new PageMaker();
@@ -159,7 +159,7 @@ public class UserController {
 	@GetMapping("/business/requestInfo")
 	public void businessRequestInfo(Model model, @RequestParam("businessRequestId") int businessRequestId) {
 		log.info("businessRequestInfo()");
-		BusinessRequestInfoVO businessRequestInfo = userService.searchBusinessRequestInfo(businessRequestId);
+		RequestInfoVO businessRequestInfo = userService.searchBusinessRequestInfo(businessRequestId);
 		model.addAttribute("info", businessRequestInfo);
 	}
 	

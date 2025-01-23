@@ -11,6 +11,6 @@ import lombok.ToString;
 @ToString
 public class StoreApprovalsVO {
 	private int storeId;
-	private int storeApprovals;
+	private int approvals;
 	private Date storeApprovalsRegDate;
 }

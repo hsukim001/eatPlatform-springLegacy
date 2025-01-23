@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.StoreHolidaysMapper">
+	
+	<resultMap type="com.eatplatform.web.domain.StoreHolidaysVO" id="storeHolidaysResultMap">
+		<id property="storeHolidaysId" column="STORE_HOLIDAYS_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="holiday" column="HOLIDAY"/>
+	</resultMap>
+	
+	<insert id="insertStoreHolidays">
+		INSERT INTO STORE_HOLIDAYS
+		VALUES(
+			#{storeHolidaysId},
+			#{storeId},
+			#{holiday}
+		)
+	</insert>
+	
+	<delete id="deleteStoreHolidays">
+		DELETE FROM STORE_HOLIDAYS
+		WHERE STORE_HOLIDAY_ID = #{storeHolidayId}
+	</delete>
+	
+	<select id="selectStoreHolidaysList" resultMap="storeHolidaysResultMap">
+		SELECT *
+		FROM STORE_HOLIDAYS
+		WHERE STORE_ID = #{storeId}
+		AND (
+			SELECT APPROVALS
+			FROM STORE_APPROVALS
+			WHERE STORE_ID = #{storeId}
+		) = 1
+	</select>
+	
+</mapper>

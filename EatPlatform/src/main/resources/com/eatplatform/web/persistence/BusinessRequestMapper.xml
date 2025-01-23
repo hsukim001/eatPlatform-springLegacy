@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
 	</resultMap>
 	
-	<resultMap type="com.eatplatform.web.domain.BusinessRequestInfoVO" id="infoResultMap">
+	<resultMap type="com.eatplatform.web.domain.RequestInfoVO" id="infoResultMap">
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
 		<result property="storeId" column="STORE_ID"/>
 		<result property="storeName" column="STORE_NAME"/>
@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="description" column="DESCRIPTION"/>
 		<result property="roadAddress" column="ROAD_ADDRESS"/>
 		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
-		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE"/>
+		<result property="regDate" column="REG_DATE"/>
 	</resultMap>
 	
 	<select id="selectBusinessRequest" resultMap="businessRequestResultMap">
@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectBusinessRequestByBusinessRequestId" resultMap="infoResultMap">
 		SELECT b.BUSINESS_REQUEST_ID, 
 			b.STORE_ID, 
-			b.BUSINESS_REQUEST_REG_DATE, 
+			b.BUSINESS_REQUEST_REG_DATE AS REG_DATE, 
 			s.STORE_NAME, 
 			s.OWNER_NAME, 
 			s.STORE_PHONE, 
@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectBusinessRequestListByPagination" resultMap="infoResultMap">
 		SELECT b.BUSINESS_REQUEST_ID, 
 			b.STORE_ID, 
-			b.BUSINESS_REQUEST_REG_DATE,
+			b.BUSINESS_REQUEST_REG_DATE AS REG_DATE,
 			s.STORE_NAME, 
 			s.OWNER_NAME, 
 			s.STORE_PHONE, 
@@ -109,11 +109,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteBusinessRequest">
 		DELETE FROM BUSINESS_REQUEST
 		WHERE BUSINESS_REQUEST_ID = #{businessRequestId}
-	</delete>
-	
-	<!-- 식당 삭제 -->
-	<delete id="deleteStore">
-		DELETE FROM STORE
-		WHERE STORE_ID = #{storeId}
 	</delete>
 </mapper>

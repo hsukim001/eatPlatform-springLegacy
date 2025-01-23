@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ToString
-public class BusinessRequestInfoVO {
+public class RequestInfoVO {
 	
 	private int businessRequestId;
 	private int storeId;
@@ -22,6 +22,6 @@ public class BusinessRequestInfoVO {
 	private String description;
 	private String roadAddress;
 	private String jibunAddress;
-	private Date businessRequestRegDate;
+	private Date regDate;
 	
 }

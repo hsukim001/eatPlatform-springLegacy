@@ -8,23 +8,93 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="com.eatplatform.web.domain.StoreApprovalsVO" id="storeApprovalsResultMap">
 		<id property="storeId" column="STORE_ID"/>
-		<result property="storeApprovals" column="STORE_APPROVALS"/>
+		<result property="approvals" column="APPROVALS"/>
 		<result property="storeApprovalsRegDate" column="STORE_APPROVALS_REG_DATE"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.RequestInfoVO" id="infoResultMap">
+		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="storeName" column="STORE_NAME"/>
+		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="storePhone" column="STORE_PHONE"/>
+		<result property="foodCategory" column="FOOD_CATEGORY"/>
+		<result property="businessHour" column="BUSINESS_HOUR"/>
+		<result property="storeComment" column="STORE_COMMENT"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="roadAddress" column="ROAD_ADDRESS"/>
+		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
+		<result property="regDate" column="REG_DATE"/>
 	</resultMap>
 	
 	<insert id="insertStoreApprovals">
 		INSERT INTO STORE_APPROVALS
 		VALUES(
 			#{storeId},
-			#{storeApprovals},
+			#{approvals},
 			SYSDATE
 		)
 	</insert>
 	
 	<update id="updateStoreApprovals">
 		UPDATE STORE_APPROVALS
-		SET STORE_APPROVALS = #{storeApprovals}
+		SET APPROVALS = #{approvals}
 		WHERE STORE_ID = #{storeId}
 	</update>
-
+	
+	<select id="selectTotalCount" resultType="Integer">
+		SELECT COUNT(STORE_ID) COUNT
+		FROM STORE_APPROVALS
+	</select>
+	
+	<select id="selectApprovalsList" resultMap="infoResultMap">
+		SELECT appr.STORE_ID, 
+			s.STORE_NAME, 
+			s.OWNER_NAME, 
+			s.STORE_PHONE, 
+			s.FOOD_CATEGORY, 
+			s.BUSINESS_HOUR, 
+			s.STORE_COMMENT, 
+			s.DESCRIPTION, 
+			s.STORE_REG_DATE AS REG_DATE, 
+			a.ROAD_ADDRESS, 
+			a.JIBUN_ADDRESS
+		FROM (
+				SELECT ROW_NUMBER() OVER (ORDER BY STORE_ID DESC) AS RN,
+				STORE_APPROVALS.* FROM STORE_APPROVALS
+			) appr
+		INNER JOIN STORE s
+		ON s.STORE_ID = appr.STORE_ID
+		INNER JOIN STORE_ADDRESS a
+		ON a.STORE_ID = appr.STORE_ID
+		WHERE appr.APPROVALS = 0
+		AND appr.RN BETWEEN #{start} AND #{end}
+		AND NOT EXISTS (
+          SELECT 1 
+          FROM BUSINESS_REQUEST b 
+          WHERE b.STORE_ID = appr.STORE_ID
+      )
+		ORDER BY STORE_ID DESC
+	</select>
+	
+	<select id="selectApprovals" resultMap="infoResultMap">
+		SELECT appr.STORE_ID, 
+			s.STORE_NAME, 
+			s.OWNER_NAME, 
+			s.STORE_PHONE, 
+			s.FOOD_CATEGORY, 
+			s.BUSINESS_HOUR, 
+			s.STORE_COMMENT, 
+			s.DESCRIPTION, 
+			s.STORE_REG_DATE AS REG_DATE, 
+			a.ROAD_ADDRESS, 
+			a.JIBUN_ADDRESS
+		FROM STORE_APPROVALS appr
+		INNER JOIN STORE s
+		ON s.STORE_ID = appr.STORE_ID
+		INNER JOIN STORE_ADDRESS a
+		ON a.STORE_ID = appr.STORE_ID
+		WHERE appr.STORE_ID = #{storeId}
+		AND appr.APPROVALS = 0
+	</select>
 </mapper>

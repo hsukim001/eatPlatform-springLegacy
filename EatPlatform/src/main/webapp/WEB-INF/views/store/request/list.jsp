@@ -28,13 +28,13 @@
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/detail.css">
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
-		<title>사업자 등록 요청</title>
+		<title>가게 등록 요청</title>
 	</head>
 	<body>
 		<div id="wrap">
 			<jsp:include page="/include/header.jsp" />
 			
-			<h2>사업자 등록 요청 목록</h2>
+			<h2>가게 등록 요청 목록</h2>
 			<table>
 				<thead>
 					<tr>
@@ -49,8 +49,8 @@
 				<tbody>
 					<c:forEach var="list" items="${list }">
 						<tr>
-							<td>${list.businessRequestId }</td>
-							<td><a href="requestInfo?businessRequestId=${list.businessRequestId }">${list.storeName }</a></td>
+							<td>${list.storeId }</td>
+							<td><a href="info?storeId=${list.storeId }">${list.storeName }</a></td>
 							<td>${list.ownerName }</td>
 							<td>${list.foodCategory }</td>
 							<td>${list.storeComment }</td>

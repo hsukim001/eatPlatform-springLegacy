@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.StoreAddressVO;
+import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.StoreAddressMapper;
+import com.eatplatform.web.persistence.StoreApprovalsMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -26,6 +28,9 @@ public class StoreServiceImple implements StoreService {
 	@Autowired
 	private StoreAddressMapper storeAddressMapper;
 	
+	@Autowired
+	private StoreApprovalsMapper storeApprovalsMapper;
+	
 	@Transactional(value = "transactionManager")
 	@Override
 	public int registerStore(StoreVO storeVO, StoreAddressVO storeAddressVO) {
@@ -34,10 +39,15 @@ public class StoreServiceImple implements StoreService {
 		int storeId = storeVO.getStoreId();
 		storeAddressVO.setStoreId(storeId);
 		int resultAddress = storeAddressMapper.insertStoreAddress(storeAddressVO);
+		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
+		storeApprovalsVO.setStoreId(storeId);
+		storeApprovalsVO.setApprovals(0);
+		int resultApprovals = storeApprovalsMapper.insertStoreApprovals(storeApprovalsVO);
 		log.info(storeVO);
 		log.info(storeAddressVO);
 		log.info("사용자 정보 " + resultStore + "행 삽입 성공");
 		log.info("주소 정보 " + resultAddress + "행 삽입 성공");
+		log.info("승인 요청 정보" + resultApprovals + "행 삽입 성공");
 		return resultStore;
 	}
 
@@ -84,9 +94,5 @@ public class StoreServiceImple implements StoreService {
 		log.info(resultAddress + "행 주소 정보 수정 성공");
 		return resultStore;
 	}
-
-
-
-
 
 }

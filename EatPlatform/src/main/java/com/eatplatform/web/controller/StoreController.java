@@ -17,12 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.MenuVO;
+import com.eatplatform.web.domain.RequestInfoVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.StoreAddressService;
+import com.eatplatform.web.service.StoreApprovalsService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.util.BusinessHourUtil;
+import com.eatplatform.web.util.PageMaker;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -39,6 +43,9 @@ public class StoreController {
 
 	@Autowired
 	private MenuService menuService;
+	
+	@Autowired
+	private StoreApprovalsService storeApprovalsService;
 
 	@GetMapping("/newStore")
 	public String newStore(Model model) {
@@ -191,5 +198,28 @@ public class StoreController {
 		model.addAttribute("storeVO", storeVO);
 		model.addAttribute("menuVO", menuVO);
 		return "/store/detail";
+	}
+	
+	// 가게 등록 요청 목록 화면 호출
+	@GetMapping("/request/list")
+	public void requestList(Model model, Pagination pagination) {
+		log.info("requestList()");
+		List<RequestInfoVO> list = storeApprovalsService.searchList(pagination);
+		int totalCount = storeApprovalsService.getTotalCount();
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		pageMaker.setTotalCount(totalCount);
+		
+		model.addAttribute("list", list);
+		model.addAttribute("pageMaker", pageMaker);
+	}
+	
+	// 가게 등록 요청 정보 화면 호출
+	@GetMapping("/request/info")
+	public void requestInfo(Model model, @RequestParam("storeId") int storeId) {
+		log.info("requestInfo()");
+		RequestInfoVO infoVO = storeApprovalsService.searchInfo(storeId);
+		model.addAttribute("info", infoVO);
 	}
 }

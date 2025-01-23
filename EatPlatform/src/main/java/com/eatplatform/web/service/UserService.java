@@ -3,7 +3,7 @@ package com.eatplatform.web.service;
 import java.util.List;
 import java.util.Map;
 
-import com.eatplatform.web.domain.BusinessRequestInfoVO;
+import com.eatplatform.web.domain.RequestInfoVO;
 import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -35,9 +35,9 @@ public interface UserService {
 	// 사업자 등록 신청
 	int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO);
 	// 사업자 등록 신청 목록
-	List<BusinessRequestInfoVO> searchBusinessRequestList(Pagination pagination);
+	List<RequestInfoVO> searchBusinessRequestList(Pagination pagination);
 	// 사업자 등록 신청 상세 정보 조회
-	BusinessRequestInfoVO searchBusinessRequestInfo(int businessRequestId);
+	RequestInfoVO searchBusinessRequestInfo(int businessRequestId);
 	// 사업자 등록 신청 목록 총 건수
 	int getBusinessRequestTotalCount();
 	// 사업자 등록 신청 조회(userId)

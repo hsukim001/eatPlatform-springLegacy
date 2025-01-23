@@ -19,5 +19,6 @@
 	<sec:authorize access="hasAuthority('ROLE_ADMIN')">
 		<p><a>리뷰 신고 관리</a></p>
 		<p><a href="../user/business/requestList">사업자 등록 요청 관리</a></p>
+		<p><a href="../store/request/list">가게 등록 관리</a></p>
 	</sec:authorize>
 </div>

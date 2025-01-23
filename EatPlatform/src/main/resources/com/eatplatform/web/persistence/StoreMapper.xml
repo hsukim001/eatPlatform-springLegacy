@@ -138,5 +138,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		STORE_UPDATE_DATE = CURRENT_TIMESTAMP
 		WHERE STORE_ID = #{storeId}
 	</update>
+	
+	<delete id="deleteStore">
+		DELETE FROM STORE
+		WHERE STORE_ID = #{storeId}
+	</delete>
 
 </mapper>
