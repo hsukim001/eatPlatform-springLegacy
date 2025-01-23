@@ -69,7 +69,7 @@
 			tagData.forEach(tag => {
 			    const listItem =
 			    	'<li data-tag-id=' + tag.icon +'>' +
-                		'<img src="<%=request.getContextPath()%>/resources/img/store/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+                		'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
                 		'<span>' + tag.text + '</span>' +
            			 '</li>';
 			    listContainer.append(listItem);
@@ -100,7 +100,7 @@
 		            }
 		            const tagItem =
 		                '<li data-sticker-id=' + tag.icon + '>' +
-		                	'<img src="<%=request.getContextPath()%>/resources/img/store/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+		                	'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
 		                	'<span>' + tag.text + '</span>' +
 		                '</li>';
 		            tagContainer.append(tagItem);

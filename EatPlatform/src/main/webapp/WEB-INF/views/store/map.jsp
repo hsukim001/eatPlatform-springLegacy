@@ -78,7 +78,7 @@
 		    const endIndex = stores.length;
 		
 		    console.log('startIndex:', startIndex, 'endIndex:', endIndex);
-		    console.log('Total stores:', stores.length); // stores 배열 길이 확인
+		    console.log('Total stores:', stores.length);
 		
 		    let positions = [];
 		
@@ -109,7 +109,7 @@
 		                    });
 		                });
 		
-		                console.log('Geocoder result:', result); // 결과 확인
+		                console.log('Geocoder result:', result); 
 		
 		                const latitude = result[0].y;  // 위도
 		                const longitude = result[0].x; // 경도
@@ -130,7 +130,7 @@
 		                    console.log('위도/경도 값이 유효하지 않음');
 		                }
 		            } catch (error) {
-		                console.error('Geocoder error:', error); // 오류 출력
+		                console.error('Geocoder error:', error); 
 		            }
 		        }
 		    }
@@ -177,7 +177,6 @@
 						} else {
 							searchAddress = position.road;
 						}
-						// 주소 검색
 						geocoder.addressSearch(searchAddress, function(result, status) {
 
 						     if (status === kakao.maps.services.Status.OK) {
@@ -233,12 +232,7 @@
 		                loadedDataCount = 0;
 		                scrollPage = currentPage;
 		                $('#storeList').empty();
-
-		    		    markers.forEach(function(marker) {
-		    		        marker.setMap(null);
-		    		    });
-		    		    markers = [];
-		    		    overlay.setMap(null);
+		                claerMarker();
 		                loadStores(currentPage);
 		
 		                updatePagination(totalDataCount, pageNum);
@@ -255,44 +249,49 @@
 
 
 
-	    function appendStoresToPage(stores, storeAddresses) {
-	        if (Array.isArray(stores)) {
-	            stores.forEach(function(store) {
-	                if (loadedDataCount >= maxItemsPerPage) {
-	                    return;
-	                }
+		function appendStoresToPage(stores, storeAddresses) {
+		    // stores가 null이거나 storeAddresses가 null인 경우
+		    if ((!stores && !storeAddresses) || stores.length == 0 ) {
+		        const noDataHtml = '<div class="no-data"><p>등록된 식당이 없습니다.</p></div>';
+		        $('#storeList').append(noDataHtml);
+		        return;
+		    }
 
-	                const storeAddress = storeAddresses[store.storeId]; // storeId를 키로 주소 가져오기
-	                const storeHtml = 
-	                    '<div class="store" data-store-id ="m' + store.storeId +'">' +
-	                        '<h3>' + store.storeName + '</h3>' +
-	                        '<p> <span class="address_mark">지번 </span> <span class="jibun">' + storeAddress.jibunAddress + '</span></p>' + 
-	                        '<p> <span class="address_mark">도로명 </span> <span class="road">' + storeAddress.roadAddress + '</span></p>' + 	                       
-	                        '<p class="store_comment">' + (store.storeComment && store.storeComment.trim() !== '' ? store.storeComment : '작성된 소개 글이 없습니다.') + '</p>' + 
-	                        '<p class="store_phone">' + store.storePhone + '</p>' + 
-	                        '<button><a href="detail?storeId=' + store.storeId + '">상세페이지 이동</a></button>' + 
-	                    '</div>';
+		    if (Array.isArray(stores)) {
+		        stores.forEach(function(store) {
+		            if (loadedDataCount >= maxItemsPerPage) {
+		                return;
+		            }
 
-	                $('#storeList').append(storeHtml);
-	                loadedDataCount += 1;
-	            });
+		            const storeAddress = storeAddresses[store.storeId];
+		            const storeHtml = 
+		                '<div class="store" data-store-id ="m' + store.storeId +'">' +
+		                    '<h3>' + store.storeName + '</h3>' +
+		                    '<p> <span class="address_mark">지번 </span> <span class="jibun">' + storeAddress.jibunAddress + '</span></p>' +
+		                    '<p> <span class="address_mark">도로명 </span> <span class="road">' + storeAddress.roadAddress + '</span></p>' +
+		                    '<p class="store_comment">' + (store.storeComment && store.storeComment.trim() !== '' ? store.storeComment : '작성된 소개 글이 없습니다.') + '</p>' +
+		                    '<p class="store_phone">' + store.storePhone + '</p>' +
+		                    '<button><a href="detail?storeId=' + store.storeId + '">상세페이지 이동</a></button>' +
+		                '</div>';
 
-	            if (loadedDataCount >= totalDataCount || loadedDataCount >= maxItemsPerPage) {
-	                $(document).off('scroll');
-	            }
-	        } else {
-	            console.error('Invalid stores data:', stores);
-	        }
-	    }
+		            $('#storeList').append(storeHtml);
+		            loadedDataCount += 1;
+		        });
+
+		        if (loadedDataCount >= totalDataCount || loadedDataCount >= maxItemsPerPage) {
+		            $(document).off('scroll');
+		        }
+		    } else {
+		        console.error('Invalid stores data:', stores);
+		    }
+		}
 
 	    $('#storeList').on('scroll', function() {
 	        if ($(this).scrollTop() + $(this).height() >= $(this)[0].scrollHeight - 50) {
 	            if (loadedDataCount < totalDataCount && !loading && loadedDataCount % 6 === 0) {
 	                const nextPage = scrollPage + 1;
-
-	                // 데이터를 불러오고
 	                loadStores(nextPage);
-	                scrollPage = nextPage; // 페이지 업데이트
+	                scrollPage = nextPage; 
 	            }
 	        }
 
@@ -301,25 +300,9 @@
 	        }
 	    });
 
-	    $('#searchButton').click(function() {
-	        currentPage = 1;
-	        loadedDataCount = 0;
-	        scrollPage = 1;
-	        $('#storeList').empty();
-	        loadStores(currentPage);
-	    });
-	    
-	    $('#keywordInput').keyup(function(){
-	    	if(event.keyCode == 13) {
-	    		$('#searchButton').trigger('click');
-	    	}
-	    });
-		
-		
 		navigator.geolocation.getCurrentPosition((position) => {
 			const latitude = position.coords.latitude;
 			const longitude = position.coords.longitude;
-			console.log(position);
 
 			mapContainer = document.getElementById('map'),
 			    mapOption = { 
@@ -348,7 +331,6 @@
 				} else {
 					searchAddress = $(this).find('.jibun').text();
 				}
-				// 주소 검색
 				geocoder.addressSearch(searchAddress, function(result, status) {
 
 				     if (status === kakao.maps.services.Status.OK) {
@@ -365,6 +347,93 @@
 		}, (error) => {
 			console.error("위치 정보를 가져오는 데 실패했습니다.", error);
 		});
+		
+		function claerMarker() {
+		    markers.forEach(function(marker) {
+		        marker.setMap(null);
+		    });
+		    markers = [];
+		    overlay.setMap(null);
+		}
+		
+		function rebootList() {
+	        currentPage = 1;
+	        loadedDataCount = 0;
+	        scrollPage = 1;
+	        $('#storeList').empty();
+	        loadStores(currentPage);
+		}
+		
+		const tagData = [
+		    { icon: 1, text: "전체보기" },
+		    { icon: 2, text: "한식" },
+		    { icon: 3, text: "중식" },
+		    { icon: 4, text: "일식" },
+		    { icon: 5, text: "양식" },
+		    { icon: 6, text: "아시안" },
+		    { icon: 7, text: "치킨" },
+		    { icon: 8, text: "피자" },
+		    { icon: 9, text: "패스트푸드" },
+		    { icon: 10, text: "카페/디저트" }
+		];
+
+		const tagContainer = $('#tagList');
+
+		tagData.forEach(tag => {
+		    const tagtItem =
+		    	'<div id="tag_icon' + tag.icon +'">' +
+            		'<img src="<%=request.getContextPath()%>/resources/img/store/map/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+            		'<span>' + tag.text + '</span>' +
+       			 '</li>';
+       			tagContainer.append(tagtItem);
+		}); // End tagData.forEach
+		
+		$('#tag_icon1').click(function(){
+	        $('#keywordInput').val("");
+	        claerMarker();
+			rebootList();
+		});
+		$('#tagList > div:not(#tag_icon1)').click(function(){
+			$('#tagList > div:not(#tag_icon1)').removeClass('selected');
+		    $(this).toggleClass('selected');
+		    $('#keywordInput').val($(this).find('span').text());
+		    claerMarker();
+		    rebootList();
+		});
+
+	    $('#searchButton').click(function() {	    
+			$('#tagList > div:not(#tag_icon1)').removeClass('selected');	
+	        let keyword = $('#keywordInput').val().trim().toLowerCase().replace(/\s+/g, "");
+	        let found = false;
+
+	        $('#tagList>div:not(#tag_icon1)').find('span').each(function () {
+	            let tagText = $(this).text().trim().toLowerCase().replace(/\s+/g, "");
+
+	            if (
+	                (tagText === "카페/디저트" && 
+	                 (keyword.includes("카페") || keyword.includes("디저트") || keyword.includes("카페디저트") || keyword.includes("카페/디저트"))
+	                ) || keyword.includes(tagText)
+	            ) {
+	                found = true;
+	                $(this).closest('div').addClass('selected');
+	                return false;
+	            }
+	        });s
+	    	claerMarker();
+	    	rebootList();
+	    });
+	    
+	    $('#clearButton').click(function() {
+	    	$('#keywordInput').val("");
+	    });
+	    
+	    $('#keywordInput').keyup(function(){
+	    	if(event.keyCode == 13) {
+	    		$('#searchButton').trigger('click');
+	    	} else if (event.keyCode == 27) { 
+	            $('#clearButton').trigger('click');
+	        }
+	    });
 	});
 </script>
 <meta charset="UTF-8">
@@ -375,8 +444,16 @@
 		<jsp:include page="/include/header.jsp" />
 		<div id="container">
 			<div id="mapController" class="exceptionHeader">
-				<input type="text" id="keywordInput" placeholder="Search...">
-				<button id="searchButton">Search</button>
+				<div id= search_wrap>
+					<div class="search_box">
+						<button id="searchButton"></button>
+						<input type="text" id="keywordInput" placeholder="검색어 입력">
+						<button id="clearButton">
+							<span class="xButton">X</span>
+						</button>
+					</div>
+				</div>
+				<div id="tagList"></div>
 				<div id="storeList"></div>
 				<div id="pagination"></div>
 			</div>

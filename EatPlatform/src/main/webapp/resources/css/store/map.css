@@ -13,19 +13,114 @@ body {
 }
 
 #mapController {
-	width: 19.9vw;
+	width: 350px;
 	float: left;
 }
 
 #map {
-	width: 80vw;
+	width: calc(100vw - 350px);
 	float: left;
+}
+
+/* 검색창 */
+#search_wrap {
+	width: 90%;
+	display: inline-block;
+	padding: 5%;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.search_box {
+	width: 100%;
+	position: relative;
+	background: #fff;
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	border: 1px solid #19ce60;
+	border-radius: 3px;
+}
+
+.search_box button {
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#searchButton {
+    background-image: url(../../img/common/sch_btnGR.png);
+    background-repeat: no-repeat;
+    background-size: 28px 28px;
+    background-position: center top 5px;
+}
+
+#clearButton {
+	font-size: 18px;
+    line-height: 18px;
+    color: #999;
+}
+
+#keywordInput {
+	width: calc(100% - 80px);
+	border: none;
+	outline: none;
 }
 
 #storeList {
 	height: 20vh;
 	overflow: scroll;
 }
+
+/* 태그  */
+#tagList {
+	width: 90%;
+	display: inline-block;
+	text-align: left;
+}
+
+#tagList > div:not(#tag_icon1) {
+	display: inline-flex;
+	font-size: 14px;
+	line-height: 23px;
+	border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 2px 8px;
+    margin: 2px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+#tagList > div:not(#tag_icon1):hover {
+	background: #eee;
+	font-weight: bold;
+}
+
+.selected {
+	background: rgba(3, 170, 90, 0.08) !important;
+	color: #03aa5a !important;
+	border : 1px solid #03aa5a !Important;
+	font-weight: bold;
+}
+
+#tag_icon1 {
+	display: inline-flex;
+	font-size: 14px;
+	line-height: 23px;
+	border: none;
+    width: 100%;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+#tagList > div > img {
+	width: 23px;
+	margin-right: 5px;
+}
+
 
 .detail_text {
 	display: none;
