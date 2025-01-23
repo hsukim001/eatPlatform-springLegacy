@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -142,8 +141,7 @@
 
 	        // 식당 리뷰 전체 가져오기
 			function getAllReview() {
-	        	 
-				
+	        	 		
 				var storeId = $('#storeId').val();
 				
 				var url = '../review/all/' + storeId + '?page=' + pageNumber + '&pageSize=' + pageSize; // 페이지 파라미터
@@ -185,25 +183,24 @@
 								+ '&nbsp;&nbsp;'
 								+ this.reviewLike // 추천 수 표시
 								+ '&nbsp;&nbsp;'
-								+ '<button id="btn_update" >수정</button>'
+								+ '<button class="btn_update" >수정</button>'
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
-								
-								
 							// 이미지 조회
 							$(this.reviewImageList).each(function(){
 								console.log(this);
-								
+									
+								var reviewImageList = this.reviewImageList;
+									
 								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
-								
+									
 							list += '<div class="review-image">'
 								+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
 								+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
 								+ '</a>'
 								+ '</div>'
 							});
-								+ '</pre>'
 			
 							// 리뷰 댓글 표시
 							list += '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' 
@@ -285,25 +282,12 @@
 				console.log(this);
 				
 				var reviewId = $(this).prevAll('#reviewId').val();
-				var reviewStar = $(this).prevAll('#reviewStar').val();
-				var reviewContent = $(this).prevAll('#reviewContent').val();
-				var reviewTag = $(this).prevAll('#reviewTag').val();
-
-				var obj2 = {
-						'reviewId' : reviewId,
-						'reviewStar' : reviewStar,
-						'reviewContent' : reviewContent,
-						'reviewTag' : reviewTag
-				}
-				console.log(obj2);
 				
+				location.href = '../page/updateReview?reviewId=' + reviewId;
+
 				$.ajax({
 					type : 'GET', 
-					url : '../review/',
-					headers : {
-						'Content-Type' : 'application/json'
-					},
-					data : JSON.stringify(obj2), 
+					url : '../page/updateReview?reviewId=' + reviewId,
 					success : function(result) {
 						console.log(result);
 						if(result == 1) {
@@ -352,7 +336,7 @@
 					headers : {
 						'Content-Type' : 'application/json'
 					}, 
-					data : userId,
+					data : {'userId' : userId},
 					success : function(result) {
 						console.log(result);
 						if(result == 1) {

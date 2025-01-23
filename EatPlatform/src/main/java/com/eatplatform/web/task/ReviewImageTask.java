@@ -4,8 +4,8 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -68,16 +68,19 @@ public class ReviewImageTask {
 				
 			}
 			
-			// 파일 정보에서 파일 이름만 추출하여 List<String>으로 변경
-			List<String> savedList = reviewImageList.stream() // 데이터 처리 기능 사용을 위한 stream 변경
-					.map(this::toChgName) // attach를 attach.getAttachChgName()으로 변경 
-					.collect(Collectors.toList()); // stream을 list로 변경
-			
-			// 파일 정보 중 이미지 파일인 경우 섬네일 이름을 생성하여 savedList에 추가 
-			reviewImageList.stream()
-				.map(this::toThumbnailName) // 섬네일 이름으로 변경
-				.forEach(name -> savedList.add(name)); // savedList에 각 섬네일 이름 저장
-			log.warn(savedList);
+			 // 파일 정보에서 파일 이름만 추출하여 List<String>으로 변경
+	         List<String> savedList = new ArrayList<>();
+	         
+	         for(ReviewImageVO reviewImageVO : reviewImageList) {
+	            savedList.add(toChgName(reviewImageVO)); // reviewImageVO 객체의 변경된 이름을 추가
+	         }
+	         
+	         // 파일 정보 중 이미지 파일인 경우 섬네일 이름을 생성하여 savedList에 추가 
+	         for(ReviewImageVO reviewImageVO : reviewImageList) {
+	            savedList.add(toThumbnailName(reviewImageVO)); // reviewImageVO 객체의 변경된 이름을 추가
+	         }
+	         log.warn(savedList);
+
 
 			// 현재 날짜에서 1일 전 업로드 폴더 경로 생성
 			File targetDir = Paths.get(uploadPath, reviewImageList.get(0).getReviewImagePath()).toFile();

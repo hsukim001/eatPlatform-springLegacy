@@ -1,7 +1,7 @@
 package com.eatplatform.web.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class ReviewVO {
 	private int reviewStar;
 	private String reviewContent;
 	private String reviewTag;
-	private Date reviewDate;
+	private LocalDateTime reviewDate;
 	private int reviewLike;
 	private int reviewReport;
 	

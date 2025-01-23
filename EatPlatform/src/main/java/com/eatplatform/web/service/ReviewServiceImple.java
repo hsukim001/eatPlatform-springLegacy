@@ -1,5 +1,7 @@
 package com.eatplatform.web.service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,14 +61,36 @@ public class ReviewServiceImple implements ReviewService{
 	@Override
 	public ReviewVO getReviewById(int reviewId) {
 		log.info("getReviewById()");
-		return reviewMapper.selectByReviewId(reviewId);
+		log.info("reviewId : " + reviewId);
+		
+		ReviewVO reviewVO = reviewMapper.selectByReviewId(reviewId);
+		List<ReviewImageVO> list = reviewImageMapper.selectListByReviewId(reviewId);
+		
+		reviewVO.setReviewImageList(list);
+		
+		return reviewVO;
 	}
 
 	@Override
 	public int updateReview(ReviewVO reviewVO) {
 		log.info("updateReview()");
-		int result = reviewMapper.update(reviewVO);
-		log.info(result + "행 리뷰 수정");
+		log.info("reviewVO = " + reviewVO);
+		
+		ReviewVO result = reviewMapper.selectByReviewId(reviewVO.getReviewId());
+		result.setReviewStar(reviewVO.getReviewStar());
+		result.setReviewContent(reviewVO.getReviewContent());
+		result.setReviewTag(reviewVO.getReviewTag());
+		result.setReviewDate(LocalDateTime.now());
+		
+		reviewImageMapper.deleteReviewImageByReviewId(reviewVO.getReviewId());
+		
+		List<ReviewImageVO> reviewImageList = reviewVO.getreviewImageList();
+		
+		for(ReviewImageVO reviewImageVO : reviewImageList) {
+			reviewImageVO.setReviewId(reviewVO.getReviewId()); // reviewId 적용
+		}
+	
+		log.info("수정 완료");
 		return 1;
 	}
 	

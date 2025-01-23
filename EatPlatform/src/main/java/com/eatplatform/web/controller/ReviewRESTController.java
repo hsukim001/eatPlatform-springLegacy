@@ -92,17 +92,6 @@ public class ReviewRESTController {
 		    return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	
-	// 리뷰 수정
-	@PutMapping("/{reviewId}")
-	public ResponseEntity<Integer> updateReview(
-			@PathVariable int reviewId, 
-			@RequestBody ReviewVO reviewVO) {
-		log.info("updateReview()");
-		
-		int result = reviewService.updateReview(reviewVO);
-		return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	}
-	
 	// 리뷰 삭제
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<Integer> deleteReview(
