@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewDate" column="REVIEW_DATE" />
 		<result property="reviewLike" column="REVIEW_LIKE" />
 		<result property="reviewReport" column="REVIEW_REPORT" />
+		<result property="reviewUpdateDate" column="REVIEW_UPDATE_DATE" />
 	</resultMap>
 
 	<insert id="insert">
@@ -48,9 +49,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		UPDATE REVIEW SET
 		REVIEW_STAR = #{reviewStar},
 		REVIEW_CONTENT = #{reviewContent},
-		REVIEW_TAG =
-		#{reviewTag},
-		REVIEW_DATE = SYSDATE
+		REVIEW_TAG = #{reviewTag},
+		REVIEW_UPDATE_DATE = SYSDATE
 		WHERE REVIEW_ID = #{reviewId}
 	</update>
 

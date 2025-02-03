@@ -30,6 +30,11 @@ public class ReplyRESTController {
 	@PostMapping
 	public ResponseEntity<Integer> createReply(
 			@RequestBody ReplyVO replyVO) {
+		// 댓글 내용 길이 제한 (100자 이하) 
+		if (replyVO.getReplyContent() != null && 
+			replyVO.getReplyContent().length() > 100) {
+			return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
+		}
 		log.info("createReply()");
 		
 		int result = replyService.createReply(replyVO);

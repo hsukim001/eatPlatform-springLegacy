@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="reviewId" column="REVIEW_ID" />
       <result property="replyContent" column="REPLY_CONTENT" />
       <result property="replyDate" column="REPLY_DATE" />
+      <result property="replyUpdateDate" column="REPLY_UPDATE_DATE" />
    </resultMap>
 
 	<insert id="insert">
@@ -25,8 +26,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<update id="update">
-		UPDATE REPLY
-		SET REPLY_CONTENT = #{replyContent}
+		UPDATE REPLY SET 
+		REPLY_CONTENT = #{replyContent},
+		REPLY_UPDATE_DATE = SYSDATE
 		WHERE REPLY_ID = #{replyId}
 	</update>
 

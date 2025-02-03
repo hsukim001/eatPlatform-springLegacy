@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReviewService;
@@ -30,7 +29,6 @@ public class ReviewController {
 	@GetMapping("/updateReview")
 	public void updateReviewGET(Model model, int reviewId) {
 		log.info("updateReviewGET()");
-		log.info("reviewId : " + reviewId);
 		ReviewVO reviewVO = reviewService.getReviewById(reviewId);
 		model.addAttribute("reviewVO",reviewVO);
 		log.info("reviewVO : " + reviewVO);
@@ -40,11 +38,11 @@ public class ReviewController {
 	@PostMapping("/updateReview")
 	public String updateReviewPOST(ReviewVO reviewVO) {
 		log.info("updateReviewPOST()");
-		log.info("reviweVO = " + reviewVO.toString());
 		int result = reviewService.updateReview(reviewVO);
+		log.info("reviewVO = " + reviewVO.toString());
 		log.info(result + "행 수정");
 		
-		return "redirect:page/detail";
+		return "redirect:/page/detail";
 		
 	}
 

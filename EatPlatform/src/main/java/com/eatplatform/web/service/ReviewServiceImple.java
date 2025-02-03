@@ -1,7 +1,6 @@
 package com.eatplatform.web.service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,26 +70,36 @@ public class ReviewServiceImple implements ReviewService{
 		return reviewVO;
 	}
 
+	// 리뷰 수정
+	@Transactional(value = "transactionManager")
 	@Override
 	public int updateReview(ReviewVO reviewVO) {
 		log.info("updateReview()");
-		log.info("reviewVO = " + reviewVO);
 		
 		ReviewVO result = reviewMapper.selectByReviewId(reviewVO.getReviewId());
 		result.setReviewStar(reviewVO.getReviewStar());
 		result.setReviewContent(reviewVO.getReviewContent());
 		result.setReviewTag(reviewVO.getReviewTag());
-		result.setReviewDate(LocalDateTime.now());
+		result.setReviewUpdateDate(LocalDateTime.now());
+		reviewMapper.update(result);
 		
-		reviewImageMapper.deleteReviewImageByReviewId(reviewVO.getReviewId());
-		
+		// 이미지 수정
 		List<ReviewImageVO> reviewImageList = reviewVO.getreviewImageList();
 		
-		for(ReviewImageVO reviewImageVO : reviewImageList) {
-			reviewImageVO.setReviewId(reviewVO.getReviewId()); // reviewId 적용
+		if(reviewImageList.isEmpty()) { // 이미지 수정 안했을 때
+			reviewImageList = reviewVO.getreviewImageList();
+		} else { // 이미지 수정했을 때
+			
+			reviewImageMapper.deleteReviewImageByReviewId(reviewVO.getReviewId());
+			
+			for(ReviewImageVO reviewImageVO : reviewImageList) {
+				reviewImageVO.setReviewId(reviewVO.getReviewId()); // reviewId 적용
+				reviewImageMapper.insertReviewImage(reviewImageVO);
+			}
 		}
-	
-		log.info("수정 완료");
+		
+		log.info("이미지 수정 : " + reviewImageList);
+
 		return 1;
 	}
 	
@@ -117,6 +126,7 @@ public class ReviewServiceImple implements ReviewService{
 		
 	}
 
+	// 모든 리뷰 개수
 	@Override
 	public int countAllReviewsByStoreId(int storeId) {
 		log.info("countAllReviewsByStoreId()");

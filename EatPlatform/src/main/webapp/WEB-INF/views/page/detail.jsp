@@ -253,7 +253,7 @@
 						var repliesList = '';
 						
 						$(data).each(function(){
-							var replyDate = new Date(this.replyDate);
+							var replyDate = new Date(this.replyDate).toLocaleString();
 						
 							repliesList += '<div class="reply_item">'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
@@ -486,6 +486,7 @@
 				var replyItem = $(this).closest('.reply_item');
 				
 				replyItem.find('#replyContent').attr('readonly', false);
+				replyItem.find('#replyContent').focus();
 				
 				replyItem.find('.btn_update_reply').hide();
 				replyItem.find('.btn_delete_reply').hide();

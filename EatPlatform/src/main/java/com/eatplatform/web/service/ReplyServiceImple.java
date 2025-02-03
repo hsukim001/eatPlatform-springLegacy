@@ -1,5 +1,6 @@
 package com.eatplatform.web.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class ReplyServiceImple implements ReplyService{
 		ReplyVO replyVO = new ReplyVO();
 		replyVO.setReplyId(replyId);
 		replyVO.setReplyContent(replyContent);
+		replyVO.setReplyUpdateDate(LocalDateTime.now());
 		return replyMapper.update(replyVO);
 	}
 

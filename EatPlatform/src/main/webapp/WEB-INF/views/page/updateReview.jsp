@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
@@ -16,6 +17,7 @@
 	<h2>리뷰 수정 페이지</h2>
 	<form id="updateReviewForm" action="../page/updateReview" method="POST">
 		<div>
+			<input type="hidden" name="storeId" value="${reviewVO.storeId }">
 			<input type="hidden" name="reviewId" value="${reviewVO.reviewId }">
 		</div>
 		<div>
@@ -28,9 +30,10 @@
 			<p>태그 : <input type="text" name="reviewTag" value="${reviewVO.reviewTag }"></p>
 		</div>
 		<div>
-			<p>내용 : <textarea id="reviewContent" placeholder="${reviewVO.reviewContent }" ></textarea></p>
+			<p>내용 : <textarea id="reviewContent" name="reviewContent" >${reviewVO.reviewContent }</textarea></p>
 		</div>
 	
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	</form>
 	
 	<hr>
@@ -61,17 +64,20 @@
     </div>
 	
 	<button id="updateReviewImage">등록</button>
+	<button id="returnReview">취소</button>
 	
 	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	
 	<script type="text/javascript">
-	
-		$(document).ajaxSend(function(e, xhr, opt){
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			
-			xhr.setRequestHeader(header, token);
-		});
+	// ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정
+    // ajax 요청을 보낼 때마다 CSRF 토큰을 요청 헤더에 추가하는 코드
+    $(document).ajaxSend(function(e, xhr, opt){
+       var token = $("meta[name='_csrf']").attr("content");
+       var header = $("meta[name='_csrf_header']").attr("content");
+       
+       xhr.setRequestHeader(header, token);
+    });
+		
 		
 		$(document).ready(function() {
 			// 이미지 변경 버튼 클릭 시
@@ -86,29 +92,45 @@
 		
 		// updateReviewForm 데이터 전송
 		$('#updateReviewImage').click(function() {
+			
+			if($('#reviewContent').val() == "") {
+				alert("내용을 입력해주세요.");
+				$('#reviewContent').focus();
+				return;
+			}
+			
 			// form 객체 참조
 			var updateReviewForm = $('#updateReviewForm');
 			
-			// 리뷰 이미지 처리
-            var reviewImageList = [];
-            var i = 0;
-	           
          	// reviewImg-list의 각 input 태그 접근
-           $('.reviewImg-list input[name="reviewImageVO"]').each(function() {
+         	var i = 0;
+            $('.reviewImg-list input[name="reviewImageVO"]').each(function() {
            	var reviewImageVO = JSON.parse($(this).val());
            	
-           	// JSON 객체로 ReviewImageVO 배열 구성
-               reviewImageList.push({
-                    reviewImagePath: reviewImageVO.reviewImagePath,
-                    reviewImageRealName: reviewImageVO.reviewImageRealName,
-                    reviewImageChgName: reviewImageVO.reviewImageChgName,
-                    reviewImageExtension: reviewImageVO.reviewImageExtension
-               });
-
-               i++;
-           });
-           updateReviewForm.submit();
-			
+           	var inputPath = $('<input>').attr('type','hidden').attr('name','reviewImageList[' + i + '].reviewImagePath');
+           	inputPath.val(reviewImageVO.reviewImagePath);
+           	var inputRealName = $('<input>').attr('type','hidden').attr('name','reviewImageList[' + i + '].reviewImageRealName');
+           	inputRealName.val(reviewImageVO.reviewImageRealName);
+           	var inputChgName = $('<input>').attr('type','hidden').attr('name','reviewImageList[' + i + '].reviewImageChgName');
+           	inputChgName.val(reviewImageVO.reviewImageChgName);
+           	var inputExtension = $('<input>').attr('type','hidden').attr('name','reviewImageList[' + i + '].reviewImageExtension');
+           	inputExtension.val(reviewImageVO.reviewImageExtension);
+           	
+           	updateReviewForm.append(inputPath);
+           	updateReviewForm.append(inputRealName);
+           	updateReviewForm.append(inputChgName);
+           	updateReviewForm.append(inputExtension);
+           	
+           	i++;
+           	
+            });
+            updateReviewForm.submit();
+           
+        });
+		
+		// 취소 버튼 눌렀을 때
+		$('#returnReview').click(function() {
+			location.href = '../page/detail'
 		});
 	
 	</script>
