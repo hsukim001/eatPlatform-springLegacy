@@ -222,4 +222,11 @@ public class StoreController {
 		RequestInfoVO infoVO = storeApprovalsService.searchInfo(storeId);
 		model.addAttribute("info", infoVO);
 	}
+	
+
+	@GetMapping("/test")
+	public void test() {
+		log.info("test()");
+	}
+
 }

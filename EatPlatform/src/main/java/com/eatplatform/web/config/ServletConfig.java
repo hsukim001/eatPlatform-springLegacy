@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 // component scan 설정
 public class ServletConfig implements WebMvcConfigurer {
 	
+	
 	// ViewResolver 설정 메소드
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -31,6 +32,8 @@ public class ServletConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// resources 디렉토리 설정
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+		
+		registry.addResourceHandler("/upload/**").addResourceLocations("file:///C:/Users/tirof/OneDrive/Desktop/Develope/eatPlatform-springLegacy/eatPlatform-springLegacy/EatPlatform/src/main/webapp/upload/");
 	}
 	
 	// 파일을 저장할 경로 bean 생성

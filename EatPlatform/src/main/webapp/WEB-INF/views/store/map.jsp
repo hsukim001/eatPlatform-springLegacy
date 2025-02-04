@@ -92,6 +92,8 @@
 		        const road = storeAddress ? storeAddress.roadAddress : null;
 		        const storeComment = store.storeComment ? store.storeComment : "작성된 소개글이 없습니다.";
 		        const storePhone = store ? store.storePhone : null;
+		        const businessHour =  store? store.businessHour : null;
+	            let [openHour, closeHour] = businessHour.split(" - ");
 		        const storeId = store ? store.storeId : null;
 		        let searchAddress;
 		
@@ -124,7 +126,9 @@
 		                        road : road,
 		                        storeComment : storeComment,
 		                        storePhone : storePhone,
-		                        storeId : storeId
+		                        storeId : storeId,
+		                        openHour : openHour,
+		                        closeHour : closeHour
 		                    });
 		                } else {
 		                    console.log('위도/경도 값이 유효하지 않음');
@@ -151,20 +155,21 @@
 	                    content: 
 	                    	'<div class="detail_text" id="m' + position.storeId + '">' +
 	                    		'<p class="title higtlight">' + position.title + '</p>' +
-	                    		'<p class="store_address">' + 
+	                    		'<p class="overlay_address">' + 
 	                        		'<span class="address_mark">' +
                        					 '지번' + 
                        				'</span>' +
                        				position.jibun +
                     			'</p>' +
-	                    		'<p class="store_address">' + 
+	                    		'<p class="overlay_address">' + 
 		                        	'<span class="address_mark">' +
 	                       				 '도로명' + 
 	                       			'</span>' +
 	                       			position.road +
 	                    		'</p>' +
-	                    		'<p class="store_comment">' + position.storeComment + '</p>' +
-	                    		'<p class="store_phone">' + position.storePhone + '</p>' +
+	                    		'<p class="overlay_comment">' + position.storeComment + '</p>' +
+	                    		'<p class="overlay_phone">' + position.storePhone + '</p>' +
+	                    		'<p class=overlay_hour">영업시간 : <span class="overlay_open_hour">' + position.openHour + '</span> -  <span class="overlay_close_hour">' + position.closeHour + '</span> </p>' +
 	                    	'</div>',
 	                    map: map,
 	                    position: marker.getPosition(),
@@ -194,10 +199,6 @@
 		        }
 		    });
 	    }
-
-
-
-
 
 	    // 넘버링 페이징 처리
 		function updatePagination(totalDataCount, currentPage) {
@@ -246,12 +247,9 @@
 		    }
 		}
 
-
-
-
 		function appendStoresToPage(stores, storeAddresses) {
 		    // stores가 null이거나 storeAddresses가 null인 경우
-		    if ((!stores && !storeAddresses) || stores.length == 0 ) {
+		    if ((!stores && !storeAddresses) || stores.length == 0 && loadedDataCount == 0 ) {
 		        const noDataHtml = '<div class="no-data"><p>등록된 식당이 없습니다.</p></div>';
 		        $('#storeList').append(noDataHtml);
 		        return;
@@ -263,15 +261,18 @@
 		                return;
 		            }
 
+		            let business =  store.businessHour;
+		            let [openHour, closeHour] = business.split(" - ");
 		            const storeAddress = storeAddresses[store.storeId];
 		            const storeHtml = 
 		                '<div class="store" data-store-id ="m' + store.storeId +'">' +
-		                    '<h3>' + store.storeName + '</h3>' +
+		                    '<h3>' + '<a href="detail?storeId=' + store.storeId + '">' + store.storeName + '</a>' + '</h3>' +
 		                    '<p> <span class="address_mark">지번 </span> <span class="jibun">' + storeAddress.jibunAddress + '</span></p>' +
 		                    '<p> <span class="address_mark">도로명 </span> <span class="road">' + storeAddress.roadAddress + '</span></p>' +
 		                    '<p class="store_comment">' + (store.storeComment && store.storeComment.trim() !== '' ? store.storeComment : '작성된 소개 글이 없습니다.') + '</p>' +
+		                    '<p class="store_hour">영업시간 : <span class="open_time"> ' + openHour + '</span> - <span class="close_time">' + closeHour + '</span> </p>' +  
 		                    '<p class="store_phone">' + store.storePhone + '</p>' +
-		                    '<button><a href="detail?storeId=' + store.storeId + '">상세페이지 이동</a></button>' +
+		                    '<button>상세페이지 이동</button>' +
 		                '</div>';
 
 		            $('#storeList').append(storeHtml);
@@ -317,12 +318,6 @@
 			geocoder = new kakao.maps.services.Geocoder();
 
 			$('#storeList').on('click', '.store', function(){
-				
-				let selectedStoreName = $(this).find('h3').text();
-				let selectedJibunAddress = $(this).find('.jibun').text();
-				let selectedRoadAddress = $(this).find('.road').text();
-				let selectedStoreComment = $(this).find('.store_comment').text();
-				let selectedStorePhone = $(this).find('.store_phone').text();
 				let selectedStoreId = $(this).data('storeId');
 				
 				
@@ -418,7 +413,7 @@
 	                $(this).closest('div').addClass('selected');
 	                return false;
 	            }
-	        });s
+	        });
 	    	claerMarker();
 	    	rebootList();
 	    });
