@@ -80,10 +80,15 @@
         
         
         
+<<<<<<< Updated upstream
         
         <property name="context-root" value=""/>
                                                                                                         	
     
+=======
+        <property name="context-root" value=""/>
+                                                                                                	
+>>>>>>> Stashed changes
     
     
     

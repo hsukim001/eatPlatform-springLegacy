@@ -42,7 +42,7 @@ public class ReviewController {
 		log.info("reviewVO = " + reviewVO.toString());
 		log.info(result + "행 수정");
 		
-		return "redirect:/page/detail";
+		return "redirect:/store/detail?storeId=" + reviewVO.getStoreId();
 		
 	}
 

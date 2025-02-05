@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,12 +13,14 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/detail.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	<script>
 		$(function(){
 			
@@ -221,12 +223,12 @@
 					
 					<div id="reviewContainer">
 						<p>
-							리뷰 (???)
-							<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
+							<sec:authorize access="hasRole('ROLE_MEMBER')">
+								<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
+						  	</sec:authorize>
 						</p>
 						
 						<input type="hidden" id="storeId" value="${storeVO.storeId }">
-						<input type="hidden" id="userId" value="${sessionScope.userId }" readonly >
 						<div id="reviewWrite">
 							<div id="scoreWrap">
 								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="1">
@@ -249,10 +251,26 @@
 							<ul id="viewTag"></ul>
 							
 							<input type="hidden" id="reviewTag" placeholder="태그">
-					        <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>								<button id="btnAdd">작성</button>
+					        <textarea id="reviewContent" placeholder="리뷰 내용을 작성하세요"></textarea>
+					        
+					        <div class="image-upload">
+						      <h2>이미지 파일 업로드</h2>
+						      <p>* 이미지 파일은 최대 3개까지 가능합니다.</p>
+						      <p>* 최대 용량은 10MB 입니다.</p>
+						      <div class="image-drop"></div>
+						      <h2>선택한 이미지 파일 :</h2>
+						      <div class="image-list"></div>
+						   	</div>
+						   	
+						   	<div class="reviewImg-list">
+						    </div>
+						    
+					        	<button id="btnAdd">작성</button>
+					     
 						</div>
 							<div style="text-align: center;">
-								<div id="reviews"></div>
+								<div id="reviews">
+								</div>
 								<br>
 								<!-- 더보기 버튼 추가 -->
 								<button id="loadMoreBtn">더보기</button>

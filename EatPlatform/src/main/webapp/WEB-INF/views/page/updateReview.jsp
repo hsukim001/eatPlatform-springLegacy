@@ -64,7 +64,7 @@
     </div>
 	
 	<button id="updateReviewImage">등록</button>
-	<button id="returnReview">취소</button>
+	<button onclick="history.back()">취소</button>
 	
 	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	
@@ -127,11 +127,6 @@
             updateReviewForm.submit();
            
         });
-		
-		// 취소 버튼 눌렀을 때
-		$('#returnReview').click(function() {
-			location.href = '../page/detail'
-		});
 	
 	</script>
 

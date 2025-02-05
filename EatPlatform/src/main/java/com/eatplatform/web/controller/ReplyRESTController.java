@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +32,12 @@ public class ReplyRESTController {
 	// 댓글 등록(사업자)
 	@PostMapping
 	public ResponseEntity<Integer> createReply(
-			@RequestBody ReplyVO replyVO) {
+			@RequestBody ReplyVO replyVO,
+			@AuthenticationPrincipal UserDetails userDetails) {
+		
+		String userId = userDetails.getUsername();
+		replyVO.setUserId(userId);
+		
 		// 댓글 내용 길이 제한 (100자 이하) 
 		if (replyVO.getReplyContent() != null && 
 			replyVO.getReplyContent().length() > 100) {

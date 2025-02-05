@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +37,13 @@ public class ReviewRESTController {
 	private ReviewImageService reviewImageService;
 	
 	// 리뷰 등록(회원)
-		@PostMapping
-		public ResponseEntity<Integer> createReview(
-				@RequestBody ReviewVO reviewVO, HttpSession session) {
+	@PostMapping
+	public ResponseEntity<Integer> createReview(
+			@RequestBody ReviewVO reviewVO,
+			@AuthenticationPrincipal UserDetails userDetails) {
+		
+			String userId = userDetails.getUsername();
+			reviewVO.setUserId(userId);
 			
 			// 리뷰 내용 길이 제한 (250자 이하) 
 			if (reviewVO.getReviewContent() != null && 

@@ -1,13 +1,4 @@
-// ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정
-	    // ajax 요청을 보낼 때마다 CSRF 토큰을 요청 헤더에 추가하는 코드
-	    $(document).ajaxSend(function(e, xhr, opt){
-	       var token = $("meta[name='_csrf']").attr("content");
-	       var header = $("meta[name='_csrf_header']").attr("content");
-	       
-	       xhr.setRequestHeader(header, token);
-	    });
-		
-		$(document).ready(function(){
+$(document).ready(function(){
 			var pageNumber = 1;  // 페이지 번호
             var pageSize = 5;  // 한 번에 가져올 리뷰의 개수
             var totalReviews = 0; // 전체 리뷰 개수
@@ -16,23 +7,14 @@
 			// 리뷰 등록
 			$('#btnAdd').click(function(){
 				var storeId = $('#storeId').val();
-				var reviewStar = $('#reviewStar').text();
+				var reviewStar = $('#reviewStar').val();
 				var reviewContent = $('#reviewContent').val();
 				var reviewTag = $('#reviewTag').val();
 				
-				if (!reviewStar || !reviewContent) {
+				if (!reviewStar || !reviewContent || !reviewTag) {
                     alert("모든 항목을 입력해주세요.");
                     return;
                 }
-<<<<<<< Updated upstream
-				var obj = {
-						'storeId' : storeId,
-						'userId' : userId,
-						'reviewStar' : reviewStar,
-						'reviewContent' : reviewContent,
-						'reviewTag' : reviewTag
-				}
-=======
 				
 				// 리뷰 이미지 처리
 	             var reviewImageList = [];
@@ -56,12 +38,12 @@
 	         	// JSON 데이터 객체 생성
 	            var obj = {
 	            		"storeId" : storeId,
+		                "userId" : userId,
 		                "reviewStar" : reviewStar,
 		                "reviewContent" : reviewContent,
 		                "reviewTag" : reviewTag,
 		                "reviewImageList" : reviewImageList  // 이미지 리스트 추가	
 	         	};
->>>>>>> Stashed changes
 				console.log(obj);
 	         
 	         	// JSON 데이터를 전송
@@ -75,7 +57,7 @@
 	                 success: function(result) {
 	                     if (result == 1) {
 	                         alert('리뷰 등록 성공');
-	                         $('#reviewWrite input, #reviewWrite textarea').val(''); // reviewContent 값 초기화
+	                         $('#reviewDiv input, #reviewDiv textarea').val(''); // reviewDiv 값 초기화
 	                         $('.image-list').html(''); // image-list 초기화
 	                         getAllReview();  // 리뷰 목록 다시 불러오기
 	                     } else {
@@ -91,7 +73,7 @@
 	                 }
 	             });
 	         }); // end btnAdd.click()
-	         
+
 	        // 식당 리뷰 전체 가져오기
 			function getAllReview() {
 	        	 		
@@ -113,7 +95,7 @@
 						}
 						
 						var list = '';
-						
+		
 						$(data.list).each(function(){
 							console.log(this); // 인덱스 데이터
 					
@@ -140,8 +122,6 @@
 								+ '<button class="btn_delete" >삭제</button>'
 								+ '<button class="btn_like" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
-								+ '<br>'
-							
 							// 이미지 조회
 							$(this.reviewImageList).each(function(){
 								console.log(this);
@@ -156,13 +136,14 @@
 								+ '</a>'
 								+ '</div>'
 							});
-				
+			
 							// 리뷰 댓글 표시
 							list += '<div class="review_replies" id="review_'+ this.reviewId + '_replies">' 
-								+ '</div>'
-								+ '<div class="review_reply" >' // 리뷰 댓글 입력창
-								+ '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요" ></textarea>'
+								+ '</div>' 
+								+ '<div class="review_reply">' // 리뷰 댓글 입력창
+								+ '&nbsp;&nbsp;'
 								+ '<button class="btn_reply" >댓글 작성</button>'
+								+ '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요" ></textarea>'
 								+ '</div>'
 								+ '</div>';
 						
@@ -234,21 +215,13 @@
 			$('#reviews').on('click', '.review_item .btn_update', function(){
 				console.log(this);
 				
-				var storeId = $(this).prevAll('#storeId').val();
 				var reviewId = $(this).prevAll('#reviewId').val();
 				
 				location.href = '../page/updateReview?reviewId=' + reviewId;
-				
-				var obj2 = {
-						  'storeId' : storeId,
-			    		  'reviewId' : reviewId	
-					}
-					console.log(obj2);
 
 				$.ajax({
 					type : 'GET', 
 					url : '../page/updateReview?reviewId=' + reviewId,
-					data : JSON.stringify(obj2),
 					success : function(result) {
 						console.log(result);
 						if(result == 1) {
@@ -336,7 +309,6 @@
 				  }
 			  });
 			
-			  
 			// 신고 제출 버튼 클릭 시 처리
 			  $('input[name="reportReason"]').on('change', function() {
 				  // 선택한 신고 사유를 처리할 로직은 이미 submitReport에서 처리됨
@@ -394,7 +366,7 @@
 		    $('#reportModal').hide();
 		  }
 		});
-								
+					
 		// 선택된 리뷰에 댓글 등록(사업자)
 		$('#reviews').on('click', '.review_item .btn_reply', function(){
 			
@@ -409,6 +381,7 @@
             }
 	        
 				var obj4 = {
+	            		'userId' : userId,
 						'reviewId' : reviewId,
 						'replyContent' : replyContent
 				}
@@ -428,14 +401,7 @@
 							getReplies(reviewId);
 							$('#replyContent').val("");
 						}
-					},
-					error: function(xhr, status, error) {
-	                     if (xhr.status == 400) {
-	                         alert('댓글 내용은 100자 이하로 작성해주세요.');
-	                     } else {
-	                         alert('댓글 등록에 실패했습니다. 다시 시도해주세요.');
-	                     }
-	                 }
+					}
 				});
 				
 			}); // end reviews.on()
@@ -527,5 +493,6 @@
 				}); 
 				
 			}); // end reviews.on()
-			
+						
 		}); // end document()
+		
