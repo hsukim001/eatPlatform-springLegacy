@@ -5,7 +5,7 @@
         <!-- Header -->
         <header>
             <div class="logo">
-            	<a href="/web">
+            	<a href="/">
                 	<img src="<%=request.getContextPath()%>/resources/img/common/logo.png" alt="로고 이미지">
                 </a>
             </div>
@@ -15,26 +15,57 @@
             <div class="login_form">
                 <sec:authorize access="isAnonymous()">
 	                <ul>
-	    	                <li>
-		                    	<a href="/web/access/login">
-		                    		로그인
-		                    	</a>                    		
-		                    </li>
+	    	            <li>
+		                    <a href="/access/login">
+		                    	로그인
+		                	</a>                    		
+		            	</li>
 	                </ul>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
                 	<ul>
-                		<li>
-                			<form action="/web/access/logout" method="post">
+                		<li  class="logout">
+                			<form action="/access/logout" method="post">
                 				<input type="submit" value="로그아웃">
                 				<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
                 			</form>
                 		</li>
                     	<li>
-                    		<a href="/web/user/detail">마이페이지</a>
+                    		<a href="/user/detail">마이페이지</a>
                     	</li>         	
                 	</ul>
                 </sec:authorize>
+            </div>
+            <div id="gnb_bar">
+            	<ul>
+            		<li> 
+            			<a href="/store/list">
+            				맛집 목록 
+            			</a>
+            		</li>
+            		<li> 
+            			<a href="/store/map">
+            			맛집 로드맵 
+            			</a>
+            		</li>
+            		<li> 
+            			<a href="/store/map">
+            				마이페이지 
+            			</a>
+            			<ul class="lnb_list">
+            				<li>
+            					<a href="/store/map"> 
+            						회원 정보 
+            					</a>
+            				</li>
+            				<li>
+            					<a href="#">
+            						매장 관리
+            					</a>
+            				</li>
+            			</ul>
+            		</li>
+            	</ul>
             </div>
         </header>
         <!-- Header 여백 공간 채우기 -->

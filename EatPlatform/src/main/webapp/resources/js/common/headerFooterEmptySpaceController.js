@@ -24,4 +24,14 @@
 		        $('.fullExceptionResize').css('height', fullException);
 		        $('.exceptionHeaderResize').css('height', 'calc(100vh - ' + headerHeight + 'px)');
 		    });
+		    
+		    $('#gnb_bar > ul > li').mouseenter(function(){
+				$(this).children('a').addClass('bold');
+		    	$(this).find('.lnb_list').stop(true, true).slideDown(500);
+		    });		
+		        
+		    $('#gnb_bar > ul > li').mouseleave(function(){
+		    	$(this).children('a').removeClass('bold');
+		    	$(this).find('.lnb_list').stop(true, true).slideUp(500);
+		    });
 		});

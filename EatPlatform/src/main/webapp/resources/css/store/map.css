@@ -15,6 +15,7 @@ body {
 #mapController {
 	width: 350px;
 	float: left;
+	position: relative;
 }
 
 #map {
@@ -70,16 +71,13 @@ body {
 	outline: none;
 }
 
-#storeList {
-	height: 20vh;
-	overflow: scroll;
-}
-
 /* 태그  */
 #tagList {
 	width: 90%;
 	display: inline-block;
 	text-align: left;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 10px;
 }
 
 #tagList > div:not(#tag_icon1) {
@@ -89,7 +87,7 @@ body {
 	border: 1px solid #ddd;
     border-radius: 15px;
     padding: 2px 8px;
-    margin: 2px;
+    margin: 4px 2px;
     cursor: pointer;
     transition: 0.5s;
 }
@@ -121,6 +119,28 @@ body {
 	margin-right: 5px;
 }
 
+/* Store List */
+
+#storeList {
+	height: 60vh;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+
+/* ScrollBar */
+#storeList::-webkit-scrollbar,
+#menuContainer::-webkit-scrollbar {
+	width: 5px;
+	border-radius: 35px;
+}
+
+#storeList::-webkit-scrollbar-thumb,
+#menuContainer::-webkit-scrollbar-thumb {
+	background-color: #1b47b3;
+	border-radius: 35px;
+}
+
+
 
 .detail_text {
 	display: none;
@@ -128,4 +148,11 @@ body {
     top: 0;
     left: -50%;
     transform: translate(-50%, -150%);
+}
+
+#pagination {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%, -50%);	
 }

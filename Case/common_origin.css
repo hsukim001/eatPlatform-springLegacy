@@ -13,14 +13,13 @@
 header {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 1;
     border-top: 1px solid #e7e7e7;
     border-bottom: 1px solid #e7e7e7;
-    /* background: #fbfbfb;*/
+    background: #fbfbfb;
     justify-content: space-between;
     align-items: center;
 }
@@ -54,10 +53,9 @@ header {
     height: 50px;
     border: 1px solid #aaa;
     border-radius: 50px;
-    outline: none;
     padding: 0 60px 0 20px;
     box-sizing: border-box;
-    background: url('../img/common/sch_btn.png') no-repeat right 10px center;
+    background: url('sch_btn.png') no-repeat right 10px center;
     background-size: 35px;
 }
 
@@ -79,79 +77,6 @@ header {
     text-align: center;
 }
 
-.logout {
-	border-right: 1px solid #ccc;
-}
-
-.login_form ul li input[type="submit"] {
-	background: none;
-    border: none;
-    outline: none;
-    font-size: 16px;
-	cursor: pointer;
-}
-
-#gnb_bar {
-	width: 100%;
-	display: inline-block;
-	position: relative;
-}
-
-#gnb_bar > ul {
-	width: 1200px;
-	height: 40px;
-	display: flex;
-	justify-content: center;
-	margin: 0 auto;
-}
-
-#gnb_bar > ul > li {
-    width: 15%;
-    height: 40px;
-    line-height: 37.5px;
-    padding-top: 2.5px;
-    position: relative;
-}
-
-#gnb_bar > ul > li:not(:last-child) {
-	border-right: 1px solid #ccc;
-}
-
-#gnb_bar a {
-	display: block;
-}
-
-.lnb_list {
-	display: none;
-	width: 100%;
-	position: absolute;
-	top: 40px;
-	left: 0;
-	background: #000000a5;
-	border: 1px solid #444;
-    border-bottom-right-radius: 15px;
-    border-bottom-left-radius: 15px;
-    z-index: 1;
-}
-
-.lnb_list > li {
-	width: 85%;
-	margin: 0 auto;
-}
-
-.lnb_list > li:not(:last-child) {
-	border-bottom: 1px solid #dddddd82;
-}
-
-.lnb_list > li a {
-	color: #fff;	
-}
-
-.lnb_list > li a:hover {
-	font-weight: bold;	
-}
-
-
 /* Empty Header & Footer*/
 #empty_header,
 #empty_footer {
@@ -159,38 +84,13 @@ header {
     display: block;
 }
 
-/* width */
-.width100 {
-	width: 100%;
-}
-
-/* text-align */
-.textLeft {
-	text-align: left;
-}
-
-/* margin-bottom */
-
-.mb20 {
-	margin-bottom: 20px;
-}
-
-.mb30 {
-	margin-bottom: 30px;
-}
-
-
-/* font-weight */
-.bold {
-	font-weight: bold;
-}
 
 /* Container */
 #container {
     width: 100%;
     display: inline-block;
     position: relative;
-    margin: 0 auto;
+    margin: 10px auto;
 }
 
 /* Footer */

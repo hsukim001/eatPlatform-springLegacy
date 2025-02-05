@@ -7,17 +7,67 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
 #otherCategory {
     display: none;
 }
+
+.insert {
+	padding: 10px 20px;
+	display: block;
+	width: 300px;
+	border: 1px solid #dbdbdb;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.insert .file-list {
+	height: 200px;
+	overflow: auto;
+	border: 1px solid #989898;
+	padding: 10px;
+}
+
+.insert .file-list .filebox p {
+	font-size: 14px;
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.insert .file-list .filebox .delete i {
+	color: #ff5353;
+	margin-left: 5px;
+}
+
+#storeImg {
+	display: none;
+}
+
+.uploadLabel {
+	display: inline-block;
+	padding: 6px 25px;
+	margin: 5px 0;
+	background-color:navy;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+}
+
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js" defer></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
+	$(document).ajaxSend(function(e, xhr, opt){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");			
+		xhr.setRequestHeader(header, token);
+	});4
+	
     $(function() { 
-        // "기타" 선택 관련 input 컨트롤
         $('#foodCategory').change(function() {  
             var selectedCategory = $(this).val();
             
@@ -28,8 +78,7 @@
                 $('#otherCategoryInput').val('');
             }
         }); // End foodCategory.change
-
-        // 폼 제출 시 "기타" 입력값을 hidden input에 저장
+        
         $('form').submit(function() { 
             var category = $('#foodCategory').val();
             if (category === '기타') {
@@ -43,7 +92,6 @@
             const endTime = $("#endTime").val();
             const businessHour = startTime + " - " + endTime;
 
-            // 이 값을 서버로 전송
             $("#businessHour").val(businessHour);
         }); // End form.submit
     }); // End $function
@@ -106,23 +154,20 @@
 </head>
 <body onpageshow="if(event.persisted) noBack();">
     <h2>여기는 가게 등록 페이지입니다.</h2>
-    <form action="register" method="POST">
+    <form action="register" method="POST" enctype="multipart/form-data">
     	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     	<input type="hidden" id="businessHour" name="businessHour"> 
-        
         <input type="hidden" id="hiddenFoodCategory" name="foodCategory" required>
         
-        <label for="storeName"> 
-            식당 이름 : <input type="text" id="storeName" name="storeName" required>
-        </label>
-        <label for="storePhone"> 
-            연락처 : <input type="number" id="storePhone" name="storePhone" required>
-        </label> 
-        <label for="ownerName">
-            대표명 : <input type="text" id="ownerName" name="ownerName" required> 
-        </label>
-        <label for="foodCategory">
-            카테고리: 
+        <label for="storeName">식당 이름 :  </label>
+        <input type="text" id="storeName" name="storeName" required>
+       
+        <label for="storePhone">연락처 : </label> 
+         <input type="number" id="storePhone" name="storePhone" required>
+        
+        <label for="ownerName">대표명 : </label>
+        <input type="text" id="ownerName" name="ownerName" required> 
+        <label for="foodCategory">카테고리: </label>
             <select id="foodCategory" name="foodCategorySelect">
                 <option value="한식">한식</option>
                 <option value="중식">중식</option>
@@ -130,34 +175,35 @@
                 <option value="양식">양식</option>
                 <option value="기타">기타</option>
             </select>
-        </label>
         <div id="otherCategory">
-            <label for="otherCategoryInput">
-                기타 카테고리:
-            </label> 
+            <label for="otherCategoryInput">기타 카테고리: </label> 
             <input type="text" id="otherCategoryInput" name="foodCategoryInput" placeholder="기타 카테고리 입력">
         </div> 
-        <label for="reservLimit">
-            시간별 예약 제한: <input type="number" max="99999" id="reservLimit" name="reservLimit" required>
-        </label> 
-        <label for="seat"> 
-            좌석 수 : <input type="number" max="99999" id="seat" name="seat">
-        </label> 
-        <label for="businessHour"> 
-            영업시간 : <input type="time" id="startTime" name="startTime"> - <input type="time" id="endTime" name="endTime">
-        </label> 
-        <label for="storeComment"> 
-            식당 소개: 
-            <textarea id="storeComment" name="storeComment" maxlength="125" placeholder="125자까지 입력 가능합니다."></textarea>
-        </label>
-        <br>
-        <label for="description"> 
-            식당 상세 설명: 
-            <textarea id="description" name="description" maxlength="250" placeholder="250자까지 입력 가능합니다."></textarea>
-        </label>
-        <br>
+        <label for="reservLimit">시간별 예약 제한: </label>
+        <input type="number" max="99999" id="reservLimit" name="reservLimit" required>
         
-		            
+        <label for="seat">좌석 수 : </label> <input type="number" max="99999" id="seat" name="seat">
+        <label for="businessHour">영업시간 :  </label> 
+        <input type="time" id="startTime" name="startTime"> - <input type="time" id="endTime" name="endTime">
+       
+        <label for="storeComment">식당 소개: </label>
+        <textarea id="storeComment" name="storeComment" maxlength="125" placeholder="125자까지 입력 가능합니다."></textarea>
+        
+        <br>
+        <label for="description">식당 상세 설명:  </label>
+        <textarea id="description" name="description" maxlength="250" placeholder="250자까지 입력 가능합니다."></textarea>
+        <br><br>
+
+		<div class="insert">
+			<label class="uploadLabel" for="storeImg">
+				업로드
+			</label>
+			<input id="storeImg" name="storeImg" type="file" onchange="addFile(this);" accept="image/*" multiple />
+			<div class="file-list"></div>
+        	<div id="thumbnail-container"></div>
+		</div>
+        <br><br>
+        	
 		<input type="text" id="postCode" name="postCode" placeholder="우편번호" required>
 		<input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
 		<input type="text" id="roadAddress" name="roadAddress" placeholder="도로명주소">
