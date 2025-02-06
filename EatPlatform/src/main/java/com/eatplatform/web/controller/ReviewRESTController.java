@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,16 +101,16 @@ public class ReviewRESTController {
 			@PathVariable("reviewId") int reviewId,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		
-		String loggedInUserId = userDetails.getUsername();
-		ReviewVO reviewVO = reviewService.getReviewById(reviewId);
-		String reviewUserId = reviewVO.getUserId();
+		String userId = userDetails.getUsername();
 		
-		if(loggedInUserId.equals(reviewUserId)) {
-		
-		log.info("deleteReview()");
-		int result = reviewService.deleteReview(reviewId);
+		if(userId != null) {
+			log.info("deleteReview()");
+			
+			int result = reviewService.deleteReview(reviewId);
+			return new ResponseEntity<Integer>(result,HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<Integer>(HttpStatus.OK);
 	}
 	
 }

@@ -29,24 +29,36 @@ public class ReviewReportListRESTController {
 	public ResponseEntity<Integer> createReviewReportList(
 			@RequestBody ReviewReportListVO reviewReportListVO,
 			@AuthenticationPrincipal UserDetails userDetails) {
-		log.info("createReviewReportList()");
 		
 		String userId = userDetails.getUsername();
-		reviewReportListVO.setUserId(userId);
-		int result = reviewReportListService.createReviewReportList(reviewReportListVO);
-		return new ResponseEntity<Integer>(result, HttpStatus.OK);
+		
+		if(userId != null) {
+			log.info("createReviewReportList()");
+			
+			reviewReportListVO.setUserId(userId);
+			int result = reviewReportListService.createReviewReportList(reviewReportListVO);
+			return new ResponseEntity<Integer>(result, HttpStatus.OK);
+			
+		} else {
+			return new ResponseEntity<Integer>(HttpStatus.UNAUTHORIZED);
+		}
 	}
 	
 	// 신고여부 확인
 	@GetMapping("/{reviewId}")
-	public int reviewReported(
+	public ResponseEntity<Integer> reviewReported(
 			@PathVariable("reviewId") int reviewId,
 			@AuthenticationPrincipal UserDetails userDetails) {
-		log.info("reviewReported()");
-		
 		String userId = userDetails.getUsername();
-		int result = reviewReportListService.isReviewReported(reviewId, userId);
-		return result;
+		
+		if(userId != null) {
+			log.info("reviewReported()");
+			
+			int result = reviewReportListService.isReviewReported(reviewId, userId);
+			return new ResponseEntity<Integer>(result, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Integer>(HttpStatus.UNAUTHORIZED);
+		}
 	}
 	
 }

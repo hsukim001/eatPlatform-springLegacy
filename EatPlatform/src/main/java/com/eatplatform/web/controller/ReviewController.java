@@ -20,11 +20,6 @@ public class ReviewController {
 	@Autowired
 	private ReviewService reviewService;
 	
-	@GetMapping("/detail")
-	public void detail() {
-		log.info("detail()");
-	}
-	
 	// 선택된 리뷰를 updateReview.jsp로 전송
 	@GetMapping("/updateReview")
 	public void updateReviewGET(Model model, int reviewId) {

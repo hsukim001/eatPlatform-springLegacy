@@ -127,7 +127,15 @@
 		    $("#reviewWrite").hide();
 		    
 		    $("#reviewBtn").click(function(){
-		  
+		    	fetch('../access/auth/status')
+				.then(response => response.json())
+				.then(isAuthenticated => {
+					if(isAuthenticated) {
+						$("#reviewWrite").slideToggle('300');						
+					} else {
+						alert('로그인이 필요합니다.');
+					}
+				})
 		    });		
 		}); // End $function
 	</script>

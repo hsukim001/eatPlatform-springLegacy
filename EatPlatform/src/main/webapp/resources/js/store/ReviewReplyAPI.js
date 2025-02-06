@@ -1,5 +1,5 @@
 // ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정
-	    // ajax 요청을 보낼 때마다 CSRF 토큰을 요청 헤더에 추가하는 코드
+// ajax 요청을 보낼 때마다 CSRF 토큰을 요청 헤더에 추가하는 코드
 	    $(document).ajaxSend(function(e, xhr, opt){
 	       var token = $("meta[name='_csrf']").attr("content");
 	       var header = $("meta[name='_csrf_header']").attr("content");
@@ -121,6 +121,10 @@
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
 							var reviewImageDate = new Date(this.reviewImageDate).toLocaleString();
 				        	
+				        	let loginId = $('#loginId').text();
+							var userId = this.userId;
+							console.log("로그인 ID: " + loginId + "사용자: " + userId); 
+				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
@@ -135,13 +139,19 @@
 								+ reviewDate
 								+ '&nbsp;&nbsp;'
 								+ this.reviewLike // 추천 수 표시
-							// 버튼들 (수정, 삭제, 추천, 신고)
+							
+						// 버튼들 (수정, 삭제, 추천, 신고)
+						if(loginId && userId && loginId == userId) {
 							list +=  '<div class="review_buttons">'
-								+ '<button class="btn_update" >수정</button>'
-								+ '<button class="btn_delete" >삭제</button>'
-								+ '<button class="btn_like" >추천</button>'
+								+ '<button class="btn_update" data-review-id="'+ this.reviewId + '">수정</button>'
+								+ '<button class="btn_delete" data-review-id="'+ this.reviewId + '">삭제</button>'
+								+ '</div>'; // review_buttons div 끝
+						} else if(loginId && userId && loginId != userId) {
+							list +=  '<div class="review_buttons">'
+								+ '<button class="btn_like" data-review-id="'+ this.reviewId + '" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
 								+ '</div>'; // review_buttons div 끝
+						}
 								+ '<br>'
 							
 							// 이미지 조회
@@ -185,7 +195,6 @@
                         } else {
                            $('#loadMoreBtn').show(); 
                         }
-
 						replyset();
 					}); // end getJSON()
 				
@@ -196,7 +205,7 @@
                 pageNumber++;  // 페이지 번호 증가
                 getAllReview();  // 다음 페이지의 리뷰 로드
             });
-			
+            
 			// 댓글 권한(사업자)
 			function replyset() {
 				let loginId = $('#loginId').text();
@@ -265,7 +274,7 @@
 				console.log(this);
 				
 				var storeId = $(this).prevAll('#storeId').val();
-				var reviewId = $(this).prevAll('#reviewId').val();
+				var reviewId = $(this).data('review-id');
 				
 				location.href = '../page/updateReview?reviewId=' + reviewId;
 				
@@ -295,7 +304,7 @@
 			$('#reviews').on('click', '.review_item .btn_delete', function(){
 				console.log(this);
 				
-				var reviewId = $(this).prevAll('#reviewId').val();
+				var reviewId = $(this).data('review-id');
 				
 				$.ajax({
 					type : 'DELETE', 
@@ -309,7 +318,15 @@
 							alert('리뷰 삭제 성공!');
 							getAllReview();
 						}
-					}
+					},
+					error: function(xhr, status, error) {
+                        if (xhr.status === 400) {
+                            alert('리뷰를 삭제할 수 없습니다.');
+                        } else {
+                            // 다른 오류 처리
+                            alert('리뷰 삭제에 실패했습니다.');
+                        }
+                    }
 					
 				});
 				
@@ -319,7 +336,7 @@
 			$('#reviews').on('click', '.review_item .btn_like', function(){
 				console.log(this);
 				
-				var reviewId = $(this).prevAll('#reviewId').val();
+				var reviewId = $(this).data('review-id');
 				
 				$.ajax({
 					type : 'POST', 
@@ -335,7 +352,10 @@
 						} else if(result != 1) {
 							alert('이미 추천된 리뷰입니다.');
 						}
-					}
+					},
+					error: function(xhr, status, error) {
+                        alert('추천할 수 없습니다.');
+                    }
 					
 				}); 
 				
@@ -344,8 +364,8 @@
 			// 리뷰 신고 버튼 클릭 시 모달 열기
 			$(document).on('click', '.btn_report', function() {
 	
-			  var reviewContent = $(this).prevAll('#reviewContent').val();
 			  var reviewId = $(this).data('review-id');
+			  var reviewContent = $(this).closest('.review_item').find('#reviewContent').val();
 			  
 			// 신고여부 확인
 			  $.ajax({
@@ -362,10 +382,12 @@
 					  } else {
 						  alert('이미 신고된 리뷰입니다.');
 					  }
-				  }
+				  },
+					error: function(xhr, status, error) {
+                        alert('신고할 수 없습니다.');
+                    }
 			  });
 			
-			  
 			// 신고 제출 버튼 클릭 시 처리
 			  $('input[name="reportReason"]').on('change', function() {
 				  // 선택한 신고 사유를 처리할 로직은 이미 submitReport에서 처리됨

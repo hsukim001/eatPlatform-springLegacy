@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReviewLikeListService;
+import com.eatplatform.web.service.ReviewService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -22,16 +24,26 @@ public class ReviewLikeListRESTController {
 	@Autowired
 	private ReviewLikeListService reviewLikeListService;
 	
+	@Autowired
+	private ReviewService reviewService;
+	
 	@PostMapping("/{reviewId}")
 	public ResponseEntity<Integer> createReviewLikeList(
 			@PathVariable("reviewId") int reviewId,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@AuthenticationPrincipal UserDetails userdetails) {
 		
-		log.info("createReviewLikeList()");
+		String userId = userdetails.getUsername();
 		
-		String userId = userDetails.getUsername();
-		int result = reviewLikeListService.createReviewLikeList(reviewId, userId);
-		return new ResponseEntity<Integer>(result, HttpStatus.OK);
+		if(userId!= null) {
+			log.info("createReviewLikeList()");
+			
+			ReviewVO reviewVO = reviewService.getReviewById(reviewId); 
+			int result = reviewLikeListService.createReviewLikeList(reviewId, userId);
+			return new ResponseEntity<Integer>(result, HttpStatus.OK);
+		} else {
+			log.warn("User is not authenticated");
+	        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 }
