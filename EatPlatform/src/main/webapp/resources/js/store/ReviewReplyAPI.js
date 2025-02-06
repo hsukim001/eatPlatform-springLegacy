@@ -121,8 +121,6 @@
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
 							var reviewImageDate = new Date(this.reviewImageDate).toLocaleString();
 				        	
-				
-				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
@@ -199,6 +197,7 @@
                 getAllReview();  // 다음 페이지의 리뷰 로드
             });
 			
+			// 댓글 권한(사업자)
 			function replyset() {
 				let loginId = $('#loginId').text();
 				let storeUserId = $('#storeUser').val();
@@ -252,9 +251,7 @@
 									+ replyDate
 									+ '</div>';
 							}
-								
-
-
+						
 						}); // end each()
 						
 						$('#review_' + reviewId + '_replies').html(repliesList);
@@ -492,7 +489,7 @@
 				
 				// 저장 버튼 눌렀을 때
 				replyItem.find('.btn_save_reply').on('click', function(){
-					let updateReplyId = $(this).siblings('#replyId').first().val();
+					let updateReplyId = $(this).parent().siblings('#replyId').val();
 					var updatedContent = replyItem.find('#replyContent').val();
 					console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + updateReplyId + ", 댓글 내용 : " + updatedContent);
 					

@@ -193,7 +193,7 @@
 				<div id="storeContent" class="width100 mb30">
 					
 					<div id="storeContentDescription" class="textLeft width100 mb30">
-						<p class="descriptionTitle mb20 bold">매장 소개</p>
+						<p class="descriptionTitle mb20">매장 소개</p>
 					    <c:if test="${empty storeVO.description}">
 					        <pre class="descriptionContent">작성된 소개글이 없습니다.</pre>
 					    </c:if>
