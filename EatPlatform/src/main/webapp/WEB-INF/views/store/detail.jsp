@@ -127,7 +127,7 @@
 		    $("#reviewWrite").hide();
 		    
 		    $("#reviewBtn").click(function(){
-		    	$("#reviewWrite").slideToggle('300');
+		  
 		    });		
 		}); // End $function
 	</script>
@@ -222,13 +222,18 @@
 					<!--  End MenuConteiner -->
 					
 					<div id="reviewContainer">
+			
+						<sec:authorize access="isAuthenticated()">
+							<p style="display: none;"><span id="loginId"><sec:authentication property="principal.user.userId" /></span></p>
+						</sec:authorize>
+						
 						<p>
-							<sec:authorize access="hasRole('ROLE_MEMBER')">
-								<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
-						  	</sec:authorize>
+							<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
 						</p>
 						
 						<input type="hidden" id="storeId" value="${storeVO.storeId }">
+						<input type="hidden" id="storeUser" value="${storeVO.userId }">
+						
 						<div id="reviewWrite">
 							<div id="scoreWrap">
 								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="1">
