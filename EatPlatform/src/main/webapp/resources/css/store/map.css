@@ -122,9 +122,11 @@ body {
 /* Store List */
 
 #storeList {
-	height: 60vh;
+	height: 57vh;
 	overflow: scroll;
 	overflow-x: hidden;
+	padding-top: 10px;
+	border-bottom: 1px solid #ddd;
 }
 
 /* ScrollBar */
@@ -136,23 +138,108 @@ body {
 
 #storeList::-webkit-scrollbar-thumb,
 #menuContainer::-webkit-scrollbar-thumb {
-	background-color: #1b47b3;
+	background-color: #ccc;
 	border-radius: 35px;
 }
 
-
-
 .detail_text {
 	display: none;
-	position: absolute;
+    position: absolute;
     top: 0;
     left: -50%;
-    transform: translate(-50%, -150%);
+    transform: translate(-50%, -130%);
+    background: #fff;
+    padding: 10px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.detail_text * {
+	margin-bottom: 5px;
+}
+
+.no-data {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.store {
+	padding: 5px 25px;
+	text-align: left;
+}
+
+.store:not(:last-child) {
+	border-bottom: 1px solid #ccc;
+}
+
+.store * {
+	margin-bottom: 5px;
+	font-size: 14px;
+}
+
+.store h3 {
+	font-weight: normal;
+	font-size: 16px;
+}
+
+.store h3 a {
+	font-size: 17px;
+	color: rgb(0, 104, 195);	
+}
+
+.store h3 a:hover {
+	font-weight: bold;
+}
+
+.address span:not(.address_mark) {
+	font-size: 12px;
+}
+
+.address_mark {    
+	background: #fff;
+	border: 1px solid #ccc;
+    font-size: 10px;
+    padding: 1px;
+    font-weight: bold;
+    margin-right: 3px;
+}
+
+.store_phone {
+	display: flex;
+	align-item: center;
+}
+
+.store_phone img {
+    width: 15px;
+    height: 15px;
+    margin: 2px 5px 0 0;
 }
 
 #pagination {
+	display: flex;
+	justify-content: center;
+	width: 100%;
 	position: absolute;
-	bottom: 0;
-	left: 50%;
-	transform: translate(-50%, -50%);	
+	bottom: .5vh;
+	background: #fff;
+}
+
+#pagination button {
+    background: transparent;
+    border: none;
+    outline: none;
+    margin: 0 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: rgb(0 91 171);
+    cursor: pointer;
+}
+
+#pagination button:hover {
+    color: rgb(124 185 255);
+}
+
+.active {
+    color: rgb(124 185 255) !important;
 }

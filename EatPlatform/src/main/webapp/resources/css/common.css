@@ -20,7 +20,7 @@ header {
     z-index: 99;
     border-top: 1px solid #e7e7e7;
     border-bottom: 1px solid #e7e7e7;
-    /* background: #fbfbfb;*/
+    background: #fff;
     justify-content: space-between;
     align-items: center;
 }
@@ -79,6 +79,7 @@ header {
     text-align: center;
 }
 
+.login,
 .logout {
 	border-right: 1px solid #ccc;
 }
@@ -262,6 +263,10 @@ footer {
 
 /* width 687px ~ 1199px*/
 @media (max-width: 1199px) and (min-width: 687px) {
+	#gnb_bar > ul {
+		width: 100%;
+	} 
+	
     .logo {
         width: 15%;
     }
@@ -277,7 +282,15 @@ footer {
 }
 
 /* width ~ 686px */ 
-@media (max-width: 686px) {
+@media (max-width: 686px) {	
+	#gnb_bar > ul {
+		width: 100%;
+	} 
+	
+	#gnb_bar > ul > li {
+		width: calc(100% / 3);
+	}
+	
     .logo {
         width: 25%;
     }

@@ -15,9 +15,14 @@
             <div class="login_form">
                 <sec:authorize access="isAnonymous()">
 	                <ul>
-	    	            <li>
+	    	            <li class="login">
 		                    <a href="/access/login">
 		                    	로그인
+		                	</a>                    		
+		            	</li>
+	    	            <li>
+		                    <a href="/user/register">
+		                    	회원가입
 		                	</a>                    		
 		            	</li>
 	                </ul>
@@ -49,20 +54,67 @@
             			</a>
             		</li>
             		<li> 
-            			<a href="/store/map">
+            			<a href="/user/detail">
             				마이페이지 
             			</a>
             			<ul class="lnb_list">
             				<li>
-            					<a href="/store/map"> 
+            					<a href="/user/detail"> 
             						회원 정보 
             					</a>
             				</li>
-            				<li>
-            					<a href="#">
-            						매장 관리
-            					</a>
-            				</li>
+            				
+            				<!-- 일반 회원 -->
+            				<sec:authorize access="hasAuthority('ROLE_MEMBER')">
+	            				<li>
+	            					<a href="/reserv/list">
+	            						예약 현황 확인
+	            					</a>
+	            				</li>
+            					<li>
+            						<a href="/user/business/requestForm">
+            							사업자 등록 신청
+            						</a>
+            					</li>
+            				</sec:authorize>
+            				
+            				<!-- 사업자 회원 -->
+            				<sec:authorize access="hasAuthority('ROLE_STORE')">
+	            				<li>
+	            					<a href="/reserv/list">
+	            						예약 현황 확인
+	            					</a>
+	            				</li>
+            					<li>
+            						<a href="#" onclick="alert('아직 준비 중 입니다.');">
+            							매장 관리
+            						</a>
+            					</li>
+            					<li>
+	            					<a href="/store/newStore">
+	            						신규 업장 등록
+	            					</a>
+	            				</li>
+            				</sec:authorize>
+            				
+            				<!--  관리자 -->
+            				<sec:authorize access="hasAuthority('ROLE_ADMIN')">
+            					<li>
+            						<a href="#" onclick="alert('아직 준비 중 입니다.');">
+            							신고 리뷰 관리
+            						</a>
+            					</li>
+            					<li>
+            						<a href="/user/business/requestList">
+            							사업자 신청 관리
+            						</a>
+            					</li>
+            					<li>
+            						<a href="/store/request/list">
+            							가게 등록 관리
+            						</a>
+            					</li>
+            				</sec:authorize>
             			</ul>
             		</li>
             	</ul>

@@ -151,6 +151,8 @@
 			                title: position.title
 			            });
 
+			            const storePhone = position.storePhone;
+			            const phoneFormat = storePhone ? storePhone.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`) : "전화번호 없음";
 			            markers.push(marker); 
 		                overlay = new kakao.maps.CustomOverlay({
 		                    content: 
@@ -169,7 +171,7 @@
 		                       			position.road +
 		                    		'</p>' +
 		                    		'<p class="overlay_comment">' + position.storeComment + '</p>' +
-		                    		'<p class="overlay_phone">' + position.storePhone + '</p>' +
+		                    		'<p class="overlay_phone">' + phoneFormat + '</p>' +
 		                    		'<p class=overlay_hour">영업시간 : <span class="overlay_open_hour">' + position.openHour + '</span> -  <span class="overlay_close_hour">' + position.closeHour + '</span> </p>' +
 		                    	'</div>',
 		                    map: map,
@@ -249,7 +251,6 @@
 			}
 
 			function appendStoresToPage(stores, storeAddresses) {
-			    // stores가 null이거나 storeAddresses가 null인 경우
 			    if ((!stores && !storeAddresses) || stores.length == 0 && loadedDataCount == 0 ) {
 			        const noDataHtml = '<div class="no-data"><p>등록된 식당이 없습니다.</p></div>';
 			        $('#storeList').append(noDataHtml);
@@ -265,15 +266,16 @@
 			            let business =  store.businessHour;
 			            let [openHour, closeHour] = business.split(" - ");
 			            const storeAddress = storeAddresses[store.storeId];
+			            const storePhone = store.storePhone;
+			            const phoneFormat = storePhone ? storePhone.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`) : "전화번호 없음";
 			            const storeHtml = 
 			                '<div class="store" data-store-id ="m' + store.storeId +'">' +
 			                    '<h3>' + '<a href="detail?storeId=' + store.storeId + '">' + store.storeName + '</a>' + '</h3>' +
-			                    '<p> <span class="address_mark">지번 </span> <span class="jibun">' + storeAddress.jibunAddress + '</span></p>' +
-			                    '<p> <span class="address_mark">도로명 </span> <span class="road">' + storeAddress.roadAddress + '</span></p>' +
+			                    '<p class="address"> <span class="address_mark">지번</span> <span class="jibun">' + storeAddress.jibunAddress + '</span></p>' +
+			                    '<p class="address"> <span class="address_mark">도로명</span> <span class="road">' + storeAddress.roadAddress + '</span></p>' +
 			                    '<p class="store_comment">' + (store.storeComment && store.storeComment.trim() !== '' ? store.storeComment : '작성된 소개 글이 없습니다.') + '</p>' +
-			                    '<p class="store_hour">영업시간 : <span class="open_time"> ' + openHour + '</span> - <span class="close_time">' + closeHour + '</span> </p>' +  
-			                    '<p class="store_phone">' + store.storePhone + '</p>' +
-			                    '<button>상세페이지 이동</button>' +
+			                    '<p class="store_hour"><span class="open_time"> ' + openHour + '</span> - <span class="close_time">' + closeHour + '</span> </p>' +  
+			                    '<p class="store_phone">' + '<img src="<%=request.getContextPath()%>/resources/img/common/phone.png" alt="전화 아이콘">' + phoneFormat + '</p>' +
 			                '</div>';
 
 			            $('#storeList').append(storeHtml);
@@ -301,55 +303,58 @@
 		            $(document).off('scroll');
 		        }
 		    });
+		    navigator.geolocation.getCurrentPosition((position) => {
+		        const latitude = position.coords.latitude;
+		        const longitude = position.coords.longitude;
+		        initializeMap(latitude, longitude);
+		    }, (error) => {
+		        console.error("위치 정보를 가져오는 데 실패했습니다.", error);
+		        
+		        const defaultLatitude = 37.5053493;
+		        const defaultLongitude = 127.0267313;
+		        initializeMap(defaultLatitude, defaultLongitude);
+		    });
 
-			navigator.geolocation.getCurrentPosition((position) => {
-				const latitude = position.coords.latitude;
-				const longitude = position.coords.longitude;
+		    function initializeMap(latitude, longitude) {
+		        mapContainer = document.getElementById('map'),
+		        mapOption = { 
+		            center: new kakao.maps.LatLng(latitude, longitude), 
+		            level: 3
+		        };
 
-				mapContainer = document.getElementById('map'),
-				    mapOption = { 
-				        center: new kakao.maps.LatLng(latitude, longitude), 
-				        level: 3
-				    };
+		        // 지도 생성
+		        map = new kakao.maps.Map(mapContainer, mapOption);  
+		        console.log(latitude, longitude);
+		        // 지오코더
+		        geocoder = new kakao.maps.services.Geocoder();
 
-				// 지도 생성
-				map = new kakao.maps.Map(mapContainer, mapOption);  
-				
-				// 지오코더
-				geocoder = new kakao.maps.services.Geocoder();
+		        $('#storeList').on('click', '.store', function(){
+		            let selectedStoreId = $(this).data('storeId');
+		            
+		            if($(this).find('.road').text() !== '' && $(this).find('.road').text() !== null) {
+		                searchAddress = $(this).find('.road').text();    
+		            } else {
+		                searchAddress = $(this).find('.jibun').text();
+		            }
 
-				$('#storeList').on('click', '.store', function(){
-					let selectedStoreId = $(this).data('storeId');
-					
-					
-					if($(this).find('.road').text() !== '' && $(this).find('.road').text() !== null) {
-						searchAddress = $(this).find('.road').text();	
-					} else {
-						searchAddress = $(this).find('.jibun').text();
-					}
-					geocoder.addressSearch(searchAddress, function(result, status) {
+		            geocoder.addressSearch(searchAddress, function(result, status) {
+		                if (status === kakao.maps.services.Status.OK) {
+		                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+		                    
+		                    map.setCenter(coords);
 
-					     if (status === kakao.maps.services.Status.OK) {
-						    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-						    
-						    map.setCenter(coords);
-
-					        $('.detail_text').hide();
-					        $('#' + selectedStoreId).show();
-					    } 
-					});    
-				});
-				
-			}, (error) => {
-				console.error("위치 정보를 가져오는 데 실패했습니다.", error);
-			});
-			
+		                    $('.detail_text').hide();
+		                    $('#' + selectedStoreId).show();
+		                } 
+		            });    
+		        });
+		    }
 			function claerMarker() {
 			    markers.forEach(function(marker) {
 			        marker.setMap(null);
 			    });
 			    markers = [];
-			    overlay.setMap(null);
+                $('.detail_text').hide();
 			}
 			
 			function rebootList() {

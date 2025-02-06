@@ -9,7 +9,7 @@
 
        if (errHandler == "otherUser") {
             alert("정보 수정 권한이 없습니다.");
-            window.location.href = "/web/store/list";
+            window.location.href = "/store/list";
         } else if (errHandler == "invalidTimeFormat" ) {
         	alert("허용되지 않은 시간 포맷입니다.\n확인 후 다시 시도해주세요.");
         	history.back();

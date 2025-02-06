@@ -159,7 +159,7 @@
 }
 
 .descriptionTitle {
-	font-size: 30px;
+	font-size: 24px;
 }
 
 .descriptionContent {
@@ -196,6 +196,7 @@
 	overflow-x: hidden;
 	overflow-y: scroll;
 	margin-bottom: 40px;
+	padding: 15px 10px;
 }
 
 #menuContainer ul {
@@ -213,6 +214,10 @@
 	border-right: none;
 	text-align: left;
 	padding: 0 10px 10px 0;
+}
+
+.menuTitle {
+	font-size: 24px;
 }
 /*
 #menuContainer ul li:first-child {
@@ -244,7 +249,7 @@
 	text-overflow: ellipsis;
 }
 
-.menuTitle {
+.menuName {
 	font-size: 20px;
 }
 

@@ -26,26 +26,20 @@
 				<div id="item_container">
 					<c:if test="${not empty recentStores}">
 						<c:forEach var="store" items="${recentStores}">
-							<div id="item_box">
-								<a href="detail?storeId=${store.storeId }">
-									<div class="img_box">
-										<img
-											src="<%=request.getContextPath()%>/resources/img/sample2.png" alt="sample">
-									</div>
-									<div class="text_box">
-										<p class="store_title">${store.storeName}</p>
-										<p class="store_tag">
-											<span>#${store.foodCategory}</span>
-										</p>
-										<p class="store_comment">${store.storeComment}</p>
-									</div>
-								</a> 
-								<a href="../reserv/register?storeId=${store.storeId }">
-									<button>예약</button>
-								</a> 
+							<div id="item_box" onclick="location.href='detail?storeId=${store.storeId }'">
+								<div class="img_box">
+									<img src="<%=request.getContextPath()%>/resources/img/sample2.png" alt="sample">
+								</div>
+								<div class="text_box">
+									<p class="store_title">${store.storeName}</p>
+									<p class="store_tag">
+										<span>#${store.foodCategory}</span>
+									</p>
+									<p class="store_comment">${store.storeComment}</p>
+								</div>
 								<a href="updateStore?storeId=${store.storeId }">
 									<button>수정</button>
-								</a><br> 
+								</a>
 								<a href="menu/newMenu?storeId=${store.storeId }">
 									<button>메뉴등록</button>
 								</a>

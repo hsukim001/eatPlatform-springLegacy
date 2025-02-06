@@ -154,7 +154,7 @@
 </head>
 <body onpageshow="if(event.persisted) noBack();">
     <h2>여기는 가게 등록 페이지입니다.</h2>
-    <form action="register" method="POST" enctype="multipart/form-data">
+    <form action="register" method="POST" >
     	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     	<input type="hidden" id="businessHour" name="businessHour"> 
         <input type="hidden" id="hiddenFoodCategory" name="foodCategory" required>
@@ -194,15 +194,6 @@
         <textarea id="description" name="description" maxlength="250" placeholder="250자까지 입력 가능합니다."></textarea>
         <br><br>
 
-		<div class="insert">
-			<label class="uploadLabel" for="storeImg">
-				업로드
-			</label>
-			<input id="storeImg" name="storeImg" type="file" onchange="addFile(this);" accept="image/*" multiple />
-			<div class="file-list"></div>
-        	<div id="thumbnail-container"></div>
-		</div>
-        <br><br>
         	
 		<input type="text" id="postCode" name="postCode" placeholder="우편번호" required>
 		<input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
@@ -220,6 +211,15 @@
         <input type="submit" value="식당 등록">
     </form>
     
+		<div class="insert">
+			<label class="uploadLabel" for="storeImg">
+				업로드
+			</label>
+			<input id="storeImg" name="storeImg" type="file" onchange="addFile(this);" accept="image/*" multiple />
+			<div class="file-list"></div>
+        	<div id="thumbnail-container"></div>
+		</div>
+        <br><br>
     
 
 </body>
