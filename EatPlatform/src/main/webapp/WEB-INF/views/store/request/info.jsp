@@ -46,7 +46,7 @@
 				// 요청 승인 함수
 				function approval() {
 					$.ajax({
-						url : "/web/approval/store",
+						url : "/approval/store",
 						type : 'PUT',
 						headers : {
 							"Content-Type" : "application/json"
@@ -71,7 +71,7 @@
 				// 요청 거부 함수
 				function denialManagement() {
 					$.ajax({
-						url : "/web/approval/denialManagement/" + storeId,
+						url : "/approval/denialManagement/" + storeId,
 						type : 'DELETE',
 						success : function(response) {
 							if(response == 1) {

@@ -42,6 +42,16 @@
     padding: 1%;
 }
 
+.store_comment {
+	max-width: 150px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    white-space: normal;
+}
+
 .pagination {
 	width: 100%;
 	display: block;

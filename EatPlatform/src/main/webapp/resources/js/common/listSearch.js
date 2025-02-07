@@ -8,7 +8,7 @@ $(function () {
         	alert("검색어를 입력해주세요.");
         	return;
         }
-        location.href ="/web/store/list?pageNum=1&keyword=" + searchVal;
+        location.href ="/store/list?pageNum=1&keyword=" + searchVal;
       }
     });
 });
