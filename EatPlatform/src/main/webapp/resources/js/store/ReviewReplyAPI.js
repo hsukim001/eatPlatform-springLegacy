@@ -75,6 +75,11 @@
 	                 success: function(result) {
 	                     if (result == 1) {
 	                         alert('리뷰 등록 성공');
+	                         $('#viewTag').empty();
+	                         $('#tagList li').removeClass('tagActive');
+	                         currentScore = 0;
+	                         $('#reviewStar').text(currentScore);
+	                         $('#scoreWrap img').attr('src', '/resources/img/sample3bk.png');
 	                         $('#reviewWrite input, #reviewWrite textarea').val(''); // reviewContent 값 초기화
 	                         $('.image-list').html(''); // image-list 초기화
 	                         getAllReview();  // 리뷰 목록 다시 불러오기
