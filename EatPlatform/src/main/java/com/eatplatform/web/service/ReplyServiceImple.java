@@ -39,7 +39,6 @@ public class ReplyServiceImple implements ReplyService{
 		ReplyVO replyVO = new ReplyVO();
 		replyVO.setReplyId(replyId);
 		replyVO.setReplyContent(replyContent);
-		replyVO.setReplyUpdateDate(LocalDateTime.now());
 		return replyMapper.update(replyVO);
 	}
 

@@ -104,3 +104,32 @@
     border-radius: 8px;    /* 모서리 둥글게 (선택사항) */
     background-color: #f9f9f9; /* 배경색 (선택사항) */
 }
+
+.review-image img {
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+.review-image img:hover {
+  transform: scale(1.1);
+}
+
+/* 각 리뷰 항목 스타일 */
+.reviews {
+  background-color: #fff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+  
+/* 댓글 아이템 */
+.reply_item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f9f9f9; /* 댓글 배경 색상 */
+  border-radius: 5px;
+  border: 1px solid #e0e0e0; /* 댓글 테두리 */
+}
+  
+}

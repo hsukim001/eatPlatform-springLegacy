@@ -4,7 +4,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
@@ -30,7 +29,7 @@
 			<p>태그 : <input type="text" name="reviewTag" value="${reviewVO.reviewTag }"></p>
 		</div>
 		<div>
-			<p>내용 : <textarea id="reviewContent" name="reviewContent" >${reviewVO.reviewContent }</textarea></p>
+			<p>내용 : <textarea id="reviewContent" name="reviewContent" placeholder="${reviewVO.reviewContent }" ></textarea></p>
 		</div>
 	
 	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

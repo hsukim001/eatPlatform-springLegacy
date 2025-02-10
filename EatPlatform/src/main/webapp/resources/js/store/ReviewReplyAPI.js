@@ -32,7 +32,6 @@
 						'reviewContent' : reviewContent,
 						'reviewTag' : reviewTag
 				}
-
 				
 				// 리뷰 이미지 처리
 	             var reviewImageList = [];
@@ -125,6 +124,13 @@
 							// 문자열 형태를 날짜 형태로 변환
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
 							var reviewImageDate = new Date(this.reviewImageDate).toLocaleString();
+							var reviewUpdateDate = new Date(this.reviewUpdateDate).toLocaleString();
+							// 수정된 날짜 표시
+							var reviewDateText = (reviewDate !== reviewUpdateDate) ? reviewUpdateDate + '<span>(수정됨) </span>' : reviewDate;
+				        	
+				        	let loginId = $('#loginId').text();
+							var userId = this.userId;
+							console.log("로그인 ID: " + loginId + "사용자: " + userId); 
 				        	
 				        	let loginId = $('#loginId').text();
 							var userId = this.userId;
@@ -135,15 +141,22 @@
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
 								+ this.userId
 								+ '&nbsp;&nbsp;' // 공백
-								+ '<input type="text" id="reviewStar" value="'+ this.reviewStar +'">'
+								+ '<input type="text" id="reviewStar" value="'+ this.reviewStar +'" style="pointer-events: none;" >'
 								+ '&nbsp;&nbsp;'
-								+ '<input type="text" id="reviewContent" value="'+ this.reviewContent +'">'
+								+ '<input type="text" id="reviewContent" value="'+ this.reviewContent +'" style="pointer-events: none;">'
 								+ '&nbsp;&nbsp;'
-								+ '<input type="text" id="reviewTag" value="'+ this.reviewTag +'">'
+								+ '<input type="text" id="reviewTag" value="'+ this.reviewTag +'" style="pointer-events: none;">'
 								+ '&nbsp;&nbsp;'
+<<<<<<< Updated upstream
 								+ reviewDate
 								+ '&nbsp;&nbsp;'
 								+ this.reviewLike // 추천 수 표시
+=======
+								+ reviewDateText
+								+'&nbsp;&nbsp;'
+								+ '<span>추천 </span>' // 추천 수 표시
+								+ this.reviewLike
+>>>>>>> Stashed changes
 							
 						// 버튼들 (수정, 삭제, 추천, 신고)
 						if(loginId && userId && loginId == userId) {
@@ -157,7 +170,10 @@
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
 								+ '</div>'; // review_buttons div 끝
 						}
+<<<<<<< Updated upstream
 								+ '<br>'
+=======
+>>>>>>> Stashed changes
 							
 							// 이미지 조회
 							$(this.reviewImageList).each(function(){
@@ -167,7 +183,8 @@
 									
 								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
 									
-							list += '<div class="review-image">'
+							list += '<br>'
+								+ '<div class="review-image">'
 								+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
 								+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
 								+ '</a>'
@@ -234,35 +251,30 @@
 						
 						$(data).each(function(){
 							var replyDate = new Date(this.replyDate).toLocaleString();
-							// 댓글 수정, 저장, 취소, 삭제 버튼들
+							var replyUpdateDate = new Date(this.replyUpdateDate).toLocaleString();
+							
 							let loginId = $('#loginId').text();
 							let storeUserId = $('#storeUser').val();
 							
-							if (loginId == storeUserId) {							
+							var replyDateText = (replyDate !== replyUpdateDate) ? replyUpdateDate + '<span>(수정됨) </span>' : replyDate;
+													
 								repliesList += '<div class="reply_item">'
 									+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
 									+ this.userId
 									+ '&nbsp;&nbsp;'
 									+ '<input type="hidden" id="replyId" value="'+ this.replyId +'">'
-									+ '<input type="text" id="replyContent" readonly="readonly" value="'+ this.replyContent +'">'
+									+ '<input type="text" id="replyContent" value="'+ this.replyContent +'" style="pointer-events: none;">'
 									+ '&nbsp;&nbsp;'
-									+ replyDate
-									+ '<div class="reply_buttons">'
+									+ replyDateText
+							
+							// 댓글 수정, 저장, 취소, 삭제 버튼들
+							if (loginId == storeUserId) {	
+								repliesList += '<div class="reply_buttons">'
 									+ '<button class="btn_save_reply" style="display: none;">저장</button>'
 									+ '<button class="btn_update_reply">수정</button>'
 									+ '<button class="btn_return_reply" style="display: none;">취소</button>'
 									+ '<button class="btn_delete_reply">삭제</button>'
 									+ '</div>'
-									+ '</div>';
-							} else {
-								repliesList += '<div class="reply_item">'
-									+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
-									+ this.userId
-									+ '&nbsp;&nbsp;'
-									+ '<input type="hidden" id="replyId" value="'+ this.replyId +'">'
-									+ '<input type="text" id="replyContent" readonly="readonly" value="'+ this.replyContent +'">'
-									+ '&nbsp;&nbsp;'
-									+ replyDate
 									+ '</div>';
 							}
 						

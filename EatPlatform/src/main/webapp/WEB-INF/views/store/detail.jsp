@@ -127,6 +127,7 @@
 		    $("#reviewWrite").hide();
 		    
 		    $("#reviewBtn").click(function(){
+<<<<<<< Updated upstream
 		    	fetch('../access/auth/status')
 				.then(response => response.json())
 				.then(isAuthenticated => {
@@ -136,6 +137,26 @@
 						alert('로그인이 필요합니다.');
 					}
 				})
+=======
+		    	fetch('../access/auth/member')
+				.then(response => response.json())
+				.then(data => {
+			        // 응답에서 isAuthenticated와 role을 확인
+			        const isAuthenticated = data.isAuthenticated;
+			        const role = data.role;
+
+			        if (isAuthenticated) {
+			            if (role === 'ROLE_MEMBER') {  // ROLE_MEMBER일 경우
+			                $("#reviewWrite").slideToggle('300'); // 리뷰 작성 영역을 슬라이드 토글
+			            } else {
+			                alert('회원 전용 기능입니다.'); // ROLE_MEMBER가 아니면
+			            }
+			        } else {
+			            alert('로그인이 필요합니다.'); // 로그인되지 않은 경우
+			        }
+			    })
+
+>>>>>>> Stashed changes
 		    });		
 		}); // End $function
 	</script>
@@ -165,7 +186,7 @@
 								<span class="textValue">${storeVO.storePhone }</span></li>
 							<li>
 								<span class="textTitle">대표명 </span>
-								 <span class="colon">:</span>
+								<span class="colon">:</span>
 								<span class="textValue">${storeVO.ownerName }</span></li>
 							<li>
 								<span class="textTitle">최근 등록일 </span> 

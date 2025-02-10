@@ -1,6 +1,5 @@
 package com.eatplatform.web.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +79,7 @@ public class ReviewServiceImple implements ReviewService{
 		result.setReviewStar(reviewVO.getReviewStar());
 		result.setReviewContent(reviewVO.getReviewContent());
 		result.setReviewTag(reviewVO.getReviewTag());
-		result.setReviewUpdateDate(LocalDateTime.now());
+		result.setReviewUpdateDate(reviewVO.getReviewUpdateDate());
 		reviewMapper.update(result);
 		
 		// 이미지 수정

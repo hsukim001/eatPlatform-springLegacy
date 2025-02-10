@@ -1,6 +1,5 @@
 package com.eatplatform.web.domain;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +24,7 @@ public class ReviewVO {
 	private Date reviewDate;
 	private int reviewLike;
 	private int reviewReport;
-	private LocalDateTime reviewUpdateDate;
+	private Date reviewUpdateDate;
 	
 	private List<ReviewImageVO> reviewImageList;
 	
