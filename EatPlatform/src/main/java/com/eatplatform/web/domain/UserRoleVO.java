@@ -9,6 +9,6 @@ import lombok.ToString;
 @ToString
 public class UserRoleVO {
 	private int roleId;
-	private String userId;
+	private String username;
 	private String roleName;
 }

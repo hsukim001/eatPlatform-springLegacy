@@ -61,19 +61,19 @@
 			let pwPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)[a-zA-Z\d!@#$%^&*]{8,}$/;
 			
 			// 비밀번호, 비밀번호 확인 input 일치 확인
-			if($('#userPw').val() === "" && $('#userPwChk').val() === "") {
+			if($('#password').val() === "" && $('#userPwChk').val() === "") {
 				$('#pwChkMsg').text("비밀번호를 입력해 주세요.");
 				isUserPw = false;
-			} else if($('#userPw').val() == $("#userPwChk").val()) {
+			} else if($('#password').val() == $("#userPwChk").val()) {
 				$('#pwChkMsg').text("비밀번호가 일치 합니다.");
 				isUserPw = true;
-			} else if($("#userPw").val() != $("#userPwChk").val()) {
+			} else if($("#password").val() != $("#userPwChk").val()) {
 				$('#pwChkMsg').text("비밀번호가 일치 하지않습니다.")
 				isUserPw = false;
 			}
 			
 			// 비밀번호, 비밀번호 확인 input 영문대소문자, 특수문자, 비밀번호 최소 길이 확인
-			if(pwPattern.test($('#userPw').val()) == false && $('#userPw').val() !== "") {
+			if(pwPattern.test($('#password').val()) == false && $('#userPw').val() !== "") {
 				$("#pwChkMsg").text("비밀번호는 8자 이상, 영문대소문자, 특수문자(!@#$%^&*) 각 한개 이상 포함하여 작성해야 합니다.");
 				isUserPw = false;
 			}
@@ -81,12 +81,12 @@
 		});
 		
 		// 사용자 계정 확인 keyup 이벤트
-		$('#userId').keyup(function(){
+		$('#username').keyup(function(){
 			
 			if($(this).val() === "") {
 				$('#userIdChkMsg').text('아이디를 입력해 주세요.');
 			} else {
-				if(userIdPattern.test($('#userId').val())) {
+				if(userIdPattern.test($('#username').val())) {
 					$('#userIdChkMsg').text('아이디 입력이 완료되었습니다.');
 					userCheck();
 				} else {
@@ -103,15 +103,15 @@
 		
 		// 중복 계정 확인
 		function userCheck() {
-			let userId = $("#userId").val();
+			let username = $("#username").val();
 			let type = "회원가입";
 			$.ajax({
-				url : 'check/' + userId + '/' + type,
+				url : 'check/' + username + '/' + type,
 				type : 'get',
 				success : function(result) {
-					if (result == 1 || userIdPattern.test($('#userId').val()) == false) {
+					if (result == 1 || userIdPattern.test($('#username').val()) == false) {
 						isUserId = false;
-					} else if (result == 0 && userIdPattern.test($('#userId').val())) {
+					} else if (result == 0 && userIdPattern.test($('#username').val())) {
 						isUserId = true;
 					}
 				}
@@ -142,7 +142,8 @@
 		// 이메일 인증코드 전송
 		function sendEmailCode() {
 			console.log('sendEmailCode()');
-			let userEmail = $('#userEmail').val();
+			let userEmail = $('#email').val();
+			console.log("email : " + userEmail);
 			let obj = {
 					"userEmail" : userEmail
 			};
@@ -181,7 +182,9 @@
 		
 		// 이메일 코드 인증 버튼 액션
 		$('#codeChkBtn').click(function(){
-			if(email == $('#userEmail').val()) {
+			console.log("input email : " + $('#email').val());
+			console.log("send email : " + email);
+			if(email == $('#email').val()) {
 				authChk();
 			} else {
 				$('#emailCheck').val("");
@@ -212,7 +215,7 @@
 						$('#codeChkMsg').text('이메일 인증 성공');
 						$('#checkCode').prop('disabled', true);
 						$('#codeChkBtn').prop('disabled', true);
-						$('#userEmail').prop('readonly', true);
+						$('#email').prop('readonly', true);
 						$('#sendEmailCodeBtn').prop('disabled', true)
 					} else {
 						$('#codeChkMsg').text('이메일 인증 실패');
@@ -223,14 +226,14 @@
 		}
 		
 		// 이메일 표현식 체크
-		$('#userEmail').keyup(function() {
-			let userEmail = $(this).val();
+		$('#email').keyup(function() {
+			let email = $(this).val();
 			let emailPattern = /^[a-zA-Z0-9%+]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
 			
-			if(userEmail === "") {
+			if(email === "") {
 				$('#emailChkMsg').text('이메일을 입력해주세요.');
 			} else {
-				if(emailPattern.test(userEmail)) {
+				if(emailPattern.test(email)) {
 					$('#emailChkMsg').text('이메일 입력이 완료되었습니다.');
 					emailAddressChk = true;
 				} else {
@@ -250,13 +253,13 @@
 	<form action="created" method="post">
 		<div>
 			<span>아이디 : </span>
-			<input type="text" name="userId" id="userId" required="required" maxlength="30">
+			<input type="text" name="username" id="username" required="required" maxlength="30">
 			<button type="button" id="userChk">중복 확인</button><br>
 			<p id="userIdChkMsg">아이디를 입력해 주세요.</p>
 		</div>
 		<div>
 			<span>비밀번호 : </span>
-			<input type="password" name="userPw" id="userPw" required="required" maxlength="50">
+			<input type="password" name="password" id="password" required="required" maxlength="50">
 		</div>
 		<div>
 			<span>비밀번호 확인 : </span>
@@ -265,11 +268,11 @@
 		</div>
 		<div>
 			<span>이름 : </span>
-			<input type="text" name="userName" required="required">
+			<input type="text" name="name" required="required">
 		</div>
 		<div>
 			<span>이메일 : </span>
-			<input type="email" id="userEmail" name="userEmail" required="required">
+			<input type="email" id="email" name="email" required="required">
 			<button type="button" id="sendEmailCodeBtn">인증번호 받기</button>
 			<p id="emailChkMsg">이메일을 입력해주세요.</p>
 		</div>
@@ -281,7 +284,7 @@
 		</div>
 		<div>
 			<span>휴대폰 : </span>
-			<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" maxlength="13">
+			<input type="tel" id="phone" name="phone" required="required" oninput="autoHyphen(this)" maxlength="13">
 		</div>
 		<div>
 			<button type="submit">등록</button>

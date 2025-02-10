@@ -28,17 +28,20 @@ public class EmailServiceImple implements EmailService {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
-
+	
 	@Autowired
 	UserMapper userMapper;
 
 	// 회원가입 이메일 인증코드 발송
 	@Override
 	public EmailVO sendEmailByAuthCode(EmailVO emailVO) {
+		log.info("sendEmailByAuthCode()");
+		log.info(emailVO.getUserEmail());
 
-		int checkEmail = userMapper.checkUserByUserEmail(emailVO.getUserEmail());
+//		int checkEmail = userMapper.checkUserByUserEmail(emailVO.getUserEmail());
+		int checkEmail = userMapper.countUserEmail(emailVO.getUserEmail());
 		EmailVO vo = new EmailVO();
-
+		
 		String mailType = "회원가입";
 		if (checkEmail == 0) {
 			vo = emailFrom(emailVO.getUserEmail(), mailType);
@@ -137,20 +140,23 @@ public class EmailServiceImple implements EmailService {
 
 	// 아이디, 비밀번호 찾기
 	@Override
-	public EmailVO sendSearchUser(UserVO userVO, String mailType) {
+	public EmailVO sendSearchUser(UserVO userMemberVO, String mailType) {
 		log.info("sendSearchUser()");
 		
 		int result = 0;
 		EmailVO vo = new EmailVO();
 		
 		if(mailType.equals("비밀번호")) {
-			result = userMapper.checkUserByUserIdUserEmail(userVO);			
+//			result = userMapper.checkUserByUserIdUserEmail(userVO);		
+			result = userMapper.countUserEmailByUserIdEmail(userMemberVO);
 		} else if(mailType.equals("아이디")) {
-			result = userMapper.checkUserByUserEmail(userVO.getUserEmail());
+//			result = userMapper.checkUserByUserEmail(userMemberVO.getEmail());
+			result = userMapper.countUserEmail(userMemberVO.getEmail());
 		}
 		
 		if(result == 1) {
-			String userEmail = userVO.getUserEmail();
+//			String userEmail = userVO.getUserEmail();
+			String userEmail = userMemberVO.getEmail();
 			vo = emailFrom(userEmail, mailType);	
 		} else {
 			vo.setStatus(1);

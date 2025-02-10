@@ -4,9 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>가게 목록</title>
 </head>
 <body>
-
+	<div id="wrap">
+		<h2>목록</h2>
+	</div>
 </body>
 </html>

@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.BusinessRequestVO" id="businessRequestResultMap">
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID" />
 		<result property="storeId" column="STORE_ID"/>
-		<result property="userId" column="USER_ID" />
+		<result property="username" column="USERNAME" />
 		<result property="requestApprovals" column="REQUEST_APPROVALS"/>
 		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
 	</resultMap>
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		VALUES(
 			BUSINESS_REQUEST_SEQ.NEXTVAL,
 			#{storeId},
-			#{userId},
+			#{username},
 			#{requestApprovals},
 			SYSDATE
 		)
@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT NVL(
 			(SELECT BUSINESS_REQUEST_ID
 			FROM BUSINESS_REQUEST
-			WHERE USER_ID = #{userId}), 0
+			WHERE USERNAME = #{username}), 0
 		) AS ID
 		FROM DUAL
 	</select>

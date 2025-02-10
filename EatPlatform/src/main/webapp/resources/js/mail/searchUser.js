@@ -42,11 +42,11 @@ let authStatus;
 	// 인증번호 발급
 	function sendCodeMail() {
 		isChkCode = false;
-		let userId;
-		if($('#userId').length > 0) {
-			userId = $('#userId').val();
+		let username;
+		if($('#username').length > 0) {
+			username = $('#username').val();
 		} else {
-			userId = '';
+			username = '';
 		}
 		let userEmail = $('#email').val();
 		let emailType = $('#mailType').val();
@@ -58,8 +58,8 @@ let authStatus;
 				"Content-Type" : "application/json"
 			},
 			data : JSON.stringify({
-				"userId" : userId,
-				"userEmail" : userEmail
+				"username" : username,
+				"email" : userEmail
 			}),
 			success : function(response) {
 				if(response.status == 0) {

@@ -119,6 +119,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE ROWNUM &lt;= #{endRow}
 		AND ROWNUM &gt;= #{startRow}
 	</select>
+	
+	<!-- 가게 목록 조회(Pagination 사용) -->
+	<select id="selectStoreWithPagination" resultMap="StoreResultMap">
+		SELECT *
+		FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY STORE_ID DESC) AS RN,
+			* FROM STORE
+		)
+	</select>
 
 	<!-- 가게 정보 수정 -->
 	<update id="updateStore">

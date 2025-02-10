@@ -6,6 +6,7 @@ import java.util.Date;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -31,15 +32,18 @@ public class ControllerTest {
 	
 	@Autowired
 	private WebApplicationContext wac;
-	
-	@Autowired
-	private UserService userService;
-	
+		
 	@Autowired
 	private ReservService reservService;
 	
 	@Autowired
 	private StoreService storeService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	private MockMvc mock;
 	
@@ -90,15 +94,18 @@ public class ControllerTest {
 	private void insertUser() {
 		log.info("insertTest");
 		UserVO vo = new UserVO();
-		vo.setUserId("test");
-		vo.setUserPw("test");
-		vo.setUserEmail("test@test.com");
-		vo.setUserName("test");
-		vo.setUserPhone("010-0001-1111");
+		vo.setUsername("t");
+		String encodePw = passwordEncoder.encode("t");
+		vo.setPassword(encodePw);
+		vo.setEmail("test@test.com");
+		vo.setName("t");
+		vo.setPhone("010-0001-1111");
 		
-		log.info(vo);
 		int result = userService.createdUser(vo);
-		log.info("result : " + result);
+		if(result == 1) {
+			log.info("등록 성공");
+		}
+		log.info(vo);
 	}
 	
 	private void check() {

@@ -25,7 +25,7 @@
 						changePw();
 					} else {
 						alert('비밀번호를 다시 입력해주세요.');
-						$('#userPw').val("");
+						$('#password').val("");
 						$('#userPwChk').val("");
 						$('#pwChkMsg').text("비밀번호를 입력해주세요.");
 					}
@@ -37,23 +37,23 @@
 				});
 				
 				// 비밀번호 유효성 검사
-				$('#userPw, #userPwChk').keyup(function(){
+				$('#password, #userPwChk').keyup(function(){
 					let pwPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d)[a-zA-Z\d!@#$%^&*]{8,}$/;
 					
 					// 비밀번호 일치 여부 확인
-					if($('#userPw').val() === "" && $('#userPwChk').val() === "") {
+					if($('#password').val() === "" && $('#userPwChk').val() === "") {
 						$('#pwChkMsg').text("비밀번호를 입력해주세요.");
 						isPwChk = false;
-					} else if($('#userPw').val() == $('#userPwChk').val()){
+					} else if($('#password').val() == $('#userPwChk').val()){
 						$('#pwChkMsg').text("비밀번호가 일치합니다.");
 						isPwChk = true;
-					} else if($('#userPw').val() != $('#userPwChk').val()){
+					} else if($('#password').val() != $('#userPwChk').val()){
 						$('#pwChkMsg').text("비밀번호가 일치하지 않습니다.");
 						isPwChk = false;
 					}
 					
 					// 비밀번호 패턴 검사
-					if((pwPattern.test($('#userPw').val()) == false && $('#userPw').val() !== "")){
+					if((pwPattern.test($('#password').val()) == false && $('#userPw').val() !== "")){
 						$('#pwChkMsg').text("비밀번호는 8자 이상, 영문대소문자, 특수문자(!@#$%^&*) 각 한개 이상 포함하여 작성해야 합니다.");
 						isPwChk = false;
 					}
@@ -61,10 +61,10 @@
 				
 				// 비밀번호 변경
 				function changePw() {
-					let userEmail = '${email}';
-					console.log('email : ' + userEmail);
+					let email = $('#email').val();
+					console.log('email : ' + email);
 					
-					let userPw = $('#userPw').val();
+					let password = $('#password').val();
 					$.ajax({
 						url : 'modify/password',
 						type : 'put',
@@ -72,8 +72,8 @@
 							"Content-Type" : "application/json"
 						},
 						data : JSON.stringify({
-							"userPw" : userPw,
-							"userEmail" : userEmail
+							"password" : password,
+							"email" : email
 						}),
 						success : function(response){
 							console.log(response);
@@ -94,7 +94,7 @@
 		<h1>비밀번호 수정</h1>
 		<div>
 			<span>비밀번호 : </span>
-			<input type="password" id="userPw" name="userPw" required="required">
+			<input type="password" id="password" name="password" required="required">
 		</div>
 		<div>
 			<span>비밀번호 확인 : </span>
@@ -102,6 +102,9 @@
 		</div>
 		<div>
 			<p id="pwChkMsg">비밀번호를 입력해주세요.</p>
+		</div>
+		<div>
+			<input type="hidden" id="email" name="email" value="${email }">
 		</div>
 		<div>
 			<button id="chgPwBtn">변경</button>

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.eatplatform.web.domain.RequestInfoVO;
-import com.eatplatform.web.domain.BusinessRequestVO;
+import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.service.UserAdminService;
 import com.eatplatform.web.service.UserService;
+import com.eatplatform.web.service.UserStoreService;
 import com.eatplatform.web.util.PageMaker;
 import com.eatplatform.web.util.Pagination;
 
@@ -32,6 +35,15 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private UserStoreService userStoreService;
+	
+	@Autowired
+	private UserAdminService userAdminService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	// 회원 가입 페이지 이동
 	@GetMapping("/register")
 	public void registerGET(Model model) {
@@ -40,11 +52,14 @@ public class UserController {
 	
 	// 회원 등록
 	@PostMapping("/created")
-	public String created(UserVO userVO) {
+	public String created(UserVO userMemberVO) {
 		log.info("created()");
-		log.info(userVO);
+		log.info(userMemberVO);
+		String password = userMemberVO.getPassword();
+		String encodePassword = passwordEncoder.encode(password);
+		userMemberVO.setPassword(encodePassword);
 		
-		int result = userService.createdUser(userVO);
+		int result = userService.createdUser(userMemberVO);
 		
 		if(result == 1) {
 			log.info("회원 등록 성공");
@@ -55,23 +70,47 @@ public class UserController {
 	
 	// 회원 상세(수정) 페이지 이동
 	@GetMapping("/detail")
-	public void detail(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	public void detail(Model model, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("detail()");
-		String userId = userDetails.getUsername();
 		
-		UserVO vo = userService.searchUser(userId);
-		model.addAttribute("vo", vo);
+		String auth = customUser.getAuthorities().toString();
+		int userId = customUser.getUser().getUserId();
+		UserVO vo = new UserVO();
+		
+		if(auth.contains("ROLE_MEMBER")) {
+			vo = userService.searchUser(userId);	
+		} else if(auth.contains("ROLE_STORE")) {
+			vo = userStoreService.searchUserByUserId(userId);
+		} else if(auth.contains("ROLE_ADMIN")) {
+			vo = userAdminService.searchUserByUserId(userId);
+		}
+		
+		model.addAttribute("userInfo", vo);
 		log.info(vo);
 	}
 	
 	// 회원 정보 수정
 	@PostMapping("/modify")
-	public String modify(UserVO userVO) {
+	public String modify(UserVO userMemberVO, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("modify()");
-		UserVO vo = userVO;
-		log.info(vo);
-		int result = userService.modifyUser(vo);
+		log.info(userMemberVO);
 		
+		UserVO vo = userMemberVO;
+		vo.setUserId(customUser.getUser().getUserId());
+		int result = 0;
+		
+		String auth = customUser.getAuthorities().toString();
+		if(auth.contains("ROLE_MEMBER")) {
+			log.info("권한 : MEMBER");
+			result = userService.updateUser(vo);
+		} else if(auth.contains("ROLE_STORE")) {
+			log.info("권한 : STORE");
+			result = userStoreService.updateUser(vo);
+		} else if(auth.contains("ROLE_ADMIN")) {
+			log.info("권한 : ADMIN");
+			result = userAdminService.updateUser(vo);
+		}
+				
 		if(result == 1) {
 			log.info("회원 정보 수정 성공");
 		}
@@ -103,11 +142,12 @@ public class UserController {
 	
 	// 사업자 등록 신청 화면 호출
 	@GetMapping("/business/requestForm")
-	public String businessRequestForm(Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal UserDetails userDetails) {
+	public String businessRequestForm(Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("businessRequestForm()");
-		String userId = userDetails.getUsername();
+		String username = customUser.getUser().getUsername();
+		int userId = customUser.getUser().getUserId();
 		
-		int businessRequestId = userService.getBusinessRequestId(userId);
+		int businessRequestId = userService.getBusinessRequestId(username);
 		log.info("businessRequestId : " + businessRequestId);
 		
 		// 사업자 등록을 신청한 회원을 사업자 등록 신청 상세 화면으로 이동하는 로직
@@ -119,7 +159,7 @@ public class UserController {
 		
 		log.info("사업자 등록되어있지 않음");
 		UserVO vo = userService.searchUser(userId);
-		model.addAttribute("ownerName", vo.getUserName());
+		model.addAttribute("ownerName", vo.getName());
 		
 		return "user/business/requestForm";
 	}

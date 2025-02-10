@@ -21,7 +21,7 @@ public class CustomUser extends User { // User 클래스 상속
 		
 		// User 클래스 생성자에 username, password, authorities를 적용
 		// 인증 및 권한 확인에 필요한 정보
-		super(user.getUserId(), user.getUserPw(), authorities);
+		super(user.getUsername(), user.getPassword(), authorities);
 		
 		// 전송된 member 객체 적용
 		this.user = user;

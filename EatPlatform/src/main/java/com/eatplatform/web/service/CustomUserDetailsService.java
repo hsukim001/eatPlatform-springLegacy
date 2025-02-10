@@ -13,15 +13,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.UserRoleVO;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.persistence.UserAdminMapper;
 import com.eatplatform.web.persistence.UserMapper;
+import com.eatplatform.web.persistence.UserRoleMapper;
+import com.eatplatform.web.persistence.UserStoreMapper;
 
 import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class CustomUserDetailsService implements UserDetailsService { 
-	
+	    
     @Autowired
     private UserMapper userMapper;
+    
+    @Autowired
+    private UserStoreMapper userStoreMapper;
+    
+    @Autowired
+    private UserAdminMapper userAdminMapper;
+    
+    @Autowired
+    private UserRoleMapper userRoleMapper;
    
     // CustomUserDetails
     // 전송된 username으로 사용자 정보를 조회하고, UserDetails에 저장하여 리턴하는 메서드 
@@ -30,8 +42,18 @@ public class CustomUserDetailsService implements UserDetailsService {
     	log.info("loadUserByUsername()");
     	log.info(username);
         // 사용자 ID를 이용하여 회원 정보와 권한 정보를 조회
-        UserVO user = userMapper.selectUserByUserId(username);
-        UserRoleVO role = userMapper.selectUserRoleByUserId(username);
+    	UserRoleVO role = userRoleMapper.selectUserRoleByUsername(username);
+    	UserVO user = null;
+    	
+    	if(role != null) {
+	    	if(role.getRoleName().equals("ROLE_MEMBER")) {
+	    		user = userMapper.selectUserByUsername(username);
+	    	} else if(role.getRoleName().equals("ROLE_STORE")) {
+	    		user = userStoreMapper.selectUserByUsername(username);
+	    	} else if(role.getRoleName().equals("ROLE_ADMIN")) {
+	    		user = userAdminMapper.selectUserByUsername(username);
+	    	}
+    	}
         
         // 조회된 회원 정보가 없을 경우 예외 처리
         if (user == null) {
@@ -46,5 +68,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserDetails userDetails = new CustomUser(user, authorities);
         return userDetails;
     }
-
+    
 }

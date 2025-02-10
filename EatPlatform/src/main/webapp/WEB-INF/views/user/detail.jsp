@@ -46,7 +46,7 @@
 					let status = 'N';
 					
 					$.ajax({
-						url : 'delete/' + status,
+						url : 'withdrawal/' + status,
 						type : 'put',
 						headers : {
 							"Content-Type" : "application/json"
@@ -77,19 +77,19 @@
 					<form action="modify" method="post">
 						<div>
 							<span>아이디 : </span>
-							<input class="no-cursor" type="text" id="userId" name="userId" readonly="readonly" value="${vo.userId }">
+							<input class="no-cursor" type="text" id="username" name="username" readonly="readonly" value="${userInfo.username }">
 						</div>
 						<div>
 							<span>이름 : </span>
-							<input type="text" id="userName" name="userName" required="required" value="${vo.userName }">
+							<input type="text" id="name" name="name" required="required" value="${userInfo.name }">
 						</div>
 						<div>
 							<span>이메일 : </span>
-							<input class="no-cursor" type="email" id="userEmail" name="userEmail" required="required" readonly="readonly" value="${vo.userEmail }">
+							<input class="no-cursor" type="email" id="email" name="email" required="required" readonly="readonly" value="${userInfo.email }">
 						</div>
 						<div>
 							<span>휴대폰 : </span>
-							<input type="tel" id="userPhone" name="userPhone" required="required" oninput="autoHyphen(this)" value="${vo.userPhone }" maxlength="13">
+							<input type="tel" id="phone" name="phone" required="required" oninput="autoHyphen(this)" value="${userInfo.phone }" maxlength="13">
 						</div>
 						<input type="submit" value="수정">
 						<!-- CSRF 토큰 -->

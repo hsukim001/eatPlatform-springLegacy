@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.UserAdminMapper">
+	
+	<resultMap type="com.eatplatform.web.domain.UserVO" id="userResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="username" column="USERNAME"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="email" column="EMAIL"/>
+		<result property="phone" column="PHONE"/>
+		<result property="name" column="NAME"/>
+		<result property="active" column="ACTIVE"/>
+		<result property="regDate" column="REG_DATE"/>
+	</resultMap>
+	
+	<select id="selectUserByUserId" resultMap="userResultMap">
+		SELECT * FROM USER_ADMIN
+		WHERE USER_ID = #{userId}
+	</select>
+	
+	<select id="selectUserByUsername" resultMap="userResultMap">
+		SELECT * FROM USER_ADMIN
+		WHERE USERNAME = #{username}
+		AND ACTIVE = 1
+	</select>
+	
+	<insert id="insertWithdrawlUserByActive">
+		INSERT INTO WITHDRAWL_USER(WITHDRAWL_ID, USERNAME, NAME, EMAIL, PHONE, ROLE_NAME, REG_DATE) 
+		SELECT WITHDRAWL_USER_SEQ.NEXTVAL, U.USERNAME, U.NAME, U.EMAIL, U.PHONE, R.ROLE_NAME, SYSDATE FROM USER_ADMIN U
+		INNER JOIN ROLE_LIST R
+		ON U.USERNAME = R.USERNAME
+		WHERE ACTIVE = 0
+	</insert>
+	
+	<update id="updateUser">
+		UPDATE USER_ADMIN
+		SET NAME = #{name},
+		PHONE = #{phone}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<update id="updatePassword">
+		UPDATE USER_ADMIN
+		SET PASSWORD = #{password}
+		<choose>
+			<when test="userId != 0 and userId != null">
+				WHERE USER_ID = #{userId}				
+			</when>
+			<otherwise>
+				WHERE EMAIL = #{email}
+			</otherwise>
+		</choose>
+	</update>
+	
+	<update id="updateUserActive">
+		UPDATE USER_ADMIN
+		SET ACTIVE = #{active}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<delete id="deleteUserByActive">
+		DELETE USER_ADMIN
+		WHERE ACTIVE = #{active}
+	</delete>
+	
+</mapper>

@@ -42,7 +42,7 @@
 		<p>비밀번호를 찾고자 하는 아이디와 이메일을 입력해주세요.</p>
 		<div>
 			<span>아이디 : </span>
-			<input type="text" id="userId" name="userId" required="required" placeholder="가입한 아이디">
+			<input type="text" id="username" name="username" required="required" placeholder="가입한 아이디">
 		</div>
 		<div>
 			<span>이메일 : </span>

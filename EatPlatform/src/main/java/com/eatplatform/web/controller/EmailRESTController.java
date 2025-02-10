@@ -26,10 +26,11 @@ public class EmailRESTController {
 	// 회원가입 인증코드 전송
 	@PostMapping("/send/authCode")
 	public ResponseEntity<EmailVO> sendEmailByAuthCode(@RequestBody EmailVO emailVO) {
-		log.info("registerCheckEmail()");
+		log.info("sendEmailByAuthCode()");
 		log.info(emailVO.getUserEmail());
 		
 		EmailVO vo = emailService.sendEmailByAuthCode(emailVO);
+		log.info("vo.getUserEamil : " + vo.getStatus());
 		return new ResponseEntity<EmailVO>(vo, HttpStatus.OK);
 		
 	}
@@ -44,10 +45,10 @@ public class EmailRESTController {
 	
 	// 아이디, 비밀번호 찾기
 	@PostMapping("/send/searchCode/{mailType}")
-	public ResponseEntity<EmailVO> sendSearchUser(@RequestBody UserVO userVO, @PathVariable("mailType") String mailType) {
+	public ResponseEntity<EmailVO> sendSearchUser(@RequestBody UserVO userMemberVO, @PathVariable("mailType") String mailType) {
 		log.info("sendSearchUser()");
 		
-		EmailVO vo = emailService.sendSearchUser(userVO, mailType);
+		EmailVO vo = emailService.sendSearchUser(userMemberVO, mailType);
 		return new ResponseEntity<EmailVO>(vo, HttpStatus.OK);
 	}
 	

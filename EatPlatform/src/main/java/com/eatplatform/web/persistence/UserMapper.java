@@ -1,33 +1,37 @@
 package com.eatplatform.web.persistence;
 
-import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.eatplatform.web.domain.UserRoleVO;
 import com.eatplatform.web.domain.UserVO;
 
 @Mapper
 public interface UserMapper {
-	UserVO selectUserByUserId(String userId);
+	// 회원 정보 검색(email)
+	UserVO selectUserAllByEmail(String email);
+	// 회원 정보 검색(username)
+	UserVO selectUserByUsername(String username);
+	// 회원 정보 검색(userId)
+	UserVO selectUserByUserId(int userId);
+	// 회원 아이디 찾기(email)
+	UserVO selectUsernameByEmail(String email);
+	// 비활성화 회원 정보 이전(active)
+	int insertWithdrawlUserByActive(int active);
+	// 회원 활성화/비활성화(UserMemberVO)
+	int updateUserActive(UserVO userVO);
+	// 사용자 명 총 건수 조회(username)
+	int countUser(String username);
+	// 이메일 총 건 수 조회 (email)
+	int countUserEmail(String email);
+	// 이메일 총 건 수 조회(userMemberVO)
+	int countUserEmailByUserIdEmail(UserVO userVO);
+	// 회원 가입
 	int insertUser(UserVO userVO);
+	// 회원 정보 수정
 	int updateUser(UserVO userVO);
-	int deleteUser(String userId);
-	int updateUserPwByUserId(UserVO userVO);
-	int updateUserPwByUserEmail(UserVO userVO);
-	int checkUserByUserId(UserVO userVO);
-	int checkUserByUserEmail(String userEmail);
-	int checkUserByUserIdUserEmail(UserVO userVO);
-	UserVO selectUserIdByUserEmail(String userEmail);
-	int updateActiveYnByUserId(UserVO userVO);
-	List<UserVO> selectUserListByUserActive(int userActive);
+	// 비밀번호 변경
+	int updatePassword(UserVO userVO);
+	// 회원 정보 삭제
+	int deleteUserByActive(int active);
 	
-	// 회원 권한 조회(userId)
-	UserRoleVO selectUserRoleByUserId(String userId);
-	// 회원 권한 등록(userId)
-	int insertUserRole(String userId);
-	// 회원 권한 수정(UserRoleVO)
-	int updateUserRoleName(UserRoleVO userRoleVO);
-	// 회원 권한 삭제(userId)
-	int deleteUserRoleByUserId(String userId);
 }

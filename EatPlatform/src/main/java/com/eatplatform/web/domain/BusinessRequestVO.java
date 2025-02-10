@@ -12,7 +12,7 @@ import lombok.ToString;
 public class BusinessRequestVO {
 	private int businessRequestId;
 	private int storeId;
-	private String userId;
+	private String username;
 	private int requestApprovals;
 	private Date businessRequestRegDate;
 }
