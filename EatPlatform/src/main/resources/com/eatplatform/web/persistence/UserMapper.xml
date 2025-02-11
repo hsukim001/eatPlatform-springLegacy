@@ -17,6 +17,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="regDate" column="REG_DATE"/>
 	</resultMap>
 	
+	<resultMap type="com.eatplatform.web.domain.JoinUserVO" id="joinUserResultMap">
+		<id property="userId" column="USER_ID"/>
+		<result property="username" column="USERNAME"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="email" column="EMAIL"/>
+		<result property="phone" column="PHONE"/>
+		<result property="name" column="NAME"/>
+		<result property="active" column="ACTIVE"/>
+		<result property="regDate" column="REG_DATE"/>
+		<result property="roleName" column="ROLE_NAME"/>
+	</resultMap>
+	
 	<select id="selectUserAllByEmail" resultMap="userResultMap">
 		SELECT * FROM USER_MEMBER
 		WHERE email = #{email}
@@ -86,6 +98,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE EMAIL = #{email}
 	</select>
 	
+	<select id="selectUserJoinUserRole" resultMap="joinUserResultMap">
+		SELECT u.*, r.ROLE_NAME FROM USER_MEMBER u
+		LEFT JOIN ROLE_LIST r
+		ON u.USERNAME = r.USERNAME
+		WHERE USER_ID = #{userId}
+	</select>
+	
 	<insert id="insertUser" parameterType="com.eatplatform.web.domain.UserVO" useGeneratedKeys="true" keyProperty="userId" keyColumn="USER_ID">
 		INSERT INTO USER_MEMBER
 		VALUES(
@@ -137,6 +156,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<delete id="deleteUserByActive">
 		DELETE USER_MEMBER
 		WHERE ACTIVE = #{active}
+	</delete>
+	
+	<delete id="deleteUserByUserId">
+		DELETE USER_MEMBER
+		WHERE USER_ID = #{userId}
 	</delete>
 	
 </mapper>

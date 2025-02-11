@@ -26,7 +26,7 @@ public class StoreMapperTest {
 
 	private void insertStore() {
 		StoreVO storeVO = new StoreVO();
-		storeVO.setUserId("insertTest");
+		storeVO.setUsername("insertTest");
 		storeVO.setStorePhone("010-insert-test");
 		storeVO.setOwnerName("insertTestOnwer");
 		storeVO.setBusinessHour("08000000");

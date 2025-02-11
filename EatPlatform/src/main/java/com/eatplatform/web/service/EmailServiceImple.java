@@ -38,7 +38,6 @@ public class EmailServiceImple implements EmailService {
 		log.info("sendEmailByAuthCode()");
 		log.info(emailVO.getUserEmail());
 
-//		int checkEmail = userMapper.checkUserByUserEmail(emailVO.getUserEmail());
 		int checkEmail = userMapper.countUserEmail(emailVO.getUserEmail());
 		EmailVO vo = new EmailVO();
 		
@@ -147,15 +146,12 @@ public class EmailServiceImple implements EmailService {
 		EmailVO vo = new EmailVO();
 		
 		if(mailType.equals("비밀번호")) {
-//			result = userMapper.checkUserByUserIdUserEmail(userVO);		
 			result = userMapper.countUserEmailByUserIdEmail(userMemberVO);
 		} else if(mailType.equals("아이디")) {
-//			result = userMapper.checkUserByUserEmail(userMemberVO.getEmail());
 			result = userMapper.countUserEmail(userMemberVO.getEmail());
 		}
 		
 		if(result == 1) {
-//			String userEmail = userVO.getUserEmail();
 			String userEmail = userMemberVO.getEmail();
 			vo = emailFrom(userEmail, mailType);	
 		} else {

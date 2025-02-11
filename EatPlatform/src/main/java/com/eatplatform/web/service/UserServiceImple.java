@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.BusinessRequestVO;
-import com.eatplatform.web.domain.RequestInfoVO;
+import com.eatplatform.web.domain.JoinUserVO;
+import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.UserRoleVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
@@ -200,8 +201,9 @@ public class UserServiceImple implements UserService {
 	}
 
 	// 사업자 등록 신청
+	@Transactional
 	@Override
-	public int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO) {
+	public int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, int userId) {
 		log.info("businessUpgradeForm()");
 
 		int insertStore = storeMapper.insertStore(storeVO);
@@ -214,8 +216,8 @@ public class UserServiceImple implements UserService {
 
 		BusinessRequestVO businessRequestVO = new BusinessRequestVO();
 		businessRequestVO.setStoreId(storeId);
-		businessRequestVO.setUsername(username);
-		businessRequestVO.setRequestApprovals(0);
+		businessRequestVO.setUserId(userId);
+		businessRequestVO.setRequestStatus(0);
 		int insertBusinessRequest = businessRequestMapper.insertBusinessRequest(businessRequestVO);
 
 		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
@@ -233,16 +235,16 @@ public class UserServiceImple implements UserService {
 
 	// 사업자 등록 신청 정보 조회
 	@Override
-	public RequestInfoVO searchBusinessRequestInfo(int businessRequestId) {
+	public JoinBusinessRequestVO searchBusinessRequestInfo(int businessRequestId) {
 		log.info("searchBusinessRequestInfo()");
-		RequestInfoVO vo = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
+		JoinBusinessRequestVO vo = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
 		log.info(vo);
 		return vo;
 	}
 
 	// 사업자 등록 신청 목록
 	@Override
-	public List<RequestInfoVO> searchBusinessRequestList(Pagination pagination) {
+	public List<JoinBusinessRequestVO> searchBusinessRequestList(Pagination pagination) {
 		log.info("searchBusinessRequestList()");
 		return businessRequestMapper.selectBusinessRequestListByPagination(pagination);
 	}
@@ -256,9 +258,9 @@ public class UserServiceImple implements UserService {
 
 	// 사업자 등록 신청 조회(userId)
 	@Override
-	public int getBusinessRequestId(String username) {
+	public int getBusinessRequestId(int userId) {
 		log.info("getBusinessRequestId()");
-		return businessRequestMapper.selectBusinessRequestIdByuserId(username);
+		return businessRequestMapper.selectBusinessRequestIdByuserId(userId);
 	}
 
 	// 사업자 등록 요청 승인
@@ -268,7 +270,8 @@ public class UserServiceImple implements UserService {
 		log.info("businessReqeustApprovals()");
 
 		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequest(businessRequestId);
-		String username = businessRequestVO.getUsername();
+		int userId = businessRequestVO.getUserId();
+		log.info("userId : " + userId);
 
 		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
 
@@ -278,13 +281,19 @@ public class UserServiceImple implements UserService {
 		int updateStoreApprovals = storeApprovalsMapper.updateStoreApprovals(storeApprovalsVO);
 
 		UserRoleVO userRoleVO = new UserRoleVO();
-		userRoleVO.setUsername(username);
+		JoinUserVO joinUserVO = userMapper.selectUserJoinUserRole(userId);
+		userRoleVO.setUsername(joinUserVO.getUsername());
 		userRoleVO.setRoleName("ROLE_STORE");
-		int updateUserRole = userRoleMapper.updateUserRoleNameByUserName(username);
-
+		int updateUserRole = userRoleMapper.updateUserRoleNameByUserName(userRoleVO);
+		
+		int insertUserStoreFromUserResult = userStoreMapper.insertUserStoreFromUser(userId);
+		int deleteUserResult = userMapper.deleteUserByUserId(userId);
+		
 		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
 		log.info("식당 등록 요청 정보 : " + updateStoreApprovals + "행 수정");
 		log.info("회원 권한 : " + updateUserRole + "행 수정");
+		log.info("회원 정보를 사업자 회원 정보에 " + insertUserStoreFromUserResult + "행 삽입");
+		log.info("회원 정보 : " + deleteUserResult + "행 삭제");
 
 		return 1;
 	}
@@ -296,9 +305,9 @@ public class UserServiceImple implements UserService {
 		log.info("businessReqeustDenied()");
 
 		int deleteStore = storeMapper.deleteStore(storeId);
-		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
+//		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
 		log.info("식당 : " + deleteStore + "행 삭제");
-		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
+//		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
 
 		return 1;
 	}

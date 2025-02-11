@@ -2,7 +2,7 @@ package com.eatplatform.web.service;
 
 import java.util.List;
 
-import com.eatplatform.web.domain.RequestInfoVO;
+import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
@@ -27,15 +27,15 @@ public interface UserService {
 	int transferWithdrawalUser(int active);
 	
 	// 사업자 등록 신청
-	int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO);
+	int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, int userId);
 	// 사업자 등록 신청 목록
-	List<RequestInfoVO> searchBusinessRequestList(Pagination pagination);
+	List<JoinBusinessRequestVO> searchBusinessRequestList(Pagination pagination);
 	// 사업자 등록 신청 상세 정보 조회
-	RequestInfoVO searchBusinessRequestInfo(int businessRequestId);
+	JoinBusinessRequestVO searchBusinessRequestInfo(int businessRequestId);
 	// 사업자 등록 신청 목록 총 건수
 	int getBusinessRequestTotalCount();
 	// 사업자 등록 신청 조회(userId)
-	int getBusinessRequestId(String username);
+	int getBusinessRequestId(int userId);
 	// 사업자 등록 요청 승인
 	int businessReqeustApprovals(int businessRequestId, int storeId);
 	// 사업자 등록 요청 거부 관리

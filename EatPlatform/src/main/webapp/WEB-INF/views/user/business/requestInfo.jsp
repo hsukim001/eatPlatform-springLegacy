@@ -50,7 +50,7 @@
 									location.href="requestList";
 								} else if(buttonType == 2) {
 									alert("사업자 등록 요청이 취소되었습니다.");
-									location.href="../user/detail"
+									location.href="../detail"
 								}
 							} else {
 								if(buttonType == 1) {

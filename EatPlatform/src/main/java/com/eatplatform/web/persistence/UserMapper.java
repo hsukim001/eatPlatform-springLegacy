@@ -3,6 +3,7 @@ package com.eatplatform.web.persistence;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.eatplatform.web.domain.JoinUserVO;
 import com.eatplatform.web.domain.UserVO;
 
 @Mapper
@@ -15,6 +16,8 @@ public interface UserMapper {
 	UserVO selectUserByUserId(int userId);
 	// 회원 아이디 찾기(email)
 	UserVO selectUsernameByEmail(String email);
+	// 회원 정보 및 권한 조회(username)
+	JoinUserVO selectUserJoinUserRole(int userId);
 	// 비활성화 회원 정보 이전(active)
 	int insertWithdrawlUserByActive(int active);
 	// 회원 활성화/비활성화(UserMemberVO)
@@ -31,7 +34,9 @@ public interface UserMapper {
 	int updateUser(UserVO userVO);
 	// 비밀번호 변경
 	int updatePassword(UserVO userVO);
-	// 회원 정보 삭제
+	// 회원 정보 삭제(active)
 	int deleteUserByActive(int active);
+	// 회원 정보 삭제(userId)
+	int deleteUserByUserId(int userId);
 	
 }

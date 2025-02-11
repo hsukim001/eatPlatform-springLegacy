@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.eatplatform.web.domain.RequestInfoVO;
+import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -144,10 +144,9 @@ public class UserController {
 	@GetMapping("/business/requestForm")
 	public String businessRequestForm(Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("businessRequestForm()");
-		String username = customUser.getUser().getUsername();
 		int userId = customUser.getUser().getUserId();
 		
-		int businessRequestId = userService.getBusinessRequestId(username);
+		int businessRequestId = userService.getBusinessRequestId(userId);
 		log.info("businessRequestId : " + businessRequestId);
 		
 		// 사업자 등록을 신청한 회원을 사업자 등록 신청 상세 화면으로 이동하는 로직
@@ -158,21 +157,21 @@ public class UserController {
 		}
 		
 		log.info("사업자 등록되어있지 않음");
-		UserVO vo = userService.searchUser(userId);
-		model.addAttribute("ownerName", vo.getName());
+		model.addAttribute("ownerName", customUser.getUser().getName());
 		
 		return "user/business/requestForm";
 	}
 	
 	// 사업자 등록 신청
 	@PostMapping("/business/request")
-	public String businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, @AuthenticationPrincipal UserDetails userDetails) {
+	public String businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("businessRequest()");
 		
-		String userId = userDetails.getUsername();		
-		storeVO.setUsername(userId);
-		log.info("userId : " + storeVO.getUsername());
-		int result = userService.businessRequest(storeVO, storeAddressVO);
+		String username = customUser.getUsername();	
+		int userId = customUser.getUser().getUserId();
+		storeVO.setUsername(username);
+		log.info("username : " + storeVO.getUsername());
+		int result = userService.businessRequest(storeVO, storeAddressVO, userId);
 		if(result == 1) {
 			log.info("사업자 등록 신청 성공");
 		}
@@ -184,7 +183,7 @@ public class UserController {
 	public void businessRequestList(Model model, Pagination pagination) {
 		log.info("businessRequestList()");
 		
-		List<RequestInfoVO> list = userService.searchBusinessRequestList(pagination);
+		List<JoinBusinessRequestVO> list = userService.searchBusinessRequestList(pagination);
 		int totalCount = userService.getBusinessRequestTotalCount();
 		
 		PageMaker pageMaker = new PageMaker();
@@ -199,7 +198,7 @@ public class UserController {
 	@GetMapping("/business/requestInfo")
 	public void businessRequestInfo(Model model, @RequestParam("businessRequestId") int businessRequestId) {
 		log.info("businessRequestInfo()");
-		RequestInfoVO businessRequestInfo = userService.searchBusinessRequestInfo(businessRequestId);
+		JoinBusinessRequestVO businessRequestInfo = userService.searchBusinessRequestInfo(businessRequestId);
 		model.addAttribute("info", businessRequestInfo);
 	}
 	

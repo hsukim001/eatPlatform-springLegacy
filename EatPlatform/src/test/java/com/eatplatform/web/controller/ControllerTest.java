@@ -69,7 +69,7 @@ public class ControllerTest {
 			storeVO.setOwnerName("사장님" + i);
 			storeVO.setReservLimit(10);
 			storeVO.setSeat(10);
-			storeVO.setUserId("store");
+			storeVO.setUsername("store");
 			storeVO.setStoreComment("test");
 			storeVO.setDescription("test");
 			

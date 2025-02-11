@@ -36,6 +36,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE ACTIVE = 0
 	</insert>
 	
+	<insert id="insertUserStoreFromUser">
+		INSERT INTO USER_STORE
+		SELECT * FROM USER_MEMBER
+		WHERE USER_ID = #{userId}
+	</insert>
+	
 	<update id="updateUser">
 		UPDATE USER_STORE
 		SET NAME = #{name},

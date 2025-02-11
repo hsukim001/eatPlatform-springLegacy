@@ -10,7 +10,7 @@ public interface UserRoleMapper {
 		
 	int insertUserRole(UserRoleVO roleListVO);
 	
-	int updateUserRoleNameByUserName(String username);
+	int updateUserRoleNameByUserName(UserRoleVO userRoleVO);
 	
 	int deleteWithdrowalUserRole();
 	

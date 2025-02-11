@@ -8,13 +8,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="com.eatplatform.web.domain.BusinessRequestVO" id="businessRequestResultMap">
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID" />
-		<result property="storeId" column="STORE_ID"/>
-		<result property="username" column="USERNAME" />
-		<result property="requestApprovals" column="REQUEST_APPROVALS"/>
+		<result property="requestStatus" column="REQUEST_STATUS"/>
 		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID" />
 	</resultMap>
 	
-	<resultMap type="com.eatplatform.web.domain.RequestInfoVO" id="infoResultMap">
+	<resultMap type="com.eatplatform.web.domain.JoinBusinessRequestVO" id="joinBusinessRequestResultMap">
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
 		<result property="storeId" column="STORE_ID"/>
 		<result property="storeName" column="STORE_NAME"/>
@@ -38,14 +38,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		INSERT INTO BUSINESS_REQUEST
 		VALUES(
 			BUSINESS_REQUEST_SEQ.NEXTVAL,
+			#{requestStatus},
+			SYSDATE,
 			#{storeId},
-			#{username},
-			#{requestApprovals},
-			SYSDATE
+			#{userId}
 		)
 	</insert>
 	
-	<select id="selectBusinessRequestByBusinessRequestId" resultMap="infoResultMap">
+	<select id="selectBusinessRequestByBusinessRequestId" resultMap="joinBusinessRequestResultMap">
 		SELECT b.BUSINESS_REQUEST_ID, 
 			b.STORE_ID, 
 			b.BUSINESS_REQUEST_REG_DATE AS REG_DATE, 
@@ -66,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE b.BUSINESS_REQUEST_ID = #{businessRequestId}
 	</select>
 	
-	<select id="selectBusinessRequestListByPagination" resultMap="infoResultMap">
+	<select id="selectBusinessRequestListByPagination" resultMap="joinBusinessRequestResultMap">
 		SELECT b.BUSINESS_REQUEST_ID, 
 			b.STORE_ID, 
 			b.BUSINESS_REQUEST_REG_DATE AS REG_DATE,
@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT NVL(
 			(SELECT BUSINESS_REQUEST_ID
 			FROM BUSINESS_REQUEST
-			WHERE USERNAME = #{username}), 0
+			WHERE USER_ID = #{userId}), 0
 		) AS ID
 		FROM DUAL
 	</select>

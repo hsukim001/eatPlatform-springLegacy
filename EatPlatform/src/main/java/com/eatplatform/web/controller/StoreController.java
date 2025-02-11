@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.MenuVO;
-import com.eatplatform.web.domain.RequestInfoVO;
+import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.MenuService;
@@ -204,7 +204,7 @@ public class StoreController {
 	@GetMapping("/request/list")
 	public void requestList(Model model, Pagination pagination) {
 		log.info("requestList()");
-		List<RequestInfoVO> list = storeApprovalsService.searchList(pagination);
+		List<JoinBusinessRequestVO> list = storeApprovalsService.searchList(pagination);
 		int totalCount = storeApprovalsService.getTotalCount();
 		
 		PageMaker pageMaker = new PageMaker();
@@ -219,7 +219,7 @@ public class StoreController {
 	@GetMapping("/request/info")
 	public void requestInfo(Model model, @RequestParam("storeId") int storeId) {
 		log.info("requestInfo()");
-		RequestInfoVO infoVO = storeApprovalsService.searchInfo(storeId);
+		JoinBusinessRequestVO infoVO = storeApprovalsService.searchInfo(storeId);
 		model.addAttribute("info", infoVO);
 	}
 	

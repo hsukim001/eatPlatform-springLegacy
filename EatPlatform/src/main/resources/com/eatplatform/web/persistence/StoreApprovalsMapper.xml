@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeApprovalsRegDate" column="STORE_APPROVALS_REG_DATE"/>
 	</resultMap>
 	
-	<resultMap type="com.eatplatform.web.domain.RequestInfoVO" id="infoResultMap">
+	<resultMap type="com.eatplatform.web.domain.JoinBusinessRequestVO" id="joinBusinessRequestResultMap">
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
 		<result property="storeId" column="STORE_ID"/>
 		<result property="storeName" column="STORE_NAME"/>
@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE APPROVALS = 0
 	</select>
 	
-	<select id="selectApprovalsList" resultMap="infoResultMap">
+	<select id="selectApprovalsList" resultMap="joinBusinessRequestResultMap">
 		SELECT appr.STORE_ID, 
 			s.STORE_NAME, 
 			s.OWNER_NAME, 
@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		ORDER BY STORE_ID DESC
 	</select>
 	
-	<select id="selectApprovals" resultMap="infoResultMap">
+	<select id="selectApprovals" resultMap="joinBusinessRequestResultMap">
 		SELECT appr.STORE_ID, 
 			s.STORE_NAME, 
 			s.OWNER_NAME, 

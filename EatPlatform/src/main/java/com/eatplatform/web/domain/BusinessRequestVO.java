@@ -11,8 +11,8 @@ import lombok.ToString;
 @ToString
 public class BusinessRequestVO {
 	private int businessRequestId;
-	private int storeId;
-	private String username;
-	private int requestApprovals;
+	private int requestStatus;
 	private Date businessRequestRegDate;
+	private int storeId;
+	private int userId;
 }

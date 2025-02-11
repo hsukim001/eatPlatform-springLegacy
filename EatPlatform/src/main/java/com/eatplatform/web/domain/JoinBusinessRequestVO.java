@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @ToString
-public class RequestInfoVO {
+public class JoinBusinessRequestVO {
 	
 	private int businessRequestId;
 	private int storeId;
