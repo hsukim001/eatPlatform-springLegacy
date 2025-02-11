@@ -147,17 +147,11 @@
 								+ '&nbsp;&nbsp;'
 								+ '<input type="text" id="reviewTag" value="'+ this.reviewTag +'" style="pointer-events: none;">'
 								+ '&nbsp;&nbsp;'
-<<<<<<< Updated upstream
-								+ reviewDate
-								+ '&nbsp;&nbsp;'
-								+ this.reviewLike // 추천 수 표시
-=======
 								+ reviewDateText
 								+'&nbsp;&nbsp;'
 								+ '<span>추천 </span>' // 추천 수 표시
 								+ this.reviewLike
->>>>>>> Stashed changes
-							
+								
 						// 버튼들 (수정, 삭제, 추천, 신고)
 						if(loginId && userId && loginId == userId) {
 							list +=  '<div class="review_buttons">'
@@ -169,11 +163,8 @@
 								+ '<button class="btn_like" data-review-id="'+ this.reviewId + '" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
 								+ '</div>'; // review_buttons div 끝
-						}
-<<<<<<< Updated upstream
 								+ '<br>'
-=======
->>>>>>> Stashed changes
+						}
 							
 							// 이미지 조회
 							$(this.reviewImageList).each(function(){

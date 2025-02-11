@@ -30,30 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeRequests()
-<<<<<<< Updated upstream
-			.antMatchers("/user/register").permitAll()
-			.antMatchers("/user/created").permitAll()
-			.antMatchers("/user/searchPw").permitAll()
-			.antMatchers("/user/searchId").permitAll()
-			.antMatchers("/user/modifyPw").permitAll()
-			.antMatchers("/user/gradeUpgradeForm").access("hasRole('ROLE_MEMBER')")
-			.antMatchers(HttpMethod.GET, "/user/business/requestInfo").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')")
-			.antMatchers(HttpMethod.POST, "/user/business/requestInfo").access("hasRole('ROLE_ADMIN')")
-			.antMatchers("/user/business/request/denialManagement/").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')")
-			.antMatchers("/user/*").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE') or hasRole('ROLE_ADMIN')")
-			.antMatchers("/store/list").permitAll()
-			.antMatchers("/store/detail").permitAll()
-			.antMatchers("/store/map").permitAll()
-			.antMatchers("/store/map/").permitAll()
-			.antMatchers("/store/request/list", "/store/request/list/*").access("hasRole('ROLE_ADMIN')")
-			.antMatchers("/store/request/info").access("hasRole('ROLE_STORE') or hasRole('ROLE_ADMIN')")
-			.antMatchers("/store/**").access("hasRole('ROLE_STORE')")
-			.antMatchers("/approval/store").access("hasRole('ROLE_ADMIN')")
-			.antMatchers("/approval/denialManagement/").access("hasRole('ROLE_STORE') or hasRole('ROLE_ADMIN')")
-			.antMatchers("/review/*").permitAll()
-			.antMatchers("/reserv/list").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')")
-			.antMatchers("/email/**").permitAll();
-=======
 				.antMatchers("/user/register").permitAll()
 				.antMatchers("/user/created").permitAll()
 				.antMatchers("/user/searchPw").permitAll()
@@ -76,7 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers("/review/*").permitAll()
 				.antMatchers("/reserv/list").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')")
 				.antMatchers("/email/**").permitAll();
->>>>>>> Stashed changes
 
 		// 접근 제한 경로 설정
 		httpSecurity.exceptionHandling().accessDeniedPage("/access/accessDenied");
