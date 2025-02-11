@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.StoreVO"
 		id="StoreResultMap">
 		<id property="storeId" column="STORE_ID"/>
-		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
 		<result property="storeName" column="STORE_NAME" />
 		<result property="storePhone" column="STORE_PHONE" />
 		<result property="ownerName" column="OWNER_NAME" />
@@ -27,13 +27,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<insert id="insertStore" parameterType="com.eatplatform.web.domain.StoreVO" useGeneratedKeys="true" keyProperty="storeId" keyColumn="STORE_ID">
 		INSERT INTO STORE(
-		STORE_ID, USER_ID, STORE_NAME,
+		STORE_ID, USER_NAME, STORE_NAME,
 		STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,
 		RESERV_LIMIT, SEAT,
 		BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
 		) VALUES (
 		STORE_SEQ.NEXTVAL,
-		#{userId},
+		#{userName},
 		#{storeName},
 		#{storePhone},
 		#{ownerName},
@@ -102,8 +102,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        </where>
 	</select>
 
-	<select id="getUserIdByStoreId" parameterType="int" resultType="string">
-		SELECT USER_ID
+	<select id="getUserNameByStoreId" parameterType="int" resultType="string">
+		SELECT USER_NAME
 		FROM STORE
 		WHERE STORE_ID = #{storeId}
 	</select>

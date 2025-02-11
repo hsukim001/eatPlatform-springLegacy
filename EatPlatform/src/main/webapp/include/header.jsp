@@ -15,7 +15,6 @@
             <div class="login_form">
                 <sec:authorize access="isAnonymous()">
 	                <ul>
-<<<<<<< Updated upstream
 	    	            <li class="login">
 		                    <a href="/access/login">
 		                    	로그인
@@ -26,22 +25,11 @@
 		                    	회원가입
 		                	</a>                    		
 		            	</li>
-=======
-	    	                <li>
-		                    	<a href="/access/login">
-		                    		로그인
-		                    	</a>                    		
-		                    </li>
->>>>>>> Stashed changes
 	                </ul>
                 </sec:authorize>
                 <sec:authorize access="isAuthenticated()">
                 	<ul>
-<<<<<<< Updated upstream
                 		<li  class="logout">
-=======
-                		<li>
->>>>>>> Stashed changes
                 			<form action="/access/logout" method="post">
                 				<input type="submit" value="로그아웃">
                 				<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">

@@ -34,7 +34,7 @@ public class MenuController {
 		log.info("newMenu()");
 		
 		String currentUserId = userDetails.getUsername();
-		String dbUserId = storeService.getUserIdByStoreId(storeId);
+		String dbUserId = storeService.getUserNameByStoreId(storeId);
 		log.info("currentUserId : " + currentUserId + "// dbUserId : " + dbUserId);
 		
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
@@ -67,7 +67,7 @@ public class MenuController {
 	@PostMapping("/register")
 	public String register(MenuVO menuVO, Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		String currentUserId = userDetails.getUsername();
-		String dbUserId = storeService.getUserIdByStoreId(menuVO.getStoreId());
+		String dbUserId = storeService.getUserNameByStoreId(menuVO.getStoreId());
 		
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
 

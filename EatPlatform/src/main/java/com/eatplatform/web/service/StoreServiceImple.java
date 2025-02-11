@@ -52,8 +52,8 @@ public class StoreServiceImple implements StoreService {
 	}
 
 	@Override
-	public String getUserIdByStoreId(int storeId) {
-		return storeMapper.getUserIdByStoreId(storeId);
+	public String getUserNameByStoreId(int storeId) {
+		return storeMapper.getUserNameByStoreId(storeId);
 	}
 
 	@Override

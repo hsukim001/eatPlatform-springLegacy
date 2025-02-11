@@ -70,11 +70,7 @@
         
         
         <property name="java-output-path" value="target/classes"/>
-<<<<<<< Updated upstream
         <property name="context-root" value=""/>
-=======
-        <property name="context-root" value="web"/>
->>>>>>> Stashed changes
                                                                                                         	
     
     
