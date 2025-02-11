@@ -110,7 +110,7 @@ public class StoreController {
 		StoreAddressVO storeAddressVO = storeAddressService.selectStoreAddressById(storeId);
 
 		String currentUserId = userDetails.getUsername();
-		String dbUserId = storeService.getUserNameByStoreId(storeVO.getStoreId());
+		String dbUserId = storeService.getUsernameByStoreId(storeVO.getStoreId());
 
 		log.info("currentUserId : " + currentUserId + "// dbUserId : " + dbUserId);
 
@@ -155,7 +155,7 @@ public class StoreController {
 		log.info(storeAddressVO + "주소");
 
 		String currentUserId = userDetails.getUsername();
-		String dbUserId = storeService.getUserNameByStoreId(storeVO.getStoreId());
+		String dbUserId = storeService.getUsernameByStoreId(storeVO.getStoreId());
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
 			storeVO.setUsername(dbUserId);
 

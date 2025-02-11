@@ -11,7 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.StoreVO"
 		id="StoreResultMap">
 		<id property="storeId" column="STORE_ID"/>
-		<result property="userName" column="USER_NAME" />
+		<result property="username" column="username" />
 		<result property="storeName" column="STORE_NAME" />
 		<result property="storePhone" column="STORE_PHONE" />
 		<result property="ownerName" column="OWNER_NAME" />
@@ -33,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
 		) VALUES (
 		STORE_SEQ.NEXTVAL,
-		#{userName},
+		#{username},
 		#{storeName},
 		#{storePhone},
 		#{ownerName},
@@ -102,7 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        </where>
 	</select>
 
-	<select id="getUserNameByStoreId" parameterType="int" resultType="string">
+	<select id="getusernameByStoreId" parameterType="int" resultType="string">
 		SELECT USER_NAME
 		FROM STORE
 		WHERE STORE_ID = #{storeId}

@@ -206,7 +206,7 @@ public class UserServiceImple implements UserService {
 
 		int insertStore = storeMapper.insertStore(storeVO);
 		int storeId = storeVO.getStoreId();
-		String username = storeVO.getUserName();
+		String username = storeVO.getUsername();
 		log.info("storeId : " + storeId);
 
 		storeAddressVO.setStoreId(storeId);

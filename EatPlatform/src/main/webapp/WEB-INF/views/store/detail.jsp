@@ -261,7 +261,7 @@
 						</p>
 						
 						<input type="hidden" id="storeId" value="${storeVO.storeId }">
-						<input type="hidden" id="storeUser" value="${storeVO.userId }">
+						<input type="hidden" id="storeUser" value="${storeVO.username }">
 						
 						<div id="reviewWrite">
 							<div id="scoreWrap">

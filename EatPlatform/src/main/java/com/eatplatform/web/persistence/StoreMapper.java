@@ -20,7 +20,7 @@ public interface StoreMapper {
 	StoreVO selectStoreById(int storeId);
 	
 	// storeId로 userId 검색
-	String getUserNameByStoreId(@Param("storeId") int storeId);
+	String getUsernameByStoreId(@Param("storeId") int storeId);
 	
 	//  List Pagination
 	List<StoreVO> getStoresWithPaging(Map<String, Object> params);

@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class StoreVO {
 	private int storeId;
-	private String userName;
+	private String username;
 	private String storeName;
 	private String storePhone;
 	private String ownerName;
