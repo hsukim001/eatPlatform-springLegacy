@@ -84,5 +84,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId}) 
 		WHERE RN BETWEEN #{start} AND #{end} 
 	</select>
+	
+	<!-- ROLE_MEMBER username 조회 -->
+	<select id="findReviewWithUsername" resultMap="reviewResultMap">
+		SELECT r, u.USERNAME 
+		FROM REVIEW r JOIN USER_ROLE u 
+		ON r.USER_ID = u.USER_ID
+		WHERE STORE_ID = #{storeId}
+	</select>
 
 </mapper>

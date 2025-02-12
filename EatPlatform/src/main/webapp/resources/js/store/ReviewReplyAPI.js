@@ -132,10 +132,6 @@
 							var userId = this.userId;
 							console.log("로그인 ID: " + loginId + "사용자: " + userId); 
 				        	
-				        	let loginId = $('#loginId').text();
-							var userId = this.userId;
-							console.log("로그인 ID: " + loginId + "사용자: " + userId); 
-				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'

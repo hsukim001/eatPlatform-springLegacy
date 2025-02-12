@@ -1,7 +1,6 @@
 package com.eatplatform.web.controller;
 
 import java.security.Principal;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +29,7 @@ public class AccessRESTController {
 	
 	// ROLE_MEMBER 확인
 	@GetMapping("/auth/member")
-	public Map<String, Object> chechAuthorities(Principal principal) {
+	public Map<String, Object> chechkAuthorities(Principal principal) {
 		log.info("checkAuthorities()");
 		
 		Map<String, Object> response = new HashMap<>();

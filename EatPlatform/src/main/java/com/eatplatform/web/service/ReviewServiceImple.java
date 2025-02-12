@@ -134,10 +134,22 @@ public class ReviewServiceImple implements ReviewService{
 		return result;
 	}
 
+	// 페이징
 	@Override
 	public List<ReviewVO> getAllReviewsByStoreId(int storeId, int start, int end) {
 		log.info("getAllReviewsByStoreId()");
 		return reviewMapper.getReviewsByStoreId(storeId, start, end);
+	}
+
+	// username 조회
+	@Override
+	public List<ReviewVO> getReviewWithUsername(int storeId) {
+		log.info("getReviewWithUsername()");
+		
+		List<ReviewVO> reviews = reviewMapper.findReviewWithUsername(storeId);
+		log.info("reviews : " + reviews);
+		
+		return reviews;
 	}
 
 }

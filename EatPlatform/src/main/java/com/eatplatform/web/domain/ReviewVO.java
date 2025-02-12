@@ -17,7 +17,7 @@ public class ReviewVO {
 	
 	private int reviewId;
 	private int storeId;
-	private String userId;
+	private int userId;
 	private int reviewStar;
 	private String reviewContent;
 	private String reviewTag;
@@ -25,6 +25,8 @@ public class ReviewVO {
 	private int reviewLike;
 	private int reviewReport;
 	private Date reviewUpdateDate;
+	
+	private UserRoleVO userRoleVO;
 	
 	private List<ReviewImageVO> reviewImageList;
 	

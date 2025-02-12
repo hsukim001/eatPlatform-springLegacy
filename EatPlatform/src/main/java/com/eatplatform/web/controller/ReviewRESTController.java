@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReviewImageService;
@@ -40,9 +40,9 @@ public class ReviewRESTController {
 	@PostMapping
 	public ResponseEntity<Integer> createReview(
 			@RequestBody ReviewVO reviewVO,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@AuthenticationPrincipal CustomUser customUser) {
 		
-			String userId = userDetails.getUsername();
+			int userId = customUser.getUser().getUserId();
 			reviewVO.setUserId(userId);
 			
 			// 리뷰 내용 길이 제한 (250자 이하) 
@@ -99,18 +99,13 @@ public class ReviewRESTController {
 	@DeleteMapping("/{reviewId}")
 	public ResponseEntity<Integer> deleteReview(
 			@PathVariable("reviewId") int reviewId,
-			@AuthenticationPrincipal UserDetails userDetails) {
-		
-		String userId = userDetails.getUsername();
-		
-		if(userId != null) {
-			log.info("deleteReview()");
+			@AuthenticationPrincipal CustomUser customUser) {
+	
+		log.info("deleteReview()");
 			
-			int result = reviewService.deleteReview(reviewId);
-			return new ResponseEntity<Integer>(result,HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
+		int result = reviewService.deleteReview(reviewId);
+		return new ResponseEntity<Integer>(result,HttpStatus.OK);
+		
 	}
 	
 }

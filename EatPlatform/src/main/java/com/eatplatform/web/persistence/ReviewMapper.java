@@ -24,8 +24,11 @@ public interface ReviewMapper {
 			@Param("amount") int amount);
 	
 	// 페이징
-		int countReviewsByStoreId(int storeId);
-		List<ReviewVO> getReviewsByStoreId(@Param("storeId") int storeId, 
-				@Param("start") int start, @Param("end") int end);
+	int countReviewsByStoreId(int storeId);
+	List<ReviewVO> getReviewsByStoreId(@Param("storeId") int storeId, 
+			@Param("start") int start, @Param("end") int end);
+		
+	// username 조회
+	List<ReviewVO> findReviewWithUsername(int storeId);
 	
 }
