@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Pagination {
-	private String userId;
+	private int userId;
 	private int pageNum; // 현재 페이지 번호
 	private int pageSize; // 현재 페이지 사이즈
 	private String type; // 검색 항목
@@ -25,7 +25,7 @@ public class Pagination {
 		this.pageSize = pageSize;
 	}
 	
-	public Pagination(String userId, int page, int pageSize) {
+	public Pagination(int userId, int page, int pageSize) {
 		this.userId = userId;
 		this.pageNum = page;
 		this.pageSize = pageSize;

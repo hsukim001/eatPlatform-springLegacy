@@ -16,9 +16,9 @@ public interface ReservMapper {
 	// 이전 예약 목록 조회
 	List<ReservVO> selectPagingPrevDay(Pagination pagination);
 	// 예약 목록 총 건수 조회
-	int selectToDayTotalCount(String userId);
+	int selectToDayTotalCount(int userId);
 	// 이전 예약 목록 총 건수 조회
-	int selectPrevDayTotalCount(String userId);
+	int selectPrevDayTotalCount(int userId);
 	// 예약 등록
 	int insert(ReservVO reservVO);
 	// 예약 삭제

@@ -47,14 +47,14 @@ public class ReservServiceImple implements ReservService {
 
 	// 예약 목록 totalCount
 	@Override
-	public int searchToDayTotalCount(String userId) {
+	public int searchToDayTotalCount(int userId) {
 		log.info("searchToDayTotalCountByReservDateUserId()");
 		return reservMapper.selectToDayTotalCount(userId);
 	}
 
 	// 이전 예약 목록 totalCount
 	@Override
-	public int searchPrevDayTotalCount(String userId) {
+	public int searchPrevDayTotalCount(int userId) {
 		log.info("searchPrevDayTotalCountByReservDateUserId()");
 		return reservMapper.selectPrevDayTotalCount(userId);
 	}

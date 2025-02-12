@@ -208,7 +208,6 @@ public class UserServiceImple implements UserService {
 
 		int insertStore = storeMapper.insertStore(storeVO);
 		int storeId = storeVO.getStoreId();
-		String username = storeVO.getUsername();
 		log.info("storeId : " + storeId);
 
 		storeAddressVO.setStoreId(storeId);
@@ -305,9 +304,7 @@ public class UserServiceImple implements UserService {
 		log.info("businessReqeustDenied()");
 
 		int deleteStore = storeMapper.deleteStore(storeId);
-//		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
 		log.info("식당 : " + deleteStore + "행 삭제");
-//		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
 
 		return 1;
 	}

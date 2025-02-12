@@ -14,9 +14,9 @@ public interface ReservService {
 	// 이전 예약 목록 조회
 	List<ReservVO> searchPrevDayList(Pagination pagination);
 	// 예약 목록 총 건수 조회
-	int searchToDayTotalCount(String userId);
+	int searchToDayTotalCount(int userId);
 	// 이전 예약 목록 총 건수 조회
-	int searchPrevDayTotalCount(String userId);
+	int searchPrevDayTotalCount(int userId);
 	// 예약 등록
 	int createdReserv(ReservVO reservVO, int reservLimit);
 	// 예약 취소

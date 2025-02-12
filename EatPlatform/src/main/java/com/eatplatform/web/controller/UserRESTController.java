@@ -92,8 +92,8 @@ public class UserRESTController {
 	}
 	
 	// 회원 탈퇴
-	@PutMapping ("/withdrawal/{status}")
-	public ResponseEntity<ResultMsgResponse> withdrawalUser(@PathVariable("status") char status, @AuthenticationPrincipal CustomUser customUser, 
+	@PutMapping ("/withdrawal")
+	public ResponseEntity<ResultMsgResponse> withdrawalUser(@AuthenticationPrincipal CustomUser customUser, 
 			HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 		log.info("withdrawalUser()");
 		int userId = customUser.getUser().getUserId();

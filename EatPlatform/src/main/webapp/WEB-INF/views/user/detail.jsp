@@ -42,11 +42,9 @@
 					}
 				});
 				
-				function withdrawal() {
-					let status = 'N';
-					
+				function withdrawal() {					
 					$.ajax({
-						url : 'withdrawal/' + status,
+						url : 'withdrawal',
 						type : 'put',
 						headers : {
 							"Content-Type" : "application/json"

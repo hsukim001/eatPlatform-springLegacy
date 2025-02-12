@@ -36,7 +36,7 @@ public class ServiceConcurrencyTest {
 			executorService.submit(() -> {
 				try {
 					ReservVO vo = new ReservVO();
-					vo.setUserId("test");
+//					vo.setUserId("test");
 					vo.setStoreId(131);
 					vo.setReservDate("2025-01-17");
 					vo.setReservHour("15");

@@ -11,7 +11,7 @@
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
-		<title>예약 목락</title>
+		<title>예약 목록</title>
 		<script type="text/javascript">
 			// ajax CSRF 토큰
 			$(document).ajaxSend(function(e, xhr, opt){

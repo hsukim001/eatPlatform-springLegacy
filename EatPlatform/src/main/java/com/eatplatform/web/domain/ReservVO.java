@@ -15,7 +15,7 @@ public class ReservVO {
 	private int reservId;
 	private int storeId;
 	private String storeName;
-	private String userId;
+	private int userId;
 	private String reservDate;
 	private String reservHour;
 	private String reservMin;

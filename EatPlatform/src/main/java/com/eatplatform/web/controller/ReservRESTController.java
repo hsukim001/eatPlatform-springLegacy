@@ -2,8 +2,6 @@ package com.eatplatform.web.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.service.ReservService;
@@ -37,13 +36,13 @@ public class ReservRESTController {
 
 	// 페이징 예약 목록 조회(pageNum, userId)
 	@GetMapping("/toDay/{pageNum}")
-	public ResponseEntity<DataResponse> searchPagingToDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<DataResponse> searchPagingToDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("searchPagingToDay()");
 		int pageSize = 5;
 		log.info("pageNum = " + pageNum);
 		
 		// session에서 사용자 아이디 로드
-		String userId = userDetails.getUsername();
+		int userId = customUser.getUser().getUserId();
 		
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
@@ -64,12 +63,12 @@ public class ReservRESTController {
 	// 페이징 이전 예약 목록 조회(pageNum, userId)
 	@GetMapping("/prevDay/{pageNum}")
 	public ResponseEntity<DataResponse> searchPagingPrevDay(@PathVariable("pageNum") int pageNum,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@AuthenticationPrincipal CustomUser customUser) {
 		log.info("searchPagingToDay()");
 		int pageSize = 5;
 		
 		// session에서 사용자 아이디 로드
-		String userId = userDetails.getUsername();
+		int userId = customUser.getUser().getUserId();
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
 
@@ -88,11 +87,11 @@ public class ReservRESTController {
 
 	// 예약 등록
 	@PostMapping("/created/{reservLimit}")
-	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, @AuthenticationPrincipal UserDetails userDetails, @PathVariable("reservLimit") int reservLimit) {
+	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, @AuthenticationPrincipal CustomUser customUser, @PathVariable("reservLimit") int reservLimit) {
 		log.info("createdReserv()");
 		ReservVO vo = reservVO;
 		
-		String userId = userDetails.getUsername();
+		int userId = customUser.getUser().getUserId();
 		vo.setUserId(userId);
 		int result = reservService.createdReserv(vo, reservLimit);
 		
