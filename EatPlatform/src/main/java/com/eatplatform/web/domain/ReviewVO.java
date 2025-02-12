@@ -26,8 +26,7 @@ public class ReviewVO {
 	private int reviewReport;
 	private Date reviewUpdateDate;
 	
-	private UserRoleVO userRoleVO;
-	
+	// 이미지 첨부
 	private List<ReviewImageVO> reviewImageList;
 	
 	public List<ReviewImageVO> getreviewImageList() {
@@ -37,4 +36,7 @@ public class ReviewVO {
 		return reviewImageList;
 	}
 
+	// username 조회
+	private UserVO userVO;
+	
 }

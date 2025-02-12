@@ -23,13 +23,13 @@
 			<p>아이디 : <input type="text" name="userId" readonly="readonly" value="${reviewVO.userId }"></p>
 		</div>
 		<div>
-			<p>별점 : <input type="number" name="reviewStar" value="${reviewVO.reviewStar }" min="1" max="5"></p>
+			<p>별점 : <input type="number" name="reviewStar" value="${reviewVO.reviewStar }" min="1" max="5" ></p>
 		</div>
 		<div>
 			<p>태그 : <input type="text" name="reviewTag" value="${reviewVO.reviewTag }"></p>
 		</div>
 		<div>
-			<p>내용 : <textarea id="reviewContent" name="reviewContent" placeholder="${reviewVO.reviewContent }" ></textarea></p>
+			<p>내용 : <textarea id="reviewContent" name="reviewContent" placeholder="${reviewVO.reviewContent }" maxlength="250" ></textarea></p>
 		</div>
 	
 	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

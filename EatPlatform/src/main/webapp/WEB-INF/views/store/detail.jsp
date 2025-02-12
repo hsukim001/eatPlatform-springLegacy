@@ -241,7 +241,7 @@
 					<div id="reviewContainer">
 			
 						<sec:authorize access="isAuthenticated()">
-							<p style="display: none;"><span id="loginId"><sec:authentication property="principal.user.userId" /></span></p>
+							<p style="display: none;"><span id="loginId"><sec:authentication property="principal.user.username" /></span></p>
 						</sec:authorize>
 						
 						<p>

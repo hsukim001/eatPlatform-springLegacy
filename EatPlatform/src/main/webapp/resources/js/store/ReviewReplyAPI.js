@@ -129,13 +129,13 @@
 							var reviewDateText = (reviewDate !== reviewUpdateDate) ? reviewUpdateDate + '<span>(수정됨) </span>' : reviewDate;
 				        	
 				        	let loginId = $('#loginId').text();
-							var userId = this.userId;
-							console.log("로그인 ID: " + loginId + "사용자: " + userId); 
+							var username = this.userVO.username
+							console.log("로그인 ID: " + loginId + "사용자: " + username); 
 				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
 								+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
-								+ this.userId
+								+ username
 								+ '&nbsp;&nbsp;' // 공백
 								+ '<input type="text" id="reviewStar" value="'+ this.reviewStar +'" style="pointer-events: none;" >'
 								+ '&nbsp;&nbsp;'
@@ -149,12 +149,12 @@
 								+ this.reviewLike
 								
 						// 버튼들 (수정, 삭제, 추천, 신고)
-						if(loginId && userId && loginId == userId) {
+						if(loginId && username && loginId == username) {
 							list +=  '<div class="review_buttons">'
 								+ '<button class="btn_update" data-review-id="'+ this.reviewId + '">수정</button>'
 								+ '<button class="btn_delete" data-review-id="'+ this.reviewId + '">삭제</button>'
 								+ '</div>'; // review_buttons div 끝
-						} else if(loginId && userId && loginId != userId) {
+						} else if(loginId && username && loginId != username) {
 							list +=  '<div class="review_buttons">'
 								+ '<button class="btn_like" data-review-id="'+ this.reviewId + '" >추천</button>'
 								+ '<button class="btn_report" data-review-id="'+ this.reviewId + '" >신고</button>'
@@ -180,8 +180,8 @@
 				
 							// 리뷰 댓글 표시
 							list += '<div class="review_replies" id="review_' + this.reviewId + '_replies"></div>'
-						        + '<div style="display: none;" class="review_reply">'
-						        + '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요"></textarea>'
+						        + '<div  class="review_reply">'
+						        + '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요" maxlength="50"></textarea>'
 						        + '<button class="btn_reply">댓글 작성</button>'
 						        + '</div>'; // review_reply div 끝
 								+ '</div>';
@@ -242,12 +242,13 @@
 							
 							let loginId = $('#loginId').text();
 							let storeUserId = $('#storeUser').val();
+							var username = this.userVO.username
 							
 							var replyDateText = (replyDate !== replyUpdateDate) ? replyUpdateDate + '<span>(수정됨) </span>' : replyDate;
 													
 								repliesList += '<div class="reply_item">'
 									+ '<input type="hidden" id="reviewId" value="'+ this.reviewId +'">'
-									+ this.userId
+									+ username
 									+ '&nbsp;&nbsp;'
 									+ '<input type="hidden" id="replyId" value="'+ this.replyId +'">'
 									+ '<input type="text" id="replyContent" value="'+ this.replyContent +'" style="pointer-events: none;">'
@@ -485,7 +486,7 @@
 					},
 					error: function(xhr, status, error) {
 	                     if (xhr.status == 400) {
-	                         alert('댓글 내용은 100자 이하로 작성해주세요.');
+	                         alert('댓글 내용은 50자 이하로 작성해주세요.');
 	                     } else {
 	                         alert('댓글 등록에 실패했습니다.');
 	                     }

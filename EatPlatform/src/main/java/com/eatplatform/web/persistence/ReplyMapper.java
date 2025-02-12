@@ -14,4 +14,7 @@ public interface ReplyMapper {
 	int delete(int replyId);
 	int deleteByReviewId(int reviewId);
 	
+	// username 조회
+	ReplyVO findReplyWithUsername(int replyId);
+	
 }

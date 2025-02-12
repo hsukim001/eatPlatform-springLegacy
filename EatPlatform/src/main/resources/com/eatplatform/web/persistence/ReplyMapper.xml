@@ -12,6 +12,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       <result property="replyContent" column="REPLY_CONTENT" />
       <result property="replyDate" column="REPLY_DATE" />
       <result property="replyUpdateDate" column="REPLY_UPDATE_DATE" />
+      <association javaType="com.eatplatform.web.domain.UserVO" property="userVO" >
+			<id property="userId" column="USER_ID"/>
+			<result property="username" column="USERNAME"/>
+		</association>
    </resultMap>
 
 	<insert id="insert">
@@ -41,5 +45,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		DELETE REPLY
 		WHERE REVIEW_ID = #{reviewId}
 	</delete>
+	
+	<!-- ROLE_STORE username 조회 -->
+	<select id="findReplyWithUsername" resultMap="replyResultMap">
+		SELECT r.REPLY_ID, r.USER_ID, r.REVIEW_ID, r.REPLY_CONTENT, 
+		r.REPLY_DATE, r.REPLY_UPDATE_DATE,
+		u.USER_ID, u.USERNAME
+		FROM REPLY r
+		LEFT JOIN USER_STORE u ON r.USER_ID = u.USER_ID 
+		WHERE REPLY_ID = #{replyId}
+	</select>
 
 </mapper>

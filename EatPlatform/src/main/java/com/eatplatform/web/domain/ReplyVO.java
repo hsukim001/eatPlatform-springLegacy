@@ -15,9 +15,12 @@ import lombok.ToString;
 @ToString
 public class ReplyVO {
 	private int replyId;
-	private String userId;
+	private int userId;
 	private int reviewId;
 	private String replyContent;
 	private Date replyDate;
 	private Date replyUpdateDate;
+	
+	// username 조회
+	private UserVO userVO;
 }

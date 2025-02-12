@@ -1,6 +1,5 @@
 package com.eatplatform.web.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +54,14 @@ public class ReplyServiceImple implements ReplyService{
 	public int deleteReplyByReview(int reviewId) {
 		log.info("deleteReplyByReview()");
 		return replyMapper.deleteByReviewId(reviewId);
+	}
+
+	// username 조회
+	@Override
+	public ReplyVO getReplyWithUsername(int replyId) {
+		log.info("getReplyWithUsername()");
+		ReplyVO replyVO = replyMapper.findReplyWithUsername(replyId);
+		return replyVO;
 	}
 
 }

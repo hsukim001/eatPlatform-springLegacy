@@ -17,6 +17,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewLike" column="REVIEW_LIKE" />
 		<result property="reviewReport" column="REVIEW_REPORT" />
 		<result property="reviewUpdateDate" column="REVIEW_UPDATE_DATE" />
+		<association javaType="com.eatplatform.web.domain.UserVO" property="userVO" >
+			<id property="userId" column="USER_ID"/>
+			<result property="username" column="USERNAME"/>
+		</association>
 	</resultMap>
 
 	<insert id="insert">
@@ -87,10 +91,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- ROLE_MEMBER username 조회 -->
 	<select id="findReviewWithUsername" resultMap="reviewResultMap">
-		SELECT r, u.USERNAME 
-		FROM REVIEW r JOIN USER_ROLE u 
-		ON r.USER_ID = u.USER_ID
-		WHERE STORE_ID = #{storeId}
+		SELECT r.REVIEW_ID, r.STORE_ID, r.USER_ID, r.REVIEW_STAR, r.REVIEW_CONTENT, 
+		r.REVIEW_TAG, r.REVIEW_DATE, r.REVIEW_LIKE, r.REVIEW_REPORT, r.REVIEW_UPDATE_DATE,
+		u.USER_ID, u.USERNAME
+		FROM REVIEW r
+		LEFT JOIN USER_MEMBER u ON r.USER_ID = u.USER_ID 
+		WHERE REVIEW_ID = #{reviewId}
 	</select>
 
 </mapper>

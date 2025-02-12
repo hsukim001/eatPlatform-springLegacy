@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReplyVO;
 import com.eatplatform.web.service.ReplyService;
 
@@ -32,14 +32,14 @@ public class ReplyRESTController {
 	@PostMapping
 	public ResponseEntity<Integer> createReply(
 			@RequestBody ReplyVO replyVO,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@AuthenticationPrincipal CustomUser customUser) {
 		
-			String userId = userDetails.getUsername();
+			int userId = customUser.getUser().getUserId();
 			replyVO.setUserId(userId);
 			
-			// 댓글 내용 길이 제한 (100자 이하) 
+			// 댓글 내용 길이 제한 (50자 이하) 
 			if (replyVO.getReplyContent() != null && 
-					replyVO.getReplyContent().length() > 100) {
+					replyVO.getReplyContent().length() > 50) {
 				return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
 			}
 			log.info("createReply()");
@@ -57,6 +57,12 @@ public class ReplyRESTController {
 		log.info("getAllReply()");
 		
 		List<ReplyVO> list = replyService.getAllReply(reviewId);
+		
+		for(ReplyVO replyVO : list) {
+			ReplyVO username = replyService.getReplyWithUsername(replyVO.getReplyId());
+			replyVO.setUserVO(username.getUserVO());
+		}
+		log.info("list : " + list);
 		return new ResponseEntity<List<ReplyVO>>(list, HttpStatus.OK);
 	}
 	

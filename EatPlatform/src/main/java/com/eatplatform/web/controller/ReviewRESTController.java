@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.service.ReviewImageService;
 import com.eatplatform.web.service.ReviewService;
 
@@ -69,7 +70,7 @@ public class ReviewRESTController {
 			
 			int totalReviews = reviewService.countAllReviewsByStoreId(storeId);
 			log.info("totalReviews = " + totalReviews);
-		
+			
 			int start = (pageNumber - 1) * pageSize + 1;
 			int end = pageNumber * pageSize;
 			
@@ -80,6 +81,8 @@ public class ReviewRESTController {
 				int reviewId = reviewVO.getReviewId();
 				List<ReviewImageVO> reviewImageList = reviewImageService.getImageListByReviewId(reviewId);
 				reviewVO.setReviewImageList(reviewImageList);
+				ReviewVO username = reviewService.getReviewWithUsername(reviewId);
+				reviewVO.setUserVO(username.getUserVO());
 			}
 			
 			log.info("list : " + list);
@@ -105,6 +108,19 @@ public class ReviewRESTController {
 			
 		int result = reviewService.deleteReview(reviewId);
 		return new ResponseEntity<Integer>(result,HttpStatus.OK);
+		
+	}
+	
+	// 리뷰아이디별 조회
+	@GetMapping("/{reviewId}")
+	public ResponseEntity<ReviewVO> getReviewWithUsername(
+			@PathVariable("reviewId") int reviewId) {
+		log.info("getReviewWithUsername()");
+		
+		ReviewVO reviewVO = reviewService.getReviewWithUsername(reviewId);
+		log.info("reviewVO : " + reviewVO);
+		
+		return new ResponseEntity<ReviewVO>(reviewVO,HttpStatus.OK);
 		
 	}
 	

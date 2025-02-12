@@ -29,6 +29,6 @@ public interface ReviewMapper {
 			@Param("start") int start, @Param("end") int end);
 		
 	// username 조회
-	List<ReviewVO> findReviewWithUsername(int storeId);
+	ReviewVO findReviewWithUsername(int reviewId);
 	
 }

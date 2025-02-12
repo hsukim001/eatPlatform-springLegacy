@@ -17,6 +17,6 @@ public interface ReviewService {
 	List<ReviewVO> getAllReviewsByStoreId(int storeId, int start, int end);
 	
 	// username 조회
-	List<ReviewVO> getReviewWithUsername(int storeId);
+	ReviewVO getReviewWithUsername(int reviewId);
 
 }

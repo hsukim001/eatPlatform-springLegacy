@@ -143,13 +143,10 @@ public class ReviewServiceImple implements ReviewService{
 
 	// username 조회
 	@Override
-	public List<ReviewVO> getReviewWithUsername(int storeId) {
+	public ReviewVO getReviewWithUsername(int reviewId) {
 		log.info("getReviewWithUsername()");
-		
-		List<ReviewVO> reviews = reviewMapper.findReviewWithUsername(storeId);
-		log.info("reviews : " + reviews);
-		
-		return reviews;
+		ReviewVO reviewVO = reviewMapper.findReviewWithUsername(reviewId);
+		return reviewVO;
 	}
 
 }
