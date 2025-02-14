@@ -6,5 +6,5 @@ public interface ReviewReportListService {
 	int createReviewReportList(ReviewReportListVO reviewReportListVO);
 	
 	// 신고여부 확인
-	int isReviewReported(int reviewId, String userId);
+	int isReviewReported(int reviewId, int userId);
 }

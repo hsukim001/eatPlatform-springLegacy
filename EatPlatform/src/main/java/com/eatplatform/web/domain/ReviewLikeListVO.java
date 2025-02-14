@@ -13,5 +13,5 @@ import lombok.ToString;
 @ToString
 public class ReviewLikeListVO {
 	private int reviewId;
-	private String userId;
+	private int userId;
 }

@@ -15,7 +15,7 @@ public class ReviewReportListVO {
 	
 	private int reviewReportListId;
 	private int reviewId;
-	private String userId;
+	private int userId;
 	private String reviewReportMessage;
 	private String reviewContent;
 	private Date reviewReportDate;

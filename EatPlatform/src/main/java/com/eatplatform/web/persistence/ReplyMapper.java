@@ -8,8 +8,8 @@ import com.eatplatform.web.domain.ReplyVO;
 
 @Mapper
 public interface ReplyMapper {
-	int insert(ReplyVO replyVO);
 	List<ReplyVO> selectByReviewId(int reviewId);
+	int insert(ReplyVO replyVO);
 	int update(ReplyVO replyVO);
 	int delete(int replyId);
 	int deleteByReviewId(int reviewId);

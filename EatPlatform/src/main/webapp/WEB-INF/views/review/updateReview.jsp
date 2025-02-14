@@ -14,16 +14,16 @@
 </head>
 <body>
 	<h2>리뷰 수정 페이지</h2>
-	<form id="updateReviewForm" action="../page/updateReview" method="POST">
+	<form id="updateReviewForm" action="../review/updateReview" method="POST">
 		<div>
-			<input type="hidden" name="storeId" value="${reviewVO.storeId }">
-			<input type="hidden" name="reviewId" value="${reviewVO.reviewId }">
+			<input type="hidden" name="storeId" value="${reviewVO.storeId }" >
+			<input type="hidden" name="reviewId" value="${reviewVO.reviewId }" >
 		</div>
 		<div>
-			<p>아이디 : <input type="text" name="userId" readonly="readonly" value="${reviewVO.userId }"></p>
+			<p>아이디 : <input type="text" name="username" readonly="readonly" value="${reviewVO.userVO.username }" ></p>
 		</div>
 		<div>
-			<p>별점 : <input type="number" name="reviewStar" value="${reviewVO.reviewStar }" min="1" max="5" ></p>
+			<p>별점 : <input type="number" name="reviewStar" value="${reviewVO.reviewStar }" min="1" max="5" id="reviewStar" ></p>
 		</div>
 		<div>
 			<p>태그 : <input type="text" name="reviewTag" value="${reviewVO.reviewTag }"></p>
@@ -77,7 +77,18 @@
        xhr.setRequestHeader(header, token);
     });
 		
-		
+	// reviewStar 입력 제한
+    document.getElementById("reviewStar").addEventListener("input", function() {
+        const inputValue = this.value;
+
+     	// 숫자가 아닌 문자가 입력되었을 때 입력을 제거
+        if (isNaN(inputValue) || inputValue < 1 || inputValue > 5) {
+            alert("별점은 1부터 5까지의 숫자만 입력 가능합니다.");
+	        this.value = ''; // 입력된 값 초기화
+        }
+       
+      });
+	
 		$(document).ready(function() {
 			// 이미지 변경 버튼 클릭 시
 			$('#change-upload').click(function(){

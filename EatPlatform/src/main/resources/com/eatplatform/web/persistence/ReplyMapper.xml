@@ -46,6 +46,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE REVIEW_ID = #{reviewId}
 	</delete>
 	
+	<!-- 페이징 -->
+	<select id="countRepliewsByReviewId" resultType="Integer">
+		SELECT COUNT (*) FROM REPLY WHERE REVIEW_ID = #{reviewId}
+	</select>
+	
 	<!-- ROLE_STORE username 조회 -->
 	<select id="findReplyWithUsername" resultMap="replyResultMap">
 		SELECT r.REPLY_ID, r.USER_ID, r.REVIEW_ID, r.REPLY_CONTENT, 

@@ -287,8 +287,8 @@
 						   	<div class="reviewImg-list">
 						    </div>
 						    
-					        	<button id="btnAdd">작성</button>
-					     
+					        <button id="reviewBtnAdd">작성</button>
+					     	
 						</div>
 							<div style="text-align: center;">
 								<div id="reviews">

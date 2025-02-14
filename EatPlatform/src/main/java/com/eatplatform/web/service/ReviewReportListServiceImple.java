@@ -38,7 +38,7 @@ public class ReviewReportListServiceImple implements ReviewReportListService {
 
 	// 신고여부 확인
 	@Override
-	public int isReviewReported(int reviewId, String userId) {
+	public int isReviewReported(int reviewId, int userId) {
 		log.info("isReviewReported()");
 		
 		ReviewReportListVO reviewReportListVO = new ReviewReportListVO();

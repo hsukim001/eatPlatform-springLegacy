@@ -15,7 +15,7 @@
 			getAllReview();
 			
 			// 리뷰 등록
-			$('#btnAdd').click(function(){
+			$('#reviewBtnAdd').click(function(){
 				var storeId = $('#storeId').val();
 				var reviewStar = $('#reviewStar').text();
 				var reviewContent = $('#reviewContent').val();
@@ -81,6 +81,7 @@
 	                         $('#scoreWrap img').attr('src', '/resources/img/sample3bk.png');
 	                         $('#reviewWrite input, #reviewWrite textarea').val(''); // reviewContent 값 초기화
 	                         $('.image-list').html(''); // image-list 초기화
+	                         $("#reviewWrite").hide();
 	                         getAllReview();  // 리뷰 목록 다시 불러오기
 	                     } else {
 	                         alert('리뷰 등록에 실패했습니다.');
@@ -94,7 +95,7 @@
 	                     }
 	                 }
 	             });
-	         }); // end btnAdd.click()      
+	         }); // end reviewBtnAdd.click()      
 	         
 	         
 	        // 식당 리뷰 전체 가져오기
@@ -147,6 +148,7 @@
 								+'&nbsp;&nbsp;'
 								+ '<span>추천 </span>' // 추천 수 표시
 								+ this.reviewLike
+								+ '<br>'
 								
 						// 버튼들 (수정, 삭제, 추천, 신고)
 						if(loginId && username && loginId == username) {
@@ -161,8 +163,8 @@
 								+ '</div>'; // review_buttons div 끝
 								+ '<br>'
 						}
-							
 							// 이미지 조회
+							list += '<div class="review-images">'
 							$(this.reviewImageList).each(function(){
 								console.log(this);
 									
@@ -170,17 +172,17 @@
 									
 								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
 									
-							list += '<br>'
-								+ '<div class="review-image">'
+							list += '<div class="review-image">'
 								+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
 								+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
 								+ '</a>'
 								+ '</div>'
 							});
+							list += '</div>'
 				
 							// 리뷰 댓글 표시
 							list += '<div class="review_replies" id="review_' + this.reviewId + '_replies"></div>'
-						        + '<div  class="review_reply">'
+						        + '<div  class="review_reply" style="display: none;">'
 						        + '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요" maxlength="50"></textarea>'
 						        + '<button class="btn_reply">댓글 작성</button>'
 						        + '</div>'; // review_reply div 끝
@@ -251,7 +253,7 @@
 									+ username
 									+ '&nbsp;&nbsp;'
 									+ '<input type="hidden" id="replyId" value="'+ this.replyId +'">'
-									+ '<input type="text" id="replyContent" value="'+ this.replyContent +'" style="pointer-events: none;">'
+									+ '<input type="text" id="replyContent" value="'+ this.replyContent +'" readonly="readonly" >'
 									+ '&nbsp;&nbsp;'
 									+ replyDateText
 							
@@ -281,7 +283,7 @@
 				var storeId = $(this).prevAll('#storeId').val();
 				var reviewId = $(this).data('review-id');
 				
-				location.href = '../page/updateReview?reviewId=' + reviewId;
+				location.href = '../review/updateReview?reviewId=' + reviewId;
 				
 				var obj2 = {
 						  'storeId' : storeId,
@@ -291,7 +293,7 @@
 
 				$.ajax({
 					type : 'GET', 
-					url : '../page/updateReview?reviewId=' + reviewId,
+					url : '../review/updateReview?reviewId=' + reviewId,
 					data : JSON.stringify(obj2),
 					success : function(result) {
 						console.log(result);

@@ -21,7 +21,7 @@ public class ReviewLikeListServiceImple implements ReviewLikeListService{
 	
 	@Transactional(value = "transactionManager")
 	@Override
-	public int createReviewLikeList(int reviewId, String userId) {
+	public int createReviewLikeList(int reviewId, int userId) {
 		log.info("createReviewLikeList()");
 		
 		// 추천여부 확인

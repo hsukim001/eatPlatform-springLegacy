@@ -6,12 +6,12 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface ReviewLikeListMapper {
 	
+	int insert(@Param("reviewId") int reviewId, 
+			@Param("userId") int userId);
+	
+	int delete(int reviewId);
+	
 	// 중복 체크
 	int checkLike(@Param("reviewId") int reviewId, 
-			@Param("userId") String userId);
-	
-	int insert(@Param("reviewId") int reviewId, 
-			@Param("userId") String userId);
-	
-	int delete(@Param("reviewId") int reviewId);
+			@Param("userId") int userId);
 }

@@ -42,11 +42,11 @@ public class ReviewServiceImple implements ReviewService{
 
 		for(ReviewImageVO reviewImageVO : reviewImageList) {
 			reviewImageVO.setReviewId(reviewMapper.selectLastReviewId());
-			int imageResult = reviewImageMapper.insertReviewImage(reviewImageVO);
+			reviewImageMapper.insertReviewImage(reviewImageVO);
 			log.info("이미지 등록 : " + reviewImageList);
 			
 		}
-		return 1;
+		return result;
 	}
 
 	@Override
@@ -59,7 +59,6 @@ public class ReviewServiceImple implements ReviewService{
 	@Override
 	public ReviewVO getReviewById(int reviewId) {
 		log.info("getReviewById()");
-		log.info("reviewId : " + reviewId);
 		
 		ReviewVO reviewVO = reviewMapper.selectByReviewId(reviewId);
 		List<ReviewImageVO> list = reviewImageMapper.selectListByReviewId(reviewId);
