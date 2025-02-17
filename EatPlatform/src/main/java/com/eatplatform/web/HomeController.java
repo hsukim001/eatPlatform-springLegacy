@@ -6,15 +6,23 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.eatplatform.web.domain.CustomUser;
+
+import lombok.extern.log4j.Log4j;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
+@Log4j
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -23,7 +31,8 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, Model model, @RequestParam(value = "logout", required = false) String logout, 
+			@RequestParam(value = "accessDenied", required = false) String accessDenied) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date();
@@ -31,7 +40,16 @@ public class HomeController {
 		
 		String formattedDate = dateFormat.format(date);
 		
-		model.addAttribute("serverTime", formattedDate );
+		// 로그아웃이 발생한 경우, 로그아웃 메시지를 모델에 추가하여 전달
+		if(logout != null) {
+			log.info("로그아웃 !!");
+			model.addAttribute("message", "로그아웃 되었습니다!");
+		}
+		
+		if(accessDenied != null) {
+			log.info("접근 권한이 없습니다.");
+			model.addAttribute("message", "잘못된 접근입니다.");
+		}
 		
 		return "index";
 	}

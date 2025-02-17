@@ -71,13 +71,15 @@ public class ReservServiceImple implements ReservService {
 			
 			Date nowDate = new Date();
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm");
 			String nowDateFormat = formatter.format(nowDate);
 			String dateTime = reservVO.getReservDate() + " " + reservVO.getReservHour() + ":" + reservVO.getReservMin();
 			
 			Date now = formatter.parse(nowDateFormat);
 			Date reservDateTime = formatter.parse(dateTime);
 			
+			
+			// 함수명 (시간, 차이갑
 			// 현재시간보다 이전의 시간 예외
 			if (now.after(reservDateTime)) {
 				log.info("예약할수 없는 시간입니다.");

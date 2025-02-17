@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.authorizeRequests()
+				.antMatchers("/access/login").anonymous()
 				.antMatchers("/user/register").permitAll()
 				.antMatchers("/user/created").permitAll()
 				.antMatchers("/user/searchPw").permitAll()

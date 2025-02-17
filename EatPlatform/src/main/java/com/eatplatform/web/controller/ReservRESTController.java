@@ -63,7 +63,7 @@ public class ReservRESTController {
 	// 페이징 이전 예약 목록 조회(pageNum, userId)
 	@GetMapping("/prevDay/{pageNum}")
 	public ResponseEntity<DataResponse> searchPagingPrevDay(@PathVariable("pageNum") int pageNum,
-			@AuthenticationPrincipal CustomUser customUser) {
+															@AuthenticationPrincipal CustomUser customUser) {
 		log.info("searchPagingToDay()");
 		int pageSize = 5;
 		

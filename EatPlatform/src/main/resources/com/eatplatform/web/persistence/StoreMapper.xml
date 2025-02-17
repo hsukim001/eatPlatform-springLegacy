@@ -11,11 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.StoreVO"
 		id="StoreResultMap">
 		<id property="storeId" column="STORE_ID"/>
-<<<<<<< Updated upstream
-		<result property="username" column="STORE_USER_ID" />
-=======
 		<result property="storeUserId" column="STORE_USER_ID" />
->>>>>>> Stashed changes
 		<result property="storeName" column="STORE_NAME" />
 		<result property="storePhone" column="STORE_PHONE" />
 		<result property="ownerName" column="OWNER_NAME" />

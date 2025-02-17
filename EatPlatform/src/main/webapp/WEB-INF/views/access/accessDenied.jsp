@@ -16,7 +16,8 @@
 	    <h2>${SPRING_SECURITY_403_EXCEPTION.getMessage()}</h2>
 	    
 	    <!-- msg : 사용자가 직접 설정한 메시지를 출력 -->
-	    <h2>${msg}</h2>		
+	    <h2>${msg}</h2>
+	    <button type="button" onclick="location.href='/'">확인</button>
 	</div>
 </body>
 </html>

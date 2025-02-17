@@ -85,6 +85,8 @@ public class EmailServiceImple implements EmailService {
 	private String createdAuthCode() {
 		Random random = new Random();
 		int randomCode = random.nextInt(999999);
+		
+		log.info("인증번호 : " + randomCode);
 
 		String authCode = Integer.toString(randomCode);
 		return authCode;

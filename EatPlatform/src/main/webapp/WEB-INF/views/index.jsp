@@ -396,5 +396,9 @@
         
 		<jsp:include page="/include/footer.jsp" />		
 	</div> <!-- End Wrap -->
+	<!-- 로그아웃 메시지 -->
+	<div>
+		<p style="display: none" id="message">${message }</p>
+	</div>
 </body>
 </html>

@@ -46,12 +46,12 @@ public class UserController {
 	// 회원 가입 페이지 이동
 	@GetMapping("/register")
 	public void registerGET(Model model) {
-		log.info("registerGET()");		
+		log.info("registerGET()");
 	}
 	
 	// 회원 등록
 	@PostMapping("/created")
-	public String created(UserVO userMemberVO) {
+	public String created(UserVO userMemberVO, RedirectAttributes redirectAttributes, Model model) {
 		log.info("created()");
 		log.info(userMemberVO);
 		String password = userMemberVO.getPassword();
@@ -60,11 +60,23 @@ public class UserController {
 		
 		int result = userService.createdUser(userMemberVO);
 		
+		String message;
+		String url;
 		if(result == 1) {
 			log.info("회원 등록 성공");
+			message = "회원 가입에 성공하였습니다.";
+			url = "/";
+			model.addAttribute("message", message);
+		} else {
+			log.info("회원 가입 실패");
+			message = "회원 가입에 실패하였습니다.";
+			url = "/user/register";
 		}
 		
-		return "redirect:/";
+		redirectAttributes.addAttribute("message", message);
+		redirectAttributes.addAttribute("url", url);
+		
+		return "redirect:/common/message/check";	
 	}
 	
 	// 회원 상세(수정) 페이지 이동
@@ -90,7 +102,7 @@ public class UserController {
 	
 	// 회원 정보 수정
 	@PostMapping("/modify")
-	public String modify(UserVO userMemberVO, @AuthenticationPrincipal CustomUser customUser) {
+	public String modify(UserVO userMemberVO, @AuthenticationPrincipal CustomUser customUser, RedirectAttributes redirectAttributes) {
 		log.info("modify()");
 		log.info(userMemberVO);
 		
@@ -109,12 +121,19 @@ public class UserController {
 			log.info("권한 : ADMIN");
 			result = userAdminService.updateUser(vo);
 		}
-				
+		
+		String message;
+		String url = "/user/detail";
 		if(result == 1) {
 			log.info("회원 정보 수정 성공");
+			message = "회원 정보 수정이 완료되었습니다.";
+		} else {
+			message = "회원 정보 수정에 실패하였습니다.";
 		}
+		redirectAttributes.addAttribute("message", message);
+		redirectAttributes.addAttribute("url", url);
 		
-		return "redirect:/user/detail";
+		return "redirect:/common/message/check";
 	}
 	
 	// 비밀번호 수정 페이지 호출
@@ -163,7 +182,7 @@ public class UserController {
 	
 	// 사업자 등록 신청
 	@PostMapping("/business/request")
-	public String businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, @AuthenticationPrincipal CustomUser customUser) {
+	public String businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, @AuthenticationPrincipal CustomUser customUser, RedirectAttributes redirectAttributes) {
 		log.info("businessRequest()");
 		
 		String username = customUser.getUsername();	
@@ -171,10 +190,23 @@ public class UserController {
 		storeVO.setStoreUserId(username);
 		log.info("username : " + storeVO.getStoreUserId());
 		int result = userService.businessRequest(storeVO, storeAddressVO, userId);
+		
+		String message;
+		String url = "/user/business/requestForm";
 		if(result == 1) {
-			log.info("사업자 등록 신청 성공");
+			message = "사업자 등록 신청에 성공하였습니다.";
+			log.info(message);
+			log.info(url);
+		} else {
+			log.info("사업자 등록 신청 실패");
+			message = "사업자 등록 신청에 실패하였습니다.";
+			log.info(message);
+			log.info(url);
 		}
-		return "redirect:/";
+		redirectAttributes.addAttribute("message", message);
+		redirectAttributes.addAttribute("url", url);
+		
+		return "redirect:/common/message/check";
 	}
 	
 	// 사업자 등록 요청 목록 화면 호출
@@ -203,13 +235,25 @@ public class UserController {
 	
 	// 사업자 등록 요청 승인
 	@PostMapping("/business/requestInfo")
-	public String businessRequestApprovals(@RequestParam("businessRequestId") int businessRequestId, @RequestParam("storeId") int storeId) {
+	public String businessRequestApprovals(@RequestParam("businessRequestId") int businessRequestId, @RequestParam("storeId") int storeId, RedirectAttributes redirectAttributes) {
 		log.info("businessRequestApprovals()");
 		int result = userService.businessReqeustApprovals(businessRequestId, storeId);
+		
+		String message;
+		String url = "/user/business/requestList";
 		if(result == 1) {
-			log.info("사업자 등록 성공");
+			log.info("사업자 등록 요청 승인");
+			message = "사업자 등록 요청에 대한 승인이 완료되었습니다.";
+		} else {
+			log.info("사업자 등록 요청 거부");
+			message = "사업자 등록 요청에 대한 승인이 거부되었습니다.";
 		}
-		return "redirect:/user/business/requestList";
+		log.info(message);
+		log.info(url);
+		redirectAttributes.addAttribute("message", message);
+		redirectAttributes.addAttribute("url", url);
+		
+		return "redirect:/common/message/check";
 	}
 	
 }
