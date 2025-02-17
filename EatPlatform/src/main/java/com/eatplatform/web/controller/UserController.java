@@ -168,8 +168,8 @@ public class UserController {
 		
 		String username = customUser.getUsername();	
 		int userId = customUser.getUser().getUserId();
-		storeVO.setUsername(username);
-		log.info("username : " + storeVO.getUsername());
+		storeVO.setStoreUserId(username);
+		log.info("username : " + storeVO.getStoreUserId());
 		int result = userService.businessRequest(storeVO, storeAddressVO, userId);
 		if(result == 1) {
 			log.info("사업자 등록 신청 성공");

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- namespace -->
+<mapper namespace="com.eatplatform.web.persistence.ProductMapper">
+
+	<resultMap type="com.eatplatform.web.domain.ProductVO"
+		id="ProductResultMap">
+		<id property="productId" column="PRODUCT_ID" />
+		<result property="productStoreId" column="PRODUCT_STORE_ID" />
+		<result property="sellerId" column="SELLER_ID" />
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="productPrice" column="PRODUCT_PRICE" />
+		<result property="productCategory" column="PRODUCT_CATEGORY" />
+		<result property="productBundle" column="PRODUCT_BUNDLE" />
+		<result property="productStock" column="PRODUCT_STOCK" />
+		<result property="createAt" column="CREATEAT" />
+		<result property="updatedAt" column="UPDATEAT" />
+	</resultMap>
+
+	<resultMap
+		type="com.eatplatform.web.domain.ProductMainCategoryVO"
+		id="MainCategoryResultMap">
+		<id property="mainCategoryId" column="MAIN_CATEGORY_ID" />
+		<result property="mainCategoryName" column="MAIN_CATEGORY_NAME" />
+	</resultMap>
+	
+	<resultMap
+		type="com.eatplatform.web.domain.ProductSubCategoryVO"
+		id="SubCategoryResultMap">
+		<id property="subCategoryId" column="SUB_CATEGORY_ID" />
+		<result property="mainCategoryId" column="MAIN_CATEGORY_ID" />
+		<result property="subCategoryName" column="SUB_CATEGORY_NAME" />
+	</resultMap>
+
+	<insert id="insertProduct"
+		parameterType="com.eatplatform.web.domain.ProductVO">
+		INSERT INTO PRODUCT(
+		PRODUCT_ID, PRODUCT_STORE_ID,
+		SELLER_ID,
+		PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_CATEGORY,
+		PRODUCT_BUNDLE, PRODUCT_STOCK
+		) VALUES (
+		PRODUCT_SEQ.NEXTVAL,
+		#{productStoreId},
+		#{sellerId},
+		#{productName},
+		#{productPrice},
+		#{productCategory},
+		#{productBundle},
+		#{productStock}
+		)
+	</insert>
+
+	<insert id="insertMainCategory"
+		parameterType="com.eatplatform.web.domain.ProductMainCategoryVO">
+		INSERT INTO PRODUCT_MAIN_CATEGORY(
+		MAIN_CATEGORY_ID,
+		MAIN_CATEGORY_NAME
+		) VALUES (
+		PRODUCT_MAIN_CATEGORY_SEQ.NEXTVAL,
+		#{mainCategoryName}
+		)
+	</insert>
+
+	<insert id="insertSubCategory"
+		parameterType="com.eatplatform.web.domain.ProductSubCategoryVO">
+		INSERT INTO PRODUCT_SUB_CATEGORY(
+		SUB_CATEGORY_ID,
+		MAIN_CATEGORY_ID,
+		SUB_CATEGORY_NAME
+		) VALUES (
+		PRODUCT_SUB_CATEGORY_SEQ.NEXTVAL,
+		#{mainCategoryId},
+		#{subCategoryName}
+		)
+	</insert>
+
+	<select id="selectMainCategoryAll" resultMap="MainCategoryResultMap">
+		SELECT *
+		FROM PRODUCT_MAIN_CATEGORY
+	</select>
+	
+	<select id="selectSubCategoryByMainCategoroyId" parameterType="Int" resultMap="SubCategoryResultMap">
+		SELECT *
+		FROM PRODUCT_SUB_CATEGORY
+		WHERE MAIN_CATEGORY_ID = #{mainCategoryId}
+	</select>
+
+</mapper>

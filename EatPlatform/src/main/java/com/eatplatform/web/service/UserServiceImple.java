@@ -208,6 +208,10 @@ public class UserServiceImple implements UserService {
 
 		int insertStore = storeMapper.insertStore(storeVO);
 		int storeId = storeVO.getStoreId();
+<<<<<<< Updated upstream
+=======
+		String username = storeVO.getStoreUserId();
+>>>>>>> Stashed changes
 		log.info("storeId : " + storeId);
 
 		storeAddressVO.setStoreId(storeId);

@@ -44,6 +44,11 @@
             <div id="gnb_bar">
             	<ul>
             		<li> 
+            			<a href="/shop/list">
+            				Shop 
+            			</a>
+            		</li>
+            		<li> 
             			<a href="/store/list">
             				맛집 목록 
             			</a>
@@ -64,8 +69,8 @@
             					</a>
             				</li>
             				
-            				<!-- 일반 회원 -->
             				<sec:authorize access="hasAuthority('ROLE_MEMBER')">
+            				<!-- 일반 회원 -->
 	            				<li>
 	            					<a href="/reserv/list">
 	            						예약 현황 확인
@@ -78,8 +83,8 @@
             					</li>
             				</sec:authorize>
             				
-            				<!-- 사업자 회원 -->
             				<sec:authorize access="hasAuthority('ROLE_STORE')">
+            				<!-- 사업자 회원 -->
 	            				<li>
 	            					<a href="/reserv/list">
 	            						예약 현황 확인
@@ -91,14 +96,19 @@
             						</a>
             					</li>
             					<li>
+            						<a href="/shop/register">
+            							상품 등록
+            						</a>
+            					</li>
+            					<li>
 	            					<a href="/store/newStore">
 	            						신규 업장 등록
 	            					</a>
 	            				</li>
             				</sec:authorize>
             				
-            				<!--  관리자 -->
             				<sec:authorize access="hasAuthority('ROLE_ADMIN')">
+            				<!--  관리자 -->
             					<li>
             						<a href="#" onclick="alert('아직 준비 중 입니다.');">
             							신고 리뷰 관리
@@ -112,6 +122,11 @@
             					<li>
             						<a href="/store/request/list">
             							가게 등록 관리
+            						</a>
+            					</li>
+            					<li>
+            						<a href="/shop/product/category/management">
+            							상품 카테고리 관리
             						</a>
             					</li>
             				</sec:authorize>

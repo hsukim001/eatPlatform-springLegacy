@@ -237,8 +237,8 @@
                                         <div id="recommend_info_star">
                                             <span>5</span>
                                             <img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star1" alt="별 이미지">
-                                            <img src="<%=request.getContextPath()%>/resources/img/common/ullStar.png" class="star2" alt="별 이미지">
-                                            <img src="<%=request.getContextPath()%>/resources/img/common/ullStar.png" class="star3" alt="별 이미지">
+                                            <img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star2" alt="별 이미지">
+                                            <img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star3" alt="별 이미지">
                                             <img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star4" alt="별 이미지">
                                             <img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star5" alt="별 이미지">
                                         </div>

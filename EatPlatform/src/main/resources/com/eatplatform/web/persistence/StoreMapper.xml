@@ -11,7 +11,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.StoreVO"
 		id="StoreResultMap">
 		<id property="storeId" column="STORE_ID"/>
+<<<<<<< Updated upstream
 		<result property="username" column="STORE_USER_ID" />
+=======
+		<result property="storeUserId" column="STORE_USER_ID" />
+>>>>>>> Stashed changes
 		<result property="storeName" column="STORE_NAME" />
 		<result property="storePhone" column="STORE_PHONE" />
 		<result property="ownerName" column="OWNER_NAME" />
@@ -27,13 +31,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<insert id="insertStore" parameterType="com.eatplatform.web.domain.StoreVO" useGeneratedKeys="true" keyProperty="storeId" keyColumn="STORE_ID">
 		INSERT INTO STORE(
-		STORE_ID, USER_NAME, STORE_NAME,
+		STORE_ID, STORE_USER_ID, STORE_NAME,
 		STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,
 		RESERV_LIMIT, SEAT,
 		BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
 		) VALUES (
 		STORE_SEQ.NEXTVAL,
-		#{username},
+		#{storeUserId},
 		#{storeName},
 		#{storePhone},
 		#{ownerName},
@@ -102,10 +106,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        </where>
 	</select>
 
-	<select id="getusernameByStoreId" parameterType="int" resultType="string">
-		SELECT USER_NAME
+	<select id="getStoreUserIdByStoreId" parameterType="int" resultType="string">
+		SELECT STORE_USER_ID
 		FROM STORE
 		WHERE STORE_ID = #{storeId}
+	</select>
+	
+	<select id="getStoreIdByStoreUserId" parameterType="String" resultType="com.eatplatform.web.domain.StoreVO">
+		SELECT STORE_ID, STORE_NAME
+		FROM STORE
+		WHERE STORE_USER_ID = #{storeUserId}
 	</select>
 
 	<!-- 최근 6개의 매장 가져오기 -->

@@ -61,7 +61,7 @@ public class StoreController {
 	@PostMapping("/register")
 	public String register(StoreVO storeVO, StoreAddressVO storeAddressVO, Model model, @AuthenticationPrincipal UserDetails userDetails) {
 		String userId = userDetails.getUsername();
-		storeVO.setUsername(userId);
+		storeVO.setStoreUserId(userId);
 		int result = storeService.registerStore(storeVO, storeAddressVO);
 
 		model.addAttribute("result", result);
@@ -110,7 +110,7 @@ public class StoreController {
 		StoreAddressVO storeAddressVO = storeAddressService.selectStoreAddressById(storeId);
 
 		String currentUserId = userDetails.getUsername();
-		String dbUserId = storeService.getUsernameByStoreId(storeVO.getStoreId());
+		String dbUserId = storeService.getStoreUserIdByStoreId(storeVO.getStoreId());
 
 		log.info("currentUserId : " + currentUserId + "// dbUserId : " + dbUserId);
 
@@ -155,9 +155,9 @@ public class StoreController {
 		log.info(storeAddressVO + "주소");
 
 		String currentUserId = userDetails.getUsername();
-		String dbUserId = storeService.getUsernameByStoreId(storeVO.getStoreId());
+		String dbUserId = storeService.getStoreUserIdByStoreId(storeVO.getStoreId());
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
-			storeVO.setUsername(dbUserId);
+			storeVO.setStoreUserId(dbUserId);
 
 			int result = storeService.modifyStore(storeVO, storeAddressVO);
 			if (result == 1) {

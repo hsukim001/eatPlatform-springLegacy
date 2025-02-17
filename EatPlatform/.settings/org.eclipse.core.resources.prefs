@@ -5,3 +5,7 @@ eclipse.preferences.version=1
 encoding//src/main/webapp/WEB-INF/views/index.jsp=UTF-8
 encoding//src/main/webapp/include/calendar.jsp=UTF-8
 encoding//src/main/webapp/include/header.jsp=UTF-8
+<<<<<<< Updated upstream
+=======
+encoding/<project>=UTF-8
+>>>>>>> Stashed changes

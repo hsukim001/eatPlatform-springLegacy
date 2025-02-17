@@ -127,6 +127,18 @@
 		    $("#reviewWrite").hide();
 		    
 		    $("#reviewBtn").click(function(){
+<<<<<<< Updated upstream
+=======
+		    	fetch('../access/auth/status')
+				.then(response => response.json())
+				.then(isAuthenticated => {
+					if(isAuthenticated) {
+						$("#reviewWrite").slideToggle('300');						
+					} else {
+						alert('로그인이 필요합니다.');
+					}
+				})
+>>>>>>> Stashed changes
 		    	fetch('../access/auth/member')
 				.then(response => response.json())
 				.then(data => {

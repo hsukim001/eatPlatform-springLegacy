@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.ReviewMapper">
+
+	<resultMap type="com.eatplatform.web.domain.ReviewVO"
+		id="reviewResultMap">
+		<id property="reviewId" column="REVIEW_ID" />
+		<result property="storeId" column="STORE_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="reviewStar" column="REVIEW_STAR" />
+		<result property="reviewContent" column="REVIEW_CONTENT" />
+		<result property="reviewTag" column="REVIEW_TAG" />
+		<result property="reviewDate" column="REVIEW_DATE" />
+		<result property="reviewLike" column="REVIEW_LIKE" />
+		<result property="reviewReport" column="REVIEW_REPORT" />
+		<result property="reviewUpdateDate" column="REVIEW_UPDATE_DATE" />
+	</resultMap>
+
+	<insert id="insert">
+		INSERT INTO REVIEW (REVIEW_ID, STORE_ID, USER_ID,
+		REVIEW_STAR, REVIEW_CONTENT, REVIEW_TAG)
+		VALUES (REVIEW_SEQ.NEXTVAL, 
+		#{storeId}, #{userId},
+		#{reviewStar}, #{reviewContent}, #{reviewTag})
+	</insert>
+	
+	<!-- 이미지 첨부 시 reviewId 반환 -->
+	<select id="selectLastReviewId" resultType="Integer">
+	      SELECT REVIEW_SEQ.CURRVAL
+	      FROM DUAL
+	</select>
+	
+	<select id="selectListByStoreId" resultMap="reviewResultMap">
+		SELECT * FROM REVIEW
+		WHERE STORE_ID = #{storeId}
+		ORDER BY REVIEW_ID
+	</select>
+	
+	<!-- reviewId 조회 -->
+	<select id="selectByReviewId" resultMap="reviewResultMap">
+		SELECT * FROM REVIEW
+		WHERE REVIEW_ID = #{reviewId}
+	</select>
+
+	<update id="update">
+		UPDATE REVIEW SET
+		REVIEW_STAR = #{reviewStar},
+		REVIEW_CONTENT = #{reviewContent},
+		REVIEW_TAG = #{reviewTag},
+		REVIEW_UPDATE_DATE = SYSDATE
+		WHERE REVIEW_ID = #{reviewId}
+	</update>
+
+	<delete id="delete">
+		DELETE REVIEW
+		WHERE REVIEW_ID = #{reviewId}
+	</delete>
+
+	<update id="updateLikeCount">
+		UPDATE REVIEW
+		SET REVIEW_LIKE = REVIEW_LIKE +
+		#{amount}
+		WHERE REVIEW_ID = #{reviewId}
+	</update>
+
+	<update id="updateReportCount">
+		UPDATE REVIEW
+		SET REVIEW_REPORT = REVIEW_REPORT +
+		#{amount}
+		WHERE REVIEW_ID = #{reviewId}
+	</update>
+
+	<!-- 페이징 -->
+	<select id="countReviewsByStoreId" resultType="Integer">
+		SELECT COUNT(*) FROM REVIEW WHERE STORE_ID = #{storeId}
+	</select>
+	
+	<select id="getReviewsByStoreId" resultMap="reviewResultMap"> 
+		SELECT * FROM (
+			SELECT ROW_NUMBER() OVER (ORDER BY REVIEW_ID DESC) 
+			AS RN, REVIEW.* FROM REVIEW WHERE STORE_ID = #{storeId}) 
+		WHERE RN BETWEEN #{start} AND #{end} 
+	</select>
+
+</mapper>
