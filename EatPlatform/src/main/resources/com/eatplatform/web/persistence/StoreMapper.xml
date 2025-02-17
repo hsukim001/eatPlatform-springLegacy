@@ -52,6 +52,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 		STORE_ID = #{storeId}
 	</select>
+	
+	<select id="selectStoreListByStoreUserId" resultMap="StoreResultMap">
+		SELECT * FROM (
+		    SELECT ROW_NUMBER() OVER (ORDER BY STORE_ID DESC) AS RN, STORE.* FROM STORE
+		    WHERE STORE_USER_ID = #{storeUserId}
+		)
+		WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
+	</select>
 
 
 	<!-- list paging 처리 -->
@@ -100,6 +108,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                )
            </if>
        </where>
+	</select>
+	
+	<select id="getTotalStoresCountByStoreUserId" resultType="Integer">
+		SELECT COUNT(*)
+		FROM STORE
+		WHERE STORE_USER_ID = #{storeUserId}
 	</select>
 
 	<select id="getStoreUserIdByStoreId" parameterType="int" resultType="string">

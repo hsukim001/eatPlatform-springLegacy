@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface StoreMapper {
@@ -15,6 +16,8 @@ public interface StoreMapper {
 	
 	// 전체 게시물 조회
 	List<StoreVO> getRecentStores(Map<String, Integer> params);
+	
+	List<StoreVO> selectStoreListByStoreUserId(@Param("pagination") Pagination pagination, @Param("storeUserId") String storeUserId);
 	
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
@@ -26,6 +29,8 @@ public interface StoreMapper {
 	List<StoreVO> getStoresWithPaging(Map<String, Object> params);
 	
 	int getTotalStoresCount(Map<String, Object> params);
+	
+	int getTotalStoresCountByStoreUserId(String storeUserId);
 
 	int updateStore(StoreVO storeVO);
 	

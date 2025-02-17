@@ -13,7 +13,7 @@
 	</sec:authorize>
 	
 	<sec:authorize access="hasAuthority('ROLE_STORE')">
-		<p><a>매장 관리</a></p>
+		<p><a href="/management/store/list">매장 관리</a></p>
 		<p><a href="/shop/register">상품 등록</a></p>
 	</sec:authorize>
 	
