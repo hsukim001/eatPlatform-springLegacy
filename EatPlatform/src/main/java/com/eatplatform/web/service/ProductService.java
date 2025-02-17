@@ -22,6 +22,24 @@ public interface ProductService {
 	// 상위 카테고리 조회
 	List<ProductMainCategoryVO> getMainCategoryAll();
 
-	// 하위 카테고리 조회
+	// 하위 카테고리 조회 (ByMainCategoryId)
 	List<ProductSubCategoryVO> getSubCategoryByMainCategoryId(@Param("mainCategoryId") int mainCategoryId);
+	
+	// 상위 카테고리 조회 (ByMainCategoryId)
+	ProductMainCategoryVO getMainCategoryByMainCategoryId(@Param("mainCategoryId") int mainCategoryId);
+	
+	// 하위 카테고리 조회 (BySubCategoryId)
+	ProductSubCategoryVO getSubCategoryBySubCategoryId(@Param("subCategoryId") int subCategoryId);
+
+	// 상위 카테고리 수정
+	boolean modifyMainCategory(ProductMainCategoryVO productMainCategoryVO);
+	
+	// 하위 카테고리 수정
+	boolean modifySubCategory(ProductSubCategoryVO productSubCategoryVO);
+	
+	// 상위 카테고리 삭제
+	boolean deleteMainCategory(@Param("mainCategoryId") int mainCategoryId);
+	
+	// 상위 카테고리 삭제
+	boolean deleteSubCategory(@Param("subCategoryId") int subCategoryId);
 }

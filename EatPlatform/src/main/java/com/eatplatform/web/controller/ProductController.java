@@ -26,10 +26,8 @@ public class ProductController {
 	}
 
 	@GetMapping("/category/management")
-	public String management(Model model) {
+	public String management() {
 		log.info("Shop/Product/Category/Management, management");
-        List<ProductMainCategoryVO> mainCategories = productService.getMainCategoryAll();
-        model.addAttribute("mainCategories", mainCategories);
 		return "/shop/product/category/management";
 	}
 	

@@ -23,6 +23,24 @@ public interface ProductMapper {
 	// 상위 카테고리 조회
 	List<ProductMainCategoryVO> selectMainCategoryAll();
 	
-	// 하위 카테고리 조회
+	// 하위 카테고리 조회 (ByMainCategoryId)
 	List<ProductSubCategoryVO> selectSubCategoryByMainCategoroyId(@Param("mainCategoryId") int mainCategoryId);
+	
+	// 상위 카테고리 조회 (ByMainCategoryId)
+	ProductMainCategoryVO selectMainCategoryByMainCategoryId(@Param("mainCategoryId") int mainCategoryId);
+	
+	// 하위 카테고리 조회 (BySubCategoryId)
+	ProductSubCategoryVO selectSubCategoryBySubCategoryId(@Param("subCategoryId") int subCategoryId);
+
+	// 상위 카테고리 수정
+	boolean updateMainCategory(ProductMainCategoryVO productMainCategoryVO);
+	
+	// 하위 카테고리 수정
+	boolean updateSubCategory(ProductSubCategoryVO productSubCategoryVO);
+	
+	// 상위 카테고리 삭제
+	boolean deleteMainCategory(@Param("mainCategoryId") int mainCategoryId);
+
+	// 하위 카테고리 삭제
+	boolean deleteSubCategory(@Param("subCategoryId") int subCategoryId);
 }

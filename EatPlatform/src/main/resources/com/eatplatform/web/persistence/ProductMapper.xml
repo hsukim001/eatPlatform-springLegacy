@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<id property="mainCategoryId" column="MAIN_CATEGORY_ID" />
 		<result property="mainCategoryName" column="MAIN_CATEGORY_NAME" />
 	</resultMap>
-	
+
 	<resultMap
 		type="com.eatplatform.web.domain.ProductSubCategoryVO"
 		id="SubCategoryResultMap">
@@ -80,15 +80,67 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		)
 	</insert>
 
-	<select id="selectMainCategoryAll" resultMap="MainCategoryResultMap">
+	<select id="selectMainCategoryAll"
+		resultMap="MainCategoryResultMap">
 		SELECT *
 		FROM PRODUCT_MAIN_CATEGORY
 	</select>
-	
-	<select id="selectSubCategoryByMainCategoroyId" parameterType="Int" resultMap="SubCategoryResultMap">
+
+	<select id="selectMainCategoryByMainCategoryId"
+		resultMap="MainCategoryResultMap">
+		SELECT *
+		FROM PRODUCT_MAIN_CATEGORY
+		WHERE
+		MAIN_CATEGORY_ID =
+		#{mainCategoryId}
+		ORDER BY MAIN_CATEGORY_ID ASC
+	</select>
+
+	<select id="selectSubCategoryByMainCategoroyId"
+		parameterType="Int" resultMap="SubCategoryResultMap">
 		SELECT *
 		FROM PRODUCT_SUB_CATEGORY
-		WHERE MAIN_CATEGORY_ID = #{mainCategoryId}
+		WHERE
+		MAIN_CATEGORY_ID = #{mainCategoryId}
+		ORDER BY SUB_CATEGORY_ID ASC
 	</select>
+
+	<select id="selectSubCategoryBySubCategoryId"
+		parameterType="Int" resultMap="SubCategoryResultMap">
+		SELECT *
+		FROM PRODUCT_SUB_CATEGORY
+		WHERE
+		SUB_CATEGORY_ID = #{subCategoryId}
+	</select>
+
+	<update id="updateMainCategory">
+		UPDATE PRODUCT_MAIN_CATEGORY
+		SET MAIN_CATEGORY_NAME =
+		#{mainCategoryName}
+		WHERE MAIN_CATEGORY_ID = #{mainCategoryId}
+	</update>
+
+	<update id="updateSubCategory">
+		UPDATE PRODUCT_SUB_CATEGORY
+		SET
+		MAIN_CATEGORY_ID =
+		#{mainCategoryId},
+		SUB_CATEGORY_NAME = #{subCategoryName}
+		WHERE
+		SUB_CATEGORY_ID = #{subCategoryId}
+	</update>
+
+	<delete id="deleteMainCategory">
+		DELETE FROM PRODUCT_MAIN_CATEGORY
+		WHERE
+		MAIN_CATEGORY_ID = #{mainCategoryId}
+	</delete>
+
+	<delete id="deleteSubCategory">
+		DELETE FROM PRODUCT_SUB_CATEGORY
+		WHERE
+		SUB_CATEGORY_ID
+		= #{subCategoryId}
+	</delete>
 
 </mapper>

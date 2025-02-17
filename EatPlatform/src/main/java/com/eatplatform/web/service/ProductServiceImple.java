@@ -52,10 +52,47 @@ public class ProductServiceImple implements ProductService {
 	public List<ProductMainCategoryVO> getMainCategoryAll() {
         return productMapper.selectMainCategoryAll();
 	}
-
-	// 하위 카테고리 조회
+	
+	// 하위 카테고리 조회 (ByMainCategoryId)
 	@Override
 	public List<ProductSubCategoryVO> getSubCategoryByMainCategoryId(int mainCategoryId) {
 		return productMapper.selectSubCategoryByMainCategoroyId(mainCategoryId);
 	}
+	
+	// 상위 카테고리 조회 (ByMainCategoryId)
+	@Override
+	public ProductMainCategoryVO getMainCategoryByMainCategoryId(int mainCategoryId) {		
+		return productMapper.selectMainCategoryByMainCategoryId(mainCategoryId);
+	}
+
+	// 하위 카테고리 조회 (BySubCategoryId)
+	@Override
+	public ProductSubCategoryVO getSubCategoryBySubCategoryId(int subCategoryId) {
+		return productMapper.selectSubCategoryBySubCategoryId(subCategoryId);
+	}
+
+	// 상위 카테고리 수정
+	@Override
+	public boolean modifyMainCategory(ProductMainCategoryVO productMainCategoryVO) {
+		return productMapper.updateMainCategory(productMainCategoryVO);
+	}
+
+	// 하위 카테고리 수정
+	@Override
+	public boolean modifySubCategory(ProductSubCategoryVO productSubCategoryVO) {
+		return productMapper.updateSubCategory(productSubCategoryVO);
+	}
+
+	// 상위 카테고리 삭제
+	@Override
+	public boolean deleteMainCategory(int mainCategoryId) {
+		return productMapper.deleteMainCategory(mainCategoryId);
+	}
+	
+	// 하위 카테고리 삭제
+	@Override
+	public boolean deleteSubCategory(int subCategoryId) {
+		return productMapper.deleteSubCategory(subCategoryId);
+	}
+
 }
