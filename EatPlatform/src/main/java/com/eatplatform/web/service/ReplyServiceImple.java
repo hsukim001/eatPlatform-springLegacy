@@ -55,6 +55,13 @@ public class ReplyServiceImple implements ReplyService{
 		log.info("deleteReplyByReview()");
 		return replyMapper.deleteByReviewId(reviewId);
 	}
+	
+	// 페이징
+	@Override
+	public int countAllRepliewsByReviewId(int reviewId) {
+		log.info("getAllReviewsByStoreId()");
+		return replyMapper.countRepliewsByReviewId(reviewId);
+	}
 
 	// username 조회
 	@Override

@@ -10,7 +10,7 @@
 		$(document).ready(function(){
 		
 			var pageNumber = 1;  // 페이지 번호
-            var pageSize = 5;  // 한 번에 가져올 리뷰의 개수
+            var pageSize = 3;  // 한 번에 가져올 리뷰의 개수
             var totalReviews = 0; // 전체 리뷰 개수
 			getAllReview();
 			
@@ -172,11 +172,11 @@
 									
 								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
 									
-							list += '<div class="review-image">'
-								+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
-								+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
-								+ '</a>'
-								+ '</div>'
+								list += '<div class="review-image">'
+									+ '<a href="' + ReviewImgUrl + '"  target="_blank">'
+									+ '<img width="100px" height="100px" src="' + ReviewImgUrl + '" />'
+									+ '</a>'
+									+ '</div>'
 							});
 							list += '</div>'
 				
@@ -300,6 +300,8 @@
 						if(result == 1) {
 							alert('리뷰 수정 성공!');
 							getAllReview();
+						} else {
+							alert('리뷰를 수정할 수 없습니다.');
 						}
 					}
 					
@@ -483,7 +485,7 @@
 						if(result == 1) {
 							alert('댓글 입력 성공');
 							getReplies(reviewId);
-							$('#replyContent').val("");
+							$('.review_reply').find('#replyContent').val('');
 						}
 					},
 					error: function(xhr, status, error) {
@@ -539,8 +541,12 @@
 							if(result == 1) {
 								alert('댓글 수정 성공!');
 								getReplies(reviewId);
-							}
-						}
+							} 
+						
+						},
+						error: function(xhr, status, error) {
+	                        alert('댓글 등록에 실패했습니다.');
+	                     }
 						
 					}); 
 				}); // end btn_save_reply.on()

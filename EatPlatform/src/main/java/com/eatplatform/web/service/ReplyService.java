@@ -11,6 +11,9 @@ public interface ReplyService {
 	int deleteReply(int replyId);
 	int deleteReplyByReview(int reviewId);
 	
+	// 페이징
+	int countAllRepliewsByReviewId(int reviewId);
+	
 	// username 조회
 	ReplyVO getReplyWithUsername(int replyId);
 	

@@ -35,8 +35,14 @@ public class ReviewController {
 	
 	// updateReview.jsp에서 수정할 데이터를 전송받아 게시글 데이터 수정
 	@PostMapping("/updateReview")
-	public String updateReviewPOST(ReviewVO reviewVO) {
+	public String updateReviewPOST(Model model,ReviewVO reviewVO) {
 		log.info("updateReviewPOST()");
+		
+		// 필수 필드 검증
+		if (reviewVO.getReviewContent() == null || reviewVO.getReviewContent().trim().isEmpty()) {
+			model.addAttribute("error", "Review content cannot be empty.");
+			return "redirect:/review/updateReview?reviewId=" + reviewVO.getReviewId();  // 오류가 있을 경우 수정 페이지로 돌아가기
+		}
 		
 		int result = reviewService.updateReview(reviewVO);
 		log.info("reviewVO = " + reviewVO.toString());

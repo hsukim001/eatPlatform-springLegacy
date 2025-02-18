@@ -14,7 +14,7 @@ public interface ReviewService {
 	
 	// 페이징
 	int countAllReviewsByStoreId(int storeId);
-	List<ReviewVO> getAllReviewsByStoreId(int storeId, int start, int end);
+	List<ReviewVO> getPagingReviewsByStoreId(int storeId, int start, int end);
 	
 	// username 조회
 	ReviewVO getReviewWithUsername(int reviewId);

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewReportListVO;
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.service.ReplyService;
 import com.eatplatform.web.service.ReviewImageService;
 import com.eatplatform.web.service.ReviewLikeListService;
 import com.eatplatform.web.service.ReviewReportListService;
@@ -44,17 +46,20 @@ public class ReviewRESTController {
 	
 	@Autowired
 	private ReviewReportListService reviewReportListService;
-
+	
 	// 리뷰 등록(회원)
 	@PostMapping
-	public ResponseEntity<Integer> createReview(@RequestBody ReviewVO reviewVO,
+	public ResponseEntity<Integer> createReview(Model model, @RequestBody ReviewVO reviewVO,
 			@AuthenticationPrincipal CustomUser customUser) {
 
 		int userId = customUser.getUser().getUserId();
 		reviewVO.setUserId(userId);
-
-		// 리뷰 내용 길이 제한 (250자 이하)
-		if (reviewVO.getReviewContent() != null && reviewVO.getReviewContent().length() > 250) {
+		
+		// 필수 필드 검증(공백 및 글자 수 제한)
+		if (reviewVO.getReviewContent() == null || reviewVO.getReviewContent().trim().isEmpty()) {
+			model.addAttribute("error", "Review content cannot be empty.");
+			return new ResponseEntity<>(0, HttpStatus.FORBIDDEN);
+		} else if(reviewVO.getReviewContent() != null && reviewVO.getReviewContent().length() > 250) {
 			return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
 		}
 
@@ -78,9 +83,10 @@ public class ReviewRESTController {
 		int start = (pageNumber - 1) * pageSize + 1;
 		int end = pageNumber * pageSize;
 
-		List<ReviewVO> list = reviewService.getAllReviewsByStoreId(storeId, start, end);
+		List<ReviewVO> list = reviewService.getPagingReviewsByStoreId(storeId, start, end);
+		
 
-		// 첨부된 이미지 데이터 조회
+		// 첨부된 이미지 데이터 조회 및 username 가져오기
 		for (ReviewVO reviewVO : list) {
 			int reviewId = reviewVO.getReviewId();
 			List<ReviewImageVO> reviewImageList = reviewImageService.getImageListByReviewId(reviewId);
@@ -88,7 +94,7 @@ public class ReviewRESTController {
 			ReviewVO username = reviewService.getReviewWithUsername(reviewId);
 			reviewVO.setUserVO(username.getUserVO());
 		}
-
+		
 		log.info("list : " + list);
 		log.info("start : " + start);
 		log.info("end : " + end);
@@ -104,8 +110,7 @@ public class ReviewRESTController {
 
 	// 리뷰 삭제
 	@DeleteMapping("/{reviewId}")
-	public ResponseEntity<Integer> deleteReview(@PathVariable("reviewId") int reviewId,
-			@AuthenticationPrincipal CustomUser customUser) {
+	public ResponseEntity<Integer> deleteReview(@PathVariable("reviewId") int reviewId) {
 
 		log.info("deleteReview()");
 
@@ -128,8 +133,7 @@ public class ReviewRESTController {
 	
 	// 리뷰 추천
 	@PostMapping("/like/{reviewId}")
-	public ResponseEntity<Integer> createReviewLikeList(
-			@PathVariable("reviewId") int reviewId,
+	public ResponseEntity<Integer> createReviewLikeList(@PathVariable("reviewId") int reviewId,
 			@AuthenticationPrincipal CustomUser customUser) {
 		
 		int userId = customUser.getUser().getUserId();
@@ -143,8 +147,7 @@ public class ReviewRESTController {
 	
 	// 리뷰 신고
 	@PostMapping("/report/{reviewId}")
-	public ResponseEntity<Integer> createReviewReportList(
-			@RequestBody ReviewReportListVO reviewReportListVO,
+	public ResponseEntity<Integer> createReviewReportList(@RequestBody ReviewReportListVO reviewReportListVO,
 			@AuthenticationPrincipal CustomUser customUser) {
 		
 		int userId = customUser.getUser().getUserId();
@@ -159,8 +162,7 @@ public class ReviewRESTController {
 	
 	// 신고여부 확인
 	@GetMapping("report/{reviewId}")
-	public ResponseEntity<Integer> reviewReported(
-			@PathVariable("reviewId") int reviewId,
+	public ResponseEntity<Integer> reviewReported(@PathVariable("reviewId") int reviewId,
 			@AuthenticationPrincipal CustomUser customUser) {
 		
 		int userId = customUser.getUser().getUserId();

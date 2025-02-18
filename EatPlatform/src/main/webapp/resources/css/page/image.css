@@ -111,11 +111,15 @@
 
   
 /* 댓글 아이템 */
-.reply_item {
+.review_replies {
   margin-bottom: 15px;
   padding: 10px;
   background-color: #f0f0f0; /* 댓글 배경 색상 */
+}
 
+/* .review_replies가 빈 값일 때 배경을 투명하게 설정 */
+.review_replies:empty {
+  background-color: transparent;
 }
   
 }

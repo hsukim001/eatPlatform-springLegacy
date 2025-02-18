@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE RN BETWEEN #{start} AND #{end} 
 	</select>
 	
-	<!-- ROLE_MEMBER username 조회 -->
+	<!-- username 조회 -->
 	<select id="findReviewWithUsername" resultMap="reviewResultMap">
 		SELECT r.REVIEW_ID, r.STORE_ID, r.USER_ID, r.REVIEW_STAR, r.REVIEW_CONTENT, 
 		r.REVIEW_TAG, r.REVIEW_DATE, r.REVIEW_LIKE, r.REVIEW_REPORT, r.REVIEW_UPDATE_DATE,

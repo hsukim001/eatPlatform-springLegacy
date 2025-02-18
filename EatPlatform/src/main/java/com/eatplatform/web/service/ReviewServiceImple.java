@@ -135,8 +135,8 @@ public class ReviewServiceImple implements ReviewService{
 
 	// 페이징
 	@Override
-	public List<ReviewVO> getAllReviewsByStoreId(int storeId, int start, int end) {
-		log.info("getAllReviewsByStoreId()");
+	public List<ReviewVO> getPagingReviewsByStoreId(int storeId, int start, int end) {
+		log.info("getPagingReviewsByStoreId()");
 		return reviewMapper.getReviewsByStoreId(storeId, start, end);
 	}
 
