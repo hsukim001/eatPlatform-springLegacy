@@ -19,6 +19,7 @@ public class StoreScheduleVO {
 	private String min;
 	private int totalPersonnel;
 	private boolean active;
+	private int reservTeam;
 	
 	public StoreScheduleVO(String reservDate, String hour, String min, int totalPersonnel) {
 		this.reservDate = reservDate;

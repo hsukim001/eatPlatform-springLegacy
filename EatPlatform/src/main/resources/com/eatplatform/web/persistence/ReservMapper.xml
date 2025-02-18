@@ -19,10 +19,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<resultMap type="com.eatplatform.web.domain.StoreScheduleVO" id="storeScheduleResultMap">
-		<id property="hour" column="HOUR"/>
-		<result property="min" column="MIN"/>
-		<result property="reservDate" column="reservDate"/>
+		<id property="hour" column="RESERV_HOUR"/>
+		<result property="min" column="RESERV_MIN"/>
+		<result property="reservDate" column="RESERV_DATE"/>
 		<result property="totalPersonnel" column="TOTAL_PERSONNEL"/>
+		<result property="reservTeam" column="RESERV_TEAM"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.JoinReservUserNameVO" id="joinReservUserNameResultMap">
+		<id property="reservId" column="RESERV_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="storeName" column="STORE_NAME"/>
+		<result property="reservDate" column="RESERV_DATE"/>
+		<result property="reservHour" column="RESERV_HOUR"/>
+		<result property="reservMin" column="RESERV_MIN"/>
+		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
+		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
+		<result property="name" column="NAME"/>
 	</resultMap>
 	
 	<select id="selectPagingToDay" resultMap="reservResultMap">
@@ -109,6 +123,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND RESERV_DATE = #{reservDate}
 		  AND RESERV_HOUR = #{reservHour}
 		  AND RESERV_MIN = #{reservMin}
+	</select>
+	
+	<select id="selectReservListByStoreIdReservDate" resultMap="storeScheduleResultMap">
+		SELECT RESERV_DATE, RESERV_HOUR, RESERV_MIN, SUM(RESERV_PERSONNEL) AS TOTAL_PERSONNEL, COUNT(USER_ID) AS RESERV_TEAM FROM RESERV
+		WHERE RESERV_DATE = #{reservDate}
+		AND STORE_ID = #{storeId}
+		GROUP BY RESERV_DATE, RESERV_HOUR, RESERV_MIN
+		ORDER BY RESERV_HOUR ASC
+	</select>
+	
+	<select id="selectReservListByStoreIdReservDateReservHourReservMin" resultMap="joinReservUserNameResultMap">
+		SELECT r.*, u.NAME 
+		FROM RESERV r
+		LEFT OUTER JOIN USER_MEMBER u
+		ON r.USER_ID = u.USER_ID
+		WHERE STORE_ID = #{storeId}
+		AND RESERV_DATE = #{reservDate}
+		AND RESERV_HOUR = #{reservHour}
+		AND RESERV_MIN = #{reservMin}
 	</select>
 	
 </mapper>

@@ -1,13 +1,13 @@
 package com.eatplatform.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.CustomUser;
+import com.eatplatform.web.domain.JoinReservUserNameVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.service.ReservService;
@@ -35,6 +36,11 @@ public class ReservRESTController {
 	private ReservService reservService;
 
 	// 페이징 예약 목록 조회(pageNum, userId)
+	/**
+	 * @param pageNum
+	 * @param customUser
+	 * @return
+	 */
 	@GetMapping("/toDay/{pageNum}")
 	public ResponseEntity<DataResponse> searchPagingToDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("searchPagingToDay()");
@@ -61,9 +67,13 @@ public class ReservRESTController {
 	}
 
 	// 페이징 이전 예약 목록 조회(pageNum, userId)
+	/**
+	 * @param pageNum
+	 * @param customUser
+	 * @return
+	 */
 	@GetMapping("/prevDay/{pageNum}")
-	public ResponseEntity<DataResponse> searchPagingPrevDay(@PathVariable("pageNum") int pageNum,
-															@AuthenticationPrincipal CustomUser customUser) {
+	public ResponseEntity<DataResponse> searchPagingPrevDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("searchPagingToDay()");
 		int pageSize = 5;
 		
@@ -86,6 +96,12 @@ public class ReservRESTController {
 	}
 
 	// 예약 등록
+	/**
+	 * @param reservVO
+	 * @param customUser
+	 * @param reservLimit
+	 * @return
+	 */
 	@PostMapping("/created/{reservLimit}")
 	public ResponseEntity<Integer> createdReserv(@RequestBody ReservVO reservVO, @AuthenticationPrincipal CustomUser customUser, @PathVariable("reservLimit") int reservLimit) {
 		log.info("createdReserv()");
@@ -99,6 +115,10 @@ public class ReservRESTController {
 	}
 
 	// 예약 취소
+	/**
+	 * @param reservId
+	 * @return
+	 */
 	@DeleteMapping("/cancel/{reservId}")
 	public ResponseEntity<Integer> cancelReserv(@PathVariable("reservId") int reservId) {
 		log.info("cancelReserv()");
@@ -108,9 +128,15 @@ public class ReservRESTController {
 	}
 	
 	// 예약 가능시간 조회
+	/**
+	 * @param storeId
+	 * @param reservLimit
+	 * @param personnel
+	 * @param reservDate
+	 * @return List<StoreScheduleVO>
+	 */
 	@GetMapping("/schedule/{storeId}/{reservLimit}/{personnel}/{reservDate}")
-	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, @PathVariable("reservLimit") int reservLimit, 
-			@PathVariable("personnel") int personnel, @PathVariable("reservDate") String reservDate) {
+	public ResponseEntity<List<StoreScheduleVO>> searchSchedule(@PathVariable("storeId") int storeId, @PathVariable("reservLimit") int reservLimit, @PathVariable("personnel") int personnel, @PathVariable("reservDate") String reservDate) {
 		log.info("searchSchedule()");
 		
 		StoreScheduleVO vo = new StoreScheduleVO();
@@ -123,6 +149,37 @@ public class ReservRESTController {
 		}
 		
 		return new ResponseEntity<List<StoreScheduleVO>>(list, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param storeId
+	 * @param reservDate
+	 * @return Map<String, Object>
+	 */
+	@GetMapping("/choiceDate/{storeId}/{reservDate}")
+	public ResponseEntity<Map<String, Object>> choiceDateReserv(@PathVariable("storeId") int storeId, @PathVariable("reservDate") String reservDate) {
+		log.info("choiceDateReserv()");
+		Map<String, Object> map = new HashMap<>();
+		List<StoreScheduleVO> reservList = reservService.searchReservList(storeId, reservDate);
+		map.put("list", reservList);
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+	}
+	
+	@GetMapping("/choiceDay/{storeId}/{reservDate}/{reservHour}/{reservMin}")
+	public ResponseEntity<Map<String, Object>> choiceDayReservInfo(@PathVariable("storeId") int storeId, @PathVariable("reservDate") String reservDate, @PathVariable("reservHour") String reservHour, @PathVariable("reservMin") String reservMin) {
+		log.info("choiceDayReservInfo");
+		Map<String, Object> map = new HashMap<>();
+		
+		ReservVO reservVO = new ReservVO();
+		reservVO.setStoreId(storeId);
+		reservVO.setReservDate(reservDate);
+		reservVO.setReservHour(reservHour);
+		reservVO.setReservMin(reservMin);
+		List<JoinReservUserNameVO> list = reservService.searchReservList(reservVO);
+		log.info("list : " + list);
+		
+		map.put("list", list);
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 
 }

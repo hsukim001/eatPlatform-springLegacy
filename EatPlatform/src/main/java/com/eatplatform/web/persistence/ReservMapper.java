@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.eatplatform.web.domain.JoinReservUserNameVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.util.Pagination;
@@ -15,6 +16,21 @@ public interface ReservMapper {
 	List<ReservVO> selectPagingToDay(Pagination pagination);
 	// 이전 예약 목록 조회
 	List<ReservVO> selectPagingPrevDay(Pagination pagination);
+
+	/**
+	 * @param storeId
+	 * @param reservDate
+	 * @return List<StoreScheduleVO>
+	 */
+	List<StoreScheduleVO> selectReservListByStoreIdReservDate(@Param("storeId") int storeId, @Param("reservDate") String reservDate);
+	
+	
+	/**
+	 * @param reservVO
+	 * @return List<JoinReservUserNameVO>
+	 */
+	List<JoinReservUserNameVO> selectReservListByStoreIdReservDateReservHourReservMin(ReservVO reservVO);
+	
 	// 예약 목록 총 건수 조회
 	int selectToDayTotalCount(int userId);
 	// 이전 예약 목록 총 건수 조회

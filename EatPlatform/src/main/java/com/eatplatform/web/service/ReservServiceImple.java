@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.eatplatform.web.domain.JoinReservUserNameVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -71,9 +72,10 @@ public class ReservServiceImple implements ReservService {
 			
 			Date nowDate = new Date();
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			String nowDateFormat = formatter.format(nowDate);
 			String dateTime = reservVO.getReservDate() + " " + reservVO.getReservHour() + ":" + reservVO.getReservMin();
+			log.info(dateTime);
 			
 			Date now = formatter.parse(nowDateFormat);
 			Date reservDateTime = formatter.parse(dateTime);
@@ -138,6 +140,19 @@ public class ReservServiceImple implements ReservService {
 		}
 
 		return list;
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public List<StoreScheduleVO> searchReservList(int storeId, String reservDate) {
+		return reservMapper.selectReservListByStoreIdReservDate(storeId, reservDate);
+	}
+
+	@Override
+	public List<JoinReservUserNameVO> searchReservList(ReservVO reservVO) {
+		return reservMapper.selectReservListByStoreIdReservDateReservHourReservMin(reservVO);
 	}
 
 }

@@ -15,11 +15,36 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/myPageLeft.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/management/ReviewReplyAPI.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/management/calendar.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#reservBtn').click(function(){
+				fetch('../../access/auth/status', { method : 'get', credentials: 'include' })
+					.then(response => response.json())
+					.then(isAuthenticated => {
+						if(isAuthenticated) {
+							$('#calendar-wrap > div').stop().fadeToggle(400);
+							$('#calendar-wrap').stop().slideToggle(500);							
+						} else {
+							alert('로그인이 필요합니다.');
+						}
+					})
+					.catch(error => {
+						console.error("Error checking authentication status:", error);
+					});
+			}); // End #reservBtnWrap input.click
+			
+			$('#topCloseBtn, #bottomCloseBtn').click(function() {
+				$('#reservScheduleModal').hide();
+			});
+		});
+	</script>
 	
 	<title>${storeInfo.storeName }</title>
 </head>
@@ -69,7 +94,7 @@
 				
 				<div id="reservBtnWrap" class="width100 mb30">
 					<input type="button" id="reservBtn" value="예약 확인">	
-					<jsp:include page="/include/calendar.jsp" />
+					<jsp:include page="/include/scheduleCalendar.jsp" />
 				</div>
 				<div id="remoteBar" class="mb30">
 					<ul>
@@ -118,16 +143,20 @@
 						<p>
 							<input id="reviewBtn" type="button" value="리뷰 확인">
 						</p>
+						
+						<input type="hidden" id="storeId" value="${storeInfo.storeId }">
+						<input type="hidden" id="storeUser" value="${storeInfo.storeUserId }">
+						
 						<div style="text-align: center;">
-								<div id="reviews">
-								</div>
-								<br>
-								<!-- 더보기 버튼 추가 -->
-								<button id="loadMoreBtn">더보기</button>
+							<div id="reviews">
 							</div>
+							<br>
+							<!-- 더보기 버튼 추가 -->
+							<button id="loadMoreBtn">더보기</button>
+						</div>
 							
-							<!-- 리뷰 신고 모달 포함 -->
-    						<jsp:include page="/include/reportModal.jsp" />	
+							<!-- 모달 포함 -->
+    						<jsp:include page="/include/modal/reservSchedule.jsp" />	
 						<ul>
 
 						</ul>
