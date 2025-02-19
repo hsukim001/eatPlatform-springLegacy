@@ -20,4 +20,5 @@ public class JoinReservUserNameVO {
 	private int reservPersonnel;
 	private Date reservDateCreated;
 	private String name;
+	private String phone;
 }

@@ -39,4 +39,19 @@ public class MenuServiceImple implements MenuService {
 		return menuMapper.selectMenuByStoreId(storeId);
 	}
 
+	@Override
+	public int deleteMenu(int menuId) {
+		return menuMapper.deleteMenuByMenuId(menuId);
+	}
+
+	@Override
+	public String getMenuStoreIdByMenuId(int menuId) {
+		return menuMapper.selectMenuStoreIdByMenuId(menuId);
+	}
+
+	@Override
+	public MenuVO getMenuByMenuId(int menuId) {
+		return menuMapper.selectMenuByMenuId(menuId);
+	}
+
 }

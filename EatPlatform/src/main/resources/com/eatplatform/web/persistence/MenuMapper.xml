@@ -52,4 +52,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE STORE_ID = #{storeId}
 		AND REPRESENT = 1
 	</select>
+	
+	<select id="selectMenuByMenuId" resultMap="MenuResultMap">
+		SELECT *
+		FROM MENU
+		WHERE MENU_ID = #{menuId}
+	</select>
+	
+	<select id="selectMenuStoreIdByMenuId" resultType="String">
+		SELECT s.STORE_USER_ID
+		FROM MENU m
+		LEFT OUTER JOIN STORE s
+		ON m.STORE_ID = s.STORE_ID
+		WHERE
+		MENU_ID = #{menuId}
+	</select>
+	
+	<delete id="deleteMenuByMenuId">
+		DELETE MENU
+		WHERE MENU_ID = #{menuId}
+	</delete>
 </mapper>

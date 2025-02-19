@@ -39,12 +39,13 @@ $(function () {
 		
 	});
 	
+	// 캘린더 조회 함수
     function updateSelectionDisplay() {
         dateText = selectedDate ? `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}` : '날짜를 선택하세요';
         timeText = selectedTime || '시간을 선택하세요';
-        selectionDisplay.text(`선택한 날짜: ${dateText}, 선택한 시간: ${timeText}`);
     }
 
+	// 캘린더 함수
     function generateCalendar(month, year) {
         calendarDays.empty();
 
@@ -214,7 +215,7 @@ $(function () {
 				
 				let totalCountText = reservList[i].reservTeam + "팀 및 " + "총 " + reservList[i].totalPersonnel + "명";
 				
-				let reservTimeSlot = $('<button>').text(reservTimeSlotText + " " + totalCountText).attr('data-time-value', time);
+				let reservTimeSlot = $('<button>').text(reservTimeSlotText + ", " + totalCountText).attr('data-time-value', time);
 				
 				
 				// 오전과 오후를 구분하여 적절한 컨테이너에 추가
@@ -259,6 +260,7 @@ $(function () {
 		
 	}
 	
+	// 선택된 시간의 예약자 상세 정보 조회 함수
 	function choiceDayReservInfo() {
 		let timeSplit = timeValue.split(':');
 		let hour = timeSplit[0];
@@ -280,6 +282,7 @@ $(function () {
 		});
 	}
 	
+	// 예약자 목록 생성 함수
 	function generateReservInfo() {
 	
 		let timeSplit = timeValue.split(':');
@@ -288,20 +291,19 @@ $(function () {
 		
 		let reservInfo = "";
 		for(let i = 0; i < reservInfoList.length; i++) {
+			let reservId = reservInfoList[i].reservId;
 		
-			let reservCancelBtn = $('<button>').text("예약 취소").attr('data-id-value', reservInfoList[i].reservId);
+			let reservCancelBtn = '<button id="reservCancelBtn" data-id-value="' + reservId + '">예약 취소</button>';
 			
 			reservInfo += 
 				'<li>' + (i + 1) + '.' +
 				'<span> 예약자 명 : ' + reservInfoList[i].name + '</span>' +
-				'<span> 인원 : ' + reservInfoList[i].reservPersonnel + '</span>' +
-				'<span> 접수일 : ' + reservInfoList[i].reservDateCreated + '</span>' +
+				'<span>, 연락처 : ' + reservInfoList[i].phone + '</span>' +
+				'<span>, 인원 : ' + reservInfoList[i].reservPersonnel + '</span>' +
+				'<span>, 접수일 : ' + reservInfoList[i].reservDateCreated + '</span>' +
 				reservCancelBtn
 				+ '</li>';
 			
-			reservCancelBtn.on('click', function(){
-				console.log("예약 취소");
-			});
 		};
 				
 		let date = new Date();
@@ -311,6 +313,40 @@ $(function () {
 				
 		$('#reservDay').text(dateText + reservTimeText + " 예약 정보");
 		$('#reservUserInfo').html(reservInfo);
+	}
+	
+	// 모달창 예약 취소 버튼 이벤트 리스너
+	$(document).on('click', '#reservCancelBtn', function(){
+		console.log("예약 취소");
+		let isCancel = confirm("해당 회원의 예약을 취소하시겠습니까?");
+		
+		if(isCancel) {
+			console.log("true");
+			let reservId = $(this).data("id-value");
+			console.log("reservId : " + reservId);
+			cancelReserv(reservId);
+		}
+		
+	});
+	
+	// 예약 취소 함수
+	function cancelReserv(reservId) {
+		$.ajax({
+			url : '/reserv/cancel/' + reservId,
+			type : 'delete',
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			success : function(response) {
+				if(response == 1) {
+					alert("예약 취소가 완료되었습니다.");
+					location.reload(true);
+				}
+			},
+			errors : function() {
+				alert("예약 취소중에 오류가 발생하였습니다.");
+			}
+		});
 	}
 	
 

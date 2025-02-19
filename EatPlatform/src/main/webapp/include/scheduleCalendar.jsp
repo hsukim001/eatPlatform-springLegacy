@@ -24,15 +24,8 @@
 			</div>
 		</div>
 	</div>
+	<div>
+		<button id="">휴무일 등록</button>
+	</div>
 
-	<div class="selection-display" id="selection-display">선택 결과 출력창</div>
-
-
-	<input type="time" id="start-time" class="hidden-input"
-		value="${startTime }"> <input type="time" id="end-time"
-		class="hidden-input" value="${endTime }">
-	
-	<sec:authorize access="isAuthenticated()">
-		<input id="createdReserv" type="button" value="등록">		
-	</sec:authorize>
 </div>

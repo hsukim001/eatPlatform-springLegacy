@@ -15,4 +15,22 @@ public interface MenuService {
 
 	// storeId로 검색하여 조회
 	List<MenuVO> selectMenuByStoreId(int storeId);
+	
+	/**
+	 * @param menuId
+	 * @return
+	 */
+	MenuVO getMenuByMenuId(int menuId);
+	
+	/**
+	 * @param MenuId
+	 * @return
+	 */
+	String getMenuStoreIdByMenuId(int MenuId);
+	
+	/**
+	 * @param int menuId
+	 * @return int
+	 */
+	int deleteMenu(int menuId);
 }

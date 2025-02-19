@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertStoreHolidays">
 		INSERT INTO STORE_HOLIDAYS
 		VALUES(
-			#{storeHolidaysId},
+			STORE_HOLIDAYS_SEQ.NEXTVAL,
 			#{storeId},
 			#{holiday}
 		)

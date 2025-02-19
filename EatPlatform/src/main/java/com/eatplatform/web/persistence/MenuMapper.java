@@ -14,4 +14,22 @@ public interface MenuMapper {
 	
 	// storeId로 검색하여 조회
 	List<MenuVO> selectMenuByStoreId(int storeId);
+	
+	/**
+	 * @param menuId
+	 * @return
+	 */
+	MenuVO selectMenuByMenuId(int menuId);
+	
+	/**
+	 * @param menuId
+	 * @return
+	 */
+	String selectMenuStoreIdByMenuId(int menuId);
+	
+	/**
+	 * @param int menuId
+	 * @return int
+	 */
+	int deleteMenuByMenuId(int menuId);
 }

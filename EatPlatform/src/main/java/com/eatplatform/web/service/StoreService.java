@@ -20,7 +20,7 @@ public interface StoreService {
 	
 	// storeId로 userId 검색
 	String getStoreUserIdByStoreId(@Param("storeId") int storeId);
-	
+		
 	// 전체 게시글 카운트
 	int getTotalStoresCount(List<String> keywords);
 	

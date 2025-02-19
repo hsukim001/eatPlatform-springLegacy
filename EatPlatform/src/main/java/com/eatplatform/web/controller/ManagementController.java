@@ -57,10 +57,11 @@ public class ManagementController {
 		model.addAttribute("pageMaker", pageMaker);
 		
 	}
-	
+
 	/**
-	 * @param model
-	 * @param storeId
+	 * @param Model model
+	 * @param int storeId
+	 * @return
 	 */
 	@GetMapping("/store/detail")
 	public String managementStoreDetail(Model model, @RequestParam("storeId") int storeId) {
@@ -80,10 +81,13 @@ public class ManagementController {
 		String startTime = times[0];
 		String endTime = times[1];
 		
+		int representMenuCount = menuService.getRepresentMenuCountByStoreId(storeId);
+		
 		model.addAttribute("storeInfo", storeVO);
 		model.addAttribute("menuInfo", menuVO);
 		model.addAttribute("startTime", startTime);
 		model.addAttribute("endTime", endTime);
+		model.addAttribute("representMenuCount", representMenuCount);
 		return "/management/store/detail";
 		
 	}

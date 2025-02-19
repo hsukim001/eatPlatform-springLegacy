@@ -244,9 +244,11 @@
 							<p style="display: none;"><span id="loginId"><sec:authentication property="principal.user.username" /></span></p>
 						</sec:authorize>
 						
-						<p>
-							<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
-						</p>
+						<sec:authorize access="hasAuthority('ROLE_MEMBER') or isAnonymous()">
+							<p>
+								<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
+							</p>
+						</sec:authorize>
 						
 						<input type="hidden" id="storeId" value="${storeVO.storeId }">
 						<input type="hidden" id="storeUser" value="${storeVO.storeUserId }">
@@ -303,6 +305,7 @@
 						<ul>
 
 						</ul>
+						
 					</div>
 					<!-- End ReviewContainer -->
 				</div>

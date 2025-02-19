@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
 		<result property="name" column="NAME"/>
+		<result property="phone" column="PHONE"/>
 	</resultMap>
 	
 	<select id="selectPagingToDay" resultMap="reservResultMap">
@@ -134,7 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="selectReservListByStoreIdReservDateReservHourReservMin" resultMap="joinReservUserNameResultMap">
-		SELECT r.*, u.NAME 
+		SELECT r.*, u.NAME, u.PHONE
 		FROM RESERV r
 		LEFT OUTER JOIN USER_MEMBER u
 		ON r.USER_ID = u.USER_ID
