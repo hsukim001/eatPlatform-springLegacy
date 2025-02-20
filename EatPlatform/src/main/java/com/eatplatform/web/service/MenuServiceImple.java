@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.persistence.MenuMapper;
-import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -46,12 +45,33 @@ public class MenuServiceImple implements MenuService {
 
 	@Override
 	public String getMenuStoreIdByMenuId(int menuId) {
+		log.info("getMenuStoreIdByMenuId()");
 		return menuMapper.selectMenuStoreIdByMenuId(menuId);
 	}
 
 	@Override
+	public int updateMenu(MenuVO menuVO) {
+		return menuMapper.updateMenuByMenuId(menuVO);
+	}
+	
+	@Override
 	public MenuVO getMenuByMenuId(int menuId) {
 		return menuMapper.selectMenuByMenuId(menuId);
 	}
+
+	@Override
+	public int checkCreatedUserandModifyUser(String modifyUsername, int menuId) {
+		log.info("checkCreatedUserandModifyUser()");
+
+		int result = 0;
+		String createdUsername = menuMapper.selectMenuStoreIdByMenuId(menuId);
+		
+		if(createdUsername.equals(modifyUsername) && createdUsername != null) {
+			result = 1;
+		}
+		
+		return result;
+	}
+
 
 }

@@ -17,15 +17,21 @@ public interface MenuMapper {
 	
 	/**
 	 * @param menuId
-	 * @return
+	 * @return MenuVO
 	 */
 	MenuVO selectMenuByMenuId(int menuId);
 	
 	/**
 	 * @param menuId
-	 * @return
+	 * @return String
 	 */
 	String selectMenuStoreIdByMenuId(int menuId);
+	
+	/**
+	 * @param MenuVO menuVO
+	 * @return int
+	 */
+	int updateMenuByMenuId(MenuVO menuVO);
 	
 	/**
 	 * @param int menuId

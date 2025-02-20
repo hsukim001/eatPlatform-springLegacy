@@ -68,6 +68,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		MENU_ID = #{menuId}
 	</select>
 	
+	<update id="updateMenuByMenuId">
+		UPDATE MENU
+		SET MENU_NAME = #{menuName},
+		MENU_PRICE = #{menuPrice},
+		MENU_COMMENT = #{menuComment},
+		REPRESENT = #{represent}
+		WHERE MENU_ID = #{menuId}
+	</update>
+	
 	<delete id="deleteMenuByMenuId">
 		DELETE MENU
 		WHERE MENU_ID = #{menuId}

@@ -57,6 +57,7 @@
 	<script type="text/javascript">
 		$(function(){
 			let menuId;
+			let modalMenuId;
 			
 			// ajax CSRF 토큰
 			$(document).ajaxSend(function(e, xhr, opt){
@@ -217,6 +218,7 @@
 						$('#updateMenuPrice').val(response.menuPrice);
 						$('#updateMenuComment').val(response.menuComment);
 						$('#modalMenuName').text(response.menuName);
+						modalMenuId = response.menuId;
 						
 						if(response.represent == 1) {
 							$("#updateRepresent").prop("checked", true);							
@@ -231,6 +233,7 @@
 					error : function() {
 						alert("모달창 호출중에 오류가 발생하였습니다.");
 						menuId = "";
+						$('#menuUpdateModal').hide();
 					}
 				});
 			} // end searchMenuInfo
@@ -244,7 +247,7 @@
 			function updateMenu() {
 				let represent;
 				
-				if ($("#represent").prop("checked")) {
+				if ($("#updateRepresent").prop("checked")) {
 				    console.log("체크됨");
 				    represent = 1;
 				} else {
@@ -254,16 +257,17 @@
 
 				
 				let obj = {
+						"menuId" : modalMenuId,
 						"storeId" : $('#storeId').val(),
-						"menuName" : $('#menuName').val(),
-						"menuPrice" : $('#menuPrice').val(),
-						"menuComment" : $('#menuComment').val(),
+						"menuName" : $('#updateMenuName').val(),
+						"menuPrice" : $('#updateMenuPrice').val(),
+						"menuComment" : $('#updateMenuComment').val(),
 						"represent" : represent
 				};
 				
 				$.ajax({
 					url : '/store/menu/update',
-					type : 'update',
+					type : 'put',
 					headers : {
 						"Content-Type" : "application/json"
 					},
@@ -274,10 +278,12 @@
 							location.reload(true);
 						} else {
 							alert("메뉴 수정에 실패하였습니다.");
+							modalMenuId = "";
 						}
 					},
 					error : function() {
 						alert("메뉴 수정중 오류가 발생하였습니다.");
+						modalMenuId = "";
 					}
 				});
 			} // end updateMenu

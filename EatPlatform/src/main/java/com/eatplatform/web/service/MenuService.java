@@ -3,7 +3,6 @@ package com.eatplatform.web.service;
 import java.util.List;
 
 import com.eatplatform.web.domain.MenuVO;
-import com.eatplatform.web.domain.StoreVO;
 
 public interface MenuService {
 	
@@ -27,6 +26,19 @@ public interface MenuService {
 	 * @return
 	 */
 	String getMenuStoreIdByMenuId(int MenuId);
+	
+	/**
+	 * @param modifyUsername
+	 * @param menuId
+	 * @return
+	 */
+	int checkCreatedUserandModifyUser(String modifyUsername, int menuId);
+	
+	/**
+	 * @param MenuVO menuVO
+	 * @return int
+	 */
+	int updateMenu(MenuVO menuVO);
 	
 	/**
 	 * @param int menuId
