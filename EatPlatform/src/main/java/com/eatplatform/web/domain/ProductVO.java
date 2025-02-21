@@ -13,6 +13,7 @@ public class ProductVO {
 
     private Integer productId;
     private Integer productStoreId;
+    private String productStoreName;
     private String sellerId;
     private String productName;
     private Integer productPrice = 0;

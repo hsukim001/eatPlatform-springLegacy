@@ -95,4 +95,14 @@ public class StoreServiceImple implements StoreService {
 		return resultStore;
 	}
 
+	@Override
+	public List<StoreVO> getStoreIdByStoreUserId(String storeUserId) {
+		return storeMapper.getStoreIdByStoreUserId(storeUserId);
+	}
+
+	@Override
+	public String getStoreNameByStoreId(int storeId) {
+		return storeMapper.getStoreNameByStoreId(storeId);
+	}
+
 }

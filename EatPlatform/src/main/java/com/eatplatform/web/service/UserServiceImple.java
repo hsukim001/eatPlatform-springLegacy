@@ -309,4 +309,9 @@ public class UserServiceImple implements UserService {
 		return 1;
 	}
 
+	@Override
+	public String getStoreUserNameByUserId(String userName) {
+		return userMapper.selectStoreUserNameByUserId(userName);
+	}
+
 }

@@ -42,13 +42,20 @@
 		    function loadStores(pageNum) {
 		        if (loading) return;
 		        loading = true;
-
+				let keyword
+		        
+				if($('#keywordinput').val != null && $('#keywordInput').val() != '') {
+					keyword = $('#keywordInput').val();
+				} else {
+					keywrod = '';
+				}        
+		        
 		        $.ajax({
 		            url: '/store/map/list',
 		            type: 'GET',
 		            data: {
 		                pageNum: pageNum,
-		                keyword: $('#keywordInput').val()
+		                keyword: keyword
 		            },
 		            success: function(response) {
 		                stores = response.recentStores;

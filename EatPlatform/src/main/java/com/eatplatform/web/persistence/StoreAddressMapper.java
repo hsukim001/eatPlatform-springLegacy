@@ -4,7 +4,6 @@ package com.eatplatform.web.persistence;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.eatplatform.web.domain.StoreAddressVO;
-import com.eatplatform.web.domain.StoreVO;
 
 @Mapper
 public interface StoreAddressMapper {

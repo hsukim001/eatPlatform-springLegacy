@@ -2,6 +2,8 @@ package com.eatplatform.web.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -13,6 +15,8 @@ public interface UserService {
 	UserVO searchUser(int userId);
 	// 회원 아이디 찾기(email)
 	String searchUsername(String email);
+	// 회원 이름 조회(userId)
+	String getStoreUserNameByUserId(@Param("userName") String userName);
 	// 아이디 중복 확인(username)
 	int checkUser(String username);
 	// 회원 가입
@@ -40,4 +44,5 @@ public interface UserService {
 	int businessReqeustApprovals(int businessRequestId, int storeId);
 	// 사업자 등록 요청 거부 관리
 	int businessReqeustDenialManagement(int businessRequestId, int storeId);
+	
 }

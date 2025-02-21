@@ -1,14 +1,19 @@
 package com.eatplatform.web.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.eatplatform.web.domain.ProductCategoryVO;
 import com.eatplatform.web.domain.ProductMainCategoryVO;
 import com.eatplatform.web.domain.ProductSubCategoryVO;
 import com.eatplatform.web.domain.ProductVO;
 import com.eatplatform.web.persistence.ProductMapper;
+import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -17,13 +22,33 @@ import lombok.extern.log4j.Log4j;
 public class ProductServiceImple implements ProductService {
 
 	@Autowired
+	private StoreMapper storeMapper;
+	
+	@Autowired
 	private ProductMapper productMapper;
 
 	// 상품 등록
+	@Transactional(value = "transactionManager")
 	@Override
-	public boolean registerProduct(ProductVO productVO) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean registerProduct(ProductVO productVO, ProductCategoryVO productCategoryVO) {
+		int productStoreId = productVO.getProductStoreId();
+		String productStoreName = storeMapper.getStoreNameByStoreId(productStoreId);
+		productVO.setProductStoreName(productStoreName);
+		boolean resultProduct = productMapper.insertProduct(productVO);
+		
+		int productId = productVO.getProductId();
+		int mainCategoryId = productCategoryVO.getMainCategoryId();
+		int subCategoryId = productCategoryVO.getSubCategoryId();
+		String mainCategoryName = productMapper.selectMainCategoryNameByMainCategoryId(mainCategoryId);
+		String subCategoryName = productMapper.selectSubCategoryNameBySubCategoryId(subCategoryId);
+		productCategoryVO.setProductId(productId);
+		productCategoryVO.setMainCategoryName(mainCategoryName);
+		productCategoryVO.setSubCategoryName(subCategoryName);
+		boolean resultProductCategory = productMapper.insertProductCategory(productCategoryVO);
+		
+		log.info("상품 등록 성공: " + resultProduct);
+		log.info("상품 카테고리 등록 성공: " + resultProductCategory);
+		return resultProduct;
 	}
 
 	// 상위 카테고리 등록
@@ -45,6 +70,25 @@ public class ProductServiceImple implements ProductService {
 		log.info("상위 카테고리 ID: " + productSubCategoryVO);
 		log.info("등록된 하위 카테고리명: " + categoryName);
 		return result;
+	}
+
+	// 상품 목록 전체 조회
+	@Override
+	public List<ProductVO> getProductAllList(int pageNum, int pageSize, String keyword) {
+		int startNum =(pageNum -1) * pageSize + 1;
+		int endNum = pageNum * pageSize;
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("startNum", startNum);
+		params.put("endNum", endNum);
+		params.put("keyword", keyword);
+		return productMapper.selectProductAllList(params);
+	}
+	
+	// 상품 카테고리 조회
+	@Override
+	public List<ProductCategoryVO> getProductCategory(List<Integer> productIdList) {
+		return productMapper.selectProductCategory(productIdList);
 	}
 	
 	// 상위 카테고리 조회
@@ -71,6 +115,12 @@ public class ProductServiceImple implements ProductService {
 		return productMapper.selectSubCategoryBySubCategoryId(subCategoryId);
 	}
 
+	// 상품 목록 전체 카운트
+	@Override
+	public int getProductAllListCount(String keyword) {
+		return productMapper.selectProductAllListCount(keyword);
+	}
+	
 	// 상위 카테고리 수정
 	@Override
 	public boolean modifyMainCategory(ProductMainCategoryVO productMainCategoryVO) {
@@ -94,5 +144,7 @@ public class ProductServiceImple implements ProductService {
 	public boolean deleteSubCategory(int subCategoryId) {
 		return productMapper.deleteSubCategory(subCategoryId);
 	}
+
+
 
 }

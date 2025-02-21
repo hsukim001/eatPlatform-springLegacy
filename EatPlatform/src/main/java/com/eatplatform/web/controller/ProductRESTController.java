@@ -85,7 +85,8 @@ public class ProductRESTController {
 
 	// 하위 카테고리 조회
 	@GetMapping("/category/subView/{mainCategoryId}")
-	public ResponseEntity<Map<String, Object>> viewSubCategory(@PathVariable("mainCategoryId") Integer mainCategoryId) {
+	public ResponseEntity<Map<String, Object>> viewSubCategory(
+			@PathVariable("mainCategoryId") Integer mainCategoryId) {
 		Map<String, Object> response = new HashMap<>();
 		List<ProductSubCategoryVO> categoryList = productService.getSubCategoryByMainCategoryId(mainCategoryId);
 

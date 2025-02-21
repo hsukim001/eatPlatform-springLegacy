@@ -59,7 +59,7 @@ pageEncoding="UTF-8"%>
 		$('.viewMain').on('click', '.mainCategoryName', function() {
 			ExistMainCategoryId = $(this).parent('li').data('main-id');
 			$('.mainCategoryName').removeClass('activeMain');
-			$(this).addClass('activeMain')
+			$(this).addClass('activeMain');
 			RenewalSubCategory(ExistMainCategoryId);
 		});
 

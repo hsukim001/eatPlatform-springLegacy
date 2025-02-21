@@ -122,10 +122,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE STORE_ID = #{storeId}
 	</select>
 	
-	<select id="getStoreIdByStoreUserId" parameterType="String" resultType="com.eatplatform.web.domain.StoreVO">
+	<select id="getStoreIdByStoreUserId" parameterType="String" resultMap="StoreResultMap">
 		SELECT STORE_ID, STORE_NAME
 		FROM STORE
 		WHERE STORE_USER_ID = #{storeUserId}
+		ORDER BY STORE_ID ASC
+	</select>
+	
+	<select id="getStoreNameByStoreId" parameterType="int" resultType="String">
+		SELECT STORE_NAME
+		FROM STORE
+		WHERE STORE_ID = ${storeId}
 	</select>
 
 	<!-- 최근 6개의 매장 가져오기 -->

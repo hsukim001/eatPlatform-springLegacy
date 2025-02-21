@@ -19,15 +19,20 @@ public interface StoreMapper {
 	
 	List<StoreVO> selectStoreListByStoreUserId(@Param("pagination") Pagination pagination, @Param("storeUserId") String storeUserId);
 	
+	//  List Pagination
+	List<StoreVO> getStoresWithPaging(Map<String, Object> params);
+
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
 	
 	// storeId로 userId 검색
 	String getStoreUserIdByStoreId(@Param("storeId") int storeId);
 	
-	//  List Pagination
-	List<StoreVO> getStoresWithPaging(Map<String, Object> params);
+	String getStoreNameByStoreId(@Param("storeId") int storeId);
 	
+	// storeUserId로 storeId 검색
+	List<StoreVO> getStoreIdByStoreUserId(@Param("storeUserId") String storeUserId);
+
 	int getTotalStoresCount(Map<String, Object> params);
 	
 	int getTotalStoresCountByStoreUserId(String storeUserId);

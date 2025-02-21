@@ -96,7 +96,7 @@
             						</a>
             					</li>
             					<li>
-            						<a href="/shop/register">
+            						<a href="/shop/product/newProduct">
             							상품 등록
             						</a>
             					</li>

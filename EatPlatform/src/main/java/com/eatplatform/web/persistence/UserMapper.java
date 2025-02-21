@@ -2,6 +2,7 @@ package com.eatplatform.web.persistence;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.JoinUserVO;
 import com.eatplatform.web.domain.UserVO;
@@ -38,5 +39,6 @@ public interface UserMapper {
 	int deleteUserByActive(int active);
 	// 회원 정보 삭제(userId)
 	int deleteUserByUserId(int userId);
-	
+
+	String selectStoreUserNameByUserId(@Param("userName") String userName);
 }

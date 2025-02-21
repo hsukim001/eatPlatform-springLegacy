@@ -44,6 +44,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT * FROM USER_MEMBER
 		WHERE USERNAME = #{username}
 		AND ACTIVE = 1
+	</select>	
+
+	
+	<select id="selectStoreUserNameByUserId" resultType="String">
+		SELECT NAME FROM USER_STORE
+		WHERE USERNAME = #{userName}
 	</select>
 	
 	<select id="selectUserByUserId" resultMap="userResultMap">
