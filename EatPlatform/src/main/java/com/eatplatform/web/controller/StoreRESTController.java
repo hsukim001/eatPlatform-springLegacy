@@ -15,18 +15,22 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.eatplatform.web.service.HolidayService;
 import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
+import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 
@@ -43,7 +47,15 @@ public class StoreRESTController {
 	@Autowired
 	private StoreAddressService storeAddressService;
 	
+	@Autowired
+	private HolidayService holidayService;
+	
 
+	/**
+	 * @param pageNum
+	 * @param keyword
+	 * @return
+	 */
 	@GetMapping("/map/list")
 	@ResponseBody
 	public Map<String, Object> getStoresWithPaging(@RequestParam(defaultValue = "1") int pageNum,
@@ -84,7 +96,11 @@ public class StoreRESTController {
 
 	    return response;
 	}
-
+	
+    /**
+     * @param file
+     * @return
+     */
     @PostMapping("/image")
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
         Map<String, String> response = new HashMap<>();
@@ -128,8 +144,16 @@ public class StoreRESTController {
         } 
         return ResponseEntity.ok(response);
     }
-        
-        
-	
-
+    
+    /**
+     * @param holidayVO
+     * @return Integer
+     */
+    @PostMapping("/holiday/registration")
+    public ResponseEntity<Integer> createdHoliday(@RequestBody HolidayVO holidayVO) {
+    	log.info("createdHoliday()");
+    	int result = holidayService.createdHoliday(holidayVO);
+    	return new ResponseEntity<Integer>(result, HttpStatus.OK);
+    }
+    
 }

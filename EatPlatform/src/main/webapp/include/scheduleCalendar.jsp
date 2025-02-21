@@ -14,18 +14,24 @@
 	</div>
 
 	<div class="time-container">
-		<h3>시간을 선택해주세요.</h3>
+		<div>
+			<input type="radio" id="reservScheduleBtn" class="scheduleType" name="scheduleType" value="reserv" checked="checked">
+			<label for="reservScheduleBtn">예약</label>
+			
+			<input type="radio" id="holidayScheduleBtn" class="scheduleType" name="scheduleType" value="holiday">
+			<label for="holidayScheduleBtn">휴무일</label>
+			
+			<input type="radio" id="breakTimeScheduleBtn" class="scheduleType" name="scheduleType" value="breakTime">
+			<label for="breakTimeScheduleBtn">휴게 시간</label>
+		</div>
 		<div class="time-slots" id="time-slots">
 			<div id="morning-slots">
-				<h3>오전</h3>
+				<h3 class="morning">오전</h3>
 			</div>
 			<div id="afternoon-slots">
-				<h3>오후</h3>
+				<h3 class="afternoon">오후</h3>
 			</div>
 		</div>
-	</div>
-	<div>
-		<button id="">휴무일 등록</button>
 	</div>
 
 </div>
