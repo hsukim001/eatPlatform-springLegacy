@@ -15,18 +15,35 @@ public interface ReviewMapper {
 	ReviewVO selectByReviewId(int reviewId); // reviewId 조회
 	int update(ReviewVO reviewVO);
 	int delete(int reviewId);
-	
-	// 추천 수 변경
+	 
+	/**
+	 * 추천 수 변경
+	 * @param reviewId
+	 * @param amount
+	 * @return
+	 */
 	int updateLikeCount(@Param("reviewId") int reviewId, 
 			@Param("amount") int amount);
-	// 신고 수 변경
+
+	/**
+	 * 신고 수 변경
+	 * @param reviewId
+	 * @param amount
+	 * @return
+	 */
 	int updateReportCount(@Param("reviewId") int reviewId,
 			@Param("amount") int amount);
 	
-	// 페이징
-	int countReviewsByStoreId(int storeId);
+	/**
+	 * 페이징
+	 * @param storeId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	List<ReviewVO> getReviewsByStoreId(@Param("storeId") int storeId, 
 			@Param("start") int start, @Param("end") int end);
+	int countReviewsByStoreId(int storeId); // 리뷰 개수
 		
 	// username 조회
 	ReviewVO findReviewWithUsername(int reviewId);

@@ -11,10 +11,16 @@ public interface ReviewService {
 	
 	int updateReview(ReviewVO reviewVO);
 	int deleteReview(int reviewId);
-	
-	// 페이징
-	int countAllReviewsByStoreId(int storeId);
+	 
+	/**
+	 * 페이징
+	 * @param storeId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	List<ReviewVO> getPagingReviewsByStoreId(int storeId, int start, int end);
+	int countAllReviewsByStoreId(int storeId);
 	
 	// username 조회
 	ReviewVO getReviewWithUsername(int reviewId);
