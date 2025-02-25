@@ -113,6 +113,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{subCategoryName}
 		)
 	</insert>
+	
+	<select id="selectProductByProductId" resultMap="ProductResultMap">
+		SELECT *
+		FROM PRODUCT
+		WHERE PRODUCT_ID = #{productId}
+	</select>
+
+	<select id="selectProductCategoryByProductId" resultMap="ProductCategoryResultMap">
+		SELECT *
+		FROM PRODUCT_CATEGORY
+		WHERE PRODUCT_ID = #{productId}
+	</select>
 
 	<select id="selectMainCategoryAll"
 		resultMap="MainCategoryResultMap">
@@ -184,7 +196,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT *
 		FROM (
 		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY PRODUCT_ID
-		ASC)
+		DESC)
 		AS RN
 		FROM PRODUCT
 		<where>
@@ -198,20 +210,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="selectProductAllListCount" resultType="int">
-		SELECT COUNT(*)
-		FROM (
-		SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY
-		PRODUCT_ID
-		ASC) AS RN
-		FROM PRODUCT
-		<where>
-			PRODUCT_STOCK > 0
-			<if test="keyword != null and keyword != ''">
-				AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
-			</if>
-		</where>
-		)
+	    SELECT COUNT(*)
+	    FROM PRODUCT
+	    <where>
+	        PRODUCT_STOCK > 0
+	        <if test="keyword != null and keyword != ''">
+	            AND PRODUCT_NAME LIKE '%' || #{keyword} || '%'
+	        </if>
+	    </where>
 	</select>
+	
+	<select id="selectProductListBySellerId" resultMap="ProductResultMap">
+	    SELECT * FROM (
+	        SELECT PRODUCT.*, ROW_NUMBER() OVER (ORDER BY CREATEAT DESC) AS RN 
+	        FROM PRODUCT
+	        <where>
+	            SELLER_ID = #{sellerId}
+	        </where>
+	    ) 
+	    WHERE RN BETWEEN #{startNum} AND #{endNum}
+	</select>	
+	
+	<select id="selectProductListBySellerIdCount" resultType="int">
+		SELECT COUNT(*)
+		FROM PRODUCT
+		WHERE SELLER_ID = #{sellerId}
+	</select>
+	
+	<update id="updateProduct">
+		UPDATE PRODUCT
+		SET
+		PRODUCT_STORE_ID = #{productStoreId},
+		PRODUCT_STORE_NAME = #{productStoreName},
+		PRODUCT_NAME = #{productName},
+		PRODUCT_PRICE = #{productPrice},
+		PRODUCT_BUNDLE = #{productBundle},
+		PRODUCT_STOCK = #{productStock}
+		WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<update id="updateProductCategory">
+		UPDATE PRODUCT_CATEGORY
+		SET
+		MAIN_CATEGORY_ID = #{mainCategoryId},
+		SUB_CATEGORY_ID = #{subCategoryId},
+		MAIN_CATEGORY_NAME = #{mainCategoryName},
+		SUB_CATEGORY_NAME = #{subCategoryName}
+		WHERE PRODUCT_ID = #{productId}
+	</update>
 
 	<update id="updateMainCategory">
 		UPDATE PRODUCT_MAIN_CATEGORY
@@ -219,7 +265,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{mainCategoryName}
 		WHERE MAIN_CATEGORY_ID = #{mainCategoryId}
 	</update>
-
+	
 	<update id="updateSubCategory">
 		UPDATE PRODUCT_SUB_CATEGORY
 		SET
@@ -229,6 +275,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE
 		SUB_CATEGORY_ID = #{subCategoryId}
 	</update>
+	
+	<delete id="deleteProduct">
+		DELETE 
+		FROM PRODUCT
+		WHERE PRODUCT_ID = #{productId}
+	</delete>
 
 	<delete id="deleteMainCategory">
 		DELETE FROM PRODUCT_MAIN_CATEGORY

@@ -103,6 +103,30 @@ public class ProductServiceImple implements ProductService {
 		return productMapper.selectSubCategoryByMainCategoroyId(mainCategoryId);
 	}
 	
+	@Override
+	public List<ProductVO> getProductBySellerId(int pageNum, int pageSize, String sellerId) {
+		int startNum =(pageNum -1) * pageSize + 1;
+		int endNum = pageNum * pageSize;
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put("startNum", startNum);
+		params.put("endNum", endNum);
+		params.put("sellerId", sellerId);
+		return productMapper.selectProductListBySellerId(params);
+	}
+	
+	// 상품 정보 조회 (ByProductId)
+	@Override
+	public ProductVO getProductByProductId(int productId) {
+		return productMapper.selectProductByProductId(productId);
+	}
+
+	// 상품 카테고리 조회 (ByProductId)
+	@Override
+	public ProductCategoryVO getProductCategoryByProductId(int productId) {
+		return productMapper.selectProductCategoryByProductId(productId);
+	}
+	
 	// 상위 카테고리 조회 (ByMainCategoryId)
 	@Override
 	public ProductMainCategoryVO getMainCategoryByMainCategoryId(int mainCategoryId) {		
@@ -121,6 +145,36 @@ public class ProductServiceImple implements ProductService {
 		return productMapper.selectProductAllListCount(keyword);
 	}
 	
+	// 상품 리스트 조회 카운트
+	@Override
+	public int getProductListBySellerIdCount(String sellerId) {
+		return productMapper.selectProductListBySellerIdCount(sellerId);
+	}
+
+	// 상품 정보 수정
+	@Transactional(value = "transactionManager")
+	@Override
+	public boolean modifyProduct(ProductVO productVO, ProductCategoryVO productCategoryVO) {
+		int productStoreId = productVO.getProductStoreId();
+		String productStoreName = storeMapper.getStoreNameByStoreId(productStoreId);
+		productVO.setProductStoreName(productStoreName);
+		boolean resultProduct = productMapper.updateProduct(productVO);
+		
+		int productId = productVO.getProductId();
+		int mainCategoryId = productCategoryVO.getMainCategoryId();
+		int subCategoryId = productCategoryVO.getSubCategoryId();
+		String mainCategoryName = productMapper.selectMainCategoryNameByMainCategoryId(mainCategoryId);
+		String subCategoryName = productMapper.selectSubCategoryNameBySubCategoryId(subCategoryId);
+		productCategoryVO.setProductId(productId);
+		productCategoryVO.setMainCategoryName(mainCategoryName);
+		productCategoryVO.setSubCategoryName(subCategoryName);
+		boolean resultProductCategory = productMapper.updateProductCategory(productCategoryVO);
+		
+		log.info("상품 수정 성공: " + resultProduct);
+		log.info("상품 카테고리 수정 성공: " + resultProductCategory);
+		return resultProduct;
+	}
+
 	// 상위 카테고리 수정
 	@Override
 	public boolean modifyMainCategory(ProductMainCategoryVO productMainCategoryVO) {
@@ -131,6 +185,12 @@ public class ProductServiceImple implements ProductService {
 	@Override
 	public boolean modifySubCategory(ProductSubCategoryVO productSubCategoryVO) {
 		return productMapper.updateSubCategory(productSubCategoryVO);
+	}
+	
+	// 상품 정보 삭제
+	@Override
+	public boolean deleteProduct(int productId) {
+		return productMapper.deleteProduct(productId);
 	}
 
 	// 상위 카테고리 삭제
@@ -144,7 +204,5 @@ public class ProductServiceImple implements ProductService {
 	public boolean deleteSubCategory(int subCategoryId) {
 		return productMapper.deleteSubCategory(subCategoryId);
 	}
-
-
 
 }

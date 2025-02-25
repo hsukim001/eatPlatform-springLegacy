@@ -9,7 +9,7 @@ pageEncoding="UTF-8"%>
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>상품 등록</title>
+<title>상품 정보 수정</title>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -23,9 +23,9 @@ pageEncoding="UTF-8"%>
 	});
 	$(function(){
 		let ExistMainCategoryId;
-		$('form').on('click', '#mainCategory li input[type=checkbox]', function() {
-			//RenewalSubCategory(ExistMainCategoryId);
-		});
+		let isFirstLoad = true; 
+		let originMainCategoryId = parseInt("${productCategory.mainCategoryId}");
+		let originSubCategoryId = parseInt("${productCategory.subCategoryId}");
 		
 		$(document).on("change", "#mainCategory li input[type=radio]", function() {
 			ExistMainCategoryId = $(this).val();
@@ -33,6 +33,8 @@ pageEncoding="UTF-8"%>
 		});
 		
 		loadCategoriesList();
+
+		
 		// 상위 카테고리 조회
 		function loadCategoriesList() {
 		    $.ajax({
@@ -94,6 +96,11 @@ pageEncoding="UTF-8"%>
 					        	'</li>';
 			                $subCategory.append(listItem);
 			            });
+			            
+		                if (isFirstLoad) {
+		                    $('input[type="radio"][name="subCategoryId"][value="' + originSubCategoryId + '"]').prop('checked', true);
+		                    isFirstLoad = false; 
+		                }
 		            } else {
 		            	 $subCategory.append(`<p class="noSub">등록된 하위 카테고리가 없습니다.</p>`);
 		            }
@@ -112,7 +119,8 @@ pageEncoding="UTF-8"%>
 		    if ($firstCategory.length) {
 		        let firstMainId = $firstCategory.val();
 		        if (firstMainId) {
-		            RenewalSubCategory(firstMainId); 
+		            RenewalSubCategory(originMainCategoryId); 
+ 		            $('input[type="radio"][name="mainCategoryId"][value="' + originMainCategoryId + '"]').prop('checked', true);
 		        } else {
 		            alert("문제가 발생했습니다. 다시 시도해주세요.")
 		        }
@@ -126,26 +134,27 @@ pageEncoding="UTF-8"%>
 <body>
 	<div id="wrap">
 		<jsp:include page="/include/header.jsp" />
-    	<form action="register" method="POST" >
+    	<form action="modify" method="POST" >
     		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    		<input type="hidden" name="productId" value="${product.productId }">
     		<select id="productStoreId" name="productStoreId">
     			<c:forEach var="store" items="${storeList}" varStatus="status">
 					<option value="${store.storeId }">${store.storeName }</option>
 				</c:forEach>
     		</select>
     		<label for="productName">상품명 : </label>
-    		<input type="text" id="productName" name="productName" required>
+    		<input type="text" id="productName" value="${product.productName }" name="productName" required>
     		<label for="productPrice">가격 : </label>
-    		<input type="number" id="productPrice" name="productPrice" required>
+    		<input type="number" id="productPrice" value="${product.productPrice }" name="productPrice" required>
 
 			<div id="category_container">
 				<ul id="mainCategory"></ul>
 				<ul id="subCategory"></ul>
 			</div>
     		<label for="productBundle"> 세트 당 묶음 수 : </label>
-    		<input type="number"  id="productBundle" name="productBundle" value="1" required>   		
+    		<input type="number"  id="productBundle" value="${product.productBundle }" name="productBundle" value="1" required>   		
     		<label for="productStock">재고 : </label>
-    		<input type="number" id="productStock" name="productStock" value="0" required>
+    		<input type="number" id="productStock" value="${product.productStock }" name="productStock" value="0" required>
 
     		<input type="submit" value="상품 등록">
     	</form>

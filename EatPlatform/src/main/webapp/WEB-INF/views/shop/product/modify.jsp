@@ -13,10 +13,10 @@ $(document).ready(function() {
     let result = <%= result %>;
 
     if (result) {
-        alert("상품 등록이 완료되었습니다.");
-        window.location.href = "/shop/list";
+        alert("상품 정보 수정이 완료되었습니다.");
+        window.location.href = "/shop/product/management";
     } else {
-        alert("상품 등록에 실패했습니다. 다시 시도해주세요.");
+        alert("상품 정보 수정이 실패했습니다. 다시 시도해주세요.");
         history.back();
     }
 });

@@ -70,17 +70,22 @@
 					</c:choose>
 
 					<c:forEach var="i" begin="1" end="${totalPages}" varStatus="status">
-						<c:choose>
-							<c:when test="${i == currentPage}">
-								<a href="?pageNum=${i}&keyword=${keyword}" class="current">${i}</a>
-							</c:when>
-							<c:when test="${i >= currentPage - 2 && i <= currentPage + 2}">
-								<a href="?pageNum=${i}&keyword=${keyword}">${i}</a>
-							</c:when>
-							<c:otherwise>
-							</c:otherwise>
-						</c:choose>
+					    <c:choose>
+					        <c:when test="${(currentPage <= 3 and i <= 5) 
+					                      or (currentPage >= totalPages - 2 and i >= totalPages - 4) 
+					                      or (i >= currentPage - 2 and i <= currentPage + 2)}">
+					            <c:choose>
+					                <c:when test="${i == currentPage}">
+					                    <a href="?pageNum=${i}&keyword=${keyword}" class="current">${i}</a>
+					                </c:when>
+					                <c:otherwise>
+					                    <a href="?pageNum=${i}&keyword=${keyword}">${i}</a>
+					                </c:otherwise>
+					            </c:choose>
+					        </c:when>
+					    </c:choose>
 					</c:forEach>
+
 
 					<c:choose>
 						<c:when test="${currentPage < totalPages - 2}">

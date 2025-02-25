@@ -462,7 +462,7 @@ pageEncoding="UTF-8"%>
 			const mainCategoryId = $li.data('main-id');
 			
 			 if (!confirm("선택한 카테고리를 삭제하시겠습니까?")) {
-			        return;
+				return;
 			 }
 			 
 			 $.ajax({
@@ -473,12 +473,12 @@ pageEncoding="UTF-8"%>
 			    	alert(response.msg);
 			        if (response.msg.includes("완료")) {
 							callFirstCategory();
-			            }
-			        },
-			        error: function() {
-			            alert("카테고리 삭제에 실패했습니다.\n다시 시도해주세요.");
 			        }
-			    });
+			     },
+			     error: function() {
+			     	alert("카테고리 삭제에 실패했습니다.\n다시 시도해주세요.");
+			 	}
+			 });
 
 		});		
 		

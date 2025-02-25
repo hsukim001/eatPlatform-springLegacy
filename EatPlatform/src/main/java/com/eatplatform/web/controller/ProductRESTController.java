@@ -7,6 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +17,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.ProductMainCategoryVO;
 import com.eatplatform.web.domain.ProductSubCategoryVO;
+import com.eatplatform.web.domain.ProductVO;
 import com.eatplatform.web.service.ProductService;
 
 import lombok.extern.log4j.Log4j;
@@ -63,6 +68,31 @@ public class ProductRESTController {
 		}
 		response.put("result", result);
 
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	// 상품 관리
+	@GetMapping("/management/all")
+	public ResponseEntity<Map<String, Object>> managementAll(
+			@RequestParam(defaultValue = "1") int pageNum,
+			@AuthenticationPrincipal UserDetails userDetails,
+			Model model) {
+		
+		if (pageNum <= 0) {
+			pageNum = 1;
+		}
+		
+		Map<String, Object> response = new HashMap<>();
+		
+		int pageSize = 5;
+		String userName = userDetails.getUsername();
+		int totalCount = productService.getProductListBySellerIdCount(userName);
+		int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+		List<ProductVO> productList = productService.getProductBySellerId(pageNum, pageSize, userName);
+		response.put("totalPages", totalPages);
+		response.put("productList", productList);
+		response.put("currentPage", pageNum);
+		
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -147,6 +177,20 @@ public class ProductRESTController {
 		} else {
 			response.put("msg", "하위 카테고리 수정이 실패했습니다.\n 다시 시도해주세요.");
 
+		}
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	// 상품 정보 삭제
+	@DeleteMapping("/delete/{productId}")
+	public ResponseEntity<Map<String, Object>> deleteProduct(
+			@PathVariable("productId") int productId) {
+		Map<String, Object> response = new HashMap<>();
+		boolean result = productService.deleteProduct(productId);
+		if (result) {
+			response.put("msg", "상품 정보 삭제가 완료되었습니다.");
+		} else {
+			response.put("msg", "상품 정보 삭제에 실패했습니다.\n다시 시도해주세요.");
 		}
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
