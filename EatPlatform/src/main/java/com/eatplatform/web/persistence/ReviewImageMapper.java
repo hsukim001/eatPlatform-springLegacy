@@ -18,7 +18,11 @@ public interface ReviewImageMapper {
 	
 	int deleteReviewImageByReviewId(int reviewId);
 	
-	// 이미지 파일 삭제
+	/**
+	 * 이미지 파일 삭제
+	 * @param reviewImageDate
+	 * @return
+	 */
 	List<ReviewImageVO> selectListByReviewImagePath(
 			@Param("reviewImageDate") String reviewImageDate);
 	

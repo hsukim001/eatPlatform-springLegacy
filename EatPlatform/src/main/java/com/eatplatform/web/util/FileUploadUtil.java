@@ -57,7 +57,12 @@ public class FileUploadUtil {
 		return datePath;
 	}
 	
-	// 파일을 저장
+	/**
+	 * 파일을 저장
+	 * @param uploadPath
+	 * @param file
+	 * @param chgName
+	 */
 	public static void saveFile(String uploadPath, MultipartFile file, String chgName) {
 		
 		File realUploadPath = new File(uploadPath, makeDatePath());
@@ -80,7 +85,12 @@ public class FileUploadUtil {
 			
 	}
 	
-	// 파일 삭제
+	/**
+	 * 파일 삭제
+	 * @param uploadPath
+	 * @param path
+	 * @param chgName
+	 */
 	public static void deleteFile(String uploadPath, String path, String chgName) {
 		// 삭제할 파일의 전체 경로 생성
 		String fullPath = uploadPath + File.separator + path + File.separator + chgName;
@@ -100,8 +110,14 @@ public class FileUploadUtil {
 		}
 		
 	}
-	
-	// 원본 이미지로 섬네일 파일을 생성
+	 
+	/**
+	 * 원본 이미지로 섬네일 파일을 생성
+	 * @param uploadPath
+	 * @param path
+	 * @param chgName
+	 * @param extension
+	 */
 	public static void createThumbnail(String uploadPath, String path, 
     		String chgName, String extension) {
 		

@@ -5,8 +5,14 @@ import java.util.List;
 import com.eatplatform.web.domain.ReplyVO;
 
 public interface ReplyService {
-	int createReply(ReplyVO replyVO);
 	List<ReplyVO> getAllReply(int revewId);
+	int createReply(ReplyVO replyVO);
+	/**
+	 * 댓글 수정
+	 * @param replyId
+	 * @param replyContent
+	 * @return
+	 */
 	int updateReply(int replyId, String replyContent);
 	int deleteReply(int replyId);
 	int deleteReplyByReview(int reviewId);

@@ -20,7 +20,11 @@ public class ReviewController {
 	@Autowired
 	private ReviewService reviewService;
 	
-	// 선택된 리뷰를 updateReview.jsp로 전송
+	/**
+	 * 선택된 리뷰를 updateReview.jsp로 전송
+	 * @param model
+	 * @param reviewId
+	 */
 	@GetMapping("/updateReview")
 	public void updateReviewGET(Model model, int reviewId) {
 		log.info("updateReviewGET()");
@@ -32,8 +36,13 @@ public class ReviewController {
 		log.info("reviewVO : " + reviewVO);
 		
 	}
-	
-	// updateReview.jsp에서 수정할 데이터를 전송받아 게시글 데이터 수정
+	 
+	/**
+	 * updateReview.jsp에서 수정할 데이터를 전송받아 게시글 데이터 수정
+	 * @param model
+	 * @param reviewVO
+	 * @return
+	 */
 	@PostMapping("/updateReview")
 	public String updateReviewPOST(Model model,ReviewVO reviewVO) {
 		log.info("updateReviewPOST()");

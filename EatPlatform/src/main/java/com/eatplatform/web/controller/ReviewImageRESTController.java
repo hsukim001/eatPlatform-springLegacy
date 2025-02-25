@@ -36,8 +36,12 @@ public class ReviewImageRESTController {
 	
 	@Autowired
 	private ReviewImageService reviewImageService;
-	
-	// 첨부 파일 업로드 처리(POST)
+	 
+	/**
+	 * 첨부 파일 업로드 처리(POST)
+	 * @param files
+	 * @return
+	 */
 	@PostMapping
 	public ResponseEntity<ArrayList<ReviewImageVO>> createImage(MultipartFile[] files) {
 		log.info("createImage()");
@@ -73,8 +77,13 @@ public class ReviewImageRESTController {
 		
 	} 
 
-	// 전송받은 파일 경로 및 파일 이름, 확장자로 
-	// 이미지 파일을 호출
+	/**
+	 * 전송받은 파일 경로 및 파일 이름, 확장자로 이미지 파일을 호출
+	 * @param reviewImagePath
+	 * @param reviewImageChgName
+	 * @param reviewImageExtension
+	 * @return
+	 */
 	@GetMapping("/display")
 	public ResponseEntity<byte[]> display(String reviewImagePath, String reviewImageChgName, String reviewImageExtension) {
 		log.info("display()");
@@ -109,6 +118,11 @@ public class ReviewImageRESTController {
 		return entity;
 	}
 	
+	/**
+	 * @param reviewImageId
+	 * @param reviewImageExtension
+	 * @return
+	 */
 	@GetMapping("/get/{reviewImageId}/reviewImageExtension/{reviewImageExtension}")
 	public ResponseEntity<byte[]> getImage(
 			@PathVariable("reviewImageId") int reviewImageId,
@@ -149,7 +163,13 @@ public class ReviewImageRESTController {
 		
 	}
 	
-    // 섬네일 및 원본 이미지 삭제 기능
+    /**
+     * 섬네일 및 원본 이미지 삭제 기능
+     * @param reviewImagePath
+     * @param reviewImageChgName
+     * @param reviewImageExtension
+     * @return
+     */
     @PostMapping("/delete")
     public ResponseEntity<Integer> deleteImage(String reviewImagePath, 
     		String reviewImageChgName, String reviewImageExtension) {

@@ -22,7 +22,6 @@ import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewReportListVO;
 import com.eatplatform.web.domain.ReviewVO;
-import com.eatplatform.web.service.ReplyService;
 import com.eatplatform.web.service.ReviewImageService;
 import com.eatplatform.web.service.ReviewLikeListService;
 import com.eatplatform.web.service.ReviewReportListService;
@@ -47,7 +46,13 @@ public class ReviewRESTController {
 	@Autowired
 	private ReviewReportListService reviewReportListService;
 	
-	// 리뷰 등록(회원)
+	/**
+	 * 리뷰 등록(회원)
+	 * @param model
+	 * @param reviewVO
+	 * @param customUser
+	 * @return
+	 */
 	@PostMapping
 	public ResponseEntity<Integer> createReview(Model model, @RequestBody ReviewVO reviewVO,
 			@AuthenticationPrincipal CustomUser customUser) {
@@ -70,7 +75,13 @@ public class ReviewRESTController {
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 
-	// 식당별 리뷰 전체 조회
+	/**
+	 * 식당별 리뷰 전체 조회
+	 * @param storeId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return
+	 */
 	@GetMapping("/all/{storeId}")
 	public ResponseEntity<Map<String, Object>> readAllReview(@PathVariable("storeId") int storeId,
 			@RequestParam("page") int pageNumber, @RequestParam("pageSize") int pageSize) {
@@ -131,7 +142,12 @@ public class ReviewRESTController {
 
 	}
 	
-	// 리뷰 추천
+	/**
+	 * 리뷰 추천
+	 * @param reviewId
+	 * @param customUser
+	 * @return
+	 */
 	@PostMapping("/like/{reviewId}")
 	public ResponseEntity<Integer> createReviewLikeList(@PathVariable("reviewId") int reviewId,
 			@AuthenticationPrincipal CustomUser customUser) {
@@ -145,7 +161,12 @@ public class ReviewRESTController {
 		
 	}
 	
-	// 리뷰 신고
+	/**
+	 * 리뷰 신고
+	 * @param reviewReportListVO
+	 * @param customUser
+	 * @return
+	 */
 	@PostMapping("/report/{reviewId}")
 	public ResponseEntity<Integer> createReviewReportList(@RequestBody ReviewReportListVO reviewReportListVO,
 			@AuthenticationPrincipal CustomUser customUser) {
@@ -160,7 +181,12 @@ public class ReviewRESTController {
 		
 	}
 	
-	// 신고여부 확인
+	/**
+	 * 신고여부 확인
+	 * @param reviewId
+	 * @param customUser
+	 * @return
+	 */
 	@GetMapping("report/{reviewId}")
 	public ResponseEntity<Integer> reviewReported(@PathVariable("reviewId") int reviewId,
 			@AuthenticationPrincipal CustomUser customUser) {
