@@ -136,7 +136,7 @@
 			            alert('로그인이 필요합니다.'); // 로그인되지 않은 경우
 			            location.href = '../access/login';
 			        }
-			    })
+			    });
 
 		    });		
 		}); // End $function

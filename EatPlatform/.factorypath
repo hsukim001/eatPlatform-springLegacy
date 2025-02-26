@@ -57,7 +57,6 @@
     <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.apiguardian_1.1.0.v20190826-0900.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="JUNIT_HOME" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="ECLIPSE_HOME/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar" enabled="true" runInBatchMode="false"/>
-<<<<<<< Updated upstream
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\Server\apache-tomcat-9.0.46\lib\annotations-api.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\Server\apache-tomcat-9.0.46\lib\catalina-ant.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\Server\apache-tomcat-9.0.46\lib\catalina-ha.jar" enabled="true" runInBatchMode="false"/>
@@ -90,7 +89,6 @@
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\Server\apache-tomcat-9.0.46\lib\tomcat-util.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\Server\apache-tomcat-9.0.46\lib\tomcat-websocket.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\Server\apache-tomcat-9.0.46\lib\websocket-api.jar" enabled="true" runInBatchMode="false"/>
-=======
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\server\apache-tomcat-9.0.46\lib\annotations-api.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\server\apache-tomcat-9.0.46\lib\catalina-ant.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\server\apache-tomcat-9.0.46\lib\catalina-ha.jar" enabled="true" runInBatchMode="false"/>
@@ -123,6 +121,5 @@
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\server\apache-tomcat-9.0.46\lib\tomcat-util.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\server\apache-tomcat-9.0.46\lib\tomcat-websocket.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="C:\Users\sdedu\Desktop\server\apache-tomcat-9.0.46\lib\websocket-api.jar" enabled="true" runInBatchMode="false"/>
->>>>>>> Stashed changes
     <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
 </factorypath>
