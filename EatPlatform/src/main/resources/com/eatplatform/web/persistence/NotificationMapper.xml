@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.NotificationMapper">
+
+	<resultMap type="com.eatplatform.web.domain.NotificationVO"
+		id="notificationResultMap">
+		<id property="notificationId" column="NOTIFICATION_ID" />
+		<result property="type" column="TYPE" />
+		<result property="username" column="USERNAME" />
+		<result property="message" column="MESSAGE" />
+		<result property="read" column="READ" />
+		<result property="notificationDate" column="NOTIFICATION_DATE" />
+	</resultMap>
+
+	<select id="findUnreadNotificationsByUsername" resultMap="notificationResultMap">
+		SELECT * FROM NOTIFICATION
+		WHERE USERNAME = #{username} AND READ = 'N'
+		ORDER BY NOTIFICATION_ID DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO NOTIFICATION (NOTIFICATION_ID, TYPE, USERNAME, MESSAGE)
+		VALUES (NOTIFICATION_SEQ.NEXTVAL, #{type}, #{username}, #{message})
+	</insert>
+	
+	<update id="update">
+		UPDATE NOTIFICATION 
+		SET READ = 'Y'
+		WHERE NOTIFICATION_ID = #{notificationId}
+	</update>
+
+</mapper>

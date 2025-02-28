@@ -155,6 +155,34 @@ header {
 	font-weight: bold;
 }
 
+/* 알림 아이콘 스타일 */
+/* 빨간 점을 아이콘의 오른쪽 상단에 배치하기 위해 */
+#notificationIcon {
+	position: relative; 
+}
+		
+/* 빨간 점을 표시하는 스타일 */
+.notification-badge {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 10px;
+	height: 10px;
+	background-color: red; 
+	border-radius: 50%;
+	display: none;
+}
+		
+/* 알림 아이콘에 마우스를 올렸을 때 알림 목록을 보이게 하기 위한 스타일 */
+#notificationIcon:hover + #notifications {
+	display: block; /* 알림 목록 표시 */
+}
+		
+/* 알림 아이콘에 빨간 점이 표시될 때 */
+.notification-dot.has-notifications .notification-badge {
+	display: block; 
+}
+
 /* Empty Header & Footer*/
 #empty_header, #empty_footer {
 	width: 100%;

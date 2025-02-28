@@ -39,6 +39,18 @@
                     		<a href="/user/detail">마이페이지</a>
                     	</li>         	
                 	</ul>
+                	<ul>
+           			<!-- 알림 버튼을 헤더에 추가 -->
+            			<li class="review_noti">
+                			<a id="notificationIcon" class="nav-link text-white notification-dot">
+                				🔔
+                				<span id="notificationBadge" class="notification-badge"></span> <!-- 빨간 점 -->
+    						</a>
+            			</li>
+        			</ul>
+        			<ul id="notifications" class="notifications-dropdown" style="display: none;">
+            			<!-- 실시간 알림이 여기에 표시됩니다 -->
+        			</ul>
                 </sec:authorize>
             </div>
             <div id="gnb_bar">

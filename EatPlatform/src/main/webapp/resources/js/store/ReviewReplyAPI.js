@@ -61,8 +61,6 @@
 		                "reviewImageList" : reviewImageList  // 이미지 리스트 추가	
 	         	};
 
-				console.log(obj);
-	         
 	         	// JSON 데이터를 전송
 	             $.ajax({
 	                 type: 'POST',
@@ -107,8 +105,8 @@
 				
 				$.getJSON(
 					url,
-					function(data) {				
-						console.log(data);
+					function(data) {	
+						console.log(data);			
 						
 						if(data.totalReviews === 0) {
 							if (pageNumber === 1) {
@@ -120,7 +118,6 @@
 						
 						var list = '';
 						$(data.list).each(function(){
-							console.log(this); // 인덱스 데이터
 					
 							// 문자열 형태를 날짜 형태로 변환
 							var reviewDate = new Date(this.reviewDate).toLocaleString();
@@ -131,7 +128,6 @@
 				        	
 				        	let loginId = $('#loginId').text();
 							var username = this.userVO.username
-							console.log("로그인 ID: " + loginId + "사용자: " + username); 
 				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
@@ -166,7 +162,6 @@
 							// 이미지 조회
 							list += '<div class="review-images">'
 							$(this.reviewImageList).each(function(){
-								console.log(this);
 									
 								var reviewImageList = this.reviewImageList;
 									
@@ -221,7 +216,6 @@
 			function replyset() {
 				let loginId = $('#loginId').text();
 				let storeUserId = $('#storeUser').val();
-				console.log("로그인 ID: " + loginId + "사장님: " + storeUserId);
 				if (loginId == storeUserId) {
 				let buttons = $('.reply_buttons');
 					$('.review_reply').show();
@@ -235,7 +229,6 @@
 				$.getJSON(
 					url,
 					function(data) {
-						console.log(data);
 						var repliesList = '';
 						
 						$(data).each(function(){
@@ -278,7 +271,6 @@
 			
 			// 리뷰 수정
 			$('#reviews').on('click', '.review_item .btn_update', function(){
-				console.log(this);
 				
 				var storeId = $(this).prevAll('#storeId').val();
 				var reviewId = $(this).data('review-id');
@@ -289,14 +281,12 @@
 						  'storeId' : storeId,
 			    		  'reviewId' : reviewId	
 					}
-					console.log(obj2);
 
 				$.ajax({
 					type : 'GET', 
 					url : '../review/updateReview?reviewId=' + reviewId,
 					data : JSON.stringify(obj2),
 					success : function(result) {
-						console.log(result);
 						if(result == 1) {
 							alert('리뷰 수정 성공!');
 							getAllReview();
@@ -311,7 +301,6 @@
 		
 			// 리뷰 삭제
 			$('#reviews').on('click', '.review_item .btn_delete', function(){
-				console.log(this);
 				
 				var reviewId = $(this).data('review-id');
 				
@@ -322,7 +311,6 @@
 						'Content-Type' : 'application/json'
 					}, 
 					success : function(result) {
-						console.log(result);
 						if(result == 1) {
 							alert('리뷰 삭제 성공!');
 							getAllReview();
@@ -343,7 +331,6 @@
 			
 			// 리뷰 추천
 			$('#reviews').on('click', '.review_item .btn_like', function(){
-				console.log(this);
 				
 				var reviewId = $(this).data('review-id');
 				
@@ -354,7 +341,6 @@
 						'Content-Type' : 'application/json'
 					}, 
 					success : function(result) {
-						console.log(result);
 						if(result == 1) {
 							alert('리뷰 추천!');
 							getAllReview();
@@ -384,7 +370,6 @@
 					  'Content-Type' : 'application/json'
 				  },
 				  success : function(response) {
-					  console.log(response);
 					  if(response === 0) {
 						  $('#reportModal').show();
 						  $('#reportText').val(''); // 기존 입력값 초기화
@@ -415,7 +400,6 @@
 							'reviewReportMessage' : reviewReportMessage,
 							'reviewContent' : reviewContent
 					}
-					console.log(obj3);
 			  
 				// 서버로 신고 데이터 보내기
 			      $.ajax({
@@ -457,8 +441,6 @@
 		// 선택된 리뷰에 댓글 등록(사업자)
 		$('#reviews').on('click', '.review_item .btn_reply', function(){
 			
-			console.log(this);
-				
 			var reviewId = $(this).closest('.review_item').find('#reviewId').val();  // 리뷰 아이디 가져오기
 	        var replyContent = $(this).siblings('#replyContent').val();  // 댓글 내용 가져오기
 
@@ -471,7 +453,6 @@
 						'reviewId' : reviewId,
 						'replyContent' : replyContent
 				}
-				console.log(obj4);
 				
 				$.ajax({
 					type : 'POST',
@@ -481,7 +462,6 @@
 					},
 					data : JSON.stringify(obj4),
 					success : function(result) {
-						console.log(result);
 						if(result == 1) {
 							alert('댓글 입력 성공');
 							getReplies(reviewId);
@@ -501,7 +481,6 @@
 			
 			// 선택된 댓글 수정
 			$('#reviews').on('click', '.reply_item .btn_update_reply', function(){
-				console.log(this);
 				
 				var reviewId = $(this).closest('.review_item').find('#reviewId').val();
 				var replyId = $(this).closest('.review_item').find('#replyId').val();
@@ -522,7 +501,6 @@
 				replyItem.find('.btn_save_reply').on('click', function(){
 					let updateReplyId = $(this).parent().siblings('#replyId').val();
 					var updatedContent = replyItem.find('#replyContent').val();
-					console.log("리뷰 번호 : " + reviewId + "댓글 번호 : " + updateReplyId + ", 댓글 내용 : " + updatedContent);
 					
 					if(replyContent == updatedContent) {
 						alert("수정할 댓글을 입력해주세요.");
@@ -537,7 +515,6 @@
 						},
 						data : JSON.stringify({"replyContent" : updatedContent}),  
 						success : function(result) {
-							console.log(result);
 							if(result == 1) {
 								alert('댓글 수정 성공!');
 								getReplies(reviewId);
@@ -566,11 +543,9 @@
 			
 		// 선택된 댓글 삭제
 			$('#reviews').on('click', '.reply_item .btn_delete_reply', function(){
-				console.log(this);
 				
 				var reviewId = $(this).closest('.review_item').find('#reviewId').val();
 				var replyId = $(this).closest('.reply_item').find('#replyId').val();
-				console.log("리뷰 번호 : " + reviewId + ", 댓글 번호 : " + replyId);
 				
 				$.ajax({
 					type : 'DELETE', 
@@ -579,7 +554,6 @@
 						'Content-Type' : 'application/json'
 					}, 
 					success : function(result) {
-						console.log(result);
 						if(result == 1) {
 							alert('댓글 삭제 성공!');
 							getReplies(reviewId);
