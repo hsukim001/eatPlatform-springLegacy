@@ -77,32 +77,40 @@ pageEncoding="UTF-8"%>
     	color: #444;
 	}
 	
-	#quantity {
-		width: 10%;
-		float: left;
-	}
-	
 	.buy_option {
 		display: flex;
  		align-items: center;
+ 		width: 60%;
+ 		margin: 0 auto;
 	}
 	
 	.buyBtnPlace {
-		width: 80%;
+		width: 65%;
 		display: flex;
     	justify-content: space-around;
     	margin: 0 auto;
 	}
 	
 	.buy_option button {
-	    width: 25%;
-	    font-size: 20px;
+	    width: 45%;
+	    font-size: 17px;
 	    font-weight: bold;
 	    background: #40a2ff;
 	    color: #fff;
 	    border: none;
 	    line-height: 40px;
 	    cursor: pointer;
+	}
+	
+	#quantityContainer {
+		width: 25%;
+		display: flex;
+		justify-content: space-evently;
+	}
+	
+	#quantity {
+		width: 50%;
+		float: left;
 	}
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
@@ -196,8 +204,7 @@ pageEncoding="UTF-8"%>
 						</p>
 						<p id="productPrice" class="itemText">
 							<span class="mainPrice">
-								<span class="price">${product.productPrice }</span>
-								 원
+								<span class="price">${product.productPrice }</span>원
 							</span><br>
 							<span class="unitPrice">
 							 	한 묶음 당 
@@ -205,11 +212,11 @@ pageEncoding="UTF-8"%>
 								(개당 <span id="calcPrice" class="price"></span>원)
 							</span>
 						</p>
-						<p id="calcUnit">
-							
-						</p>
+						<p id="calcUnit"></p>
 						<div class="buy_option">
-							<input id="quantity" name="quantity" type="number" value="1"> 개
+							<div id="quantityContainer">
+								<input id="quantity" name="quantity" type="number" value="1"> 개
+							</div>
 							<div class="buyBtnPlace">
 								<button id="buyBtn">
 									구매
@@ -222,7 +229,12 @@ pageEncoding="UTF-8"%>
 					</div>
 				</div>
 			</div>
+				
+			<div id="detailContainer">
+				<img src="<%=request.getContextPath()%>/resources/img/detailSample.jpg" alt="상세이미지">
+			</div>
 		</div>
+		<jsp:include page="/include/footer.jsp" />
 	</div>
 </body>
 
