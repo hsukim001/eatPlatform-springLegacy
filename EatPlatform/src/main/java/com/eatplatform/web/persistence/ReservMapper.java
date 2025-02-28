@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
@@ -22,14 +23,26 @@ public interface ReservMapper {
 	 * @param reservDate
 	 * @return List<StoreScheduleVO>
 	 */
-	List<StoreScheduleVO> selectReservListByStoreIdReservDate(@Param("storeId") int storeId, @Param("reservDate") String reservDate);
+	List<StoreScheduleVO> selectStoreScheduleListByStoreIdReservDate(@Param("storeId") int storeId, @Param("reservDate") String reservDate);
 	
+	/**
+	 * @param storeId
+	 * @param reservDate
+	 * @return List<ReservVO>
+	 */
+	List<ReservVO> selectReservListByHolidayList(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
 	
 	/**
 	 * @param reservVO
 	 * @return List<JoinReservUserNameVO>
 	 */
 	List<JoinReservUserNameVO> selectReservListByStoreIdReservDateReservHourReservMin(ReservVO reservVO);
+	
+	/**
+	 * @param List<HolidayVO> holidayList
+	 * @return List<ReservVO>
+	 */
+	List<ReservVO> selectReservDateByHolidayListStoreId(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
 	
 	// 예약 목록 총 건수 조회
 	int selectToDayTotalCount(int userId);

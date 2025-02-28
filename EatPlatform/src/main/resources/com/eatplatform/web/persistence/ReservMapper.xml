@@ -126,12 +126,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND RESERV_MIN = #{reservMin}
 	</select>
 	
-	<select id="selectReservListByStoreIdReservDate" resultMap="storeScheduleResultMap">
+	<select id="selectStoreScheduleListByStoreIdReservDate" resultMap="storeScheduleResultMap">
 		SELECT RESERV_DATE, RESERV_HOUR, RESERV_MIN, SUM(RESERV_PERSONNEL) AS TOTAL_PERSONNEL, COUNT(USER_ID) AS RESERV_TEAM FROM RESERV
 		WHERE RESERV_DATE = #{reservDate}
 		AND STORE_ID = #{storeId}
 		GROUP BY RESERV_DATE, RESERV_HOUR, RESERV_MIN
 		ORDER BY RESERV_HOUR ASC
+	</select>
+	
+	<select id="selectReservListByHolidayList" parameterType="map" resultMap="reservResultMap">
+		SELECT * FROM RESERV
+		WHERE STORE_ID = #{storeId}
+		AND RESERV_DATE IN
+		<foreach collection="holidayList" item="list" open="(" close=")" separator=",">
+			#{list.holiday}
+		</foreach>
 	</select>
 	
 	<select id="selectReservListByStoreIdReservDateReservHourReservMin" resultMap="joinReservUserNameResultMap">
@@ -143,6 +152,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND RESERV_DATE = #{reservDate}
 		AND RESERV_HOUR = #{reservHour}
 		AND RESERV_MIN = #{reservMin}
+	</select>
+	
+	<select id="selectReservDateByHolidayListStoreId" parameterType="map" resultMap="reservResultMap">
+		SELECT RESERV_DATE FROM (
+		    SELECT RESERV_DATE, COUNT(RESERV_ID) AS COUNT FROM RESERV
+		    WHERE STORE_ID = #{storeId} 
+		    AND RESERV_DATE IN
+		    <foreach collection="holidayList" item="list" open="(" close=")" separator=",">
+		    	#{list.holiday}
+		    </foreach>
+		    GROUP BY RESERV_DATE
+		)
+		ORDER BY RESERV_DATE
 	</select>
 	
 </mapper>

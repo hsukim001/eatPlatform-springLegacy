@@ -37,9 +37,9 @@ public class ManagementController {
 	private MenuService menuService;
 	
 	/**
-	 * @param model
-	 * @param pagination
-	 * @param customUser
+	 * @param Model model
+	 * @param Pagination pagination
+	 * @param CustomUser customUser
 	 */
 	@GetMapping("/store/list")
 	public void managementStoreList(Model model, Pagination pagination, @AuthenticationPrincipal CustomUser customUser) {
@@ -61,7 +61,7 @@ public class ManagementController {
 	/**
 	 * @param Model model
 	 * @param int storeId
-	 * @return
+	 * @return String
 	 */
 	@GetMapping("/store/detail")
 	public String managementStoreDetail(Model model, @RequestParam("storeId") int storeId) {

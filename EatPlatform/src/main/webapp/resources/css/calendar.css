@@ -90,6 +90,11 @@
 	color: white !important;
 }
 
+.holiday {
+	background-color: #ff4747 !important;
+	color: white !important;
+}
+
 .disabled {
     background-color: #eee !important;
     color: #a9a9a9 !important;

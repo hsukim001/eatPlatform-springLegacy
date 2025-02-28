@@ -13,26 +13,37 @@ $(function () {
     const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
     let today = new Date();
+    let currentDate = today.getDate();
     let currentMonth = today.getMonth();
+    let originMonth = currentMonth + 1;
     let currentYear = today.getFullYear();
-    let selectedDate = today; // 기본적으로 오늘 날짜를 선택
-    let selectedTime = null;		
-	let timeValue;
-	let dateText;
-	let timeText;
-	let selectedDateValue;
-	let todayText;
+	let formattedMonth = (currentMonth < 10) ? '0' + originMonth : originMonth;
+	let formattedDate = (currentDate < 10) ? '0' + currentDate : currentDate;
+	let todayDate = parseInt(currentYear + '' + formattedMonth + formattedDate);
+	let dateReplace = todayDate;
+    let selectedDate = today; 
+    let selectedTime, timeValue, dateText, timeText, selectedDateValue, todayText;
 	
 	// 예약 확인
 	let reservList;
 	let reservInfoList;
+	let cancelReservInfoList;
 	
 	// 휴무 시간
-	let breakTimeList;
+	let holidayList;
 	
 	// 일정 유형
 	let scheduleType = "reserv";
-	let selectHolidayDate;
+	let selectHolidayDate = {
+		"list" : [] 
+	};
+	let selectHolidayCount = 0;
+	let cancelHolidayDate ={
+		"list" : []
+	};
+	let registrationHolidayStatus;
+	let cancelHolidayStatus;
+	let isCancelReservStatus;
 			
 	// ajax CSRF 토큰
 	$(document).ajaxSend(function(e, xhr, opt){
@@ -54,11 +65,17 @@ $(function () {
 	        $('.today').addClass('selected');
 	        $('.morning').show();
 			$('.afternoon').show();
+			$('#currentSelectedDate').show();
+			$('#holidayRegisterBtn').hide();
+			selectHolidayDate.list = [];
+			cancelHolidayDate.list = [];
 			
 			console.log("scheduleType : " + scheduleType);
 			
+			searchHoliday();
 			generateCalendar(currentMonth, currentYear);
 			updateSelectionDisplay();
+			generateReservTimeSlots();
 			console.log("todayText : " + todayText);
 			
 	    } else {
@@ -75,7 +92,13 @@ $(function () {
 			$('#afternoon-slots').children().not('h3').remove();
 	    	$('.morning').hide();
 			$('.afternoon').hide();
+			$('#currentSelectedDate').hide();
+			$('#holidayRegisterBtn').show();
+			selectHolidayDate.list = [];
+			cancelHolidayDate.list = [];
 			console.log("scheduleType : " + scheduleType);
+			
+			searchHoliday();
 			generateCalendar(currentMonth, currentYear);
 			console.log("todayText : " + todayText);
 	    } else {
@@ -83,29 +106,19 @@ $(function () {
 	    }
 	});
 	
-	$(document).on('click', '#breakTimeScheduleBtn', function(){
-	    if($('#breakTimeScheduleBtn').prop('checked')) {
-	    	scheduleType = "breakTime";
-	    	$('.calendar .selected').removeClass('selected');
-	        $('.today').addClass('selected');
-	        console.log("scheduleType : " + scheduleType);
-	        generateCalendar(currentMonth, currentYear);
-	        console.log("todayText : " + todayText);
-	    } else {
-	    	$('.today').removeClass('selected');
-	    }
-	});
-	
 	// 캘린더 조회 함수
     function updateSelectionDisplay() {
         dateText = selectedDate ? `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}` : '날짜를 선택하세요';
         timeText = selectedTime || '시간을 선택하세요';
+        
+        let date = String(dateReplace).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+        $('#currentSelectedDate').text(date + " 예약 정보");
     } // End updateSelectionDisplay
 
 	// 캘린더 함수
     function generateCalendar(month, year) {
         calendarDays.empty();
-
+		20250227
         // Add day names
         dayNames.forEach(day => {
             const dayNameCell = $('<div>').text(day).addClass('day-names');
@@ -126,50 +139,121 @@ $(function () {
             const currentDay = new Date(year, month, day);
             const dateValue = `${currentDay.getFullYear()}-${(currentDay.getMonth() + 1).toString().padStart(2, '0')}-${currentDay.getDate().toString().padStart(2, '0')}`;
             const dayCell = $('<div>').text(day).attr('data-date-value', dateValue);
-
+            //const isTodayHoliday;
+			
             // 오늘 날짜를 제외한 과거 날짜에만 'disabled' 추가
             if (currentDay < today && !(currentDay.getDate() === today.getDate() && currentDay.getMonth() === today.getMonth() && currentDay.getFullYear() === today.getFullYear()) && scheduleType != "reserv") {
                 dayCell.addClass('disabled');
+            }
+            
+            if(holidayList.length > 0) {
+            	const dateReplace = dateValue.replace(/-/g, '');
+            	const isCancelHolidayDuplicate = cancelHolidayDate.list.some(item => item.holiday === dateReplace);
+            	if(!isCancelHolidayDuplicate) {
+		            for(let i = 0; i < holidayList.length; i++) {
+		            	const date = (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(0, 7) + "-" + (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(7);
+		            	if(dateValue == date) {
+		            		dayCell.addClass('holiday');
+		            	}
+		            }
+	            }
             }
 
             // 오늘 날짜는 'selected' 상태로 기본 선택
             if (
                 day === today.getDate() &&
                 month === today.getMonth() &&
-                year === today.getFullYear()
+                year === today.getFullYear() && scheduleType == "reserv"
             ) {
                 dayCell.addClass('today selected');
                 selectedDate = currentDay;
                 todayText = dateValue;
             }
+            
+            // 선택됬던 일자 선택
+            if(selectHolidayDate.list.length > 0 && scheduleType != "reserv") {
+            	const dateReplace = dateValue.replace(/-/g, '');
+            	const isSelectHolidayDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
+            	
+            	if(isSelectHolidayDuplicate) {
+            		dayCell.addClass('selected');
+            	}
+            }
 
 
             dayCell.on('click', function () {
-            	if(scheduleType != "holiday") {
-		        	if (!$(this).hasClass('disabled')) {
-		            	$('.calendar .selected').removeClass('selected');
-		                $(this).addClass('selected');
-		                selectedDate = new Date(year, month, day);
-		                updateSelectionDisplay();
-		                
-		                console.log("dateText : " + dateText);
-		                
-		                if(scheduleType == "reserv") {
-		                	choiceDayReservList();
-		                }
-
-		            }            		            		
-            	} else {
-            		if($(this).hasClass('selected')) {
-            			$(this).removeClass('selected');
-			            selectedDate = new Date(year, month, day);
-			            updateSelectionDisplay();
-            		} else {
+            	let date = $(this).data('date-value');
+				dateReplace = date.replace(/-/g, '');
+				console.log("dayCell : " + dateReplace);
+            	
+	            if(scheduleType != "holiday") {
+	            	if (!$(this).hasClass('disabled') && !$(this).hasClass('holiday')) {
+			            $('.calendar .selected').removeClass('selected');
 			            $(this).addClass('selected');
 			            selectedDate = new Date(year, month, day);
-			            updateSelectionDisplay();            			
-            		}
-            	}
+			            updateSelectionDisplay();
+			                
+			            console.log("dateText : " + dateText);
+			                
+			            if(scheduleType == "reserv") {
+			            	choiceDayReservList(dateReplace);
+			            }
+			          	
+			        }
+	
+	            } else if(scheduleType == "holiday" && !$(this).hasClass('disabled')) {
+	            	if($(this).hasClass('selected') && !$(this).hasClass('holiday')) {
+	            		
+	            		$(this).removeClass('selected');
+				        selectedDate = new Date(year, month, day);
+				        
+				            
+				        let isDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
+			            if(isDuplicate) {
+			            	console.log("coooo");
+			                	
+						   	for (let i = selectHolidayDate.list.length - 1; i >= 0; i--) {
+								if (selectHolidayDate.list[i].holiday === dateReplace) {
+									console.log("delete");
+							    	selectHolidayDate.list.splice(i, 1); // 해당 인덱스의 요소 삭제
+							    }
+							}
+							    
+						}
+						
+						selectHolidayCount--;
+				        updateSelectionDisplay();
+	            	} else if(!$(this).hasClass('selected') && !$(this).hasClass('holiday')) {
+	            		let isHolidayList = holidayList.some(item => item.holiday === dateReplace);
+	            		if(selectHolidayCount <= 20 && !isHolidayList) {
+					        $(this).addClass('selected');
+					        selectedDate = new Date(year, month, day);
+					        selectHolidayCount++;
+					        updateSelectionDisplay();
+				        } else if(selectHolidayCount > 20 && !isHolidayList) {
+				        	alert("한번에 20개의 휴무일 등록이 가능합니다.");
+				        } else if(isHolidayList) {
+				        	for (let i = cancelHolidayDate.list.length - 1; i >= 0; i--) {
+								if (cancelHolidayDate.list[i].holiday === dateReplace) {
+							    	cancelHolidayDate.list.splice(i, 1); // 해당 인덱스의 요소 삭제
+							    }
+							}
+							$(this).addClass('holiday');
+							console.log("cancelHolidayDate.list : " + cancelHolidayDate.list);
+				        }
+	            	} else if($(this).hasClass('holiday')) {
+	            		console.log("휴무일 취소");
+	            		let storeId = $('#storeId').val();
+	            		$(this).removeClass('holiday');
+	            		let obj = {
+	            			"storeId" : storeId,
+	            			"holiday" : dateReplace
+	            		};
+	            		cancelHolidayDate.list.push(obj);
+	            		console.log("cancelHolidayDate.list : " + cancelHolidayDate.list);
+	            	} else if(!$(this).hasClass('holiday')) {}
+	            }
+	            	
         	});
 
             calendarDays.append(dayCell);
@@ -179,28 +263,60 @@ $(function () {
     } // End generateCalendar
 
     prevMonthBtn.on('click', function () {
+    	let storeId = $('#storeId').val();
+    
+    	if(scheduleType != "reserv") {
+	    	$('div.selected').each(function () {
+			    let date = $(this).data('date-value'); // 날짜 값 추출
+			    let dateReplace = date.replace(/-/g, '');
+			    let obj = {
+			    	"storeId" : storeId,
+			    	"holiday" : dateReplace
+			    };
+			    
+			    // 중복 확인
+			    let isDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
+			    
+			    if(!isDuplicate) {
+			    	selectHolidayDate.list.push(obj);
+			    }
+			    
+			    
+			});
+		}
+		console.log(selectHolidayDate);
+    
         currentMonth--;
         if (currentMonth < 0) {
-            currentMonth = 11;
+            currentMonth = 12;
             currentYear--;
         }
         generateCalendar(currentMonth, currentYear);
     }); // End prevMonthBtn click
 
     nextMonthBtn.on('click', function () {
+    	let storeId = $('#storeId').val();
     
-    	$('div.selected').each(function () {
-		    let storeId = $('#storeId').val(); // 첫 번째 id 값 설정
-		    let dateValue = $(this).data('date-value'); // 날짜 값 추출
-		
-		    if (selectHolidayDate.storeId === null && storeId) {
-		        selectHolidayDate.storeId = storeId; // 첫 번째 요소의 ID 값만 저장
-		    }
-		
-		    if (dateValue) {
-		        selectHolidayDate.date.push(dateValue); // 날짜 배열에 추가
-		    }
-		});
+    	if(scheduleType != "reserv") {
+	    	$('div.selected').each(function () {
+			    let date = $(this).data('date-value'); // 날짜 값 추출
+			    let dateReplace = date.replace(/-/g, '');
+			    let obj = {
+			    	"storeId" : storeId,
+			    	"holiday" : dateReplace,
+			    };
+			    
+			    // 중복 확인
+			    let isDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
+			    
+			    if(!isDuplicate) {
+			    	selectHolidayDate.list.push(obj);
+			    }
+			    
+			    
+			});
+		}
+		console.log(selectHolidayDate);
     
         currentMonth++;
         if (currentMonth > 11) {
@@ -209,115 +325,6 @@ $(function () {
         }
         generateCalendar(currentMonth, currentYear);
     }); // End nextMonthBtn click
-    
-    // 휴게 시간 버튼 생성 함수
-    function generateBreakTimeSlots() {
-		console.log(activeTimeList);
-	    const morningSlotsContainer = $('#morning-slots');
-	    const afternoonSlotsContainer = $('#afternoon-slots');
-	
-	    // 기존의 슬롯 컨테이너 초기화
-		morningSlotsContainer.children(':not(h3)').remove();
-    	afternoonSlotsContainer.children(':not(h3)').remove();
-	
-	    let startTime = startTimeInput.val().split(':');
-	    let startHour = parseInt(startTime[0]);
-	    let startMinutes = parseInt(startTime[1]);
-	
-	    let endTime = endTimeInput.val().split(':');
-	    let endHour = parseInt(endTime[0]);
-	    let endMinutes = parseInt(endTime[1]);
-	
-        if (startMinutes < 30) {
-            startMinutes = 30;
-        } else {
-            startMinutes = 0;
-            startHour++;
-        }
-	
-	    // 선택된 날짜의 시작 시간 설정
-	    let currentTime = new Date(selectedDate);
-	    currentTime.setHours(startHour, startMinutes, 0, 0);
-	
-	    // 종료 시간 설정
-	    let endTimeObject = new Date(selectedDate);
-	    endTimeObject.setHours(endHour, endMinutes, 0, 0);
-	
-	    if (endTimeObject <= currentTime) {
-	        endTimeObject.setDate(endTimeObject.getDate() + 1);
-	    }
-	
-		//console.log(activeTimeList);
-	    while (currentTime <= endTimeObject) {
-		    const timeSlotText = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-		    
-		    const timeSlotText24 = currentTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: false });
-		    const timeSlotText24Split = timeSlotText24.split(':',2);
-		    const timeSlotText24Hour = timeSlotText24Split[0];
-		    const timeSlotText24Minutes = timeSlotText24Split[1];
-			const timeSlot = $('<button>').text(timeSlotText).attr('data-time-value', timeSlotText24);
-		    const now = new Date();
-		    
-		    let time = timeSlotText24Hour + timeSlotText24Minutes;
-		
-			 if (selectedDate.getDate() === today.getDate() &&
-		        selectedDate.getMonth() === today.getMonth() &&
-		        selectedDate.getFullYear() === today.getFullYear()) {
-		        
-			    if (currentTime.getHours() < now.getHours() || 
-			        (currentTime.getHours() === now.getHours() && currentTime.getMinutes() < now.getMinutes())) {
-			        timeSlot.addClass('disabled');
-			    }
-
-		    }
-
-		    
-		    		    
-		    if(breakTimeList !== null && breakTimeList !== undefined) {
-		    
-		    	for(let i = 0; i < breakTimeList.length; i++){
-		    		if(timeSlotText24Hour === breakTimeList[i].hour && timeSlotText24Minutes === breakTimeList[i].min){
-		    			if(breakTimeList[i].breakTime == time){
-		    				console.log("disabled");
-		    				console.log('not null');
-		    				timeSlot.addClass('disabled');
-		    			}
-		    		}
-		    	}
-		    }
-		    
-		    
-		    timeSlot.on('click', function () {
-		        if (!$(this).hasClass('disabled')) {
-		        	timeValue = $(this).data("timeValue");
-		        	console.log($(this).data("timeValue"));
-		            $('.time-slots .selected').removeClass('selected');
-		            $(this).addClass('selected');
-		            selectedTime = $(this).text();
-		            console.log(currentTime);
-		            updateSelectionDisplay();
-		        }
-		    });
-		
-		    // 오전과 오후를 구분하여 적절한 컨테이너에 추가
-		    if (currentTime.getHours() < 12) {
-		        morningSlotsContainer.append(timeSlot);
-		    } else {
-		        afternoonSlotsContainer.append(timeSlot);
-		    }
-		
-		    // 30분 간격으로 증가
-		    currentTime.setMinutes(currentTime.getMinutes() + 30);
-		    
-		}
-	} // End generateBreakTimeSlots
-    
-	function updateSelectedTime() {
-	    let timeValueSplit = timeValue.split(':');
-	    selectTimeHour = timeValueSplit[0];
-	    selectTimeMinutes = timeValueSplit[1];
-	} // End updateSelectedTime
-	
 	
 	function observeDOMChanges() {
    		const observer = new MutationObserver(function(mutationsList, observer) {
@@ -337,16 +344,25 @@ $(function () {
 	} // End observeDOMChanges
 	
 	// 선택한 일자의 예약 목록 조회 함수
-	function choiceDayReservList() {
+	function choiceDayReservList(dateReplace) {
+		console.log("currentYear : " + currentYear);
+		console.log("currentMonth : " + currentMonth);
+		console.log("currentDate : " + currentDate);
+		console.log("todayDate : " + todayDate);
+		console.log("new Date : " + new Date());
+		console.log("today : " + today);
+		
 		let storeId = $('#storeId').val();
+		// const date = currentDay;
 		$.ajax({
-			url : '/reserv/choiceDate/' + storeId + '/' + dateText,
+			url : '/reserv/choiceDate/' + storeId + '/' + dateReplace,
 			type : 'get',
 			headers : {
 				"Content-Type" : "application/json"
 			},
 			success : function(response) {
 				console.log("reservList : " + response.list);
+				console.log(response);
 				if(response.list == "") {
 					console.log("해당 일의 예약이 없습니다.");
 					reservList = {};
@@ -354,7 +370,7 @@ $(function () {
 					console.log("해당 일의 예약이 존재합니다.");
 					reservList = response.list;
 				}
-				seletedDateText = dateText;
+				seletedDateText = dateReplace;
 				generateReservTimeSlots();
 			},
 			error : function() {
@@ -365,6 +381,7 @@ $(function () {
 	
 	// 선택한 일자의 예약 목록을 예약 시간 별 버튼 생성 함수
 	function generateReservTimeSlots() {
+		console.log("z");
 		const reservMorningSlotsContainer = $('#morning-slots');
 	    const reservAfternoonSlotsContainer = $('#afternoon-slots');
 		
@@ -423,17 +440,7 @@ $(function () {
 		    	
 			}
 			
-			checkReservInfo(morningCount, afternoonCount, reservMorningSlotsContainer, reservAfternoonSlotsContainer);
-			
-		} else {
-			checkReservInfo(morningCount, afternoonCount, reservMorningSlotsContainer, reservAfternoonSlotsContainer);
-		}
-		
-	} // End generateReservTimeSlots
-	
-	// 예약 정보 확인
-	function checkReservInfo(morningCount, afternoonCount, reservMorningSlotsContainer, reservAfternoonSlotsContainer) {
-		if(morningCount == 0) {
+			if(morningCount == 0) {
 				let morningMsg = "오전 예약이 존재하지 않습니다.";
 				let morningMsgSlot = $('<p>').text(morningMsg);
 				reservMorningSlotsContainer.append(morningMsgSlot);
@@ -444,7 +451,22 @@ $(function () {
 				let afternoonMsgSlot = $('<p>').text(afternoonMsg);
 				reservAfternoonSlotsContainer.append(afternoonMsgSlot);
 			}
-	} // End checkReservInfo
+			
+		} else {
+			if(morningCount == 0) {
+				let morningMsg = "오전 예약이 존재하지 않습니다.";
+				let morningMsgSlot = $('<p>').text(morningMsg);
+				reservMorningSlotsContainer.append(morningMsgSlot);
+			}
+			
+			if(afternoonCount == 0) {
+				let afternoonMsg = "오후 예약이 존재하지 않습니다.";
+				let afternoonMsgSlot = $('<p>').text(afternoonMsg);
+				reservAfternoonSlotsContainer.append(afternoonMsgSlot);
+			}
+		}
+		
+	} // End generateReservTimeSlots
 	
 	// 선택된 시간의 예약자 상세 정보 조회 함수
 	function choiceDayReservInfo() {
@@ -452,8 +474,9 @@ $(function () {
 		let hour = timeSplit[0];
 		let min = timeSplit[1];
 		let storeId = $('#storeId').val();
+		let dateReplace = dateText.replace(/-/g, '');
 		$.ajax({
-			url : '/reserv/choiceDay/' + storeId + '/' + dateText + '/' + hour + '/' + min,
+			url : '/reserv/choiceDay/' + storeId + '/' + dateReplace + '/' + hour + '/' + min,
 			type : 'get',
 			headers : {
 				"Content-Type" : "application/json"
@@ -474,7 +497,7 @@ $(function () {
 		let timeSplit = timeValue.split(':');
 		let hour = timeSplit[0];
 		let min = timeSplit[1];
-		
+				
 		let reservInfo = "";
 		for(let i = 0; i < reservInfoList.length; i++) {
 			let reservId = reservInfoList[i].reservId;
@@ -486,8 +509,8 @@ $(function () {
 			
 			if(todayDate <= reservDate) {
 				reservInfo += 
-					'<li>' + (i + 1) + '.' +
-					'<span> 예약자 명 : ' + reservInfoList[i].name + '</span>' +
+					'<li>' +
+					'<span>' + (i + 1) + '. 예약자 명 : ' + reservInfoList[i].name + '</span>' +
 					'<span>, 연락처 : ' + reservInfoList[i].phone + '</span>' +
 					'<span>, 인원 : ' + reservInfoList[i].reservPersonnel + '</span>' +
 					'<span>, 접수일 : ' + reservInfoList[i].reservDateCreated + '</span>' +
@@ -495,8 +518,8 @@ $(function () {
 					+ '</li>';
 			} else {
 				reservInfo += 
-					'<li>' + (i + 1) + '.' +
-					'<span> 예약자 명 : ' + reservInfoList[i].name + '</span>' +
+					'<li>' +
+					'<span>' + (i + 1) + '. 예약자 명 : ' + reservInfoList[i].name + '</span>' +
 					'<span>, 연락처 : ' + reservInfoList[i].phone + '</span>' +
 					'<span>, 인원 : ' + reservInfoList[i].reservPersonnel + '</span>' +
 					'<span>, 접수일 : ' + reservInfoList[i].reservDateCreated + '</span>'
@@ -510,8 +533,10 @@ $(function () {
 		date.setHours(hour, min);
 			
 		let reservTimeText = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true });
-				
-		$('#reservDay').text(dateText + reservTimeText + " 예약 정보");
+		let formattedReservInfoDate = String(dateReplace).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+		
+		
+		$('#reservDay').text(formattedReservInfoDate + reservTimeText + " 예약 정보");
 		$('#reservUserInfo').html(reservInfo);
 	} // End generateReservInfo
 	
@@ -573,9 +598,189 @@ $(function () {
 			});
 	}); // End #reservBtnWrap input.click
 	
+	// 휴무일 등록 버튼 클릭 이벤트
+	$('#holidayRegisterBtn').click(function() {
+		let storeId = $('#storeId').val();
+		let reservStatus;
+		
+		if(selectHolidayCount <= 20) {
+			$('div.selected').each(function () {
+				let date = $(this).data('date-value'); // 날짜 값 추출
+				let dateReplace = date.replace(/-/g, '');
+				let obj = {
+					"storeId" : storeId,
+				   	"holiday" : dateReplace
+				};
+				    
+				// 중복 확인
+				let isDuplicate = selectHolidayDate.list.some(item => item.holiday === date);
+				    
+				if(!isDuplicate) {
+					console.log(selectHolidayDate.list);
+					selectHolidayDate.list.push(obj);
+				}
+				
+				
+			});
+			
+			if(selectHolidayDate.list.length > 0) {
+				reservStatus = holidayRegistration();
+			} else {
+				registrationHolidayStatus = 2;
+			}
+			
+			if(reservStatus == 0) {
+				if(cancelHolidayDate.list.length > 0) {
+					console.log("휴무일 취소 목록 있음");
+					cancelHoliday();
+				} else {
+					cancelHolidayStatus = 2;
+				}
+			}
+			
+			console.log("registrationHolidayStatus : " + registrationHolidayStatus);
+			console.log("cancelHolidayStatus : " + cancelHolidayStatus);
+			
+			if(reservStatus == 0) {
+				if(registrationHolidayStatus == 1 && cancelHolidayStatus == 1) {
+					console.log("성공");
+					alert("휴무일 등록 및 등록된 휴무일 취소가 완료되었습니다.");
+				} else if(registrationHolidayStatus == 0 && cancelHolidayStatus == 0) {
+					alert("휴무일 등록 및 등록된 휴무일 취소에 실패하였습니다.");
+				} else if(registrationHolidayStatus == 3 && cancelHolidayStatus == 3) {
+					alert("휴무일 등록 및 등록된 휴무일 취소중 오류가 발생하였습니다.");
+				} else if(registrationHolidayStatus == 1 && (cancelHolidayStatus == 0 || cancelHolidayStatus == 3)) {
+					alert("휴무일 등록 성공했지만 등록된 휴무일 취소에 실패하였습니다.");
+				} else if(cancelHolidayStatus == 1 && (registrationHolidayStatus == 0 || registrationHolidayStatus == 3)) {
+					alert("등록된 휴무일 취소에 성공했지만 휴무일 등록에는 실패하였습니다.");
+				} else if(registrationHolidayStatus == 1 && cancelHolidayStatus == 2) {
+					alert("휴무일 등록에 성공하였습니다.");
+				} else if(cancelHolidayStatus == 1 && registrationHolidayStatus == 2) {
+					alert("등록된 휴무일 취소에 성공하였습니다.");
+				}
+				location.reload(true);
+			} else if(reservStatus == 1) {
+				cancelReservList();
+			}
+			
+			//location.reload(true);
+		} else if(selectHolidayCount > 20) {
+			alert("한번에 20개의 휴무일 등록이 가능합니다.");
+		}
+		
+	}); // End #holidayRegisterBtn button.click
+	
+	// 휴무일 등록 함수
+	function holidayRegistration() {
+		let reservStatus;
+		$.ajax({
+			url : '/store/holiday/registration',
+			type : 'post',
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			data : JSON.stringify(selectHolidayDate.list),
+			async : false, // ajax 동기식 방식 설정
+			success : function(response) {
+				console.log("holidayRegistration ajax success");
+				if(response.reservStatus == 0) {
+					if(response.result > 0) {
+						registrationHolidayStatus = 1;
+						console.log("registrationHolidayStatus() : " + registrationHolidayStatus);					
+					} else if(response.result == 0) {
+						registrationHolidayStatus = 0;
+					}
+				} else if(response.reservStatus == 1) {
+					registrationHolidayStatus = 0;
+					cancelReservInfoList = response.reservList;
+					console.log("cancelReservInfoList : " + cancelReservInfoList);
+				}
+				reservStatus = response.reservStatus;
+			},
+			error : function() {
+				registrationHolidayStatus = 3;
+			}
+		});
+		return reservStatus;
+		
+	} // End holidayRegistration
+	
+	function cancelHoliday() {
+		$.ajax({
+			url : '/store/holiday/delete',
+			type : 'delete',
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			data : JSON.stringify(cancelHolidayDate.list),
+			async : false, // ajax 동기식 방식 설정
+			success : function(response) {
+				console.log("cancelHoliday ajax success");
+				console.log("cancelHolidayDate length : " + cancelHolidayDate.length);
+				if(response == 1) {
+					cancelHolidayStatus = 1;
+					console.log("cancelHoliday() : " + cancelHolidayStatus);
+				} else {
+					cancelHolidayStatus = 0;
+				}
+			},
+			error : function() {
+				cancelHolidayStatus = 3;
+			}
+		});
+	}
+	
+	// 휴무일 조회 함수
+	function searchHoliday() {
+		let storeId = $('#storeId').val();
+		$.ajax({
+			url : '/store/holiday/search/list/' + storeId,
+			type : 'get',
+			contentType : "application/json",
+			success : function(response) {
+				holidayList = response.holidayList;
+				generateCalendar(currentMonth, currentYear);
+			},
+			error : function() {
+				console.log("휴무일 목록을 불러오는중 오류가 발생하였습니다.");
+			}
+		});
+	} // End searchHoliday
+	
+	function cancelReservList() {
+		const cancelList = cancelReservInfoList;
+		confirm("선택된 휴무일 중에 예약일정이 확인되었습니다. \n 예약일정을 취소하여 휴무일을 등록 하시겠습니까?");
+		
+		if (!confirm) {
+			return false;
+		}
 
-    generateCalendar(currentMonth, currentYear);
-    choiceDayReservList();
+		$.ajax({
+			url : '/reserv/cancel',
+			type : 'delete',
+			headers : {
+				"Content-Type" : "application/json"
+			},
+			data : JSON.stringify(cancelList),
+			success : function(response) {
+				if(response.result == 1) {
+					console.log("cancel reserv success");
+					holidayRegistration();
+				} else if(response.result == 0) {
+					alert("예약일정 취소에 실패하였습니다.");
+				}
+			},
+			error : function() {
+				console.log("error cancel");
+				isCancelReservStatus = false;
+			}
+		});
+	}
+	
+
+    searchHoliday();
+    //generateCalendar(currentMonth, currentYear);
+    choiceDayReservList(dateReplace);
     updateSelectionDisplay();
 
 });

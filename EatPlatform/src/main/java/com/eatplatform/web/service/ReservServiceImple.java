@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
@@ -45,6 +46,13 @@ public class ReservServiceImple implements ReservService {
 		log.info("searchPagingPrevDayByReservDateUserId()");
 		return reservMapper.selectPagingPrevDay(pagination);
 	}
+	
+	@Override
+	public List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList) {
+		log.info("searchReservListByStoreIdReservDate()");
+		int storeId = holidayList.get(0).getStoreId();
+		return reservMapper.selectReservListByHolidayList(holidayList, storeId);
+	}
 
 	// 예약 목록 totalCount
 	@Override
@@ -67,6 +75,7 @@ public class ReservServiceImple implements ReservService {
 		
 		int currentReservPersonnel = 0;
 		int result = 0;
+		ReservVO vo = reservVO;
 		
 		try {
 			
@@ -81,6 +90,8 @@ public class ReservServiceImple implements ReservService {
 			Date reservDateTime = formatter.parse(dateTime);
 			
 			
+			vo.setReservDate(reservVO.getReservDate().replace("-", ""));
+			
 			// 함수명 (시간, 차이갑
 			// 현재시간보다 이전의 시간 예외
 			if (now.after(reservDateTime)) {
@@ -88,14 +99,14 @@ public class ReservServiceImple implements ReservService {
 				return result;
 			}
 			
-			currentReservPersonnel = reservMapper.selectTotalPersonnelByStoreIdDateHourMin(reservVO);
+			currentReservPersonnel = reservMapper.selectTotalPersonnelByStoreIdDateHourMin(vo);
 			log.info("currentReservPersonnel : " + currentReservPersonnel);
 			
-			int totalPersonnel = currentReservPersonnel + reservVO.getReservPersonnel();
+			int totalPersonnel = currentReservPersonnel + vo.getReservPersonnel();
 			log.info("인원 : " + totalPersonnel);
 			
 			if (totalPersonnel <= reservLimit) {
-				result = reservMapper.insert(reservVO);
+				result = reservMapper.insert(vo);
 				log.info("예약 등록 성공");
 			} else {
 				log.info("예약 실패 : 인원 초과");
@@ -147,12 +158,26 @@ public class ReservServiceImple implements ReservService {
 	 */
 	@Override
 	public List<StoreScheduleVO> searchReservList(int storeId, String reservDate) {
-		return reservMapper.selectReservListByStoreIdReservDate(storeId, reservDate);
+		log.info("searchReservList()");
+		log.info(reservDate);
+		return reservMapper.selectStoreScheduleListByStoreIdReservDate(storeId, reservDate);
 	}
 
 	@Override
 	public List<JoinReservUserNameVO> searchReservList(ReservVO reservVO) {
+		log.info("searchReservList()");
 		return reservMapper.selectReservListByStoreIdReservDateReservHourReservMin(reservVO);
+	}
+
+	@Transactional
+	@Override
+	public int cancelReservByList(List<ReservVO> cancelList) {
+		log.info("cancelReservByList()");
+		for(int i = 0; i < cancelList.size(); i++) {
+			int reservId = cancelList.get(i).getReservId();
+			reservMapper.delete(reservId);
+		}
+		return 1;
 	}
 
 }

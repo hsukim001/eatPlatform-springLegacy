@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.CustomUser;
+import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
@@ -160,11 +161,20 @@ public class ReservRESTController {
 	public ResponseEntity<Map<String, Object>> choiceDateReserv(@PathVariable("storeId") int storeId, @PathVariable("reservDate") String reservDate) {
 		log.info("choiceDateReserv()");
 		Map<String, Object> map = new HashMap<>();
+		log.info(reservDate);
 		List<StoreScheduleVO> reservList = reservService.searchReservList(storeId, reservDate);
+		log.info(reservList);
 		map.put("list", reservList);
 		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 	
+	/**
+	 * @param storeId
+	 * @param reservDate
+	 * @param reservHour
+	 * @param reservMin
+	 * @return Map<String, Object>
+	 */
 	@GetMapping("/choiceDay/{storeId}/{reservDate}/{reservHour}/{reservMin}")
 	public ResponseEntity<Map<String, Object>> choiceDayReservInfo(@PathVariable("storeId") int storeId, @PathVariable("reservDate") String reservDate, @PathVariable("reservHour") String reservHour, @PathVariable("reservMin") String reservMin) {
 		log.info("choiceDayReservInfo");
@@ -179,6 +189,29 @@ public class ReservRESTController {
 		log.info("list : " + list);
 		
 		map.put("list", list);
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/cancel")
+	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservVO> cancelList) {
+		log.info("cancelReservByReservId()");
+		Map<String, Object> map = new HashMap<>();
+		int result = 0;
+		log.info(cancelList);
+		if(cancelList.size() == 1) {
+			int reservId = cancelList.get(0).getReservId();
+			result = reservService.cancelReserv(reservId);
+		} else if(cancelList.size() > 1) {
+			result = reservService.cancelReservByList(cancelList);
+		}
+		
+		if(result == 1) {
+			log.info("삭제");
+			map.put("result", 1);
+		} else {
+			map.put("result", 0);
+		}
+		
 		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 

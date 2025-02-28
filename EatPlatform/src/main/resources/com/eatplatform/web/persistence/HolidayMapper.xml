@@ -6,19 +6,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.eatplatform.web.persistence.HolidayMapper">
 
-	<resultMap type="com.eatplatform.web.domain.HolidayVO" id="holidayResult">
+	<resultMap type="com.eatplatform.web.domain.HolidayVO" id="holidayResultMap">
 		<id property="holidayId" column="HOLIDAY_ID"/>
 		<result property="storeId" column="STORE_ID"/>
 		<result property="holiday" column="HOLIDAY"/>
 	</resultMap>
 	
+	<select id="selectHolidayListByStoreId" resultMap="holidayResultMap">
+		SELECT * FROM HOLIDAY
+		WHERE STORE_ID = #{storeId}
+	</select>
+	
 	<insert id="insertHoliday">
 		INSERT INTO HOLIDAY
 		VALUES(
-			HOLIDAY_SEQ_NEXVAL,
+			HOLIDAY_SEQ.NEXTVAL,
 			#{storeId},
 			#{holiday}
 		)
 	</insert>
+	
+	<insert id="multipleInsertHoliday">
+		INSERT INTO HOLIDAY (HOLIDAY_ID, STORE_ID, HOLIDAY)
+	    SELECT HOLIDAY_SEQ.NEXTVAL, storeId, holiday
+	    FROM (
+	        <foreach collection="holidayList" item="holiday" separator="UNION ALL">
+	            SELECT #{holiday.storeId} AS storeId, #{holiday.holiday} AS holiday FROM DUAL
+	        </foreach>
+	    )
+	</insert>
+	
+	<delete id="deleteHolidayByStoreIdHoliday">
+		DELETE HOLIDAY
+		WHERE STORE_ID = #{storeId}
+		AND HOLIDAY = #{holiday}
+	</delete>
 	
 </mapper>

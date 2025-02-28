@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.eatplatform.web.service.HolidayService;
+import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.domain.HolidayVO;
+import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 
@@ -49,6 +53,9 @@ public class StoreRESTController {
 	
 	@Autowired
 	private HolidayService holidayService;
+	
+	@Autowired
+	private ReservService reservService;
 	
 
 	/**
@@ -145,14 +152,70 @@ public class StoreRESTController {
         return ResponseEntity.ok(response);
     }
     
+    @GetMapping("/holiday/search/list/{storeId}")
+    public ResponseEntity<Map<String, Object>> searchHolidayList(@PathVariable("storeId") int storeId) {
+    	log.info("searchHolidayList()");
+    	
+    	Map<String, Object> response = new HashMap<>();
+    	List<HolidayVO> holidayList = holidayService.searchHolidayList(storeId);
+    	log.info(holidayList);
+    	response.put("holidayList", holidayList);
+    	return new ResponseEntity<Map<String,Object>>(response, HttpStatus.OK);
+    }
+    
     /**
-     * @param holidayVO
-     * @return Integer
+     * @param List<HolidayVO> list
+     * @return Map<String, Object>
      */
     @PostMapping("/holiday/registration")
-    public ResponseEntity<Integer> createdHoliday(@RequestBody HolidayVO holidayVO) {
+    public ResponseEntity<Map<String, Object>> createdHoliday(@RequestBody List<HolidayVO> list) {
     	log.info("createdHoliday()");
-    	int result = holidayService.createdHoliday(holidayVO);
+    	log.info(list.size());
+    	log.info(list);
+    	
+    	int result = 0;
+    	HolidayVO holidayVO = new HolidayVO();
+    	Map<String, Object> map = new HashMap<>();
+    	
+    	boolean isReservStatus = holidayService.isReservStatus(list);
+    	if(isReservStatus) {
+    		List<ReservVO> reservList = reservService.searchReservListByHolidayList(list);
+    		log.info("reservList : " + reservList);
+    		map.put("result", result);
+			map.put("reservStatus", 1);
+			map.put("reservList", reservList);
+			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+    	}
+    	
+    	if(list.size() > 1 && list.size() <= 20) {
+    		result = holidayService.registrationHolidayList(list);
+    		map.put("result", result);
+    		map.put("reservStatus", 0);
+    		
+    	} else if(list.size() == 1) {
+    		holidayVO.setStoreId(list.get(0).getStoreId());
+    		holidayVO.setHoliday(list.get(0).getHoliday());
+    		result = holidayService.createdHoliday(holidayVO);
+    		map.put("result", result);
+			map.put("reservStatus", 0);
+    		
+    	}
+    	return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+    }
+    
+    @DeleteMapping("/holiday/delete")
+    public ResponseEntity<Integer> deleteHoliday(@RequestBody List<HolidayVO> list) {
+    	log.info("deleteHoliday()");
+    	log.info(list.size());
+    	log.info(list);
+    	
+    	int result = 0;
+    	
+    	if(list.size() > 0 && list.size() <= 20) {
+    		log.info("if check");
+    		result = holidayService.deleteHoliday(list);
+    	}
+    	
     	return new ResponseEntity<Integer>(result, HttpStatus.OK);
     }
     
