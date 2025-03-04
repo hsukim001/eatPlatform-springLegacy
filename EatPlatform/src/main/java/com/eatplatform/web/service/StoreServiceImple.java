@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
+import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.persistence.ProductMapper;
 import com.eatplatform.web.persistence.StoreAddressMapper;
 import com.eatplatform.web.persistence.StoreApprovalsMapper;
 import com.eatplatform.web.persistence.StoreMapper;
@@ -31,12 +33,23 @@ public class StoreServiceImple implements StoreService {
 	@Autowired
 	private StoreApprovalsMapper storeApprovalsMapper;
 	
+	@Autowired
+	private ProductMapper productMapper;
+	
 	@Transactional(value = "transactionManager")
 	@Override
-	public int registerStore(StoreVO storeVO, StoreAddressVO storeAddressVO) {
+	public int registerStore(StoreVO storeVO, StoreAddressVO storeAddressVO, StoreCategoryVO storeCategoryVO) {
 		log.info("registerStore()");
 		int resultStore = storeMapper.insertStore(storeVO);
 		int storeId = storeVO.getStoreId();
+		int mainCategoryId = storeCategoryVO.getMainCategoryId();
+		int subCategoryId = storeCategoryVO.getSubCategoryId();
+		String mainCategoryName = productMapper.selectMainCategoryNameByMainCategoryId(mainCategoryId);
+		String subCategoryName = productMapper.selectSubCategoryNameBySubCategoryId(subCategoryId);
+		storeCategoryVO.setStoreId(storeId);
+		storeCategoryVO.setMainCategoryName(mainCategoryName);
+		storeCategoryVO.setSubCategoryName(subCategoryName);
+		boolean resultCategory = storeMapper.insertStoreCategory(storeCategoryVO);
 		storeAddressVO.setStoreId(storeId);
 		int resultAddress = storeAddressMapper.insertStoreAddress(storeAddressVO);
 		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
@@ -45,8 +58,9 @@ public class StoreServiceImple implements StoreService {
 		int resultApprovals = storeApprovalsMapper.insertStoreApprovals(storeApprovalsVO);
 		log.info(storeVO);
 		log.info(storeAddressVO);
-		log.info("사용자 정보 " + resultStore + "행 삽입 성공");
+		log.info("사용자 정보 " + resultCategory + "행 삽입 성공");
 		log.info("주소 정보 " + resultAddress + "행 삽입 성공");
+		log.info("카테고리 정보 " + resultAddress + "행 삽입 성공");
 		log.info("승인 요청 정보" + resultApprovals + "행 삽입 성공");
 		return resultStore;
 	}

@@ -15,7 +15,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeName" column="STORE_NAME" />
 		<result property="storePhone" column="STORE_PHONE" />
 		<result property="ownerName" column="OWNER_NAME" />
-		<result property="foodCategory" column="FOOD_CATEGORY" />
 		<result property="reservLimit" column="RESERV_LIMIT" />
 		<result property="seat" column="SEAT" />
 		<result property="businessHour" column="BUSINESS_HOUR" />
@@ -24,11 +23,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeRegDate" column="STORE_REG_DATE" />
 		<result property="storeUpdateDate" column="STORE_UPDATE_DATE" />
 	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.StoreCategoryVO" id="StroeCategoryResultMap">
+		<id property="storeId" column="STORE_ID"/>
+		<result property="mainCategoryId" column="MAIN_CATEGORY_ID" />
+		<result property="subCategoryId" column="SUB_CATEGORY_ID" />
+		<result property="mainCategoryName" column="MAIN_CATEGORY_NAME" />
+		<result property="subCategoryName" column="SUB_CATEGORY_NAME" />
+	</resultMap>
 
 	<insert id="insertStore" parameterType="com.eatplatform.web.domain.StoreVO" useGeneratedKeys="true" keyProperty="storeId" keyColumn="STORE_ID">
 		INSERT INTO STORE(
 		STORE_ID, STORE_USER_ID, STORE_NAME,
-		STORE_PHONE, OWNER_NAME, FOOD_CATEGORY,
+		STORE_PHONE, OWNER_NAME,
 		RESERV_LIMIT, SEAT,
 		BUSINESS_HOUR, STORE_COMMENT, DESCRIPTION
 		) VALUES (
@@ -37,12 +44,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		#{storeName},
 		#{storePhone},
 		#{ownerName},
-		#{foodCategory},
 		#{reservLimit},
 		#{seat},
 		#{businessHour},
 		#{storeComment},
 		#{description}
+		)
+	</insert>
+	
+	<insert id="insertStoreCategory">
+		INSERT INTO STORE_CATEGORY(
+		STORE_ID, 
+		MAIN_CATEGORY_ID, MAIN_CATEGORY_NAME,
+		SUB_CATEGORY_ID, SUB_CATEGORY_NAME
+		) VALUES (
+		#{storeId},
+		#{mainCategoryId},
+		#{subCategoryId},
+		#{mainCategoryName},
+		#{subCategoryName}
 		)
 	</insert>
 
@@ -75,7 +95,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                AND (
                    <foreach collection="keywords" item="keyword" separator="OR">
                        REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
                        OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
                        OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
                        OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
@@ -99,7 +118,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                AND (
                    <foreach collection="keywords" item="keyword" separator="OR">
                        REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(FOOD_CATEGORY, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
                        OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
                        OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
                        OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
@@ -164,8 +182,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		STORE_PHONE
 		= #{storePhone},
 		OWNER_NAME = #{ownerName},
-		FOOD_CATEGORY =
-		#{foodCategory},
 		RESERV_LIMIT = #{reservLimit},
 		SEAT = #{seat},
 		BUSINESS_HOUR = #{businessHour},

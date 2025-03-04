@@ -92,23 +92,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<insert id="insertMainCategory"
 		parameterType="com.eatplatform.web.domain.ProductMainCategoryVO">
-		INSERT INTO PRODUCT_MAIN_CATEGORY(
+		INSERT INTO MAIN_CATEGORY(
 		MAIN_CATEGORY_ID,
 		MAIN_CATEGORY_NAME
 		) VALUES (
-		PRODUCT_MAIN_CATEGORY_SEQ.NEXTVAL,
+		MAIN_CATEGORY_SEQ.NEXTVAL,
 		#{mainCategoryName}
 		)
 	</insert>
 
 	<insert id="insertSubCategory"
 		parameterType="com.eatplatform.web.domain.ProductSubCategoryVO">
-		INSERT INTO PRODUCT_SUB_CATEGORY(
+		INSERT INTO SUB_CATEGORY(
 		SUB_CATEGORY_ID,
 		MAIN_CATEGORY_ID,
 		SUB_CATEGORY_NAME
 		) VALUES (
-		PRODUCT_SUB_CATEGORY_SEQ.NEXTVAL,
+		SUB_CATEGORY_SEQ.NEXTVAL,
 		#{mainCategoryId},
 		#{subCategoryName}
 		)
@@ -129,13 +129,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectMainCategoryAll"
 		resultMap="MainCategoryResultMap">
 		SELECT *
-		FROM PRODUCT_MAIN_CATEGORY
+		FROM MAIN_CATEGORY
 	</select>
 
 	<select id="selectMainCategoryByMainCategoryId"
 		resultMap="MainCategoryResultMap">
 		SELECT *
-		FROM PRODUCT_MAIN_CATEGORY
+		FROM MAIN_CATEGORY
 		WHERE
 		MAIN_CATEGORY_ID =
 		#{mainCategoryId}
@@ -144,7 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectMainCategoryNameByMainCategoryId"
 		resultType="String">
 		SELECT MAIN_CATEGORY_NAME
-		FROM PRODUCT_MAIN_CATEGORY
+		FROM MAIN_CATEGORY
 		WHERE
 		MAIN_CATEGORY_ID =
 		#{mainCategoryId}
@@ -153,7 +153,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectSubCategoryByMainCategoroyId"
 		parameterType="Int" resultMap="SubCategoryResultMap">
 		SELECT *
-		FROM PRODUCT_SUB_CATEGORY
+		FROM SUB_CATEGORY
 		WHERE
 		MAIN_CATEGORY_ID = #{mainCategoryId}
 		ORDER BY SUB_CATEGORY_ID ASC
@@ -162,7 +162,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectSubCategoryBySubCategoryId"
 		resultMap="SubCategoryResultMap">
 		SELECT *
-		FROM PRODUCT_SUB_CATEGORY
+		FROM SUB_CATEGORY
 		WHERE
 		SUB_CATEGORY_ID =
 		#{subCategoryId}
@@ -172,7 +172,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectSubCategoryNameBySubCategoryId"
 		resultType="String">
 		SELECT SUB_CATEGORY_NAME
-		FROM PRODUCT_SUB_CATEGORY
+		FROM SUB_CATEGORY
 		WHERE
 		SUB_CATEGORY_ID =
 		#{subCategoryId}
@@ -260,14 +260,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 
 	<update id="updateMainCategory">
-		UPDATE PRODUCT_MAIN_CATEGORY
+		UPDATE MAIN_CATEGORY
 		SET MAIN_CATEGORY_NAME =
 		#{mainCategoryName}
 		WHERE MAIN_CATEGORY_ID = #{mainCategoryId}
 	</update>
 	
 	<update id="updateSubCategory">
-		UPDATE PRODUCT_SUB_CATEGORY
+		UPDATE SUB_CATEGORY
 		SET
 		MAIN_CATEGORY_ID =
 		#{mainCategoryId},
@@ -283,13 +283,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</delete>
 
 	<delete id="deleteMainCategory">
-		DELETE FROM PRODUCT_MAIN_CATEGORY
+		DELETE FROM MAIN_CATEGORY
 		WHERE
 		MAIN_CATEGORY_ID = #{mainCategoryId}
 	</delete>
 
 	<delete id="deleteSubCategory">
-		DELETE FROM PRODUCT_SUB_CATEGORY
+		DELETE FROM SUB_CATEGORY
 		WHERE
 		SUB_CATEGORY_ID
 		= #{subCategoryId}

@@ -6,13 +6,17 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface StoreMapper {
-	// 데이터 추가
+	// 식당 데이터 등록
 	int insertStore(StoreVO storeVO);
+	
+	// 식당 카테고리 등록
+	boolean insertStoreCategory(StoreCategoryVO storeCategoryVO);
 	
 	// 전체 게시물 조회
 	List<StoreVO> getRecentStores(Map<String, Integer> params);

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
+import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.StoreAddressService;
@@ -59,10 +60,15 @@ public class StoreController {
 	}
 
 	@PostMapping("/register")
-	public String register(StoreVO storeVO, StoreAddressVO storeAddressVO, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+	public String register(
+			StoreVO storeVO, 
+			StoreAddressVO storeAddressVO, 
+			StoreCategoryVO storeCategoryVO,
+			Model model, 
+			@AuthenticationPrincipal UserDetails userDetails) {
 		String userId = userDetails.getUsername();
 		storeVO.setStoreUserId(userId);
-		int result = storeService.registerStore(storeVO, storeAddressVO);
+		int result = storeService.registerStore(storeVO, storeAddressVO, storeCategoryVO);
 
 		model.addAttribute("result", result);
 
