@@ -74,6 +74,9 @@
 					<c:if test="${pageMaker.isNext() }">
 						<li><a href="list?pageNum=${pageMaker.endNum + 1}">다음</a></li>
 					</c:if>
+					<li>
+						<button onclick="location.href='/store/newStore'">매장 등록</button>					
+					</li>
 				</ul>
 			
 			</div>

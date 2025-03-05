@@ -52,7 +52,7 @@ public interface ReservService {
 	 * @param reservDate
 	 * @return List<ReservVO>
 	 */
-	List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList);
+	List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId);
 	
 	/**
 	 * 예약 목록 총 건수 조회

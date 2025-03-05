@@ -177,16 +177,6 @@ public class StoreRESTController {
     	HolidayVO holidayVO = new HolidayVO();
     	Map<String, Object> map = new HashMap<>();
     	
-    	boolean isReservStatus = holidayService.isReservStatus(list);
-    	if(isReservStatus) {
-    		List<ReservVO> reservList = reservService.searchReservListByHolidayList(list);
-    		log.info("reservList : " + reservList);
-    		map.put("result", result);
-			map.put("reservStatus", 1);
-			map.put("reservList", reservList);
-			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
-    	}
-    	
     	if(list.size() > 1 && list.size() <= 20) {
     		result = holidayService.registrationHolidayList(list);
     		map.put("result", result);
@@ -204,19 +194,50 @@ public class StoreRESTController {
     }
     
     @DeleteMapping("/holiday/delete")
-    public ResponseEntity<Integer> deleteHoliday(@RequestBody List<HolidayVO> list) {
+    public ResponseEntity<Map<String, Object>> deleteHoliday(@RequestBody List<HolidayVO> list) {
     	log.info("deleteHoliday()");
     	log.info(list.size());
     	log.info(list);
     	
+    	Map<String, Object> map = new HashMap<>();
     	int result = 0;
     	
     	if(list.size() > 0 && list.size() <= 20) {
     		log.info("if check");
     		result = holidayService.deleteHoliday(list);
+    		map.put("result", result);
+    		map.put("reservStatus", 0);
     	}
     	
-    	return new ResponseEntity<Integer>(result, HttpStatus.OK);
+    	return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+    }
+    
+    @GetMapping("/holiday/check/reservList/{storeId}/{array}")
+    public ResponseEntity<Map<String, Object>> checkReservList(@PathVariable("storeId") int storeId, @PathVariable("array") String array) {
+    	log.info(array);
+    	Map<String, Object> map = new HashMap<>();
+    	List<HolidayVO> holidayList = new ArrayList<>();
+    	String[] holidayArray = array.split(",");
+    	
+    	for(String holiday : holidayArray) {
+    		HolidayVO holidayVO = new HolidayVO();
+    		holidayVO.setHoliday(holiday.trim());
+    		holidayList.add(holidayVO);
+    	}
+    	
+    	boolean isReservStatus = holidayService.isReservStatus(holidayList, storeId);
+    	log.info("isReservStatus : " + isReservStatus);
+    	if(isReservStatus) {
+    		List<ReservVO> reservList = reservService.searchReservListByHolidayList(holidayList, storeId);
+    		log.info("reservList : " + reservList);
+			map.put("reservStatus", 1);
+			map.put("reservList", reservList);
+			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+    	} else {
+    		map.put("reservStatus", 0);
+    	}
+    	
+    	return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
     }
     
 }

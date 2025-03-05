@@ -48,9 +48,8 @@ public class ReservServiceImple implements ReservService {
 	}
 	
 	@Override
-	public List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList) {
+	public List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId) {
 		log.info("searchReservListByStoreIdReservDate()");
-		int storeId = holidayList.get(0).getStoreId();
 		return reservMapper.selectReservListByHolidayList(holidayList, storeId);
 	}
 

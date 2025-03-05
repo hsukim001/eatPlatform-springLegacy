@@ -67,9 +67,8 @@ public class HolidayServiceImple implements HolidayService{
 	}
 
 	@Override
-	public boolean isReservStatus(List<HolidayVO> holidayList) {
+	public boolean isReservStatus(List<HolidayVO> holidayList, int storeId) {
 		log.info("isReservStatus()");
-		int storeId = holidayList.get(0).getStoreId();
 		List<ReservVO> reservDateList = reservMapper.selectReservDateByHolidayListStoreId(holidayList, storeId);
 		
 		for(int i = 0; i < holidayList.size(); i++) {

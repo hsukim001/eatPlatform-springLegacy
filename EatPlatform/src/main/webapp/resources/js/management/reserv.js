@@ -44,6 +44,8 @@ $(function () {
 	let registrationHolidayStatus;
 	let cancelHolidayStatus;
 	let isCancelReservStatus;
+	let cancelReservStatus;
+	let reservStatus;
 			
 	// ajax CSRF 토큰
 	$(document).ajaxSend(function(e, xhr, opt){
@@ -601,7 +603,6 @@ $(function () {
 	// 휴무일 등록 버튼 클릭 이벤트
 	$('#holidayRegisterBtn').click(function() {
 		let storeId = $('#storeId').val();
-		let reservStatus;
 		
 		if(selectHolidayCount <= 20) {
 			$('div.selected').each(function () {
@@ -623,109 +624,203 @@ $(function () {
 				
 			});
 			
-			if(selectHolidayDate.list.length > 0) {
-				reservStatus = holidayRegistration();
-			} else {
-				registrationHolidayStatus = 2;
-			}
-			
-			if(reservStatus == 0) {
-				if(cancelHolidayDate.list.length > 0) {
-					console.log("휴무일 취소 목록 있음");
-					cancelHoliday();
-				} else {
-					cancelHolidayStatus = 2;
-				}
-			}
-			
-			console.log("registrationHolidayStatus : " + registrationHolidayStatus);
-			console.log("cancelHolidayStatus : " + cancelHolidayStatus);
-			
-			if(reservStatus == 0) {
-				if(registrationHolidayStatus == 1 && cancelHolidayStatus == 1) {
-					console.log("성공");
-					alert("휴무일 등록 및 등록된 휴무일 취소가 완료되었습니다.");
-				} else if(registrationHolidayStatus == 0 && cancelHolidayStatus == 0) {
-					alert("휴무일 등록 및 등록된 휴무일 취소에 실패하였습니다.");
-				} else if(registrationHolidayStatus == 3 && cancelHolidayStatus == 3) {
-					alert("휴무일 등록 및 등록된 휴무일 취소중 오류가 발생하였습니다.");
-				} else if(registrationHolidayStatus == 1 && (cancelHolidayStatus == 0 || cancelHolidayStatus == 3)) {
-					alert("휴무일 등록 성공했지만 등록된 휴무일 취소에 실패하였습니다.");
-				} else if(cancelHolidayStatus == 1 && (registrationHolidayStatus == 0 || registrationHolidayStatus == 3)) {
-					alert("등록된 휴무일 취소에 성공했지만 휴무일 등록에는 실패하였습니다.");
-				} else if(registrationHolidayStatus == 1 && cancelHolidayStatus == 2) {
-					alert("휴무일 등록에 성공하였습니다.");
-				} else if(cancelHolidayStatus == 1 && registrationHolidayStatus == 2) {
-					alert("등록된 휴무일 취소에 성공하였습니다.");
-				}
-				location.reload(true);
-			} else if(reservStatus == 1) {
-				cancelReservList();
-			}
-			
-			//location.reload(true);
+			checkReservList()
+				.then(cancelReservList)
+				.then(holidayRegistration)
+				.then(cancelHoliday)
+				.then(holidayExceptionalMsg);
 		} else if(selectHolidayCount > 20) {
 			alert("한번에 20개의 휴무일 등록이 가능합니다.");
 		}
 		
 	}); // End #holidayRegisterBtn button.click
 	
-	// 휴무일 등록 함수
-	function holidayRegistration() {
-		let reservStatus;
-		$.ajax({
-			url : '/store/holiday/registration',
-			type : 'post',
-			headers : {
-				"Content-Type" : "application/json"
-			},
-			data : JSON.stringify(selectHolidayDate.list),
-			async : false, // ajax 동기식 방식 설정
-			success : function(response) {
-				console.log("holidayRegistration ajax success");
-				if(response.reservStatus == 0) {
-					if(response.result > 0) {
-						registrationHolidayStatus = 1;
-						console.log("registrationHolidayStatus() : " + registrationHolidayStatus);					
-					} else if(response.result == 0) {
-						registrationHolidayStatus = 0;
+	function holidayExceptionalMsg(status) {
+		return new Promise((resolve) => {
+			let msg = "";
+			if(cancelReservStatus != 5) {
+				if(reservStatus == 0) {
+					if(registrationHolidayStatus == 1 && cancelHolidayStatus == 1) {
+						msg = "휴무일 등록 및 취소가 완료되었습니다.";
+					} else if((registrationHolidayStatus == 0 || registrationHolidayStatus == 3) && (cancelHolidayStatus == 0 || cancelHolidayStatus == 3)) {
+						msg = "휴무일 등록 및 취소에 실패하였습니다.";
+					} else if(registrationHolidayStatus == 1 && (cancelHolidayStatus == 0 || cancelHolidayStatus == 3)) {
+						msg = "휴무일 등록은 성공하였지만 취소에는 실패하였습니다.";
+					} else if((registrationHolidayStatus == 0 || registrationHolidayStatus == 3) && cancelHolidayStatus == 1) {
+						msg = "휴무일 취소에는 성공하였지만 등록에는 실패하였습니다.";
+					} else if(registrationHolidayStatus == 1) {
+						msg = "휴무일 등록 완료";
+					} else if(registrationHolidayStatus == 0 || registrationHolidayStatus == 3) {
+						msg = "휴무일 등록 실패";
+					} else if(cancelHolidayStatus == 1) {
+						msg = "휴무일 취소 완료";
+					} else if(cancelHolidayStatus == 0 || cancelHolidayStatus == 3) {
+						msg = "휴무일 취소 실패";
 					}
-				} else if(response.reservStatus == 1) {
-					registrationHolidayStatus = 0;
-					cancelReservInfoList = response.reservList;
-					console.log("cancelReservInfoList : " + cancelReservInfoList);
+				} else if(reservStatus == 1) {
+					if(cancelReservStatus == 1) {
+						if(registrationHolidayStatus == 1 && cancelHolidayStatus == 1) {
+							msg = "휴무일 등록 및 취소가 완료되었습니다.";
+						} else if((registrationHolidayStatus == 0 || registrationHolidayStatus == 3) && (cancelHolidayStatus == 0 || cancelHolidayStatus == 3)) {
+							msg = "휴무일 등록 및 취소에 실패하였습니다.";
+						} else if(registrationHolidayStatus == 1 && (cancelHolidayStatus == 0 || cancelHolidayStatus == 3)) {
+							msg = "휴무일 등록은 성공하였지만 취소에는 실패하였습니다.";
+						} else if((registrationHolidayStatus == 0 || registrationHolidayStatus == 3) && cancelHolidayStatus == 1) {
+							msg = "휴무일 취소에는 성공하였지만 등록에는 실패하였습니다.";
+						} else if(registrationHolidayStatus == 1) {
+							msg = "휴무일 등록 완료";
+						} else if(registrationHolidayStatus == 0 || registrationHolidayStatus == 3) {
+							msg = "휴무일 등록 실패";
+						} else if(cancelHolidayStatus == 1) {
+							msg = "휴무일 취소 완료";
+						} else if(cancelHolidayStatus == 0 || cancelHolidayStatus == 3) {
+							msg = "휴무일 취소 실패";
+						}
+					} else if(cancelReservStatus == 0) {
+						msg = "선택된 일자의 예약 목록 취소에 실패 하였습니다.";
+					} else if(cancelReservStatus == 3) {
+						msg = "선택된 일자의 예약 목록 취소 중 오류가 발생하였습니다.";
+					}
+				} else if(reservStatus == 3){
+					msg = "오류가 발생하였습니다.";
 				}
-				reservStatus = response.reservStatus;
-			},
-			error : function() {
-				registrationHolidayStatus = 3;
+				resolve(msg);
+			} else if(cancelReservStatus == 5) {
+				msg = "취소 되었습니다.";
+				resolve(msg);
+			}
+			
+			alert(msg);
+			if(status != 0 && cancelReservStatus != 5) {
+				location.reload(true);
 			}
 		});
-		return reservStatus;
+		
+	}
+	
+	function checkReservList() {
+		return new Promise((resolve) => {
+			let joinList;
+			let list = [];
+			let checkUrl;
+			let storeId = $('#storeId').val();
+			
+			if(selectHolidayDate.list.length > 0 && cancelHolidayDate.list.length > 0) {
+				const selectHolidayList = selectHolidayDate.list;
+				const cancelHolidayList = cancelHolidayDate.list;
+				for(let i = 0; i < selectHolidayList.length; i++){
+					for(let j = 0; j < cancelHolidayList.length; j++){
+						if(selectHolidayList[i] != cancelHolidayList[j]) {
+							list.push(cancelHolidayList[j]);
+						}
+					}
+					list.push(selectHolidayList[i]);
+				}
+				console.log("checkReservList : " + list);
+				joinList = list.map(obj => obj.holiday).join(",");
+				
+				checkUrl = '/store/holiday/check/reservList/' + storeId + '/' + joinList;
+			} else if(selectHolidayDate.list.length > 0){
+				joinList = selectHolidayDate.list.map(obj => obj.holiday).join(",");
+				checkUrl = '/store/holiday/check/reservList/' + storeId + '/' + joinList;
+			} else if(cancelHolidayDate.list.length > 0) {
+				joinList = cancelHolidayDate.list.map(obj => obj.holiday).join(",");
+				checkUrl = '/store/holiday/check/reservList/' + storeId + '/' + joinList;
+			}
+			
+			$.ajax({
+				url : checkUrl,
+				type : 'get',
+				headers : {
+					"Content-Type" : "application/json"
+				},
+				success : function(response) {
+					reservStatus = response.reservStatus;
+					cancelReservInfoList = response.reservList;
+					resolve(reservStatus);
+				},
+				error : function() {
+					reservStatus = 3;
+					resolve(reservStatus);
+				},
+			});
+		});
+		
+	} // End checkReservList
+	
+	// 휴무일 등록 함수
+	function holidayRegistration(status) {
+		return new Promise((resolve) => {
+			if(status != 0 && status != 3 && status != 5) {
+				if(selectHolidayDate.list.length > 0) {
+					$.ajax({
+						url : '/store/holiday/registration',
+						type : 'post',
+						headers : {
+							"Content-Type" : "application/json"
+						},
+						data : JSON.stringify(selectHolidayDate.list),
+						success : function(response){
+							if(response.result > 0) {
+								registrationHolidayStatus = 1;
+							} else if(response.result == 0) {
+								registrationHolidayStatus = 0;
+							}
+							resolve(registrationHolidayStatus);
+						},
+						error : function() {
+							registrationHolidayStatus = 3;
+							resolve(registrationHolidayStatus);
+						}
+						
+					});
+				} else if(selectHolidayDate.list.length == 0) {
+					registrationHolidayStatus = 2;
+					console.log("holidayRegistration() registrationHolidayStatus : " + registrationHolidayStatus);
+					resolve(registrationHolidayStatus);
+				}
+			} else {
+				registrationHolidayStatus = 0;
+				resolve(registrationHolidayStatus);
+			}
+		});
+		//return reservStatus;
 		
 	} // End holidayRegistration
 	
-	function cancelHoliday() {
-		$.ajax({
-			url : '/store/holiday/delete',
-			type : 'delete',
-			headers : {
-				"Content-Type" : "application/json"
-			},
-			data : JSON.stringify(cancelHolidayDate.list),
-			async : false, // ajax 동기식 방식 설정
-			success : function(response) {
-				console.log("cancelHoliday ajax success");
-				console.log("cancelHolidayDate length : " + cancelHolidayDate.length);
-				if(response == 1) {
-					cancelHolidayStatus = 1;
-					console.log("cancelHoliday() : " + cancelHolidayStatus);
-				} else {
-					cancelHolidayStatus = 0;
+	function cancelHoliday(status) {
+		return new Promise((resolve) => {
+			if(status != 0 && status != 3) {
+				console.log("cancelHoliday() cancelHolidayDate.list.length : " + cancelHolidayDate.list.length);
+				if(cancelHolidayDate.list.length > 0) {
+					$.ajax({
+						url : '/store/holiday/delete',
+						type : 'delete',
+						headers : {
+							"Content-Type" : "application/json"
+						},
+						data : JSON.stringify(cancelHolidayDate.list),
+						success : function(response) {
+							if(response.result == 1) {
+								cancelHolidayStatus = 1;
+								console.log("cancelHoliday() success cancelHolidayStatus : " + cancelHolidayStatus);
+							} else if(response.result == 0) {
+								cancelHolidayStatus = 0;
+							}
+							resolve(cancelHolidayStatus);
+						},
+						error : function() {
+							cancelHolidayStatus = 3;
+							resolve(cancelHolidayStatus);
+						}
+					});
+				} else if(cancelHolidayDate.list.length == 0) {
+					cancelHolidayStatus = 2;
+					resolve(cancelHolidayStatus);
 				}
-			},
-			error : function() {
-				cancelHolidayStatus = 3;
+			} else {
+				cancelHolidayStatus = 0;
+				resolve(cancelHolidayStatus);
 			}
 		});
 	}
@@ -747,32 +842,44 @@ $(function () {
 		});
 	} // End searchHoliday
 	
-	function cancelReservList() {
-		const cancelList = cancelReservInfoList;
-		confirm("선택된 휴무일 중에 예약일정이 확인되었습니다. \n 예약일정을 취소하여 휴무일을 등록 하시겠습니까?");
-		
-		if (!confirm) {
-			return false;
-		}
-
-		$.ajax({
-			url : '/reserv/cancel',
-			type : 'delete',
-			headers : {
-				"Content-Type" : "application/json"
-			},
-			data : JSON.stringify(cancelList),
-			success : function(response) {
-				if(response.result == 1) {
-					console.log("cancel reserv success");
-					holidayRegistration();
-				} else if(response.result == 0) {
-					alert("예약일정 취소에 실패하였습니다.");
+	function cancelReservList(status) {
+		return new Promise((resolve) => {
+			if(status == 1) {
+				let confirmMsg = confirm("선택된 휴무일 중에 예약일정이 확인되었습니다. \n 예약일정을 취소하여 휴무일을 등록 하시겠습니까?");
+				if(confirmMsg) {
+					const cancelList = cancelReservInfoList;
+					console.log("cancelReservList : " + cancelList);
+					$.ajax({
+						url : '/reserv/cancel',
+						type : 'delete',
+						headers : {
+							"Content-Type" : "application/json"
+						},
+						data : JSON.stringify(cancelList),
+						success : function(response) {
+							if(response.result == 1) {
+								cancelReservStatus = 1;
+							} else if(response.result == 0) {
+								cancelReservStatus = 0;
+							}
+							resolve(cancelReservStatus);
+						},
+						error : function() {
+							cancelReservStatus = 3;
+							resolve(cancelReservStatus);
+						}
+					});
+				} else {
+					cancelReservStatus = 5;
+					resolve(cancelReservStatus);
 				}
-			},
-			error : function() {
-				console.log("error cancel");
-				isCancelReservStatus = false;
+			} else if(status == 0) {
+				cancelReservStatus = 2;
+				console.log("cancelReservList() cancelReservStatus : " + cancelReservStatus);
+				resolve(cancelReservStatus);
+			} else if(status == 3) {
+				cancelReservStatus = 0;
+				resolve(cancelReservStatus);
 			}
 		});
 	}

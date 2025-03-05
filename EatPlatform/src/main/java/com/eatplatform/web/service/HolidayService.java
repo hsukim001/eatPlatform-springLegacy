@@ -23,5 +23,5 @@ public interface HolidayService {
 	
 	int deleteHoliday(List<HolidayVO> holidayList);
 	
-	boolean isReservStatus(List<HolidayVO> holidayList);
+	boolean isReservStatus(List<HolidayVO> holidayList, int storeId);
 }
