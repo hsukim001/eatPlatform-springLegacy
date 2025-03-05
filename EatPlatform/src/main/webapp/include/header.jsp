@@ -40,7 +40,7 @@
                     	</li>         	
                 	</ul>
                 	<ul>
-           			<!-- 알림 버튼을 헤더에 추가 -->
+           				<!-- 알림 버튼을 헤더에 추가 -->
             			<li class="review_noti">
                 			<a id="notificationIcon" class="nav-link text-white notification-dot">
                 				🔔
@@ -146,6 +146,138 @@
             		</li>
             	</ul>
             </div>
+            <!-- JavaScript -->
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+			    // 로그인 상태 확인 후 알림 처리
+			    checkLoginStatus()
+			        .then(userInfo => {
+			            if (userInfo.isAuthenticated) {
+			                const username = userInfo.username;
+
+			                // 로그인된 사용자에게 읽지 않은 알림을 가져와서 화면에 표시
+			                loadUnreadNotifications(username);
+
+			                // SSE를 통해 실시간 알림 받기
+			                setupRealTimeNotifications(username);
+
+			                // 알림 아이콘의 마우스 오버/아웃 이벤트 처리
+			                setupNotificationIcon();
+			            } else {
+			            	
+			            }
+			        })
+			        .catch(error => {
+			            console.error("사용자 정보를 가져오는 데 실패했습니다.", error);
+			        });
+			});
+
+			/**
+			 * 로그인 상태를 확인하는 함수
+			 */
+			function checkLoginStatus() {
+			    return fetch('/access/auth/username')
+			        .then(response => response.json())
+			        .catch(error => {
+			            console.error('로그인 상태 확인 실패:', error);
+			            throw error;
+			        });
+			}
+
+			/**
+			 * 로그인된 사용자의 읽지 않은 알림을 화면에 표시하는 함수
+			 */
+			function loadUnreadNotifications(username) {
+			    fetch("/notifications/getUnreadNotifications")
+			        .then(response => response.json())
+			        .then(notifications => {
+			            displayNotifications(notifications);
+			        })
+			        .catch(error => {
+			            console.error('알림을 조회하는 데 실패했습니다:', error);
+			        });
+			}
+
+			/**
+			 * 알림 목록을 화면에 표시하는 함수
+			 */
+			function displayNotifications(notifications) {
+			    const notificationIcon = document.getElementById("notificationIcon");
+			    const notificationsElement = document.getElementById("notifications");
+				
+
+			    if (notifications.length > 0) {
+			        notificationIcon.classList.add("has-notifications");
+
+			        notifications.forEach(notification => {
+			            const li = document.createElement("li");
+			            li.textContent = notification.message;
+			            li.dataset.notificationId = notification.notificationId;
+			            notificationsElement.appendChild(li);
+			        });
+			    } else {
+			        notificationIcon.classList.remove("has-notifications");
+			    }
+			}
+
+			/**
+			 * 실시간 알림을 받기 위한 SSE 설정 함수
+			 */
+			 function setupRealTimeNotifications(username) {
+				    const eventSource = new EventSource("/notifications/subscribe/" + username);
+
+				    eventSource.addEventListener("messageEvent", function (event) {
+				    	const data = JSON.parse(event.data);
+				    	console.log("새 알림: ", data.message);
+				        appendNewNotification(event.data);  
+				    });
+
+				    eventSource.addEventListener("error", function (event) {
+				        console.error("SSE 오류 발생: ", event);
+				        console.error("EventSource 상태: ", eventSource.readyState);  // 상태 코드 확인
+				        eventSource.close();
+				    });
+			}
+			/**
+			 * 새 알림을 화면에 추가하는 함수
+			 */
+			function appendNewNotification(message) {
+			    const notificationsElement = document.getElementById("notifications");
+			    const li = document.createElement("li");
+			    li.textContent = message;
+			    notificationsElement.appendChild(li);
+			}
+
+			/**
+			 * 알림 아이콘에 마우스가 올라가면 알림 목록을 표시하는 함수
+			 */
+			function setupNotificationIcon() {
+				const notificationIcon = document.getElementById("notificationIcon");
+			    const notifications = document.getElementById("notifications");
+			    
+			    // 알림 아이콘에 마우스를 올리면 알림 목록 보이기
+			    notificationIcon.addEventListener("mouseover", function () {
+			        notifications.style.display = "block"; // 알림 목록 보이기
+			    });
+
+			    // 알림 목록에 마우스를 올리면 목록이 계속 보이도록 설정
+			    notifications.addEventListener("mouseenter", function () {
+			        notifications.style.display = "block"; // 알림 목록이 계속 보이도록 유지
+			    });
+
+			    // 알림 목록에서 마우스를 뗄 때 목록 숨기기
+			    notifications.addEventListener("mouseleave", function () {
+			        notifications.style.display = "none"; // 알림 목록 숨기기
+			    });
+
+			    // 알림 아이콘에서 마우스를 뗄 때 목록 숨기기
+			    notificationIcon.addEventListener("mouseout", function () {
+			        // 마우스가 알림 목록 안에 없으면 목록을 숨김
+			        notifications.style.display = "none"; // 알림 목록 숨기기
+			    });
+			}
+            </script>
+            
         </header>
         <!-- Header 여백 공간 채우기 -->
         <div id="empty_header"></div>

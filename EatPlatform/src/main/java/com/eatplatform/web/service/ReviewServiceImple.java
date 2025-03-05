@@ -10,7 +10,6 @@ import com.eatplatform.web.domain.NotificationVO;
 import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.domain.StoreVO;
-import com.eatplatform.web.persistence.NotificationMapper;
 import com.eatplatform.web.persistence.ReplyMapper;
 import com.eatplatform.web.persistence.ReviewImageMapper;
 import com.eatplatform.web.persistence.ReviewLikeListMapper;
@@ -39,7 +38,7 @@ public class ReviewServiceImple implements ReviewService{
 	private StoreMapper storeMapper;
 	
 	@Autowired
-	private NotificationMapper notificationMapper;
+	private NotificationService notificationService;
 	
 	@Transactional(value = "transactionManager")
 	@Override
@@ -59,16 +58,17 @@ public class ReviewServiceImple implements ReviewService{
 		}
 		
 		StoreVO storeVO = storeMapper.selectStoreById(reviewVO.getStoreId());
+		String type = "addReview";
 		String username = storeVO.getStoreUserId();
 		String storeName = storeVO.getStoreName();
 		String message = String.format("'%s'에 리뷰가 등록되었습니다.", storeName);
 		
 		NotificationVO notificationVO = new NotificationVO();
-		notificationVO.setType("addReview");
+		notificationVO.setType(type);
 		notificationVO.setUsername(username);
 		notificationVO.setMessage(message);
 		
-		notificationMapper.insert(notificationVO);
+		notificationService.sendReviewNotification(type, username, message);
 		
 		return result;
 	}
