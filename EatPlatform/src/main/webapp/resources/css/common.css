@@ -158,7 +158,7 @@ header {
 /* 알림 아이콘 스타일 */
 /* 빨간 점을 아이콘의 오른쪽 상단에 배치하기 위해 */
 #notificationIcon {
-	position: relative; 
+	 position: relative;
 }
 		
 /* 빨간 점을 표시하는 스타일 */
@@ -211,23 +211,6 @@ header {
 #notificationIcon {
     font-size: 20px;
     cursor: pointer;
-}
-
-/* 알림 배지 스타일 */
-#notificationBadge {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 12px;
-    height: 12px;
-    background-color: red;
-    border-radius: 50%;
-    display: inline-block;
-    color: white;
-    font-size: 10px;
-    text-align: center;
-    line-height: 12px;
-    visibility: hidden; /* 기본적으로 배지 숨김 */
 }
 
 /* 배지를 표시할 때의 스타일 */

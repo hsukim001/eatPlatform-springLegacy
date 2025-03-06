@@ -2,6 +2,8 @@
     pageEncoding="UTF-8"%>       
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
        
+        <meta name="_csrf" content="${_csrf.token}"/>
+		<meta name="_csrf_header" content="${_csrf.headerName}"/>
         <!-- Header -->
         <header>
             <div class="logo">
@@ -146,7 +148,8 @@
             		</li>
             	</ul>
             </div>
-            <!-- JavaScript -->
+            
+            
             <script>
             document.addEventListener("DOMContentLoaded", function () {
 			    // 로그인 상태 확인 후 알림 처리
@@ -163,15 +166,13 @@
 
 			                // 알림 아이콘의 마우스 오버/아웃 이벤트 처리
 			                setupNotificationIcon();
-			            } else {
-			            	
 			            }
 			        })
 			        .catch(error => {
 			            console.error("사용자 정보를 가져오는 데 실패했습니다.", error);
 			        });
 			});
-
+            
 			/**
 			 * 로그인 상태를 확인하는 함수
 			 */
@@ -188,7 +189,7 @@
 			 * 로그인된 사용자의 읽지 않은 알림을 화면에 표시하는 함수
 			 */
 			function loadUnreadNotifications(username) {
-			    fetch("/notifications/getUnreadNotifications")
+			    fetch("/notifications/getUnread")
 			        .then(response => response.json())
 			        .then(notifications => {
 			            displayNotifications(notifications);
@@ -205,7 +206,6 @@
 			    const notificationIcon = document.getElementById("notificationIcon");
 			    const notificationsElement = document.getElementById("notifications");
 				
-
 			    if (notifications.length > 0) {
 			        notificationIcon.classList.add("has-notifications");
 
@@ -246,12 +246,14 @@
 			    const li = document.createElement("li");
 			    li.textContent = message;
 			    notificationsElement.appendChild(li);
+			    
 			}
 
 			/**
 			 * 알림 아이콘에 마우스가 올라가면 알림 목록을 표시하는 함수
 			 */
 			function setupNotificationIcon() {
+				
 				const notificationIcon = document.getElementById("notificationIcon");
 			    const notifications = document.getElementById("notifications");
 			    
@@ -268,14 +270,44 @@
 			    // 알림 목록에서 마우스를 뗄 때 목록 숨기기
 			    notifications.addEventListener("mouseleave", function () {
 			        notifications.style.display = "none"; // 알림 목록 숨기기
+			        $('#notifications').find('li').each(function() {
+			            var notificationId = $(this).data('notification-id');
+			            
+			            $.ajax({
+			            	url : '/notifications/updateRead',
+			            	method : 'POST',
+			            	headers : {
+								"Content-Type" : "application/json"
+						 	},
+			            	data : JSON.stringify({"notificationId" : notificationId}),
+			            	success : function(response) {
+		                    	console.log('Notification status updated');
+		                    	$('#notifications').remove()
+		                    	$('#notificationBadge').css('display', 'none');
+			            	},
+		                  	error : function(error) {
+		                    	console.error('Error:', error);
+		                	}
+			            });
+			        });
 			    });
-
+			    
 			    // 알림 아이콘에서 마우스를 뗄 때 목록 숨기기
 			    notificationIcon.addEventListener("mouseout", function () {
 			        // 마우스가 알림 목록 안에 없으면 목록을 숨김
 			        notifications.style.display = "none"; // 알림 목록 숨기기
 			    });
 			}
+			
+			/**
+			 * AJAX 요청을 위한 CSRF 토큰 설정
+			 */
+			 $(document).ajaxSend(function(e, xhr, opt){
+	     	       var token = $("meta[name='_csrf']").attr("content");
+	     	       var header = $("meta[name='_csrf_header']").attr("content");
+	     	       
+	     	       xhr.setRequestHeader(header, token);
+	     	 });
             </script>
             
         </header>

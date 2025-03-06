@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -31,7 +32,7 @@ public class NotificationRESTController {
 		return notificationService.subscribe(username);
 	}
 	
-	@GetMapping("/getUnreadNotifications")
+	@GetMapping("/getUnread")
 	public ResponseEntity<List<NotificationVO>> getUnreadNotifications(@AuthenticationPrincipal CustomUser customUser) {
         String username = customUser.getUsername();  // 로그인한 사용자 ID
         
@@ -39,9 +40,11 @@ public class NotificationRESTController {
         return ResponseEntity.ok(notifications);
 	}
 
-	@PostMapping("/read/{notificationId}")
-	public int updateNotifications(@PathVariable int notificationId) {
-		return notificationService.updateNotification(notificationId);
+	@PostMapping("/updateRead")
+	public ResponseEntity<String> updateNotifications(@RequestBody NotificationVO notificationVO) {
+		int notificationId = notificationVO.getNotificationId();
+		notificationService.updateNotification(notificationId);
+		return ResponseEntity.ok("업데이트 성공");
 	}
 
 }
