@@ -70,11 +70,7 @@ public class HolidayServiceImple implements HolidayService{
 	@Override
 	public boolean isReservStatus(List<HolidayVO> holidayList, int storeId) {
 		log.info("isReservStatus()");
-<<<<<<< Updated upstream
 		List<ReservWithStoreNameVO> reservDateList = reservMapper.selectReservDateByHolidayListStoreId(holidayList, storeId);
-=======
-		List<ReservVO> reservDateList = reservMapper.selectReservDateByHolidayListStoreId(holidayList, storeId);
->>>>>>> Stashed changes
 		
 		for(int i = 0; i < holidayList.size(); i++) {
     		String holiday = holidayList.get(i).getHoliday();

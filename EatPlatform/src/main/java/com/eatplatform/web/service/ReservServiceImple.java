@@ -54,7 +54,6 @@ public class ReservServiceImple implements ReservService {
 	}
 	
 	@Override
-<<<<<<< Updated upstream
 	public List<ReservWithStoreNameVO> searchCancelList(Pagination pagination) {
 		log.info("searchPagingPrevDayByReservDateUserId()");
 		return reservMapper.selectReservListByCancel(pagination);
@@ -62,9 +61,6 @@ public class ReservServiceImple implements ReservService {
 	
 	@Override
 	public List<ReservWithStoreNameVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId) {
-=======
-	public List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId) {
->>>>>>> Stashed changes
 		log.info("searchReservListByStoreIdReservDate()");
 		return reservMapper.selectReservListByHolidayList(holidayList, storeId);
 	}

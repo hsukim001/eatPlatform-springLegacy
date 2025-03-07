@@ -60,7 +60,6 @@ public interface ReservService {
 	 * @param reservDate
 	 * @return List<ReservVO>
 	 */
-<<<<<<< Updated upstream
 	List<ReservWithStoreNameVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId);
 	
 	/**
@@ -68,9 +67,6 @@ public interface ReservService {
 	 * @return reservInfoVO
 	 */
 	ReservInfoVO getReservInfoByReservId(int reservId);
-=======
-	List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId);
->>>>>>> Stashed changes
 	
 	/**
 	 * 예약 목록 총 건수 조회

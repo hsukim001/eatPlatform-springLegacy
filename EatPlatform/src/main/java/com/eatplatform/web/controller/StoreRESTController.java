@@ -229,11 +229,7 @@ public class StoreRESTController {
     	boolean isReservStatus = holidayService.isReservStatus(holidayList, storeId);
     	log.info("isReservStatus : " + isReservStatus);
     	if(isReservStatus) {
-<<<<<<< Updated upstream
     		List<ReservWithStoreNameVO> reservList = reservService.searchReservListByHolidayList(holidayList, storeId);
-=======
-    		List<ReservVO> reservList = reservService.searchReservListByHolidayList(holidayList, storeId);
->>>>>>> Stashed changes
     		log.info("reservList : " + reservList);
 			map.put("reservStatus", 1);
 			map.put("reservList", reservList);
