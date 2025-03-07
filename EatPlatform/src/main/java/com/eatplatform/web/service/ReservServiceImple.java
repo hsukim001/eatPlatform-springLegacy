@@ -14,9 +14,12 @@ import org.springframework.util.ObjectUtils;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.persistence.ReservCancelMapper;
 import com.eatplatform.web.persistence.ReservMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.util.Pagination;
@@ -32,25 +35,44 @@ public class ReservServiceImple implements ReservService {
 
 	@Autowired
 	private StoreMapper storeMapper;
+	
+	@Autowired
+	private ReservCancelMapper reservCancelMapper;
 
 	// 페이징 예약 목록 조회
 	@Override
-	public List<ReservVO> searchToDayList(Pagination pagination) {
+	public List<ReservWithStoreNameVO> searchToDayList(Pagination pagination) {
 		log.info("searchPagingToDayByReservDateUserId()");
 		return reservMapper.selectPagingToDay(pagination);
 	}
 
 	// 페이징 이전 예약 목록 조회
 	@Override
-	public List<ReservVO> searchPrevDayList(Pagination pagination) {
+	public List<ReservWithStoreNameVO> searchPrevDayList(Pagination pagination) {
 		log.info("searchPagingPrevDayByReservDateUserId()");
 		return reservMapper.selectPagingPrevDay(pagination);
 	}
 	
 	@Override
+<<<<<<< Updated upstream
+	public List<ReservWithStoreNameVO> searchCancelList(Pagination pagination) {
+		log.info("searchPagingPrevDayByReservDateUserId()");
+		return reservMapper.selectReservListByCancel(pagination);
+	}
+	
+	@Override
+	public List<ReservWithStoreNameVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId) {
+=======
 	public List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId) {
+>>>>>>> Stashed changes
 		log.info("searchReservListByStoreIdReservDate()");
 		return reservMapper.selectReservListByHolidayList(holidayList, storeId);
+	}
+	
+	@Override
+	public ReservInfoVO getReservInfoByReservId(int reservId) {
+		log.info("getReservInfoByReservId()");
+		return reservMapper.joinReservWithStoreAndStoreAddressByReservInfo(reservId);
 	}
 
 	// 예약 목록 totalCount
@@ -65,6 +87,22 @@ public class ReservServiceImple implements ReservService {
 	public int searchPrevDayTotalCount(int userId) {
 		log.info("searchPrevDayTotalCountByReservDateUserId()");
 		return reservMapper.selectPrevDayTotalCount(userId);
+	}
+	
+	@Override
+	public int searchReservCancelTotalCount(int userId) {
+		log.info("searchPrevDayTotalCountByReservDateUserId()");
+		return reservMapper.selectReservCancelTotalCount(userId);
+	}
+	
+	@Override
+	public boolean isReservUser(int reservId, int userId) {
+		boolean isReservUser = false;
+		int checkReserv = reservMapper.checkReservByUserId(reservId, userId);
+		if(checkReserv == 1) {
+			isReservUser = true;
+		}
+		return isReservUser;
 	}
 
 	// 예약 등록
@@ -123,7 +161,9 @@ public class ReservServiceImple implements ReservService {
 	@Override
 	public int cancelReserv(int reservId) {
 		log.info("cancelReserv()");
-		int result = reservMapper.delete(reservId);
+		int cancelStatus = 1;
+		int result = 0;
+		//int result = reservMapper.updateCancelStatus(reservId, cancelStatus);
 		return result;
 	}
 
@@ -170,12 +210,11 @@ public class ReservServiceImple implements ReservService {
 
 	@Transactional
 	@Override
-	public int cancelReservByList(List<ReservVO> cancelList) {
+	public int cancelReservByList(List<ReservVO> cancelList, String requestType) {
 		log.info("cancelReservByList()");
-		for(int i = 0; i < cancelList.size(); i++) {
-			int reservId = cancelList.get(i).getReservId();
-			reservMapper.delete(reservId);
-		}
+		String reservStatus = "취소 대기중";
+		reservMapper.updateCancelStatus(cancelList, reservStatus);
+		reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
 		return 1;
 	}
 

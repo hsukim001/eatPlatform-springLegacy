@@ -1,12 +1,3 @@
-<<<<<<< Updated upstream
-// ajax CSRF 토큰
-$(document).ajaxSend(function(e, xhr, opt){
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-					
-	xhr.setRequestHeader(header, token);
-});
-=======
 $(function () {
     const calendarDays = $('#calendar-days');
     const currentMonthYear = $('#current-month-year');
@@ -55,170 +46,236 @@ $(function () {
 	let isCancelReservStatus;
 	let cancelReservStatus;
 	let reservStatus;
->>>>>>> Stashed changes
 			
-$(document).ready(function() {
-	nextList(1);
-					
-	// reservList span click event
-	$('#reservList').click(function() {
-		nextList(1);
-			if($(this).hasClass("spanBtn")) {
-				modifySpanClass();
-				$(this).removeClass("spanBtn");
-				$(this).addClass("selectSpan");
-			}
-	}); // End reservList span click event
+	// ajax CSRF 토큰
+	$(document).ajaxSend(function(e, xhr, opt){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
 				
-	// preReservHistory span click event
-	$('#preReservHistory').click(function() {
-		prevList(1);
-		if($(this).hasClass("spanBtn")) {
-			modifySpanClass();
-			$(this).removeClass("spanBtn");
-			$(this).addClass("selectSpan");
-		}
-	}); // End preReservHistory span click event
+		xhr.setRequestHeader(header, token);
+	}); // End ajaxSend
 	
-	// cancelReservHistory span click event
-	$('#cancelReservHistory').click(function() {
-		cancelList(1);
-		if($(this).hasClass("spanBtn")) {
-			modifySpanClass();
-			$(this).removeClass("spanBtn");
-			$(this).addClass("selectSpan");
-		}
-	}); // End cancelReservHistory span click event
+	$(document).on('click', '.calendar div', function(){
+		selectedDateValue = $(this).data('dateValue');
+		
+	}); // End document .calendar div click
 	
-	// table body row click event
-	$('#tableBody').on('click', '.reservRow', function(){
-		let reservId = $(this).data("id-value");
-		console.log(reservId);
-		searchReservInfo(reservId);
-		$(this).addClass("selected");
-	}); // End table body row click event
-	
-	// x span click event
-	$('.close').click(function() {
-		$('#tableBody .selected').removeClass('selected');
-		$('#reservInfoModal').hide();
-	}); // x span click event
-				
-}); // End document ready
+	$(document).on('click', '#reservScheduleBtn', function(){
+	    if($('#reservScheduleBtn').prop('checked')) {
+	    	scheduleType = "reserv";
+	    	$('.calendar .selected').removeClass('selected'); 
+	        $('.today').addClass('selected');
+	        $('.morning').show();
+			$('.afternoon').show();
+			$('#currentSelectedDate').show();
+			$('#holidayRegisterBtn').hide();
+			selectHolidayDate.list = [];
+			cancelHolidayDate.list = [];
 			
-// modifySpanClass()
-function modifySpanClass() {
-	if($('#reservList').hasClass("selectSpan")) {
-		$('#reservList').removeClass("selectSpan");
-		$('#reservList').addClass("spanBtn");
-	} else if($('#preReservHistory').hasClass("selectSpan")) {
-		$('#preReservHistory').removeClass("selectSpan");
-		$('#preReservHistory').addClass("spanBtn");
-	} else if($('#cancelReservHistory').hasClass("selectSpan")) {
-		$('#cancelReservHistory').removeClass("selectSpan");
-		$('#cancelReservHistory').addClass("spanBtn");
-	}
-} // End modifySpanClass
+			console.log("scheduleType : " + scheduleType);
 			
-// 예약 목록 ajax 조회 함수
-function nextList(pageNum) {
-	let getURL = 'toDay/' + pageNum;
-	$.ajax({
-		url : getURL,
-		type : 'get',
-		success : function(data) {
-			nextTable(data); // 테이블 데이터 렌더링
-			pagination($('#pagination'), data.pageMaker, nextList); // 페이지네이션 렌더링
-		},
-		error : function() {
-			alert('예약 목록을 가져오는데 실패 하였습니다.');
-		}
+			searchHoliday();
+			generateCalendar(currentMonth, currentYear);
+			updateSelectionDisplay();
+			generateReservTimeSlots();
+			console.log("todayText : " + todayText);
+			
+	    } else {
+	    	$('.today').removeClass('selected');
+	    }
 	});
-} // End nextList
+	
+	$(document).on('click', '#holidayScheduleBtn', function(){
+	    if($('#holidayScheduleBtn').prop('checked')) { 
+	    	scheduleType = "holiday";
+	    	
+	    	$('.calendar .selected').removeClass('selected');
+	    	$('#morning-slots').children().not('h3').remove();
+			$('#afternoon-slots').children().not('h3').remove();
+	    	$('.morning').hide();
+			$('.afternoon').hide();
+			$('#currentSelectedDate').hide();
+			$('#holidayRegisterBtn').show();
+			selectHolidayDate.list = [];
+			cancelHolidayDate.list = [];
+			console.log("scheduleType : " + scheduleType);
 			
-// 예약 목록 테이블 작성 함수
-function nextTable(reserv) {
-	let tableBodyRows = '';
-	let tableHeadRow = '<tr><th>번호</th><th>식당명</th><th>예약 일자</th><th>예약 인원</th><th>상태</th><th>예약 신청일</th><th>예약 취소</th></tr>';
-	let totalCountHtml = '총 ' + reserv.pageMaker.totalCount + '건';
-			    
-	if(reserv.pageMaker.totalCount > 0) {
-		reserv.list.forEach(function(list) {
-				    	
-		let date = new Date(list.reservDateCreated);
-		let year = date.getFullYear(); // 년도
-		let month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
-		let day = String(date.getDate()).padStart(2, '0'); // 일
-		let createdDate = year + '-' + month + '-' + day;
-		let formattedReservDate = String(list.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-		let btnFrom = '';
-					    
-		if(list.reservStatus === '완료') {
-			btnFrom = '<td><button onclick="cancelBtn(this)">예약 취소</button></td>';
-		} else if(list.cancelStatus !== '완료') {
-			btnFrom = '<td><button disabled="true">예약 취소</button></td>';
-		}					    
-					    
-		tableBodyRows += '<tr class="reservRow" data-id-value="'+ list.reservId +'">'+
-				'<td>'+ list.reservId +'</td>'+
-				'<td>'+ list.storeName +'</td>'+
-				'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
-				'<td>'+ list.reservPersonnel +'</td>'+
-				'<td>'+ list.reservStatus +'</td>' +
-				'<td>'+ createdDate +'</td>' +
-				 //btnFrom +
-			'</tr>';
-			console.log(tableBodyRows);
-		});
-	} else {
-		tableBodyRows = '<tr><td colspan="6">목록이 존재하지 않습니다.</td></tr>'
-	}
-			    
-	$('#totalCount').html(totalCountHtml);
-	$('#tableHead').html(tableHeadRow);
-	$('#tableBody').html(tableBodyRows); // 테이블 갱신
-} // End nextTable
-			
-// 이전 예약 내역 ajax 조회 함수
-function prevList(pageNum) {
-	let getURL = 'prevDay/' + pageNum;
-	$.ajax({
-		url : getURL,
-		type : 'get',
-		success : function(data) {
-			prevTable(data); // 테이블 데이터 렌더링
-			pagination($('#pagination'), data.pageMaker, prevList); // 페이지네이션 렌더링
-		},
-		error : function() {
-			alert('이전 예약 목록을 가져오는데 실패 하였습니다.');
-		}
+			searchHoliday();
+			generateCalendar(currentMonth, currentYear);
+			console.log("todayText : " + todayText);
+	    } else {
+	    	$('.today').addClass('selected');
+	    }
 	});
-} // End prevList
+	
+	// 캘린더 조회 함수
+    function updateSelectionDisplay() {
+        dateText = selectedDate ? `${selectedDate.getFullYear()}-${(selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.getDate().toString().padStart(2, '0')}` : '날짜를 선택하세요';
+        timeText = selectedTime || '시간을 선택하세요';
+        
+        let date = String(dateReplace).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
+        $('#currentSelectedDate').text(date + " 예약 정보");
+    } // End updateSelectionDisplay
+
+	// 캘린더 함수
+    function generateCalendar(month, year) {
+        calendarDays.empty();
+		20250227
+        // Add day names
+        dayNames.forEach(day => {
+            const dayNameCell = $('<div>').text(day).addClass('day-names');
+            calendarDays.append(dayNameCell);
+        });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        currentMonthYear.text(`${year}.${(month + 1).toString().padStart(2, '0')}`);
+
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = $('<div>');
+            calendarDays.append(emptyCell);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const currentDay = new Date(year, month, day);
+            const dateValue = `${currentDay.getFullYear()}-${(currentDay.getMonth() + 1).toString().padStart(2, '0')}-${currentDay.getDate().toString().padStart(2, '0')}`;
+            const dayCell = $('<div>').text(day).attr('data-date-value', dateValue);
+            //const isTodayHoliday;
 			
-// 이전 예약 내역 테이블 작성 함수
-function prevTable(reserv) {
-	let tableBodyRows = '';
-	let tableHeadRow = '<tr><th>번호</th><th>식당명</th><th>예약 일자</th><th>예약 인원</th><th>상태</th><th>예약 신청일</th></tr>';
-	let totalCountHtml = '총 ' + reserv.pageMaker.totalCount + '건';
+            // 오늘 날짜를 제외한 과거 날짜에만 'disabled' 추가
+            if (currentDay < today && !(currentDay.getDate() === today.getDate() && currentDay.getMonth() === today.getMonth() && currentDay.getFullYear() === today.getFullYear()) && scheduleType != "reserv") {
+                dayCell.addClass('disabled');
+            }
+            
+            if(holidayList.length > 0) {
+            	const dateReplace = dateValue.replace(/-/g, '');
+            	const isCancelHolidayDuplicate = cancelHolidayDate.list.some(item => item.holiday === dateReplace);
+            	if(!isCancelHolidayDuplicate) {
+		            for(let i = 0; i < holidayList.length; i++) {
+		            	const date = (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(0, 7) + "-" + (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(7);
+		            	if(dateValue == date) {
+		            		dayCell.addClass('holiday');
+		            	}
+		            }
+	            }
+            }
+
+            // 오늘 날짜는 'selected' 상태로 기본 선택
+            if (
+                day === today.getDate() &&
+                month === today.getMonth() &&
+                year === today.getFullYear() && scheduleType == "reserv"
+            ) {
+                dayCell.addClass('today selected');
+                selectedDate = currentDay;
+                todayText = dateValue;
+            }
+            
+            // 선택됬던 일자 선택
+            if(selectHolidayDate.list.length > 0 && scheduleType != "reserv") {
+            	const dateReplace = dateValue.replace(/-/g, '');
+            	const isSelectHolidayDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
+            	
+            	if(isSelectHolidayDuplicate) {
+            		dayCell.addClass('selected');
+            	}
+            }
+
+
+            dayCell.on('click', function () {
+            	let date = $(this).data('date-value');
+				dateReplace = date.replace(/-/g, '');
+				console.log("dayCell : " + dateReplace);
+            	
+	            if(scheduleType != "holiday") {
+	            	if (!$(this).hasClass('disabled') && !$(this).hasClass('holiday')) {
+			            $('.calendar .selected').removeClass('selected');
+			            $(this).addClass('selected');
+			            selectedDate = new Date(year, month, day);
+			            updateSelectionDisplay();
+			                
+			            console.log("dateText : " + dateText);
+			                
+			            if(scheduleType == "reserv") {
+			            	choiceDayReservList(dateReplace);
+			            }
+			          	
+			        }
+	
+	            } else if(scheduleType == "holiday" && !$(this).hasClass('disabled')) {
+	            	if($(this).hasClass('selected') && !$(this).hasClass('holiday')) {
+	            		
+	            		$(this).removeClass('selected');
+				        selectedDate = new Date(year, month, day);
+				        
+				            
+				        let isDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
+			            if(isDuplicate) {
+			            	console.log("coooo");
+			                	
+						   	for (let i = selectHolidayDate.list.length - 1; i >= 0; i--) {
+								if (selectHolidayDate.list[i].holiday === dateReplace) {
+									console.log("delete");
+							    	selectHolidayDate.list.splice(i, 1); // 해당 인덱스의 요소 삭제
+							    }
+							}
+							    
+						}
+						
+						selectHolidayCount--;
+				        updateSelectionDisplay();
+	            	} else if(!$(this).hasClass('selected') && !$(this).hasClass('holiday')) {
+	            		let isHolidayList = holidayList.some(item => item.holiday === dateReplace);
+	            		if(selectHolidayCount <= 20 && !isHolidayList) {
+					        $(this).addClass('selected');
+					        selectedDate = new Date(year, month, day);
+					        selectHolidayCount++;
+					        updateSelectionDisplay();
+				        } else if(selectHolidayCount > 20 && !isHolidayList) {
+				        	alert("한번에 20개의 휴무일 등록이 가능합니다.");
+				        } else if(isHolidayList) {
+				        	for (let i = cancelHolidayDate.list.length - 1; i >= 0; i--) {
+								if (cancelHolidayDate.list[i].holiday === dateReplace) {
+							    	cancelHolidayDate.list.splice(i, 1); // 해당 인덱스의 요소 삭제
+							    }
+							}
+							$(this).addClass('holiday');
+							console.log("cancelHolidayDate.list : " + cancelHolidayDate.list);
+				        }
+	            	} else if($(this).hasClass('holiday')) {
+	            		console.log("휴무일 취소");
+	            		let storeId = $('#storeId').val();
+	            		$(this).removeClass('holiday');
+	            		let obj = {
+	            			"storeId" : storeId,
+	            			"holiday" : dateReplace
+	            		};
+	            		cancelHolidayDate.list.push(obj);
+	            		console.log("cancelHolidayDate.list : " + cancelHolidayDate.list);
+	            	} else if(!$(this).hasClass('holiday')) {}
+	            }
+	            	
+        	});
+
+            calendarDays.append(dayCell);
+        }
+
+        updateSelectionDisplay();
+    } // End generateCalendar
+
+    prevMonthBtn.on('click', function () {
+    	let storeId = $('#storeId').val();
+    
+    	if(scheduleType != "reserv") {
+	    	$('div.selected').each(function () {
+			    let date = $(this).data('date-value'); // 날짜 값 추출
+			    let dateReplace = date.replace(/-/g, '');
+			    let obj = {
+			    	"storeId" : storeId,
+			    	"holiday" : dateReplace
+			    };
 			    
-<<<<<<< Updated upstream
-	if(reserv.pageMaker.totalCount > 0) {
-		reserv.list.forEach(function(list) {
-			let date = new Date(list.reservDateCreated);
-			let year = date.getFullYear(); // 년도
-			let month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
-			let day = String(date.getDate()).padStart(2, '0'); // 일
-			let createdDate = year + '-' + month + '-' + day;
-			let formattedReservDate = String(list.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-			let status = '';
-					    
-			if(list.cancelStatus == 0) {
-				status = '예약 완료';
-			} else if(list.cancelStatus == 1) {
-					if(list.processingStatus === 'WAIT') {
-						status = '취소 요청';
-					}
-=======
 			    // 중복 확인
 			    let isDuplicate = selectHolidayDate.list.some(item => item.holiday === dateReplace);
 			    
@@ -764,51 +821,9 @@ function prevTable(reserv) {
 			} else {
 				cancelHolidayStatus = 0;
 				resolve(cancelHolidayStatus);
->>>>>>> Stashed changes
 			}
-				    	
-			tableBodyRows += '<tr class="reservRow" data-id-value="'+ list.reservId +'">'+
-					'<td>'+ list.reservId +'</td>'+
-					'<td>' + list.storeName +'</td>'+
-					'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
-					'<td>'+ list.reservPersonnel +'</td>'+
-					'<td>' + list.reservStatus + '</td>' + 
-					'<td>'+ createdDate +'</td>'+
-					'</tr>';
 		});
-	} else {
-		tableBodyRows = '<tr><td colspan="6">목록이 존재하지 않습니다.</td></tr>'
 	}
-<<<<<<< Updated upstream
-			    
-	$('#totalCount').html(totalCountHtml);
-	$('#tableHead').html(tableHeadRow);
-	$('#tableBody').html(tableBodyRows); // 테이블 갱신
-} // End prevTable
-			
-// 예약 취소 목록 ajax 조회 함수
-function cancelList(pageNum) {
-	let getURL = 'cancel/' + pageNum;
-	$.ajax({
-		url : getURL,
-		type : 'get',
-		success : function(data) {
-			prevTable(data); // 테이블 데이터 렌더링
-			pagination($('#pagination'), data.pageMaker, cancelList); // 페이지네이션 렌더링
-		},
-		error : function() {
-			alert('예약 목록을 가져오는데 실패 하였습니다.');
-		}
-	});
-} // End cancelList
-			
-// 테이블 페이지네이션
-function pagination(container, pageMaker, loadFunction) {
-	let paginationHtml = "";
-		        
-	if (pageMaker.prev) {
-		paginationHtml += '<a href="#" class="page-link" data-page="'+ (pageMaker.startNum - 1) +'">이전</a>';
-=======
 	
 	// 휴무일 조회 함수
 	function searchHoliday() {
@@ -834,9 +849,10 @@ function pagination(container, pageMaker, loadFunction) {
 				if(confirmMsg) {
 					const cancelList = cancelReservInfoList;
 					console.log("cancelReservList : " + cancelList);
+					let requestType = 'STORE';
 					$.ajax({
-						url : '/reserv/cancel',
-						type : 'delete',
+						url : '/reserv/cancel/' + requestType,
+						type : 'put',
 						headers : {
 							"Content-Type" : "application/json"
 						},
@@ -867,101 +883,12 @@ function pagination(container, pageMaker, loadFunction) {
 				resolve(cancelReservStatus);
 			}
 		});
->>>>>>> Stashed changes
 	}
-		
-	for (let i = pageMaker.startNum; i <= pageMaker.endNum; i++) {
-		if(pageMaker.pagination.pageNum == i) {
-			paginationHtml += '<a href="#" class="page-link-select" data-page="'+ i +'">'+ i +'</a>';
-		} else {
-			paginationHtml += '<a href="#" class="page-link" data-page="'+ i +'">'+ i +'</a>';
-		}
-	}
-		
-	if (pageMaker.next) {
-		paginationHtml += '<a href="#" class="page-link" data-page="'+ (pageMaker.endNum + 1) +'">다음</a>';
-	}
-		
-	$(container).html(paginationHtml);
-		
-	// 페이지네이션 클릭 이벤트
-	$(container).find(".page-link").on("click", function () {
-		let pageNum = $(this).data("page");
-		loadFunction(pageNum); // 호출된 테이블에 맞는 페이지 로드 함수 실행
-	});
-} // End pagination
-			
-// 예약 취소 버튼 함수
-function cancelBtn() {
-	//let row = obj.closest('tr');
-	//let reservId = row.querySelector('.reserv_id').innerText;
 	
-	let reservId = $('#tableBody .selected').data('id-value');
-			    
-	let check = confirm('선택하신 예약을 취소 하시겠습니까?');
-	if(check) {
-		reservCancel(reservId);
-	}
-} // End cancelBtn
-			
-// 예약 취소 ajax 함수
-function reservCancel(reservId) {
-	let requestType = "MEMBER";
-	let pageNum = $('.page-link-select').data('page');
-	let obj = [{
-		"reservId" : reservId
-	}];
-				
-	$.ajax({
-		url : '/reserv/cancel/' + requestType,
-		type : 'put',
-		headers : {
-			"Content-Type" : "application/json",
-		},
-		data : JSON.stringify(obj),
-		success : function(response) {
-			if(response.result == 1) {
-				alert('예약 취소 성공');
-				nextList(pageNum);
-				$('#reservInfoModal').hide();
-				$('#tableBody').removeClass('selected');
-			}
-		},
-		error : function() {
-			alert('예약을 취소하는중 오류 발생');
-		}
-	});
-} // End reservCacnel
 
-function searchReservInfo(reservId) {
-	$.ajax({
-		url : '/reserv/search/reservInfo/' + reservId,
-		type : 'get',
-		success : function(response) {
-			let reservTime = response.info.reservHour + ":" + response.info.reservMin;
-			$('#storeTitle').text(response.info.storeName);
-			$('#phone .textValue').text(response.info.storePhone);
-			$('#reservDate .textValue').text(response.info.reservDate + reservTime);
-			$('#status .textValue').text(response.info.reservStatus);
-			$('#regDate .textValue').text(response.info.reservDateCreated);
-			
-			if(response.info.roadAddress == null && response.info.jibunAddress == null) {
-				return alert("예약 상세 정보를 불러오는데 실패하였습니다.");
-			}
-			
-			if(response.info.roadAddress != null) {
-				let address = response.info.roadAddress + " " + response.info.detailAddress
-				$('#address .textValue').text(address);
-			} else if(response.info.jibunAddress != null) {
-				let address = response.info.jibunAddress + " " + response.info.detailAddress
-				$('#address .textValue').text(address);
-			}
-			
-			$('#reservInfoModal').show();
-		},
-		error : function() {
-			alert("예약 상세 정보를 불러오는 중 오류가 발생하였습니다.");
-		}
-	});
-}
+    searchHoliday();
+    //generateCalendar(currentMonth, currentYear);
+    choiceDayReservList(dateReplace);
+    updateSelectionDisplay();
 
+});

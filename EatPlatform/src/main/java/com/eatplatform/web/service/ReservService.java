@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.util.Pagination;
@@ -17,14 +19,20 @@ public interface ReservService {
 	 * @param pagination
 	 * @return
 	 */
-	List<ReservVO> searchToDayList(Pagination pagination);
+	List<ReservWithStoreNameVO> searchToDayList(Pagination pagination);
 	
 	/**
 	 * 이전 예약 목록 조회
 	 * @param pagination
 	 * @return
 	 */
-	List<ReservVO> searchPrevDayList(Pagination pagination);
+	List<ReservWithStoreNameVO> searchPrevDayList(Pagination pagination);
+	
+	/**
+	 * @param pagination
+	 * @return
+	 */
+	List<ReservWithStoreNameVO> searchCancelList(Pagination pagination);
 	
 	/**
 	 * 예약 가능 시간 조회
@@ -52,7 +60,17 @@ public interface ReservService {
 	 * @param reservDate
 	 * @return List<ReservVO>
 	 */
+<<<<<<< Updated upstream
+	List<ReservWithStoreNameVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId);
+	
+	/**
+	 * @param reservId
+	 * @return reservInfoVO
+	 */
+	ReservInfoVO getReservInfoByReservId(int reservId);
+=======
 	List<ReservVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId);
+>>>>>>> Stashed changes
 	
 	/**
 	 * 예약 목록 총 건수 조회
@@ -67,6 +85,18 @@ public interface ReservService {
 	 * @return
 	 */
 	int searchPrevDayTotalCount(int userId);
+	
+	/**
+	 * @param userId
+	 * @return
+	 */
+	int searchReservCancelTotalCount(int userId);
+	
+	/**
+	 * @param userId
+	 * @return boolean
+	 */
+	boolean isReservUser(int reservId, int userId);
 
 	/**
 	 * 예약 등록
@@ -87,5 +117,5 @@ public interface ReservService {
 	 * @param List<ReservVO> cancelList
 	 * @return int
 	 */
-	int cancelReservByList(List<ReservVO> cancelList);
+	int cancelReservByList(List<ReservVO> cancelList, String requestType);
 }

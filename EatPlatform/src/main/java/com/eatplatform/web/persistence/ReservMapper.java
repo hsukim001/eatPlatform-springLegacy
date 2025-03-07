@@ -7,16 +7,31 @@ import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface ReservMapper {
 	// 예약 목록 조회
-	List<ReservVO> selectPagingToDay(Pagination pagination);
+	List<ReservWithStoreNameVO> selectPagingToDay(Pagination pagination);
 	// 이전 예약 목록 조회
-	List<ReservVO> selectPagingPrevDay(Pagination pagination);
+	List<ReservWithStoreNameVO> selectPagingPrevDay(Pagination pagination);
+	
+	
+	/**
+	 * @param pagination
+	 * @return List<ReservWithStoreNameVO>
+	 */
+	List<ReservWithStoreNameVO> selectReservListByCancel(Pagination pagination);
+	
+	/**
+	 * @param reservId
+	 * @return
+	 */
+	ReservInfoVO joinReservWithStoreAndStoreAddressByReservInfo(int reservId);
 
 	/**
 	 * @param storeId
@@ -30,7 +45,7 @@ public interface ReservMapper {
 	 * @param reservDate
 	 * @return List<ReservVO>
 	 */
-	List<ReservVO> selectReservListByHolidayList(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
+	List<ReservWithStoreNameVO> selectReservListByHolidayList(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
 	
 	/**
 	 * @param reservVO
@@ -42,16 +57,29 @@ public interface ReservMapper {
 	 * @param List<HolidayVO> holidayList
 	 * @return List<ReservVO>
 	 */
-	List<ReservVO> selectReservDateByHolidayListStoreId(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
+	List<ReservWithStoreNameVO> selectReservDateByHolidayListStoreId(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
 	
 	// 예약 목록 총 건수 조회
 	int selectToDayTotalCount(int userId);
 	// 이전 예약 목록 총 건수 조회
 	int selectPrevDayTotalCount(int userId);
+	
+	/**
+	 * @param reservId
+	 * @param userId
+	 * @return
+	 */
+	int checkReservByUserId(@Param("reservId") int reservId, @Param("userId") int userId);
+	
+	/**
+	 * @param userId
+	 * @return
+	 */
+	int selectReservCancelTotalCount(int userId);
 	// 예약 등록
 	int insert(ReservVO reservVO);
 	// 예약 삭제
-	int delete(int reservId);
+	int updateCancelStatus(@Param("cancelList") List<ReservVO> cancelList, @Param("reservStatus") String reservStatus);
 	// 예약 가능시간 조회
 	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
 	// 예약 가능 확인

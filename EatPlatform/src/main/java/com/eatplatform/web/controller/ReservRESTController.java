@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.util.DataResponse;
@@ -54,7 +57,7 @@ public class ReservRESTController {
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
 
-		List<ReservVO> list = reservService.searchToDayList(pagination);
+		List<ReservWithStoreNameVO> list = reservService.searchToDayList(pagination);
 
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -83,7 +86,7 @@ public class ReservRESTController {
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
 
-		List<ReservVO> list = reservService.searchPrevDayList(pagination);
+		List<ReservWithStoreNameVO> list = reservService.searchPrevDayList(pagination);
 
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -94,6 +97,44 @@ public class ReservRESTController {
 		DataResponse dataResponse = new DataResponse(list, pageMaker);
 
 		return new ResponseEntity<DataResponse>(dataResponse, HttpStatus.OK);
+	}
+	
+	@GetMapping("/cancel/{pageNum}")
+	public ResponseEntity<DataResponse> searchCancelList(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
+		log.info("searchCancelList()");
+		int pageSize = 5;
+		
+		// session에서 사용자 아이디 로드
+		int userId = customUser.getUser().getUserId();
+
+		Pagination pagination = new Pagination(userId, pageNum, pageSize);
+
+		List<ReservWithStoreNameVO> list = reservService.searchCancelList(pagination);
+
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		int totalCount = reservService.searchReservCancelTotalCount(userId);
+		pageMaker.setTotalCount(totalCount);
+		log.info("cancel totalCount : " + totalCount);
+
+		DataResponse dataResponse = new DataResponse(list, pageMaker);
+
+		return new ResponseEntity<DataResponse>(dataResponse, HttpStatus.OK);
+	}
+	
+	@GetMapping("/search/reservInfo/{reservId}")
+	public ResponseEntity<Map<String, Object>> searchReservInfo(@PathVariable("reservId") int reservId, @AuthenticationPrincipal CustomUser customUser) {
+		Map<String, Object> map = new HashMap<>();
+		
+		int userId = customUser.getUser().getUserId();
+		boolean isUser = reservService.isReservUser(reservId, userId);
+		if(isUser) {
+			ReservInfoVO reservInfoVO = reservService.getReservInfoByReservId(reservId);
+			map.put("info", reservInfoVO);
+		} else {
+			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 
 	// 예약 등록
@@ -192,21 +233,22 @@ public class ReservRESTController {
 		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/cancel")
-	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservVO> cancelList) {
+	/**
+	 * @param cancelList
+	 * @return Map<String, Object>
+	 */
+	@PutMapping("/cancel/{requestType}")
+	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservVO> cancelList, @PathVariable("requestType") String requestType) {
 		log.info("cancelReservByReservId()");
 		Map<String, Object> map = new HashMap<>();
 		int result = 0;
 		log.info(cancelList);
-		if(cancelList.size() == 1) {
-			int reservId = cancelList.get(0).getReservId();
-			result = reservService.cancelReserv(reservId);
-		} else if(cancelList.size() > 1) {
-			result = reservService.cancelReservByList(cancelList);
+		
+		if(cancelList.size() > 0) {
+			result = reservService.cancelReservByList(cancelList, requestType);
 		}
 		
 		if(result == 1) {
-			log.info("삭제");
 			map.put("result", 1);
 		} else {
 			map.put("result", 0);

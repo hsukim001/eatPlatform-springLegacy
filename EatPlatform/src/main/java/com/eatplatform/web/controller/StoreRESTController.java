@@ -35,6 +35,7 @@ import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 
@@ -228,7 +229,11 @@ public class StoreRESTController {
     	boolean isReservStatus = holidayService.isReservStatus(holidayList, storeId);
     	log.info("isReservStatus : " + isReservStatus);
     	if(isReservStatus) {
+<<<<<<< Updated upstream
+    		List<ReservWithStoreNameVO> reservList = reservService.searchReservListByHolidayList(holidayList, storeId);
+=======
     		List<ReservVO> reservList = reservService.searchReservListByHolidayList(holidayList, storeId);
+>>>>>>> Stashed changes
     		log.info("reservList : " + reservList);
 			map.put("reservStatus", 1);
 			map.put("reservList", reservList);

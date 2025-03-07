@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.persistence.HolidayMapper;
 import com.eatplatform.web.persistence.ReservMapper;
 
@@ -69,7 +70,11 @@ public class HolidayServiceImple implements HolidayService{
 	@Override
 	public boolean isReservStatus(List<HolidayVO> holidayList, int storeId) {
 		log.info("isReservStatus()");
+<<<<<<< Updated upstream
+		List<ReservWithStoreNameVO> reservDateList = reservMapper.selectReservDateByHolidayListStoreId(holidayList, storeId);
+=======
 		List<ReservVO> reservDateList = reservMapper.selectReservDateByHolidayListStoreId(holidayList, storeId);
+>>>>>>> Stashed changes
 		
 		for(int i = 0; i < holidayList.size(); i++) {
     		String holiday = holidayList.get(i).getHoliday();

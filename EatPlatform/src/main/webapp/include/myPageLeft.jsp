@@ -5,11 +5,11 @@
 
 <sec:authentication property="principal" var="principal"/>
 <div id="leftWrap" class="left">
-	<p><a href="../user/detail">회원 정보</a></p>
-	<p><a href="../reserv/list">나의 예약 목록</a></p>
+	<p><a href="/user/detail">회원 정보</a></p>
+	<p><a href="/reserv/list">나의 예약 목록</a></p>
 	
 	<sec:authorize access="hasAuthority('ROLE_MEMBER')">
-		<p><a href="../user/business/requestForm">사업자 등록 신청</a></p>		
+		<p><a href="/user/business/requestForm">사업자 등록 신청</a></p>		
 	</sec:authorize>
 	
 	<sec:authorize access="hasAuthority('ROLE_STORE')">
@@ -19,7 +19,7 @@
 	
 	<sec:authorize access="hasAuthority('ROLE_ADMIN')">
 		<p><a>리뷰 신고 관리</a></p>
-		<p><a href="../user/business/requestList">사업자 등록 요청 관리</a></p>
-		<p><a href="../store/request/list">가게 등록 관리</a></p>
+		<p><a href="/user/business/requestList">사업자 등록 요청 관리</a></p>
+		<p><a href="/store/request/list">가게 등록 관리</a></p>
 	</sec:authorize>
 </div>

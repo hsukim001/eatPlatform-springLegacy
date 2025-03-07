@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapper XML 설정 태그 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.ReservCancelMapper">
+	<resultMap type="com.eatplatform.web.domain.ReservCancelVO" id="reservCancelResultMap">
+		<id property="reservCancelId" column="RESERV_CANCEL_ID"/>
+		<result property="requestType" column="REQUEST_TYPE"/>
+		<result property="cancelComment" column="CANCEL_COMMENT"/>
+		<result property="reservId" column="RESERV_ID"/>
+	</resultMap>
+	
+	<insert id="insertReservCancelByReservList" parameterType="map">
+		INSERT ALL 
+			<foreach collection="reservList" item="list">
+				INTO RESERV_CANCEL (CANCEL_ID, REQUEST_TYPE, RESERV_ID) 
+				VALUES(RESERV_CANCEL_SEQ.NEXTVAL, #{requestType}, #{list.reservId})
+			</foreach>
+		SELECT * FROM DUAL
+	</insert>
+</mapper>

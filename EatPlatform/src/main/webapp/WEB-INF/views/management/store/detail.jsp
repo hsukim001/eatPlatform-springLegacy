@@ -53,7 +53,7 @@
 	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/management/ReviewReplyAPI.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/management/reserv.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/management/schedule.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/management/menu.js"></script>
 	
 	<title>${storeInfo.storeName }</title>

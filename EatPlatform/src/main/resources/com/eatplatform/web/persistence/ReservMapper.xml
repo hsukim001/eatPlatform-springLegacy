@@ -9,13 +9,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<resultMap type="com.eatplatform.web.domain.ReservVO" id="reservResultMap">
 		<id property="reservId" column="RESERV_ID"/>
 		<result property="storeId" column="STORE_ID"/>
-		<result property="storeName" column="STORE_NAME"/>
 		<result property="userId" column="USER_ID"/>
 		<result property="reservDate" column="RESERV_DATE"/>
 		<result property="reservHour" column="RESERV_HOUR"/>
 		<result property="reservMin" column="RESERV_MIN"/>
 		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
+		<result property="reservStatus" column="RESERV_STATUS"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.ReservWithStoreNameVO" id="reservWithStoreNameResultMap">
+		<id property="reservId" column="RESERV_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="reservDate" column="RESERV_DATE"/>
+		<result property="reservHour" column="RESERV_HOUR"/>
+		<result property="reservMin" column="RESERV_MIN"/>
+		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
+		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
+		<result property="reservStatus" column="RESERV_STATUS"/>
+		<result property="storeName" column="STORE_NAME"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.ReservInfoVO" id="reservInfoResultMap">
+		<id property="reservId" column="RESERV_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="reservDate" column="RESERV_DATE"/>
+		<result property="reservHour" column="RESERV_HOUR"/>
+		<result property="reservMin" column="RESERV_MIN"/>
+		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
+		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
+		<result property="reservStatus" column="RESERV_STATUS"/>
+		<result property="storeName" column="STORE_NAME"/>
+		<result property="storePhone" column="STORE_PHONE"/>
+		<result property="roadAddress" column="ROAD_ADDRESS"/>
+		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
+		<result property="detailAddress" column="DETAIL_ADDRESS"/>
 	</resultMap>
 	
 	<resultMap type="com.eatplatform.web.domain.StoreScheduleVO" id="storeScheduleResultMap">
@@ -40,7 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="phone" column="PHONE"/>
 	</resultMap>
 	
-	<select id="selectPagingToDay" resultMap="reservResultMap">
+	<select id="selectPagingToDay" resultMap="reservWithStoreNameResultMap">
 		SELECT r.*, 
 	       (
 	           SELECT s.STORE_NAME 
@@ -48,15 +78,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	           WHERE s.STORE_ID = r.STORE_ID
 	       ) AS STORE_NAME
 		FROM (
-		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED,
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, RESERV_STATUS, 
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE ASC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId} AND RESERV_DATE >= TRUNC(SYSDATE)
+		    AND RESERV_STATUS != '취소'
 		) r
 		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
 	
-	<select id="selectPagingPrevDay" resultMap="reservResultMap">
+	<select id="selectPagingPrevDay" resultMap="reservWithStoreNameResultMap">
 		SELECT r.*, 
 	       (
 	           SELECT s.STORE_NAME 
@@ -64,10 +95,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	           WHERE s.STORE_ID = r.STORE_ID
 	       ) AS STORE_NAME
 		FROM (
-		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED,
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, RESERV_STATUS, 
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId} AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
+		    AND RESERV_STATUS != '취소'
+		) r
+		WHERE r.RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectReservListByCancel" resultMap="reservWithStoreNameResultMap">
+		SELECT r.*, 
+	       (
+	           SELECT s.STORE_NAME 
+	           FROM STORE s 
+	           WHERE s.STORE_ID = r.STORE_ID
+	       ) AS STORE_NAME
+		FROM (
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, RESERV_STATUS, 
+		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
+		    FROM RESERV
+		    WHERE USER_ID = #{userId}
+		    AND RESERV_STATUS = '취소'
 		) r
 		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
@@ -77,6 +126,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM RESERV
 		WHERE USER_ID = #{userId}
 		AND RESERV_DATE >= TRUNC(SYSDATE)
+		AND RESERV_STATUS != '취소'
 	</select>
 	
 	<select id="selectPrevDayTotalCount" resultType="Integer">
@@ -84,29 +134,61 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM RESERV
 		WHERE USER_ID = #{userId}
 		AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
+		AND RESERV_STATUS != '취소'
+	</select>
+	
+	<select id="selectReservCancelTotalCount" resultType="Integer">
+		SELECT COUNT(*)
+		FROM RESERV
+		WHERE USER_ID = #{userId}
+		AND RESERV_STATUS = '취소'
+	</select>
+	
+	<select id="joinReservWithStoreAndStoreAddressByReservInfo" resultMap="reservInfoResultMap">
+		SELECT r.*,
+			 s.STORE_NAME,
+			 s.STORE_PHONE, 
+			 a.ROAD_ADDRESS,
+			 a.JIBUN_ADDRESS,
+			 a.DETAIL_ADDRESS
+		FROM RESERV r
+		INNER JOIN STORE s
+		ON r.STORE_ID = s.STORE_ID
+		INNER JOIN STORE_ADDRESS a
+		ON r.STORE_ID = a.STORE_ID
+		WHERE r.RESERV_ID = #{reservId}
+	</select>
+	
+	<select id="checkReservByUserId" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM RESERV
+		WHERE USER_ID = #{userId}
+		AND RESERV_ID = #{reservId}
 	</select>
 	
 	<insert id="insert">
-		<selectKey resultType="Integer" keyProperty="reservId" order="BEFORE">
-			SELECT (NVL(MAX(RESERV_ID), 0) + 1) AS RESERV_ID FROM RESERV
-		</selectKey>
 		INSERT INTO RESERV
 		VALUES(
-			#{reservId},
+			RESERV_SEQ.NEXTVAL,
 			#{storeId},
 			#{userId},
 			#{reservDate},
 			#{reservHour},
 			#{reservMin},
 			#{reservPersonnel},
-			SYSDATE
+			SYSDATE,
+			'완료'
 		)
 	</insert>
 	
-	<delete id="delete">
-		DELETE RESERV
-		WHERE RESERV_ID = #{reservId}
-	</delete>
+	<update id="updateCancelStatus" parameterType="map">
+		UPDATE RESERV
+		SET RESERV_STATUS = #{reservStatus}
+		WHERE RESERV_ID IN 
+		<foreach collection="cancelList" item="list" open="(" close=")" separator=",">
+			#{list.reservId}		
+		</foreach>
+	</update>
 	
 	<select id="selectSchedule" resultMap="storeScheduleResultMap">
 		SELECT RESERV_DATE, RESERV_HOUR AS HOUR, RESERV_MIN AS MIN, SUM(RESERV_PERSONNEL) AS TOTAL_PERSONNEL
@@ -134,7 +216,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		ORDER BY RESERV_HOUR ASC
 	</select>
 	
-	<select id="selectReservListByHolidayList" parameterType="map" resultMap="reservResultMap">
+	<select id="selectReservListByHolidayList" parameterType="map" resultMap="reservWithStoreNameResultMap">
 		SELECT * FROM RESERV
 		WHERE STORE_ID = #{storeId}
 		AND RESERV_DATE IN
@@ -154,7 +236,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND RESERV_MIN = #{reservMin}
 	</select>
 	
-	<select id="selectReservDateByHolidayListStoreId" parameterType="map" resultMap="reservResultMap">
+	<select id="selectReservDateByHolidayListStoreId" parameterType="map" resultMap="reservWithStoreNameResultMap">
 		SELECT RESERV_DATE FROM (
 		    SELECT RESERV_DATE, COUNT(RESERV_ID) AS COUNT FROM RESERV
 		    WHERE STORE_ID = #{storeId} 
