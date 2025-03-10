@@ -66,7 +66,7 @@ function validation(obj){
         alert("비정상적인 파일 업로드 시도입니다.");
         return false;
     } else if (!fileTypes.includes(obj.type)) {
-        alert("이미지 파일의 확장자를 확인해주세");
+        alert("이미지 파일의 확장자를 확인해주세요");
         return false;
     } else {
         return true;
@@ -90,7 +90,7 @@ function submitForm() {
 
     $.ajax({
         method: 'POST',
-        url: '/register',
+        url: '/store/image',
         dataType: 'json',
         data: formData,
         async: true,

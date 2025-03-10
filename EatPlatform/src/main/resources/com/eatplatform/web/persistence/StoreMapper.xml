@@ -60,8 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		) VALUES (
 		#{storeId},
 		#{mainCategoryId},
-		#{subCategoryId},
 		#{mainCategoryName},
+		#{subCategoryId},
 		#{subCategoryName}
 		)
 	</insert>
@@ -86,47 +86,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getStoresWithPaging" resultMap="StoreResultMap" parameterType="java.util.Map">
 	  SELECT *
 	  FROM (
-	    SELECT
-	      store.*, ROW_NUMBER() OVER (ORDER BY store.STORE_REG_DATE DESC, store.STORE_ID DESC) AS RN
+	    SELECT 
+	      store.STORE_ID, store.STORE_NAME, store.STORE_REG_DATE, store.STORE_COMMENT, store.DESCRIPTION,
+	      MAX(menu.MENU_NAME) AS MENU_NAME, MAX(menu.MENU_COMMENT) AS MENU_COMMENT,
+	      ROW_NUMBER() OVER (ORDER BY store.STORE_REG_DATE DESC, store.STORE_ID DESC) AS RN
 	    FROM STORE store
 	    LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
-       <where>
-           <if test="keywords != null and keywords.size() > 0">
-               AND (
-                   <foreach collection="keywords" item="keyword" separator="OR">
-                       REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                   </foreach>
-               )
-           </if>
-       </where>
-	 	 )
-		WHERE RN &gt;= #{startRow} AND RN &lt;= #{endRow}
+	    <where>
+	        <if test="keywords != null and keywords.size() > 0">
+	            AND (
+	                <foreach collection="keywords" item="keyword" separator="OR">
+	                    REPLACE(store.STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR REPLACE(store.STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR REPLACE(store.DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR (menu.MENU_NAME IS NOT NULL AND REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
+	                    OR (menu.MENU_COMMENT IS NOT NULL AND REPLACE(menu.MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
+	                </foreach>
+	            )
+	        </if>
+	    </where>
+	    GROUP BY store.STORE_ID, store.STORE_NAME, store.STORE_REG_DATE, store.STORE_COMMENT, store.DESCRIPTION
+	  )
+	  WHERE RN &gt;= #{startRow} AND RN &lt;= #{endRow}
 	</select>
 
+
+	
 	<!-- 전체 게시글 카운트 -->
 	<select id="getTotalStoresCount" resultType="int" parameterType="java.util.Map">
-		SELECT COUNT(*)
-		FROM
-		STORE store
-		LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
-       <where>
-           <if test="keywords != null and keywords.size() > 0">
-               AND (
-                   <foreach collection="keywords" item="keyword" separator="OR">
-                       REPLACE(STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                       OR REPLACE(MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-                   </foreach>
-               )
-           </if>
-       </where>
+	  SELECT COUNT(DISTINCT store.STORE_ID)
+	  FROM STORE store
+	  LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
+	  <where>
+	      <if test="keywords != null and keywords.size() > 0">
+	          AND (
+	              <foreach collection="keywords" item="keyword" separator="OR">
+	                  REPLACE(store.STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(store.STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(store.DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(menu.MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	              </foreach>
+	          )
+	      </if>
+	  </where>
 	</select>
+
 	
 	<select id="getTotalStoresCountByStoreUserId" resultType="Integer">
 		SELECT COUNT(*)

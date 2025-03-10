@@ -23,9 +23,6 @@ pageEncoding="UTF-8"%>
 	});
 	$(function(){
 		let ExistMainCategoryId;
-		$('form').on('click', '#mainCategory li input[type=checkbox]', function() {
-			//RenewalSubCategory(ExistMainCategoryId);
-		});
 		
 		$(document).on("change", "#mainCategory li input[type=radio]", function() {
 			ExistMainCategoryId = $(this).val();

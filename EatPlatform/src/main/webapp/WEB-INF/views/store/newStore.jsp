@@ -7,11 +7,10 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
-#otherCategory {
-    display: none;
-}
 
 .insert {
 	padding: 10px 20px;
@@ -57,6 +56,8 @@
 
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js" defer></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
@@ -67,27 +68,105 @@
 		xhr.setRequestHeader(header, token);
 	});4
 	
-    $(function() { 
-        $('#foodCategory').change(function() {  
-            var selectedCategory = $(this).val();
-            
-            if (selectedCategory === '기타') {
-                $('#otherCategory').show(); 
-            } else {
-                $('#otherCategory').hide(); 
-                $('#otherCategoryInput').val('');
-            }
-        }); // End foodCategory.change
+    $(function() {
         
+		let ExistMainCategoryId;
+		
+		$(document).on("change", "#mainCategory li input[type=radio]", function() {
+			ExistMainCategoryId = $(this).val();
+			RenewalSubCategory(ExistMainCategoryId);
+		});
+		
+		loadCategoriesList();
+		// 상위 카테고리 조회
+		function loadCategoriesList() {
+		    $.ajax({
+		        type: 'GET',
+		        url: '/shop/product/category/mainView',
+		        contentType: "application/json",
+		        success: function(response) {
+		        	let mainCategoryList = response.data;
+		            let $mainCategory = $("#mainCategory");
+		            $mainCategory.empty();
+
+		            mainCategoryList.forEach(function(mainCategory, index) {
+		            	 let listItem = 
+		            		'<li>' +
+		            			'<input type="radio" value="' + mainCategory.mainCategoryId + '" name="mainCategoryId" id="mainCategoryId' + index + '"' + 
+		                    	(index === 0 ? ' checked required' : '') + '>' +
+		            			'<label for="mainCategoryId' + index + '">' + mainCategory.mainCategoryName + '</label>'
+		            		'</li>';
+		            	$mainCategory.append(listItem);
+		            });
+		            
+					if (ExistMainCategoryId) {
+		 		   		RenewalSubCategory(ExistMainCategoryId);
+					} else {
+						callFirstCategory();
+					}
+		        },
+		        error: function(xhr, status, error) {
+		            alert('카테고리 목록 로드에 실패했습니다. 다시 시도해 주세요.');
+		        }
+		    });
+		}
+		
+		// 하위 카테고리 조회
+		function RenewalSubCategory(ExistMainCategoryId) {
+		    if (!ExistMainCategoryId) {  
+		        console.error("mainCategoryId가 유효하지 않습니다.");
+		        return;
+		    }
+		
+		    let requestUrl = "/shop/product/category/subView/" + ExistMainCategoryId;
+    
+		    $.ajax({
+		        url: requestUrl, 
+		        type: "GET",
+		        contentType: "application/json",
+		        success: function(response) {
+		            let subCategoryList = response.data;
+		            let $subCategory = $("#subCategory");
+		            $subCategory.empty();
+		            
+		            if (subCategoryList) {
+			            subCategoryList.forEach(function(subCategory, index) {
+			                let listItem = 
+			                	'<li>' +
+			                		'<input type="radio" value="' + subCategory.subCategoryId + '" name="subCategoryId" id="subCategoryId' + index + '"' + 
+		                    		(index === 0 ? ' checked required' : '') + '>' +
+		            				'<label for="subCategoryId' + index + '">' + subCategory.subCategoryName + '</label>'
+					        	'</li>';
+			                $subCategory.append(listItem);
+			            });
+		            } else {
+		            	 $subCategory.append(`<p class="noSub">등록된 하위 카테고리가 없습니다.</p>`);
+		            }
+		        },
+		        error: function(xhr, status, error) {
+		            console.error("AJAX 에러 발생:", xhr.status, error);
+		            alert('하위 카테고리 조회에 실패했습니다. 다시 시도해 주세요.');
+		        }
+		    });
+		}
+		
+		// 첫 번째 상위 카테고리의 하위 카테고리 출력
+		function callFirstCategory() {
+		    let $firstCategory = $('#mainCategory li input[type="radio"]').first();
+
+		    if ($firstCategory.length) {
+		        let firstMainId = $firstCategory.val();
+		        if (firstMainId) {
+		            RenewalSubCategory(firstMainId); 
+		        } else {
+		            alert("문제가 발생했습니다. 다시 시도해주세요.")
+		        }
+		    } else {
+		        alert("카테고리가 로드되지 않았습니다.");
+		    }
+		}
+    	
         $('form').submit(function() { 
-            var category = $('#foodCategory').val();
-            if (category === '기타') {
-                let otherCategoryInput = $('#otherCategoryInput').val();
-                $('#hiddenFoodCategory').val(otherCategoryInput);
-            } else {
-                $('#hiddenFoodCategory').val(category);
-            }
-            
             const startTime = $("#startTime").val();
             const endTime = $("#endTime").val();
             const businessHour = startTime + " - " + endTime;
@@ -153,6 +232,7 @@
 <title>식당 등록 페이지</title>
 </head>
 <body onpageshow="if(event.persisted) noBack();">
+	<jsp:include page="/include/header.jsp" />
     <h2>여기는 가게 등록 페이지입니다.</h2>
     <form action="register" method="POST" >
     	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -166,19 +246,11 @@
          <input type="number" id="storePhone" name="storePhone" required>
         
         <label for="ownerName">대표명 : </label>
-        <input type="text" id="ownerName" name="ownerName" required> 
-        <label for="foodCategory">카테고리: </label>
-            <select id="foodCategory" name="foodCategorySelect">
-                <option value="한식">한식</option>
-                <option value="중식">중식</option>
-                <option value="일식">일식</option>
-                <option value="양식">양식</option>
-                <option value="기타">기타</option>
-            </select>
-        <div id="otherCategory">
-            <label for="otherCategoryInput">기타 카테고리: </label> 
-            <input type="text" id="otherCategoryInput" name="foodCategoryInput" placeholder="기타 카테고리 입력">
-        </div> 
+        <input type="text" id="ownerName" name="ownerName" required>         
+		<div id="category_container">
+				<ul id="mainCategory"></ul>
+				<ul id="subCategory"></ul>
+		</div>
         <label for="reservLimit">시간별 예약 제한: </label>
         <input type="number" max="99999" id="reservLimit" name="reservLimit" required>
         
@@ -208,8 +280,7 @@
 		<input type="text" id="bname2" name="bname2" placeholder="bname2">
 		<br><br>
 		
-        <input type="submit" value="식당 등록">
-    </form>
+		
     
 		<div class="insert">
 			<label class="uploadLabel" for="storeImg">
@@ -219,6 +290,8 @@
 			<div class="file-list"></div>
         	<div id="thumbnail-container"></div>
 		</div>
+        <input type="submit" value="식당 등록">
+    </form>
         <br><br>
     
 
