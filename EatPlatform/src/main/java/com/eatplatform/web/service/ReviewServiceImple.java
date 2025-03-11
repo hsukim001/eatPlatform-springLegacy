@@ -6,15 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eatplatform.web.domain.NotificationVO;
 import com.eatplatform.web.domain.ReviewImageVO;
 import com.eatplatform.web.domain.ReviewVO;
-import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.ReplyMapper;
 import com.eatplatform.web.persistence.ReviewImageMapper;
 import com.eatplatform.web.persistence.ReviewLikeListMapper;
 import com.eatplatform.web.persistence.ReviewMapper;
-import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -33,9 +30,6 @@ public class ReviewServiceImple implements ReviewService{
 	
 	@Autowired 
 	private ReviewImageMapper reviewImageMapper;
-	
-	@Autowired
-	private StoreMapper storeMapper;
 	
 	@Autowired
 	private NotificationService notificationService;
@@ -57,18 +51,8 @@ public class ReviewServiceImple implements ReviewService{
 			
 		}
 		
-		StoreVO storeVO = storeMapper.selectStoreById(reviewVO.getStoreId());
-		String type = "addReview";
-		String username = storeVO.getStoreUserId();
-		String storeName = storeVO.getStoreName();
-		String message = String.format("'%s'에 리뷰가 등록되었습니다.", storeName);
-		
-		NotificationVO notificationVO = new NotificationVO();
-		notificationVO.setType(type);
-		notificationVO.setUsername(username);
-		notificationVO.setMessage(message);
-		
-		notificationService.sendReviewNotification(type, username, message);
+		// 알림 전송
+		notificationService.reviewNotification(reviewVO);
 		
 		return result;
 	}

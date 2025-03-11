@@ -11,7 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.eatplatform.web.domain.NotificationVO;
+import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.NotificationMapper;
+import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
 
@@ -20,12 +23,15 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class NotificationServiceImple implements NotificationService {
 	
-	private static final long DEFAULT_TIMEOUT_MS = 60L * 1000 * 60;
+	private static final long DEFAULT_TIMEOUT_MS = 60L * 60L * 1000;
 	
 	private static final Map<String, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 	
 	@Autowired
 	private NotificationMapper notificationMapper;
+	
+	@Autowired
+	private StoreMapper storeMapper;
 	
     /**
      * 클라이언트가 알림을 구독하기 위한 메서드
@@ -44,6 +50,11 @@ public class NotificationServiceImple implements NotificationService {
 					);
 		} catch (Exception e) {
 			log.error("error : " + e.getMessage());
+			
+			if (sseEmitter != null) {
+	            sseEmitter.completeWithError(e);
+	        }
+	        return null;
 		}
 		
 		sseEmitters.put(username, sseEmitter);
@@ -70,9 +81,16 @@ public class NotificationServiceImple implements NotificationService {
      * 리뷰 알림을 전송하고 저장하는 메서드
      */
     @Override
-    public void sendReviewNotification(String type, String username, String message) {
-
-    	createNotification(type, username, message);
+    public void reviewNotification(ReviewVO reviewVO) {
+    	
+    	String type = "addReview";
+    	StoreVO storeVO = storeMapper.selectStoreById(reviewVO.getStoreId());
+    	String username = storeVO.getStoreUserId();
+    	String storeName = storeVO.getStoreName();
+    	String message = String.format("'%s'에 리뷰가 등록되었습니다.", storeName);
+    	String url = "/store/detail?storeId=" + storeVO.getStoreId();
+    	
+    	createNotification(type, username, message, url);
 
         sendSseNotification(type, username, message);
     }
@@ -83,11 +101,12 @@ public class NotificationServiceImple implements NotificationService {
      * @param username 사용자 이름
      * @param message 알림 메시지
      */
-    private void createNotification(String type, String username, String message) {
+    private void createNotification(String type, String username, String message, String url) {
         NotificationVO notificationVO = new NotificationVO();
         notificationVO.setType(type);
         notificationVO.setUsername(username);
         notificationVO.setMessage(message);
+        notificationVO.setUrl(url);
 
         notificationMapper.insert(notificationVO);
     }
@@ -125,8 +144,8 @@ public class NotificationServiceImple implements NotificationService {
      * @return 업데이트된 알림의 갯수
      */
     @Override
-    public int updateNotification(int notificationId) {
-        return notificationMapper.update(notificationId);
+    public int updateNotification(String url) {
+        return notificationMapper.update(url);
     }
 
     /**
@@ -136,7 +155,7 @@ public class NotificationServiceImple implements NotificationService {
     private void removeSseEmitter(String username) {
     	if(sseEmitters.containsKey(username)) {
     		sseEmitters.remove(username);
-    		log.info("Removed SseEmitter for username: " + username);
+    		log.info("SseEmitter 삭제: " + username);
     	}
     }
 

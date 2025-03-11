@@ -17,10 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewLike" column="REVIEW_LIKE" />
 		<result property="reviewReport" column="REVIEW_REPORT" />
 		<result property="reviewUpdateDate" column="REVIEW_UPDATE_DATE" />
-		<association javaType="com.eatplatform.web.domain.UserVO" property="userVO" >
-			<id property="userId" column="USER_ID"/>
-			<result property="username" column="USERNAME"/>
-		</association>
+		<result property="username" column="USERNAME"/>
 	</resultMap>
 
 	<insert id="insert">
@@ -93,9 +90,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="findReviewWithUsername" resultMap="reviewResultMap">
 		SELECT r.REVIEW_ID, r.STORE_ID, r.USER_ID, r.REVIEW_STAR, r.REVIEW_CONTENT, 
 		r.REVIEW_TAG, r.REVIEW_DATE, r.REVIEW_LIKE, r.REVIEW_REPORT, r.REVIEW_UPDATE_DATE,
-		u.USER_ID, u.USERNAME
+		u.USERNAME
 		FROM REVIEW r
-		LEFT JOIN USER_MEMBER u ON r.USER_ID = u.USER_ID 
+		LEFT JOIN USER_MEMBER u ON r.USER_ID = u.USER_ID
 		WHERE REVIEW_ID = #{reviewId}
 	</select>
 

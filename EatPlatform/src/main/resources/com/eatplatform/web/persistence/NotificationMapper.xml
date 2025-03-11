@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="message" column="MESSAGE" />
 		<result property="read" column="READ" />
 		<result property="notificationDate" column="NOTIFICATION_DATE" />
+		<result property="url" column="URL" />
 	</resultMap>
 
 	<select id="findUnreadNotificationsByUsername" resultMap="notificationResultMap">
@@ -22,14 +23,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<insert id="insert">
-		INSERT INTO NOTIFICATION (NOTIFICATION_ID, TYPE, USERNAME, MESSAGE)
-		VALUES (NOTIFICATION_SEQ.NEXTVAL, #{type}, #{username}, #{message})
+		INSERT INTO NOTIFICATION (NOTIFICATION_ID, TYPE, USERNAME, MESSAGE, URL)
+		VALUES (NOTIFICATION_SEQ.NEXTVAL, #{type}, #{username}, #{message}, #{url})
 	</insert>
 	
 	<update id="update">
 		UPDATE NOTIFICATION 
 		SET READ = 'Y'
-		WHERE NOTIFICATION_ID = #{notificationId}
+		WHERE URL = #{url}
 	</update>
 
 </mapper>

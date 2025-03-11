@@ -12,6 +12,6 @@ public interface NotificationMapper {
 
 	List<NotificationVO> findUnreadNotificationsByUsername(String userId);
 	int insert(NotificationVO notificationVO);
-	int update(int notificationId);
+	int update(String url);
 	
 }

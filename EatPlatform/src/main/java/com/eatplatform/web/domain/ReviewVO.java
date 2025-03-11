@@ -37,6 +37,6 @@ public class ReviewVO {
 	}
 
 	// username 조회
-	private UserVO userVO;
+	private String username;
 	
 }

@@ -18,5 +18,6 @@ public class NotificationVO {
 	private String message;
 	private String read;
 	private Date notificationDate;
-
+	private String url;
+	
 }

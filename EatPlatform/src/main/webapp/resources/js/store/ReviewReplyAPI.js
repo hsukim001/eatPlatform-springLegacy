@@ -127,7 +127,7 @@
 							var reviewDateText = (reviewDate !== reviewUpdateDate) ? reviewUpdateDate + '<span>(수정됨) </span>' : reviewDate;
 				        	
 				        	let loginId = $('#loginId').text();
-							var username = this.userVO.username
+							var username = this.username
 				        	
 							list += '<div class="review_item">'
 								+ '<pre>'

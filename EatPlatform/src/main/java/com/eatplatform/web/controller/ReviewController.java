@@ -31,7 +31,7 @@ public class ReviewController {
 		
 		ReviewVO reviewVO = reviewService.getReviewById(reviewId);
 		ReviewVO username = reviewService.getReviewWithUsername(reviewId);
-		reviewVO.setUserVO(username.getUserVO());
+		reviewVO.setUsername(reviewVO.getUsername());
 		model.addAttribute("reviewVO",reviewVO);
 		log.info("reviewVO : " + reviewVO);
 		

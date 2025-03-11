@@ -42,8 +42,9 @@ public class NotificationRESTController {
 
 	@PostMapping("/updateRead")
 	public ResponseEntity<String> updateNotifications(@RequestBody NotificationVO notificationVO) {
-		int notificationId = notificationVO.getNotificationId();
-		notificationService.updateNotification(notificationId);
+		log.info("notificationVO: " + notificationVO);
+		String url = notificationVO.getUrl();
+		notificationService.updateNotification(url);
 		return ResponseEntity.ok("업데이트 성공");
 	}
 

@@ -97,13 +97,13 @@ public class ReviewRESTController {
 		List<ReviewVO> list = reviewService.getPagingReviewsByStoreId(storeId, start, end);
 		
 
-		// 첨부된 이미지 데이터 조회 및 username 가져오기
+		// 첨부된 이미지 데이터 조회
 		for (ReviewVO reviewVO : list) {
 			int reviewId = reviewVO.getReviewId();
 			List<ReviewImageVO> reviewImageList = reviewImageService.getImageListByReviewId(reviewId);
 			reviewVO.setReviewImageList(reviewImageList);
-			ReviewVO username = reviewService.getReviewWithUsername(reviewId);
-			reviewVO.setUserVO(username.getUserVO());
+			String username = reviewService.getReviewWithUsername(reviewId).getUsername();
+			reviewVO.setUsername(username);
 		}
 		
 		log.info("list : " + list);
@@ -136,7 +136,6 @@ public class ReviewRESTController {
 		log.info("getReviewWithUsername()");
 
 		ReviewVO reviewVO = reviewService.getReviewWithUsername(reviewId);
-		log.info("reviewVO : " + reviewVO);
 
 		return new ResponseEntity<ReviewVO>(reviewVO, HttpStatus.OK);
 
