@@ -101,11 +101,14 @@ function nextTable(reserv) {
 		let createdDate = year + '-' + month + '-' + day;
 		let formattedReservDate = String(list.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
 		let btnFrom = '';
+		let status = '';
 					    
-		if(list.reservStatus === '완료') {
+		if(list.cancelStatus == 0) {
 			btnFrom = '<td><button onclick="cancelBtn(this)">예약 취소</button></td>';
-		} else if(list.cancelStatus !== '완료') {
+			status = "성공";
+		} else if(list.cancelStatus == 1) {
 			btnFrom = '<td><button disabled="true">예약 취소</button></td>';
+			status = "예약 취소";
 		}					    
 					    
 		tableBodyRows += '<tr class="reservRow" data-id-value="'+ list.reservId +'">'+
@@ -113,11 +116,10 @@ function nextTable(reserv) {
 				'<td>'+ list.storeName +'</td>'+
 				'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
 				'<td>'+ list.reservPersonnel +'</td>'+
-				'<td>'+ list.reservStatus +'</td>' +
+				'<td>'+ status +'</td>' +
 				'<td>'+ createdDate +'</td>' +
 				 //btnFrom +
 			'</tr>';
-			console.log(tableBodyRows);
 		});
 	} else {
 		tableBodyRows = '<tr><td colspan="6">목록이 존재하지 않습니다.</td></tr>'
@@ -161,10 +163,10 @@ function prevTable(reserv) {
 			let status = '';
 					    
 			if(list.cancelStatus == 0) {
-				status = '예약 완료';
+				status = '완료';
 			} else if(list.cancelStatus == 1) {
 					if(list.processingStatus === 'WAIT') {
-						status = '취소 요청';
+						status = '취소';
 					}
 			}
 				    	
@@ -173,7 +175,7 @@ function prevTable(reserv) {
 					'<td>' + list.storeName +'</td>'+
 					'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
 					'<td>'+ list.reservPersonnel +'</td>'+
-					'<td>' + list.reservStatus + '</td>' + 
+					'<td>' + status + '</td>' + 
 					'<td>'+ createdDate +'</td>'+
 					'</tr>';
 		});
@@ -279,10 +281,11 @@ function searchReservInfo(reservId) {
 		type : 'get',
 		success : function(response) {
 			let reservTime = response.info.reservHour + ":" + response.info.reservMin;
+			let btn = '<button onclick="cancelBtn()">예약 취소</button>';
+			let status = "";
 			$('#storeTitle').text(response.info.storeName);
 			$('#phone .textValue').text(response.info.storePhone);
 			$('#reservDate .textValue').text(response.info.reservDate + reservTime);
-			$('#status .textValue').text(response.info.reservStatus);
 			$('#regDate .textValue').text(response.info.reservDateCreated);
 			
 			if(response.info.roadAddress == null && response.info.jibunAddress == null) {
@@ -296,6 +299,16 @@ function searchReservInfo(reservId) {
 				let address = response.info.jibunAddress + " " + response.info.detailAddress
 				$('#address .textValue').text(address);
 			}
+			
+			if(response.info.cancelStatus == 0) {
+				$('.btnContainer').html(btn);
+				status = "완료";
+			} else if (response.info.cancelStatus == 1) {
+				$('.btnContainer').empty();
+				status = "취소";
+			}
+			
+			$('#status .textValue').text(status);
 			
 			$('#reservInfoModal').show();
 		},

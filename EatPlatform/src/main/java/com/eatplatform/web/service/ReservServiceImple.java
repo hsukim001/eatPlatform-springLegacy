@@ -14,8 +14,10 @@ import org.springframework.util.ObjectUtils;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservCancelVO;
 import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.CancelReservInfoVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -63,6 +65,11 @@ public class ReservServiceImple implements ReservService {
 	public List<ReservWithStoreNameVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId) {
 		log.info("searchReservListByStoreIdReservDate()");
 		return reservMapper.selectReservListByHolidayList(holidayList, storeId);
+	}
+	
+	@Override
+	public List<CancelReservInfoVO> getRequestCancelList(int storeId, int cancelStatus) {
+		return reservMapper.joinReservWithCancelReservIdCancelCommentAndUserNamePhoneByStoreIdCancelStatus(storeId, cancelStatus);
 	}
 	
 	@Override
@@ -208,7 +215,7 @@ public class ReservServiceImple implements ReservService {
 	@Override
 	public int cancelReservByList(List<ReservVO> cancelList, String requestType) {
 		log.info("cancelReservByList()");
-		String reservStatus = "취소 대기중";
+		int reservStatus = 1;
 		reservMapper.updateCancelStatus(cancelList, reservStatus);
 		reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
 		return 1;

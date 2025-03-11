@@ -7,8 +7,10 @@ import org.apache.ibatis.annotations.Param;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservCancelVO;
 import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.CancelReservInfoVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.util.Pagination;
@@ -59,6 +61,13 @@ public interface ReservMapper {
 	 */
 	List<ReservWithStoreNameVO> selectReservDateByHolidayListStoreId(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
 	
+	/**
+	 * @param storeId
+	 * @param reservStatus
+	 * @return List<ReservWithReservCancelVO>
+	 */
+	List<CancelReservInfoVO> joinReservWithCancelReservIdCancelCommentAndUserNamePhoneByStoreIdCancelStatus(@Param("storeId") int storeId, @Param("cancelStatus") int cancelStatus);
+	
 	// 예약 목록 총 건수 조회
 	int selectToDayTotalCount(int userId);
 	// 이전 예약 목록 총 건수 조회
@@ -79,7 +88,7 @@ public interface ReservMapper {
 	// 예약 등록
 	int insert(ReservVO reservVO);
 	// 예약 삭제
-	int updateCancelStatus(@Param("cancelList") List<ReservVO> cancelList, @Param("reservStatus") String reservStatus);
+	int updateCancelStatus(@Param("cancelList") List<ReservVO> cancelList, @Param("cancelStatus") int cancelStatus);
 	// 예약 가능시간 조회
 	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
 	// 예약 가능 확인

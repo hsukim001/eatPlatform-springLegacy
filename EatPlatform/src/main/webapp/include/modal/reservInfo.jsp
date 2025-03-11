@@ -33,8 +33,8 @@
 					</li>
 				</ul>
 			</div>
-
-			<button onclick="cancelBtn()">예약 취소</button>
+			<div class="btnContainer">
+			</div>
 		</div>
 	</div>
 

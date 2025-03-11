@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.JoinReservUserNameVO;
+import com.eatplatform.web.domain.ReservCancelVO;
 import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
+import com.eatplatform.web.domain.CancelReservInfoVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -63,6 +65,13 @@ public interface ReservService {
 	List<ReservWithStoreNameVO> searchReservListByHolidayList(List<HolidayVO> holidayList, int storeId);
 	
 	/**
+	 * @param storeId
+	 * @param reservStatus
+	 * @return List<ReservWithReservCacnelVO>
+	 */
+	List<CancelReservInfoVO> getRequestCancelList(int storeId, int cancelStatus);
+	
+	/**
 	 * @param reservId
 	 * @return reservInfoVO
 	 */
@@ -114,4 +123,5 @@ public interface ReservService {
 	 * @return int
 	 */
 	int cancelReservByList(List<ReservVO> cancelList, String requestType);
+	
 }

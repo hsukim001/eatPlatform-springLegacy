@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reservMin" column="RESERV_MIN"/>
 		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
-		<result property="reservStatus" column="RESERV_STATUS"/>
+		<result property="cancelStatus" column="CANCEL_STATUS"/>
 	</resultMap>
 	
 	<resultMap type="com.eatplatform.web.domain.ReservWithStoreNameVO" id="reservWithStoreNameResultMap">
@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reservMin" column="RESERV_MIN"/>
 		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
-		<result property="reservStatus" column="RESERV_STATUS"/>
+		<result property="cancelStatus" column="CANCEL_STATUS"/>
 		<result property="storeName" column="STORE_NAME"/>
 	</resultMap>
 	
@@ -40,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reservMin" column="RESERV_MIN"/>
 		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
-		<result property="reservStatus" column="RESERV_STATUS"/>
+		<result property="cancelStatus" column="CANCEL_STATUS"/>
 		<result property="storeName" column="STORE_NAME"/>
 		<result property="storePhone" column="STORE_PHONE"/>
 		<result property="roadAddress" column="ROAD_ADDRESS"/>
@@ -70,6 +70,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="phone" column="PHONE"/>
 	</resultMap>
 	
+	<resultMap type="com.eatplatform.web.domain.CancelReservInfoVO" id="cancelReservInfoResultMap">
+		<id property="reservId" column="RESERV_ID"/>
+		<result property="storeId" column="STORE_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="reservDate" column="RESERV_DATE"/>
+		<result property="reservHour" column="RESERV_HOUR"/>
+		<result property="reservMin" column="RESERV_MIN"/>
+		<result property="reservPersonnel" column="RESERV_PERSONNEL"/>
+		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
+		<result property="cancelStatus" column="CANCEL_STATUS"/>
+		<result property="cancelId" column="CANCEL_ID"/>
+		<result property="requestStatus" column="REQUEST_STATUS"/>
+		<result property="name" column="NAME"/>
+		<result property="phone" column="PHONE"/>
+		<result property="cancelComment" column="CANCEL_COMMENT"/>
+	</resultMap>
+	
 	<select id="selectPagingToDay" resultMap="reservWithStoreNameResultMap">
 		SELECT r.*, 
 	       (
@@ -78,11 +95,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	           WHERE s.STORE_ID = r.STORE_ID
 	       ) AS STORE_NAME
 		FROM (
-		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, RESERV_STATUS, 
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANCEL_STATUS, 
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE ASC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId} AND RESERV_DATE >= TRUNC(SYSDATE)
-		    AND RESERV_STATUS != '취소'
 		) r
 		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
@@ -95,11 +111,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	           WHERE s.STORE_ID = r.STORE_ID
 	       ) AS STORE_NAME
 		FROM (
-		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, RESERV_STATUS, 
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANCEL_STATUS, 
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId} AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
-		    AND RESERV_STATUS != '취소'
+		    AND CANCEL_STATUS = 0
 		) r
 		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
@@ -112,11 +128,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	           WHERE s.STORE_ID = r.STORE_ID
 	       ) AS STORE_NAME
 		FROM (
-		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, RESERV_STATUS, 
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANEL_STATUS, 
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId}
-		    AND RESERV_STATUS = '취소'
+		    AND CANCEL_STATUS = 1
 		) r
 		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
@@ -126,7 +142,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM RESERV
 		WHERE USER_ID = #{userId}
 		AND RESERV_DATE >= TRUNC(SYSDATE)
-		AND RESERV_STATUS != '취소'
 	</select>
 	
 	<select id="selectPrevDayTotalCount" resultType="Integer">
@@ -134,14 +149,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM RESERV
 		WHERE USER_ID = #{userId}
 		AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
-		AND RESERV_STATUS != '취소'
+		AND CANCEL_STATUS = 0
 	</select>
 	
 	<select id="selectReservCancelTotalCount" resultType="Integer">
 		SELECT COUNT(*)
-		FROM RESERV
+		FROM RESERV R
+		INNER JOIN RESERV_CANCEL C
+		ON R.RESERV_ID = C.RESERV_ID
 		WHERE USER_ID = #{userId}
-		AND RESERV_STATUS = '취소'
 	</select>
 	
 	<select id="joinReservWithStoreAndStoreAddressByReservInfo" resultMap="reservInfoResultMap">
@@ -177,13 +193,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			#{reservMin},
 			#{reservPersonnel},
 			SYSDATE,
-			'완료'
+			0
 		)
 	</insert>
 	
 	<update id="updateCancelStatus" parameterType="map">
 		UPDATE RESERV
-		SET RESERV_STATUS = #{reservStatus}
+		SET CANCEL_STATUS = #{cancelStatus}
 		WHERE RESERV_ID IN 
 		<foreach collection="cancelList" item="list" open="(" close=")" separator=",">
 			#{list.reservId}		
@@ -247,6 +263,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    GROUP BY RESERV_DATE
 		)
 		ORDER BY RESERV_DATE
+	</select>
+	
+	<select id="joinReservWithCancelReservIdCancelCommentAndUserNamePhoneByStoreIdCancelStatus" resultMap="cancelReservInfoResultMap">
+		SELECT R.*, C.CANCEL_ID, C.CANCEL_COMMENT, C.REQUEST_STATUS, U.NAME, U.PHONE FROM RESERV R
+		INNER JOIN RESERV_CANCEL C
+		ON R.RESERV_ID = C.RESERV_ID
+		INNER JOIN USER_MEMBER U
+		ON R.USER_ID = U.USER_ID
+		WHERE R.STORE_ID = #{storeId}
+		AND CANCEL_STATUS = #{cancelStatus}
 	</select>
 	
 </mapper>

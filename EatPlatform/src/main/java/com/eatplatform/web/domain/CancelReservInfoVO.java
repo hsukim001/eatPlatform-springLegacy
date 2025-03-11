@@ -7,10 +7,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ReservCancelVO {
+public class CancelReservInfoVO extends ReservVO{
 	private int cancelId;
-	private String requestType;
 	private String cancelComment;
 	private String requestStatus;
+	private String name;
+	private String phone;
 	private int reservId;
 }

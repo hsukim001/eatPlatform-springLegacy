@@ -6,9 +6,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 <mapper namespace="com.eatplatform.web.persistence.ReservCancelMapper">
 	<resultMap type="com.eatplatform.web.domain.ReservCancelVO" id="reservCancelResultMap">
-		<id property="reservCancelId" column="RESERV_CANCEL_ID"/>
+		<id property="cancelId" column="CANCEL_ID"/>
 		<result property="requestType" column="REQUEST_TYPE"/>
 		<result property="cancelComment" column="CANCEL_COMMENT"/>
+		<result property="requestStatus" column="REQUEST_STATUS"/>
 		<result property="reservId" column="RESERV_ID"/>
 	</resultMap>
 	
@@ -20,4 +21,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</foreach>
 		SELECT * FROM DUAL
 	</insert>
+	
+	<update id="updateReservCancelAtRequestStatusByCancelId">
+		UPDATE RESERV_CANCEL
+		SET REQUEST_STATUS = #{requestStatus}
+		WHERE CANCEL_ID IN
+		<foreach collection="cancelList" item="list" open="(" close=")" separator=",">
+			#{list.cancelId}
+		</foreach>
+	</update>
 </mapper>
