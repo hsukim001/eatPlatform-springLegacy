@@ -59,6 +59,7 @@
 		            },
 		            success: function(response) {
 		                stores = response.recentStores;
+		                storeCategory = response.storeCategory;
 		                storeAddresses = response.storeAddresses;
 		                totalDataCount = response.totalStoresCount;
 

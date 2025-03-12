@@ -19,6 +19,12 @@ public interface StoreService {
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
 	
+	// Store Category 조회 (ByStoreId)
+	StoreCategoryVO getStoreCategoryByStoreId(@Param("storeId") int storeId);
+	
+	// StoreCategory 조회
+	List<StoreCategoryVO> getStoreCategory(@Param("storeIdList") List<Integer> storeIdList);
+	
 	// storeId로 userId 검색
 	String getStoreUserIdByStoreId(@Param("storeId") int storeId);
 	
@@ -31,6 +37,6 @@ public interface StoreService {
 	// 전체 게시글 카운트
 	int getTotalStoresCount(List<String> keywords);
 	
-	int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO);
+	int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO, StoreCategoryVO storeCategoryVO);
 
 }

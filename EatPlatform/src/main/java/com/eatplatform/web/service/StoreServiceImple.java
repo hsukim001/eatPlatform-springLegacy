@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +76,17 @@ public class StoreServiceImple implements StoreService {
 		return storeMapper.selectStoreById(storeId);
 	}
 	
+	@Override
+	public StoreCategoryVO getStoreCategoryByStoreId(int storeId) {
+		return storeMapper.selectStoreCategoryByStoreId(storeId);
+	}
+	
+	// StoreCategory 조회
+	@Override
+	public List<StoreCategoryVO> getStoreCategory(@Param("storeIdList") List<Integer> storeIdList) {
+		return storeMapper.selectStoreCategory(storeIdList);
+	}
+	
 	public List<StoreVO> getStoresWithPaging(int pageNum, int pageSize, List<String> keywords) {
 	    int startRow = (pageNum - 1) * pageSize + 1; 
 	    int endRow = pageNum * pageSize;
@@ -99,13 +111,23 @@ public class StoreServiceImple implements StoreService {
 
 
 	@Override
-	public int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO) {
+	public int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO, StoreCategoryVO storeCategoryVO) {
 		log.info("modifyStore()");
 		int resultStore = storeMapper.updateStore(storeVO);
 		int resultAddress = storeAddressMapper.updateStoreAddress(storeAddressVO);
+		int mainCategoryId = storeCategoryVO.getMainCategoryId();
+		int subCategoryId = storeCategoryVO.getSubCategoryId();
+		String mainCategoryName = productMapper.selectMainCategoryNameByMainCategoryId(mainCategoryId);
+		String subCategoryName = productMapper.selectSubCategoryNameBySubCategoryId(subCategoryId);
+
+		storeCategoryVO.setMainCategoryName(mainCategoryName);
+		storeCategoryVO.setSubCategoryName(subCategoryName);
+		int resultStoreCategory = storeMapper.updateStoreCategory(storeCategoryVO);
+		
 		log.info(storeVO);
 		log.info(resultStore + "행 정보 수정 성공");
 		log.info(resultAddress + "행 주소 정보 수정 성공");
+		log.info(resultStoreCategory + "행 카테고리 정보 수정 성공");
 		return resultStore;
 	}
 
@@ -118,5 +140,7 @@ public class StoreServiceImple implements StoreService {
 	public String getStoreNameByStoreId(int storeId) {
 		return storeMapper.getStoreNameByStoreId(storeId);
 	}
+
+
 
 }

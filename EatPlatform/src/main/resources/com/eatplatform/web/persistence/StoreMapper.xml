@@ -24,13 +24,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeUpdateDate" column="STORE_UPDATE_DATE" />
 	</resultMap>
 	
-	<resultMap type="com.eatplatform.web.domain.StoreCategoryVO" id="StroeCategoryResultMap">
+	<resultMap type="com.eatplatform.web.domain.StoreCategoryVO" id="StoreCategoryResultMap">
 		<id property="storeId" column="STORE_ID"/>
 		<result property="mainCategoryId" column="MAIN_CATEGORY_ID" />
 		<result property="subCategoryId" column="SUB_CATEGORY_ID" />
 		<result property="mainCategoryName" column="MAIN_CATEGORY_NAME" />
 		<result property="subCategoryName" column="SUB_CATEGORY_NAME" />
 	</resultMap>
+	
 
 	<insert id="insertStore" parameterType="com.eatplatform.web.domain.StoreVO" useGeneratedKeys="true" keyProperty="storeId" keyColumn="STORE_ID">
 		INSERT INTO STORE(
@@ -87,51 +88,51 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	  SELECT *
 	  FROM (
 	    SELECT 
-	      store.STORE_ID, store.STORE_NAME, store.STORE_REG_DATE, store.STORE_COMMENT, store.DESCRIPTION,
-	      MAX(menu.MENU_NAME) AS MENU_NAME, MAX(menu.MENU_COMMENT) AS MENU_COMMENT,
+	      store.STORE_ID, store.STORE_NAME, store.STORE_PHONE, store.BUSINESS_HOUR, 
+	      store.STORE_REG_DATE, store.STORE_COMMENT, store.DESCRIPTION,
+	      category.MAIN_CATEGORY_NAME,
+	      MAX(menu.MENU_NAME) AS MENU_NAME,
 	      ROW_NUMBER() OVER (ORDER BY store.STORE_REG_DATE DESC, store.STORE_ID DESC) AS RN
 	    FROM STORE store
 	    LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
+	    LEFT JOIN STORE_CATEGORY category ON store.STORE_ID = category.STORE_ID
 	    <where>
 	        <if test="keywords != null and keywords.size() > 0">
 	            AND (
 	                <foreach collection="keywords" item="keyword" separator="OR">
 	                    REPLACE(store.STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-	                    OR REPLACE(store.STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-	                    OR REPLACE(store.DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	                    OR (menu.MENU_NAME IS NOT NULL AND REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
-	                    OR (menu.MENU_COMMENT IS NOT NULL AND REPLACE(menu.MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
+	                    OR REPLACE(category.MAIN_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR REPLACE(category.SUB_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	                </foreach>
 	            )
 	        </if>
 	    </where>
-	    GROUP BY store.STORE_ID, store.STORE_NAME, store.STORE_REG_DATE, store.STORE_COMMENT, store.DESCRIPTION
-	  )
-	  WHERE RN &gt;= #{startRow} AND RN &lt;= #{endRow}
+	    GROUP BY store.STORE_ID, store.STORE_NAME, store.STORE_PHONE, store.BUSINESS_HOUR,
+	             store.STORE_REG_DATE, store.STORE_COMMENT, store.DESCRIPTION, category.MAIN_CATEGORY_NAME
+	  ) paged
+	  WHERE paged.RN BETWEEN #{startRow} AND #{endRow}
 	</select>
-
-
 	
 	<!-- 전체 게시글 카운트 -->
 	<select id="getTotalStoresCount" resultType="int" parameterType="java.util.Map">
 	  SELECT COUNT(DISTINCT store.STORE_ID)
 	  FROM STORE store
 	  LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
+	  LEFT JOIN STORE_CATEGORY category ON store.STORE_ID = category.STORE_ID
 	  <where>
 	      <if test="keywords != null and keywords.size() > 0">
 	          AND (
 	              <foreach collection="keywords" item="keyword" separator="OR">
 	                  REPLACE(store.STORE_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-	                  OR REPLACE(store.STORE_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-	                  OR REPLACE(store.DESCRIPTION, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-	                  OR REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
-	                  OR REPLACE(menu.MENU_COMMENT, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR (menu.MENU_NAME IS NOT NULL AND REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
+	                  OR REPLACE(category.MAIN_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(category.SUB_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	              </foreach>
 	          )
 	      </if>
 	  </where>
 	</select>
-
 	
 	<select id="getTotalStoresCountByStoreUserId" resultType="Integer">
 		SELECT COUNT(*)
@@ -178,6 +179,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			* FROM STORE
 		)
 	</select>
+	
+	<select id="selectStoreCategory" resultMap="StoreCategoryResultMap">
+		SELECT *
+		FROM STORE_CATEGORY
+		WHERE 
+		STORE_ID IN
+		<foreach item="id" collection="storeIdList" open="("
+			close=")" separator=",">
+			#{id}
+		</foreach>
+		ORDER BY STORE_ID ASC
+	</select>
+	
+	<select id="selectStoreCategoryByStoreId" resultMap="StoreCategoryResultMap">
+		SELECT *
+		FROM STORE_CATEGORY
+		WHERE STORE_ID = ${storeId}
+	</select>
 
 	<!-- 가게 정보 수정 -->
 	<update id="updateStore">
@@ -193,6 +212,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		STORE_COMMENT = #{storeComment},
 		DESCRIPTION = #{description},
 		STORE_UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE STORE_ID = #{storeId}
+	</update>
+	
+	<update id="updateStoreCategory">
+		UPDATE STORE_CATEGORY
+		SET
+		MAIN_CATEGORY_ID = #{mainCategoryId},
+		SUB_CATEGORY_ID = #{subCategoryId},
+		MAIN_CATEGORY_NAME = #{mainCategoryName},
+		SUB_CATEGORY_NAME = #{subCategoryName}
 		WHERE STORE_ID = #{storeId}
 	</update>
 	

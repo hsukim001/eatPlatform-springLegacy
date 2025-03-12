@@ -17,7 +17,6 @@ public class StoreVO {
 	private String storeName;
 	private String storePhone;
 	private String ownerName;
-	private String foodCategory;
 	private int reservLimit;
 	private int seat;
 	private String businessHour;

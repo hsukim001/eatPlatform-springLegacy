@@ -1,14 +1,7 @@
 package com.eatplatform.web.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +10,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,11 +25,13 @@ import com.eatplatform.web.service.HolidayService;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
+import com.eatplatform.web.util.FileUploadUtil;
 import com.eatplatform.web.domain.HolidayVO;
-import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreAddressVO;
+import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.domain.StoreimageVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -57,6 +51,9 @@ public class StoreRESTController {
 	
 	@Autowired
 	private ReservService reservService;
+	
+	@Autowired
+	private String uploadStoreImgPath;
 	
 
 	/**
@@ -83,9 +80,12 @@ public class StoreRESTController {
 
 	    List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keywords);
 	    Map<Integer, StoreAddressVO> storeAddressesMap = new HashMap<>();
+	    Map<Integer, StoreCategoryVO> storeCategoryMap = new HashMap<>();
 	    for (StoreVO store : recentStores) {
 	        int storeId = store.getStoreId();
 	        StoreAddressVO storeAddress = storeAddressService.selectStoreAddressById(storeId);
+	        StoreCategoryVO storeCategory = storeService.getStoreCategoryByStoreId(storeId);
+	        storeCategoryMap.put(storeId, storeCategory); 
 	        storeAddressesMap.put(storeId, storeAddress); 
 	    }
 	    
@@ -96,6 +96,7 @@ public class StoreRESTController {
 	    response.put("totalPages", totalPages);
 	    response.put("currentPage", pageNum);
 	    response.put("recentStores", recentStores);
+	    response.put("storeCategory", storeCategoryMap);
 	    response.put("storeAddresses", storeAddressesMap);
 	    response.put("totalStoresCount", totalStoresCount);
 	    response.put("keyword", keyword);
@@ -110,47 +111,35 @@ public class StoreRESTController {
      * @return
      */
     @PostMapping("/image")
-    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
-        Map<String, String> response = new HashMap<>();
-        
-        try {
-        	String tempPath = "C:\\Users\\tirof\\OneDrive\\Desktop\\Develope\\eatPlatform-springLegacy\\eatPlatform-springLegacy\\EatPlatform\\src\\main\\webapp";
-        	String baseUploadDir = tempPath + File.separator +  "upload" + File.separator + "store";
-            String year = new SimpleDateFormat("yyyy").format(new Date());
-            String month = new SimpleDateFormat("MM").format(new Date());
-            String day = new SimpleDateFormat("dd").format(new Date());
-
-            String uploadDir = baseUploadDir + File.separator + year + File.separator + month + File.separator + day + File.separator;
-
-            File folder = new File(uploadDir);
-            if (!folder.exists()) {
-                boolean created = folder.mkdirs();
-                if (!created) {
-                	log.info("폴더 못 만드러따");
-                	throw new IOException("디렉토리 생성 실패");
-                }
-                log.info("폴더 만드러따");
-            }
-            String fileName = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
-            String fileUrl = uploadDir + fileName;
-            String datePath = year + File.separator + month + File.separator + day + File.separator + fileName;
-            
-            Path path = Paths.get(fileUrl);
-            Files.write(path, file.getBytes());
-            log.info("여기까진 1번");
-            response.put("url", datePath);
-            log.info("여기까진 2번");
-
-            log.info("uploadDir: " + uploadDir);
-            log.info("baseUploadDir: " + baseUploadDir);
-            log.info("fileUrl: " + fileUrl);
-            log.info("path: " + path);
-        } catch (IOException e) {
-            response.put("error", "파일 업로드 실패");
-            log.info("혹시 실패?");
-            return ResponseEntity.status(500).body(response);
-        } 
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ArrayList<StoreimageVO>> uploadImage(MultipartFile[] files) {
+		ArrayList<StoreimageVO> list = new ArrayList<>();
+		for(MultipartFile file : files) {
+			
+			// UUID 생성
+			String chgName = UUID.randomUUID().toString();
+			// 파일 저장
+			FileUploadUtil.saveFile(uploadStoreImgPath, file, chgName);
+			
+			String path = FileUploadUtil.makeDatePath();
+			String extension = FileUploadUtil.subStrExtension(file.getOriginalFilename());
+			
+			FileUploadUtil.createThumbnail(uploadStoreImgPath, path, chgName, extension);
+			
+			StoreimageVO storeImageVO = new StoreimageVO();
+			// 파일 경로 설정
+			storeImageVO.setStoreImagePath(path);
+			// 파일 실제 이름 설정
+			storeImageVO.setStoreImageRealName(FileUploadUtil.subStrName(file.getOriginalFilename()));
+			// 파일 변경 이름(UUID) 설정
+			storeImageVO.setStoreImageChgName(chgName);
+			// 파일 확장자 설정
+			storeImageVO.setStoreImageExtension(extension);
+			
+			list.add(storeImageVO);
+			
+		}
+		
+		return new ResponseEntity<ArrayList<StoreimageVO>>(list, HttpStatus.OK);
     }
     
     @GetMapping("/holiday/search/list/{storeId}")

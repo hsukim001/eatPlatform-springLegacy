@@ -18,33 +18,121 @@
 <script>
 	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
     $(function() { 
-        // "기타" 선택 관련 input 컨트롤
-        $('#foodCategory').change(function() {  
-            var selectedCategory = $(this).val();
-            
-            if (selectedCategory === '기타') {
-                $('#otherCategory').show(); 
-            } else {
-                $('#otherCategory').hide(); 
-                $('#otherCategoryInput').val('');
-            }
-        }); // End foodCategory.change
+    	
 
-        // 폼 제출 시 "기타" 입력값을 hidden input에 저장
+		let ExistMainCategoryId;
+		let isFirstLoad = true; 
+		let originMainCategoryId = parseInt("${storeCategory.mainCategoryId}");
+		let originSubCategoryId = parseInt("${storeCategory.subCategoryId}");
+		
+		$(document).on("change", "#mainCategory li input[type=radio]", function() {
+			ExistMainCategoryId = $(this).val();
+			RenewalSubCategory(ExistMainCategoryId);
+		});
+		
+		loadCategoriesList();
+
+		
+		// 상위 카테고리 조회
+		function loadCategoriesList() {
+		    $.ajax({
+		        type: 'GET',
+		        url: '/shop/product/category/mainView',
+		        contentType: "application/json",
+		        success: function(response) {
+		        	let mainCategoryList = response.data;
+		            let $mainCategory = $("#mainCategory");
+		            $mainCategory.empty();
+
+		            mainCategoryList.forEach(function(mainCategory, index) {
+		            	 let listItem = 
+		            		'<li>' +
+		            			'<input type="radio" value="' + mainCategory.mainCategoryId + '" name="mainCategoryId" id="mainCategoryId' + index + '"' + 
+		                    	(index === 0 ? ' checked required' : '') + '>' +
+		            			'<label for="mainCategoryId' + index + '">' + mainCategory.mainCategoryName + '</label>'
+		            		'</li>';
+		            	$mainCategory.append(listItem);
+		            });
+		            
+					if (ExistMainCategoryId) {
+		 		   		RenewalSubCategory(ExistMainCategoryId);
+					} else {
+						callFirstCategory();
+					}
+		        },
+		        error: function(xhr, status, error) {
+		            alert('카테고리 목록 로드에 실패했습니다. 다시 시도해 주세요.');
+		        }
+		    });
+		}
+		
+		// 하위 카테고리 조회
+		function RenewalSubCategory(ExistMainCategoryId) {
+		    if (!ExistMainCategoryId) {  
+		        console.error("mainCategoryId가 유효하지 않습니다.");
+		        return;
+		    }
+		
+		    let requestUrl = "/shop/product/category/subView/" + ExistMainCategoryId;
+    
+		    $.ajax({
+		        url: requestUrl, 
+		        type: "GET",
+		        contentType: "application/json",
+		        success: function(response) {
+		            let subCategoryList = response.data;
+		            let $subCategory = $("#subCategory");
+		            $subCategory.empty();
+		            
+		            if (subCategoryList) {
+			            subCategoryList.forEach(function(subCategory, index) {
+			                let listItem = 
+			                	'<li>' +
+			                		'<input type="radio" value="' + subCategory.subCategoryId + '" name="subCategoryId" id="subCategoryId' + index + '"' + 
+		                    		(index === 0 ? ' checked required' : '') + '>' +
+		            				'<label for="subCategoryId' + index + '">' + subCategory.subCategoryName + '</label>'
+					        	'</li>';
+			                $subCategory.append(listItem);
+			            });
+			            
+		                if (isFirstLoad) {
+		                    $('input[type="radio"][name="subCategoryId"][value="' + originSubCategoryId + '"]').prop('checked', true);
+		                    isFirstLoad = false; 
+		                }
+		            } else {
+		            	 $subCategory.append(`<p class="noSub">등록된 하위 카테고리가 없습니다.</p>`);
+		            }
+		        },
+		        error: function(xhr, status, error) {
+		            console.error("AJAX 에러 발생:", xhr.status, error);
+		            alert('하위 카테고리 조회에 실패했습니다. 다시 시도해 주세요.');
+		        }
+		    });
+		}
+		
+		// 첫 번째 상위 카테고리의 하위 카테고리 출력
+		function callFirstCategory() {
+		    let $firstCategory = $('#mainCategory li input[type="radio"]').first();
+
+		    if ($firstCategory.length) {
+		        let firstMainId = $firstCategory.val();
+		        if (firstMainId) {
+		            RenewalSubCategory(originMainCategoryId); 
+ 		            $('input[type="radio"][name="mainCategoryId"][value="' + originMainCategoryId + '"]').prop('checked', true);
+		        } else {
+		            alert("문제가 발생했습니다. 다시 시도해주세요.")
+		        }
+		    } else {
+		        alert("카테고리가 로드되지 않았습니다.");
+		    }
+		}
+    	
         $('form').submit(function() { 
-            var category = $('#foodCategory').val();
-            if (category === '기타') {
-                let otherCategoryInput = $('#otherCategoryInput').val();
-                $('#hiddenFoodCategory').val(otherCategoryInput);
-            } else {
-                $('#hiddenFoodCategory').val(category);
-            }
             
             const startTime = $("#startTime").val();
             const endTime = $("#endTime").val();
             const businessHour = startTime + " - " + endTime;
 
-            // 이 값을 서버로 전송
             $("#businessHour").val(businessHour);
         }); // End form.submit
     }); // End $function
@@ -123,22 +211,10 @@
         <label for="ownerName">
             대표명 : <input type="text" id="ownerName" name="ownerName" value="${storeVO.ownerName }"> 
         </label>
-		<label for="foodCategory">
-		    카테고리: 
-		    <select id="foodCategory" name="foodCategorySelect">
-		        <c:forEach var="category" items="${categories}">
-		            <option value="${category}" ${storeVO.foodCategory == category ? 'selected' : ''}>${category}</option>
-		        </c:forEach>
-		        <option value="기타" ${!categories.contains(storeVO.foodCategory) ? 'selected' : ''}>기타</option>
-		    </select>
-		</label>
-		<div id="otherCategory" ${!categories.contains(storeVO.foodCategory) ? 'style="display: block;"' : ''}>
-		    <label for="otherCategoryInput">
-		        기타 카테고리:
-		    </label> 
-		    <input type="text" id="otherCategoryInput" name="foodCategoryInput" 
-		           placeholder="기타 카테고리 입력" 
-		           value="${!categories.contains(storeVO.foodCategory) ? storeVO.foodCategory : ''}">
+               
+		<div id="category_container">
+				<ul id="mainCategory"></ul>
+				<ul id="subCategory"></ul>
 		</div>
         <label for="reservLimit">
             시간별 예약 제한: <input type="number" max="99999"  id="reservLimit" name="reservLimit" value="${storeVO.reservLimit }">

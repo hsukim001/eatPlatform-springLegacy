@@ -130,6 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		resultMap="MainCategoryResultMap">
 		SELECT *
 		FROM MAIN_CATEGORY
+		ORDER BY MAIN_CATEGORY_ID ASC
 	</select>
 
 	<select id="selectMainCategoryByMainCategoryId"
@@ -188,8 +189,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			close=")" separator=",">
 			#{id}
 		</foreach>
-		ORDER BY
-		PRODUCT_ID ASC
+		ORDER BY PRODUCT_ID ASC
 	</select>
 
 	<select id="selectProductAllList" resultMap="ProductResultMap">

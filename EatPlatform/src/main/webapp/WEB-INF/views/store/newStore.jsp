@@ -66,10 +66,9 @@
 		var token = $("meta[name='_csrf']").attr("content");
 		var header = $("meta[name='_csrf_header']").attr("content");			
 		xhr.setRequestHeader(header, token);
-	});4
+	});
 	
     $(function() {
-        
 		let ExistMainCategoryId;
 		
 		$(document).on("change", "#mainCategory li input[type=radio]", function() {
@@ -279,9 +278,12 @@
 		<input type="text" id="bname1" name="bname1" placeholder="bname1">
 		<input type="text" id="bname2" name="bname2" placeholder="bname2">
 		<br><br>
-		
-		
-    
+
+
+        <input type="submit" value="식당 등록">
+    </form>
+        <br><br>
+        
 		<div class="insert">
 			<label class="uploadLabel" for="storeImg">
 				업로드
@@ -290,10 +292,6 @@
 			<div class="file-list"></div>
         	<div id="thumbnail-container"></div>
 		</div>
-        <input type="submit" value="식당 등록">
-    </form>
-        <br><br>
-    
 
 </body>
 </html>

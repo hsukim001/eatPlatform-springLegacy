@@ -29,6 +29,12 @@ public interface StoreMapper {
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
 	
+	// StoreCategory 조회 (ByStoreId)
+	StoreCategoryVO selectStoreCategoryByStoreId(@Param("storeId") int storeId);
+	
+	// StoreCategory 조회
+	List<StoreCategoryVO> selectStoreCategory(@Param("storeIdList") List<Integer> storeIdList);
+	
 	// storeId로 userId 검색
 	String getStoreUserIdByStoreId(@Param("storeId") int storeId);
 	
@@ -42,6 +48,8 @@ public interface StoreMapper {
 	int getTotalStoresCountByStoreUserId(String storeUserId);
 
 	int updateStore(StoreVO storeVO);
+	
+	int updateStoreCategory(StoreCategoryVO storeCategoryVO);
 	
 	int deleteStore(int storeid);
 }

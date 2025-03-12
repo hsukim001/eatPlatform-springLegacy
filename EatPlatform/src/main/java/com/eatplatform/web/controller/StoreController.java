@@ -2,8 +2,11 @@ package com.eatplatform.web.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -91,12 +94,48 @@ public class StoreController {
 		log.info(keywords);
 		log.info("keywords type: " + keywords.getClass().getName());
 		List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keywords);
+		if(recentStores != null && !recentStores.isEmpty()) {
+			List<Integer> storeIdList = recentStores.stream().map(StoreVO::getStoreId)
+					.collect(Collectors.toList());
+			List<StoreCategoryVO> storeCategoryList = storeService.getStoreCategory(storeIdList);
+			
+			Map<Integer, List<StoreCategoryVO>> categoryMap = storeCategoryList.stream()
+					.collect(Collectors.groupingBy(StoreCategoryVO::getStoreId));
+			
+			List<Map<String, Object>> mergedList = new ArrayList<>();
+			
+			recentStores.forEach(stores -> {
+				int storeId = stores.getStoreId();
+				List<StoreCategoryVO> categories = categoryMap.getOrDefault(storeId, Collections.emptyList());
+				
+				categories.forEach(category -> {
+					Map<String, Object> mergedStore = new HashMap<>();
+					mergedStore.put("storeId", stores.getStoreId());
+					mergedStore.put("storeName", stores.getStoreName());
+					mergedStore.put("storeComment", stores.getStoreComment());
+					mergedStore.put("storePhone", stores.getStorePhone());
+					mergedStore.put("businessHour", stores.getBusinessHour());
+					mergedStore.put("mainCategoryId", category.getMainCategoryId());
+					mergedStore.put("subCategoryId", category.getSubCategoryId());
+					mergedStore.put("mainCategoryName", category.getMainCategoryName());
+					mergedStore.put("subCategoryName", category.getSubCategoryName());
+					
+					mergedList.add(mergedStore);
+				});
+			});
+			
+			model.addAttribute("recentStores", mergedList);
+			
+		} else {
+			model.addAttribute("recentStores", recentStores);
+		}
+		
+		
 		int totalStoresCount = storeService.getTotalStoresCount(keywords);
 		int totalPages = (int) Math.ceil((double) totalStoresCount / pageSize);
 
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("currentPage", pageNum);
-		model.addAttribute("recentStores", recentStores);
 		model.addAttribute("keyword", keyword);
 		log.info(recentStores);
 
@@ -114,6 +153,7 @@ public class StoreController {
 			@AuthenticationPrincipal UserDetails userDetails) {
 		StoreVO storeVO = storeService.selectStoreById(storeId);
 		StoreAddressVO storeAddressVO = storeAddressService.selectStoreAddressById(storeId);
+		StoreCategoryVO storeCategoryVO = storeService.getStoreCategoryByStoreId(storeId);
 
 		String currentUserId = userDetails.getUsername();
 		String dbUserId = storeService.getStoreUserIdByStoreId(storeVO.getStoreId());
@@ -121,8 +161,10 @@ public class StoreController {
 		log.info("currentUserId : " + currentUserId + "// dbUserId : " + dbUserId);
 
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
-			List<String> categories = Arrays.asList("한식", "중식", "일식", "양식", "아시안", "치킨", "피자", "패스트푸드", "카페/디저트");
+			
+			StoreCategoryVO storeCategory = storeService.getStoreCategoryByStoreId(storeId);
 
+			model.addAttribute("storeCategory", storeCategory);
 			String businessHour = storeVO.getBusinessHour();
 			if (businessHour == null || !businessHour.contains(" - ")) {
 				String errHandler = "invalidTimeFormat";
@@ -137,7 +179,7 @@ public class StoreController {
 
 			model.addAttribute("storeVO", storeVO);
 			model.addAttribute("storeAddressVO", storeAddressVO);
-			model.addAttribute("categories", categories);
+			model.addAttribute("storeCategoryVO", storeCategoryVO);
 			model.addAttribute("startTime", startTime);
 			model.addAttribute("endTime", endTime);
 			return "/store/updateStore";
@@ -154,6 +196,7 @@ public class StoreController {
 	public String modify(
 			@ModelAttribute StoreVO storeVO,
 			@ModelAttribute StoreAddressVO storeAddressVO,
+			@ModelAttribute StoreCategoryVO storeCategoryVO,
 			Model model,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		log.info("modify()");
@@ -165,7 +208,7 @@ public class StoreController {
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {
 			storeVO.setStoreUserId(dbUserId);
 
-			int result = storeService.modifyStore(storeVO, storeAddressVO);
+			int result = storeService.modifyStore(storeVO, storeAddressVO, storeCategoryVO);
 			if (result == 1) {
 				log.info("가게 수정 성공");
 			}
