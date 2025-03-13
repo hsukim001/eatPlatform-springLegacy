@@ -7,16 +7,14 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/register.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 <title>회원 가입</title>
-<style>
-	.divHide {
-		display : none;
-	}
-	
-	.divShow {
-		display : block;
-	}
-</style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 	const autoHyphen = (target) => {
@@ -248,52 +246,68 @@
 	
 </script>
 </head>
+
 <body>
-	<h1>회원가입</h1>
-	<form action="created" method="post">
-		<div>
-			<span>아이디 : </span>
-			<input type="text" name="username" id="username" required="required" maxlength="30">
-			<button type="button" id="userChk">중복 확인</button><br>
-			<p id="userIdChkMsg">아이디를 입력해 주세요.</p>
+	<div id="wrap">
+		<jsp:include page="/include/header.jsp" />
+		<div id="container">
+			<p class="membership_title">MemberShip</p>
+			<form action="created" method="post">
+			<!-- CSRF 토큰 -->
+			    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+				<div>
+					<label for="username">아이디</label>
+					<div>
+						<input type="text" name="username" id="username" required="required" maxlength="30">
+						<button type="button" id="userChk">중복 확인</button><br>
+					</div>
+					<p id="userIdChkMsg">아이디를 입력해 주세요.</p>
+				</div>
+				<div>
+					<label for="password">비밀번호</label>
+					<input type="password" name="password" id="password" required="required" maxlength="50">
+				</div>
+				<div>
+					<label for="userPwChk">비밀번호 확인</label>
+					<div>
+						<input type="password" name="userPwChk" id="userPwChk" required="required">
+					</div>
+					<p id="pwChkMsg">비밀번호를 입력해 주세요.</p>
+				</div>
+				<div>
+					<label for="name">이름</label>
+					<input type="text" id="name" name="name" required="required">
+				</div>
+				<div>
+					<label for="email">이메일</label>
+					<div>
+						<input type="email" id="email" name="email" required="required">
+						<button type="button" id="sendEmailCodeBtn">인증번호 받기</button>
+					</div>
+					<p id="emailChkMsg">이메일을 입력해주세요.</p>
+				</div>
+				<div class="divHide" id="emailCheck">
+					<label for="checkCode">인증코드</label>
+					<div>
+						<input type="text" id="checkCode" name="checkCode" disabled="disabled">
+						<button type="button" id="codeChkBtn" disabled="disabled">확인</button>
+					</div>
+					<p id="codeChkMsg">인증번호를 입력해 주세요.</p>
+				</div>
+				<div>
+					<label for="phone">휴대폰</label>
+					<input type="tel" id="phone" name="phone" required="required" oninput="autoHyphen(this)" maxlength="13">
+				</div>
+				<button type="submit">회원가입</button>
+			</form>
+			<p class="notice">* 사업자 회원 가입은 일반 회원으로 가입 후 사업자 회원 전환 신청을 진행해주세요.</p>
 		</div>
-		<div>
-			<span>비밀번호 : </span>
-			<input type="password" name="password" id="password" required="required" maxlength="50">
-		</div>
-		<div>
-			<span>비밀번호 확인 : </span>
-			<input type="password" name="userPwChk" id="userPwChk" required="required">
-			<p id="pwChkMsg">비밀번호를 입력해 주세요.</p>
-		</div>
-		<div>
-			<span>이름 : </span>
-			<input type="text" name="name" required="required">
-		</div>
-		<div>
-			<span>이메일 : </span>
-			<input type="email" id="email" name="email" required="required">
-			<button type="button" id="sendEmailCodeBtn">인증번호 받기</button>
-			<p id="emailChkMsg">이메일을 입력해주세요.</p>
-		</div>
-		<div class="divHide" id="emailCheck">
-			<span>인증코드 : </span>
-			<input type="text" id="checkCode" name="checkCode" disabled="disabled">
-			<button type="button" id="codeChkBtn" disabled="disabled">확인</button>
-			<p id="codeChkMsg">인증번호를 입력해 주세요.</p>
-		</div>
-		<div>
-			<span>휴대폰 : </span>
-			<input type="tel" id="phone" name="phone" required="required" oninput="autoHyphen(this)" maxlength="13">
-		</div>
-		<div>
-			<button type="submit">등록</button>
-			<button type="button" onclick="location.href='../'">취소</button>
-		</div>
-		<!-- CSRF 토큰 -->
-	    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
-	</form>
-	<div>
+		
+		<jsp:include page="/include/footer.jsp" />		
 	</div>
+</body>
+
+
+<body>
 </body>
 </html>

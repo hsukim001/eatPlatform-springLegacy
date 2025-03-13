@@ -1,0 +1,93 @@
+@charset "UTF-8";
+
+.membership_title {
+	font-size: 36px;
+	margin: 30px auto;
+}
+
+/* Login Form */
+form {
+	width: 600px;
+	border: 1px solid #ddd;
+	display: flex;
+    justify-content: center;
+	flex-wrap: wrap;
+	margin: 0 auto;
+	text-align: left;
+	padding: 15px 10px;
+	font-size: 17px;
+}
+
+form > div {
+	width: 100%;
+	display: block;
+	margin: 15px 10px;
+}
+
+form > div > label {
+	width: 30%;
+	display: inline-block;
+	border-right: 1px solid #ddd;	
+	margin-right: 5%;
+	float: left;
+	line-height :45px;
+}
+
+form > div > div {
+	width: 65%;
+	float: left;
+	margin-bottom: 10px;
+}
+
+form > div input,
+form > div > div > button {
+	padding: 3px;
+}
+
+form > div > div > button {
+	border: none;
+    outline: none;
+    background: #091ca5;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12.3px;
+    font-family: 'S-ORE';
+    cursor: pointer;
+}
+
+form > div > input {
+	margin-top: 2%;
+}
+
+form > div > p {
+	width: 65%;
+	float: right;
+	text-align: left;
+}
+
+form > button[type="submit"] {
+	font-size: 22px;
+    font-family: 'S-CORE';
+    margin: 10px auto;
+    padding: 7.5px 30px;
+    border: none;
+    outline: none;
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.divHide {
+	display: none;
+}
+
+.divShow {
+	display: block;
+}
+
+/* End Login Form */
+
+.notice {
+	margin-top: 20px;
+}

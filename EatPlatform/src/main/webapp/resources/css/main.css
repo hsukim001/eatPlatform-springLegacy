@@ -43,7 +43,7 @@
 }
 
 .recommend_slide {
-    flex: 0 0 100%; /* 슬라이드 개별 너비 100% */
+    flex: 0 0 100%;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
