@@ -81,7 +81,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reservDateCreated" column="RESERV_DATE_CREATED"/>
 		<result property="cancelStatus" column="CANCEL_STATUS"/>
 		<result property="cancelId" column="CANCEL_ID"/>
-		<result property="requestStatus" column="REQUEST_STATUS"/>
 		<result property="name" column="NAME"/>
 		<result property="phone" column="PHONE"/>
 		<result property="cancelComment" column="CANCEL_COMMENT"/>
@@ -99,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE ASC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId} AND RESERV_DATE >= TRUNC(SYSDATE)
+		    AND CANCEL_STATUS = 0
 		) r
 		WHERE r.RN BETWEEN #{start} AND #{end}
 	</select>
@@ -128,7 +128,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	           WHERE s.STORE_ID = r.STORE_ID
 	       ) AS STORE_NAME
 		FROM (
-		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANEL_STATUS, 
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANCEL_STATUS, 
 		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE DESC) AS RN
 		    FROM RESERV
 		    WHERE USER_ID = #{userId}
@@ -142,6 +142,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM RESERV
 		WHERE USER_ID = #{userId}
 		AND RESERV_DATE >= TRUNC(SYSDATE)
+		AND CANCEL_STATUS = 0
 	</select>
 	
 	<select id="selectPrevDayTotalCount" resultType="Integer">
@@ -157,7 +158,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM RESERV R
 		INNER JOIN RESERV_CANCEL C
 		ON R.RESERV_ID = C.RESERV_ID
-		WHERE USER_ID = #{userId}
+		WHERE R.USER_ID = #{userId}
+		AND R.CANCEL_STATUS = 1
 	</select>
 	
 	<select id="joinReservWithStoreAndStoreAddressByReservInfo" resultMap="reservInfoResultMap">
@@ -228,6 +230,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT RESERV_DATE, RESERV_HOUR, RESERV_MIN, SUM(RESERV_PERSONNEL) AS TOTAL_PERSONNEL, COUNT(USER_ID) AS RESERV_TEAM FROM RESERV
 		WHERE RESERV_DATE = #{reservDate}
 		AND STORE_ID = #{storeId}
+		AND CANCEL_STATUS = 0
 		GROUP BY RESERV_DATE, RESERV_HOUR, RESERV_MIN
 		ORDER BY RESERV_HOUR ASC
 	</select>
@@ -260,13 +263,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    <foreach collection="holidayList" item="list" open="(" close=")" separator=",">
 		    	#{list.holiday}
 		    </foreach>
+		    AND CANCEL_STATUS = 0
 		    GROUP BY RESERV_DATE
 		)
 		ORDER BY RESERV_DATE
 	</select>
 	
 	<select id="joinReservWithCancelReservIdCancelCommentAndUserNamePhoneByStoreIdCancelStatus" resultMap="cancelReservInfoResultMap">
-		SELECT R.*, C.CANCEL_ID, C.CANCEL_COMMENT, C.REQUEST_STATUS, U.NAME, U.PHONE FROM RESERV R
+		SELECT R.*, C.CANCEL_ID, C.CANCEL_COMMENT, U.NAME, U.PHONE FROM RESERV R
 		INNER JOIN RESERV_CANCEL C
 		ON R.RESERV_ID = C.RESERV_ID
 		INNER JOIN USER_MEMBER U

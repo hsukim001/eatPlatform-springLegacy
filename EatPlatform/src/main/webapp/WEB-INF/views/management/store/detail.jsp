@@ -179,7 +179,6 @@
     						<jsp:include page="/include/modal/reservSchedule.jsp" />
     						<jsp:include page="/include/modal/menuCreated.jsp" />
     						<jsp:include page="/include/modal/menuUpdate.jsp" />
-    						<jsp:include page="/include/modal/reservCancelInfo.jsp" />
 						<ul>
 
 						</ul>

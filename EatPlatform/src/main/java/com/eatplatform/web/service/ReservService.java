@@ -122,6 +122,6 @@ public interface ReservService {
 	 * @param List<ReservVO> cancelList
 	 * @return int
 	 */
-	int cancelReservByList(List<ReservVO> cancelList, String requestType);
+	int cancelReservByList(List<ReservCancelVO> cancelList, String requestType);
 	
 }

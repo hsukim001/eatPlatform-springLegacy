@@ -9,25 +9,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<id property="cancelId" column="CANCEL_ID"/>
 		<result property="requestType" column="REQUEST_TYPE"/>
 		<result property="cancelComment" column="CANCEL_COMMENT"/>
-		<result property="requestStatus" column="REQUEST_STATUS"/>
 		<result property="reservId" column="RESERV_ID"/>
 	</resultMap>
 	
-	<insert id="insertReservCancelByReservList" parameterType="map">
-		INSERT ALL 
-			<foreach collection="reservList" item="list">
-				INTO RESERV_CANCEL (CANCEL_ID, REQUEST_TYPE, RESERV_ID) 
-				VALUES(RESERV_CANCEL_SEQ.NEXTVAL, #{requestType}, #{list.reservId})
-			</foreach>
-		SELECT * FROM DUAL
-	</insert>
+	<select id="selectReservCancelByReservId" resultMap="reservCancelResultMap">
+		SELECT * FROM RESERV_CANCEL
+		WHERE RESERV_ID = #{reservId}
+	</select>
 	
-	<update id="updateReservCancelAtRequestStatusByCancelId">
-		UPDATE RESERV_CANCEL
-		SET REQUEST_STATUS = #{requestStatus}
-		WHERE CANCEL_ID IN
-		<foreach collection="cancelList" item="list" open="(" close=")" separator=",">
-			#{list.cancelId}
+	<insert id="insertReservCancelByReservList" parameterType="map">
+		INSERT INTO RESERV_CANCEL (CANCEL_ID, REQUEST_TYPE, CANCEL_COMMENT, RESERV_ID)
+		SELECT RESERV_CANCEL_SEQ.NEXTVAL, REQUEST_TYPE, CANCEL_COMMENT, RESERV_ID FROM
+		<foreach collection="cancelList" item="list" open="(" close=")" separator="UNION ALL">
+			SELECT #{requestType} AS REQUEST_TYPE, #{list.cancelComment} AS CANCEL_COMMENT, #{list.reservId} AS RESERV_ID FROM DUAL
 		</foreach>
-	</update>
+	</insert>
 </mapper>

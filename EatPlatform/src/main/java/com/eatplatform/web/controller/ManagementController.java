@@ -1,5 +1,6 @@
 package com.eatplatform.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.MenuVO;
+import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.ManagementService;
 import com.eatplatform.web.service.MenuService;
@@ -47,14 +49,25 @@ public class ManagementController {
 		String username = customUser.getUsername();
 		
 		List<StoreVO> storeList = managementService.searchStoreList(pagination, username);
+		List<Integer> storeIdList = new ArrayList<>();
+		
+		for(int i = 0; i < storeList.size(); i++) {
+			storeIdList.add(storeList.get(i).getStoreId());
+		}
+		
+		List<StoreCategoryVO> storeCategoryList = storeService.getStoreCategory(storeIdList);
+		
 		int totalCount = managementService.getTotalStoresCount(username);
 		
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
 		pageMaker.setTotalCount(totalCount);
 		
+		log.info(storeList);
+		log.info(storeCategoryList);
 		model.addAttribute("list", storeList);
 		model.addAttribute("pageMaker", pageMaker);
+		model.addAttribute("categoryList", storeCategoryList);
 		
 	}
 

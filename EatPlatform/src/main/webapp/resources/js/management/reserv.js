@@ -88,7 +88,7 @@ function nextList(pageNum) {
 // 예약 목록 테이블 작성 함수
 function nextTable(reserv) {
 	let tableBodyRows = '';
-	let tableHeadRow = '<tr><th>번호</th><th>식당명</th><th>예약 일자</th><th>예약 인원</th><th>상태</th><th>예약 신청일</th><th>예약 취소</th></tr>';
+	let tableHeadRow = '<tr><th>번호</th><th>식당명</th><th>예약 일자</th><th>예약 인원</th><th>예약 신청일</th></tr>';
 	let totalCountHtml = '총 ' + reserv.pageMaker.totalCount + '건';
 			    
 	if(reserv.pageMaker.totalCount > 0) {
@@ -101,22 +101,12 @@ function nextTable(reserv) {
 		let createdDate = year + '-' + month + '-' + day;
 		let formattedReservDate = String(list.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
 		let btnFrom = '';
-		let status = '';
-					    
-		if(list.cancelStatus == 0) {
-			btnFrom = '<td><button onclick="cancelBtn(this)">예약 취소</button></td>';
-			status = "성공";
-		} else if(list.cancelStatus == 1) {
-			btnFrom = '<td><button disabled="true">예약 취소</button></td>';
-			status = "예약 취소";
-		}					    
 					    
 		tableBodyRows += '<tr class="reservRow" data-id-value="'+ list.reservId +'">'+
 				'<td>'+ list.reservId +'</td>'+
 				'<td>'+ list.storeName +'</td>'+
 				'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
 				'<td>'+ list.reservPersonnel +'</td>'+
-				'<td>'+ status +'</td>' +
 				'<td>'+ createdDate +'</td>' +
 				 //btnFrom +
 			'</tr>';
@@ -149,7 +139,7 @@ function prevList(pageNum) {
 // 이전 예약 내역 테이블 작성 함수
 function prevTable(reserv) {
 	let tableBodyRows = '';
-	let tableHeadRow = '<tr><th>번호</th><th>식당명</th><th>예약 일자</th><th>예약 인원</th><th>상태</th><th>예약 신청일</th></tr>';
+	let tableHeadRow = '<tr><th>번호</th><th>식당명</th><th>예약 일자</th><th>예약 인원</th><th>예약 신청일</th></tr>';
 	let totalCountHtml = '총 ' + reserv.pageMaker.totalCount + '건';
 			    
 	if(reserv.pageMaker.totalCount > 0) {
@@ -160,22 +150,12 @@ function prevTable(reserv) {
 			let day = String(date.getDate()).padStart(2, '0'); // 일
 			let createdDate = year + '-' + month + '-' + day;
 			let formattedReservDate = String(list.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-			let status = '';
-					    
-			if(list.cancelStatus == 0) {
-				status = '완료';
-			} else if(list.cancelStatus == 1) {
-					if(list.processingStatus === 'WAIT') {
-						status = '취소';
-					}
-			}
 				    	
 			tableBodyRows += '<tr class="reservRow" data-id-value="'+ list.reservId +'">'+
 					'<td>'+ list.reservId +'</td>'+
 					'<td>' + list.storeName +'</td>'+
 					'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
 					'<td>'+ list.reservPersonnel +'</td>'+
-					'<td>' + status + '</td>' + 
 					'<td>'+ createdDate +'</td>'+
 					'</tr>';
 		});
@@ -248,15 +228,27 @@ function cancelBtn() {
 			
 // 예약 취소 ajax 함수
 function reservCancel(reservId) {
-	let requestType = "MEMBER";
+	let requestType = "USER";
 	let pageNum = $('.page-link-select').data('page');
+	let commentNum = $('#cancelComment').val();
+	let cancelComment;
+	
+	if(commentNum == 0) {
+		return alert("예약 취소사유를 선택해주세요.");
+	} else if(commentNum == 1) {
+		cancelComment = "개인적인 사유";
+	} else if(commentNum == 2) {
+		cancelComment = "건강상의 문제";
+	}
+	
 	let obj = [{
-		"reservId" : reservId
+		"reservId" : reservId,
+		"cancelComment" : cancelComment
 	}];
 				
 	$.ajax({
 		url : '/reserv/cancel/' + requestType,
-		type : 'put',
+		type : 'post',
 		headers : {
 			"Content-Type" : "application/json",
 		},
@@ -280,16 +272,37 @@ function searchReservInfo(reservId) {
 		url : '/reserv/search/reservInfo/' + reservId,
 		type : 'get',
 		success : function(response) {
+			let date = new Date(response.info.reservDateCreated);
+			let year = date.getFullYear(); // 년도
+			let month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+			let day = String(date.getDate()).padStart(2, '0'); // 일
+			let createdDate = year + '-' + month + '-' + day;
+			let formattedReservDate = String(response.info.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
 			let reservTime = response.info.reservHour + ":" + response.info.reservMin;
-			let btn = '<button onclick="cancelBtn()">예약 취소</button>';
-			let status = "";
+			let btn = '<select name="cancelComment" id="cancelComment">' +
+				'<option value="0">예약 취소사유를 선택해주세요.</option>' +
+				'<option value="1">개인적인 사유</option>' +
+				'<option value="2">건강상의 문제</option>' +
+				'</select>' + 
+				'<button onclick="cancelBtn()">예약 취소</button>';
+				
 			$('#storeTitle').text(response.info.storeName);
 			$('#phone .textValue').text(response.info.storePhone);
-			$('#reservDate .textValue').text(response.info.reservDate + reservTime);
-			$('#regDate .textValue').text(response.info.reservDateCreated);
+			$('#reservDate .textValue').text(formattedReservDate);
+			$('#reservTime .textValue').text(reservTime);
+			$('#regDate .textValue').text(createdDate);
 			
 			if(response.info.roadAddress == null && response.info.jibunAddress == null) {
 				return alert("예약 상세 정보를 불러오는데 실패하였습니다.");
+			}
+			
+			if(response.info.cancelStatus == 1) {
+				let comment = '<p> 취소 사유 : '+ response.cancelComment +'</p>'
+				$('.comment-container').html(comment);
+				$('.btnContainer').empty();
+			} else if(response.info.cancelStatus == 0) {
+				$('.comment-container').empty();
+				$('.btnContainer').html(btn);
 			}
 			
 			if(response.info.roadAddress != null) {
@@ -299,17 +312,7 @@ function searchReservInfo(reservId) {
 				let address = response.info.jibunAddress + " " + response.info.detailAddress
 				$('#address .textValue').text(address);
 			}
-			
-			if(response.info.cancelStatus == 0) {
-				$('.btnContainer').html(btn);
-				status = "완료";
-			} else if (response.info.cancelStatus == 1) {
-				$('.btnContainer').empty();
-				status = "취소";
-			}
-			
-			$('#status .textValue').text(status);
-			
+						
 			$('#reservInfoModal').show();
 		},
 		error : function() {

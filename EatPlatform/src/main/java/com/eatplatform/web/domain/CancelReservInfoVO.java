@@ -10,7 +10,6 @@ import lombok.ToString;
 public class CancelReservInfoVO extends ReservVO{
 	private int cancelId;
 	private String cancelComment;
-	private String requestStatus;
 	private String name;
 	private String phone;
 	private int reservId;

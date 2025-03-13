@@ -20,5 +20,5 @@ public class ReservVO {
 	private String reservMin;
 	private int reservPersonnel;
 	private Date reservDateCreated;
-	private String cancelStatus;
+	private int cancelStatus;
 }

@@ -23,17 +23,23 @@
 						<span class="textTitle">주소</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
 					<li id="reservDate">
-						<span class="textTitle">예약일자</span><span class="colon">:</span><span class="textValue"></span>
+						<span class="textTitle">예약일</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
-					<li id="status">
-						<span class="textTitle">상태</span><span class="colon">:</span><span class="textValue"></span>
+					<li id="reservTime">
+						<span class="textTitle">시간</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
 					<li id="regDate">
 						<span class="textTitle">신청일</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
 				</ul>
 			</div>
+			
+			<div class="comment-container">
+				<!-- reserv cancel comment load -->
+			</div>
+			
 			<div class="btnContainer">
+				<!-- button load -->
 			</div>
 		</div>
 	</div>

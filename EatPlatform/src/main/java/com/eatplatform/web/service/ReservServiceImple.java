@@ -213,7 +213,7 @@ public class ReservServiceImple implements ReservService {
 
 	@Transactional
 	@Override
-	public int cancelReservByList(List<ReservVO> cancelList, String requestType) {
+	public int cancelReservByList(List<ReservCancelVO> cancelList, String requestType) {
 		log.info("cancelReservByList()");
 		int reservStatus = 1;
 		reservMapper.updateCancelStatus(cancelList, reservStatus);

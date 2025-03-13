@@ -31,6 +31,9 @@ $(function () {
 	// 예약
 	let activeTimeList;
 	
+	// 휴무일
+	let holidayList;
+	
 	// ajax CSRF 토큰
 	$(document).ajaxSend(function(e, xhr, opt){
 		var token = $("meta[name='_csrf']").attr("content");
@@ -85,6 +88,16 @@ $(function () {
             // 오늘 날짜를 제외한 과거 날짜에만 'disabled' 추가
             if (currentDay < today && !(currentDay.getDate() === today.getDate() && currentDay.getMonth() === today.getMonth() && currentDay.getFullYear() === today.getFullYear())) {
                 dayCell.addClass('disabled');
+            } else {
+            	if(holidayList.length > 0) {
+	            	const dateReplace = dateValue.replace(/-/g, '');
+			        for(let i = 0; i < holidayList.length; i++) {
+			        	const date = (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(0, 7) + "-" + (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(7);
+			           	if(dateValue == date) {
+			            	dayCell.addClass('holiday');
+			            }
+					}
+	            }
             }
 
             // 오늘 날짜는 'selected' 상태로 기본 선택
@@ -99,11 +112,12 @@ $(function () {
 
 
             dayCell.on('click', function () {
-                if (!$(this).hasClass('disabled')) {
+                if (!$(this).hasClass('disabled') && !$(this).hasClass('holiday')) {
                     $('.calendar .selected').removeClass('selected');
                     $(this).addClass('selected');;
                     selectedDate = new Date(year, month, day);
                     updateSelectionDisplay();
+                    
                 }
             });
 
@@ -168,9 +182,17 @@ $(function () {
 			        (currentTime.getHours() === now.getHours() && currentTime.getMinutes() < now.getMinutes())) {
 			        timeSlot.addClass('disabled');
 			    }
+			    			    
+			    if(holidayList.length > 0) {
+					for(let i = 0; i < holidayList.length; i++) {
+						const date = (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(0, 7) + "-" + (holidayList[i].holiday.slice(0, 4) + "-" + holidayList[i].holiday.slice(4)).slice(7);
+						if(dateText == date) {
+							timeSlot.addClass('disabled');
+						}
+					}
+				}
 
 		    }
-
 		    
 		    		    
 		    if(activeTimeList !== null && activeTimeList !== undefined) {
@@ -359,15 +381,37 @@ $(function () {
 						
 						$('#calendar-days div.selected').trigger('click');
 					}
+				},
+				error : function() {
+					alert("예약을 진행하는 중 오류가 발생하였습니다.");
 				}
 			});
 		} else {
 			alert("예약 시간을 선택해주세요.");
 		}
 	}
+	
+	// 휴무일 조회 함수
+	function searchHoliday() {
+		let storeId = $('#storeId').val();
+		$.ajax({
+			url : '/store/holiday/search/list/' + storeId,
+			type : 'get',
+			contentType : "application/json",
+			success : function(response) {
+				holidayList = response.holidayList;
+				generateCalendar(currentMonth, currentYear);
+				reservSchedule(dateText);
+			},
+			error : function() {
+				console.log("휴무일 목록을 불러오는중 오류가 발생하였습니다.");
+			}
+		});
+	} // End searchHoliday
 
-    generateCalendar(currentMonth, currentYear);
-    reservSchedule(dateText);
+	searchHoliday();
+    //generateCalendar(currentMonth, currentYear);
+    //reservSchedule(dateText);
     updateSelectionDisplay();
 
     startTimeInput.on('change', generateTimeSlots);

@@ -87,8 +87,13 @@ public interface ReservMapper {
 	int selectReservCancelTotalCount(int userId);
 	// 예약 등록
 	int insert(ReservVO reservVO);
-	// 예약 삭제
-	int updateCancelStatus(@Param("cancelList") List<ReservVO> cancelList, @Param("cancelStatus") int cancelStatus);
+	/**
+	 * 예약 취소 상태 변경
+	 * @param cancelList
+	 * @param cancelStatus
+	 * @return
+	 */
+	int updateCancelStatus(@Param("cancelList") List<ReservCancelVO> cancelList, @Param("cancelStatus") int cancelStatus);
 	// 예약 가능시간 조회
 	List<StoreScheduleVO> selectSchedule(StoreScheduleVO storeScheduleVO);
 	// 예약 가능 확인

@@ -54,7 +54,13 @@
 								<td>${list.storeId }</td>
 								<td><a href="detail?storeId=${list.storeId }">${list.storeName }</a></td>
 								<td>${list.ownerName }</td>
-								<td>${list.foodCategory }</td>
+								<td>
+					                <c:forEach var="categoryList" items="${categoryList}">
+					                    <c:if test="${list.storeId eq categoryList.storeId}">
+					                        ${categoryList.mainCategoryName}
+					                    </c:if>
+					                </c:forEach>
+					            </td>
 								<td>${list.storeComment }</td>
 							</tr>
 						</c:forEach>

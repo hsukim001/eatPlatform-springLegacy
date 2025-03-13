@@ -849,15 +849,24 @@ $(function () {
 				let confirmMsg = confirm("선택된 휴무일 중에 예약일정이 확인되었습니다. \n 예약일정을 취소하여 휴무일을 등록 하시겠습니까?");
 				if(confirmMsg) {
 					const cancelList = cancelReservInfoList;
+					let requestData = [];
+					for(let i = 0; i < cancelList.length; i++) {
+						obj = {
+							"reservId" : cancelList[i].reservId,
+							"cancelComment" : "가게 휴무일로 인하여 예약이 취소되었습니다."
+						}
+						requestData.push(obj);
+					}
+					
 					console.log("cancelReservList : " + cancelList);
-					let requestType = 'STORE';
+					let requestType = "STORE";
 					$.ajax({
 						url : '/reserv/cancel/' + requestType,
-						type : 'put',
+						type : 'post',
 						headers : {
 							"Content-Type" : "application/json"
 						},
-						data : JSON.stringify(cancelList),
+						data : JSON.stringify(requestData),
 						success : function(response) {
 							if(response.result == 1) {
 								cancelReservStatus = 1;
@@ -885,70 +894,6 @@ $(function () {
 			}
 		});
 	}
-	
-	$('#chkAll').click(function() {
-		let isChecked = $(this).prop('checked');
-		$('input[name=chk]').prop("checked", isChecked);
-	});
-	
-	$(document).on('click', 'input[name=chk]', function() {
-		let total = $('input[name=chk]').length;
-		let checked = $('input[name=chk]:checked').length;
-		
-		if(total != checked) {
-			$('#chkAll').prop('checked', false);
-		} else {
-			$('#chkAll').prop('checked', true);
-		}
-	});
-	
-	// 예약 취소 요청 정보 모달 x button click event
-	$('#reservCancelInfoModal #topCloseBtn').on('click', function() {
-		$('#reservCancelInfoModal').hide();
-	}); // reservCancelInfoModal topCloseBtn click event
-	
-	// 예약 취소 요청 click event
-	$('#requestCancel').click(function() {
-		if(totalCancel > 0) {
-			requestCancelReservList();
-		}
-	}); // requestCancel click event
-	
-	// 예약 취소 요청 정보 조회
-	function requestCancelReservList() {
-		let storeId = $('#storeId').val();
-		$.ajax({
-			url : '/reserv/cancel/requestList/' + storeId,
-			type : 'get',
-			success : function(response) {
-				if(response.requestCancelList.length > 0) {
-					let cancelInfo = '';
-					let btn = '<button id="cancelApproval">승인</button><button id="cancelDenied">거부</button>';
-					
-					for(let i = 0; i < response.requestCancelList.length; i++) {
-						let date = String(response.requestCancelList[i].reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
-					
-						cancelInfo += '<li><label><input type="checkbox" name="chk" value="'+ response.requestCancelList[i].reservId +'"></label>'+ 
-								'<p> 예약자 : <span class="name-text">'+ response.requestCancelList[i].name +'</span></p>' +
-								'<p> 연락처 : <span class="phone-text">'+ response.requestCancelList[i].phone +'</span></p>' +
-								'<p> 예약일 : <span class="date-text">'+ date + ' ' + + response.requestCancelList[i].reservHour + ' : ' + response.requestCancelList[i].reservMin +'</span></p>' +
-								'<p> 취소 사유 : <span class="commnet-text" data-cancel-id="'+ response.requestCancelList[i].cancelId +'">'+ response.requestCancelList[i].cancelComment +'</span></p>' +
-								'</li>';
-					}
-					
-					$('#reservCancelInfoModal .btn-container').html(btn);
-					$('#cancelInfo').html(cancelInfo);
-					$('#reservCancelInfoModal').show();
-				} else if(response.requestCancelList == 0) {
-					let cancelInfo = '<li><span>예약 취소 요청이 존재하지 않습니다.</span></li>';
-					$('#cancelInfo').html(cancelInfo);
-				}
-			},
-			error : function() {
-				alert("예약 취소 요청에 대한 정보를 가져오는 중 오류가 발생하였습니다.");
-			}
-		});
-	} // End requestCancelReservList
 	
     searchHoliday();
     //generateCalendar(currentMonth, currentYear);

@@ -26,6 +26,7 @@ import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.CancelReservInfoVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
+import com.eatplatform.web.service.ReservCancelService;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.util.DataResponse;
 import com.eatplatform.web.util.PageMaker;
@@ -40,6 +41,9 @@ public class ReservRESTController {
 
 	@Autowired
 	private ReservService reservService;
+	
+	@Autowired
+	private ReservCancelService reservCancelService;
 
 	// 페이징 예약 목록 조회(pageNum, userId)
 	/**
@@ -133,6 +137,12 @@ public class ReservRESTController {
 		if(isUser) {
 			ReservInfoVO reservInfoVO = reservService.getReservInfoByReservId(reservId);
 			map.put("info", reservInfoVO);
+			
+			if(reservInfoVO.getCancelStatus() == 1) {
+				ReservCancelVO reservCancelVO = reservCancelService.getReservCancel(reservId);
+				map.put("cancelComment", reservCancelVO.getCancelComment());				
+			}
+			
 		} else {
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
 		}
@@ -239,8 +249,8 @@ public class ReservRESTController {
 	 * @param cancelList
 	 * @return Map<String, Object>
 	 */
-	@PutMapping("/cancel/{requestType}")
-	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservVO> cancelList, @PathVariable("requestType") String requestType) {
+	@PostMapping("/cancel/{requestType}")
+	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservCancelVO> cancelList, @PathVariable("requestType") String requestType) {
 		log.info("cancelReservByReservId()");
 		Map<String, Object> map = new HashMap<>();
 		int result = 0;

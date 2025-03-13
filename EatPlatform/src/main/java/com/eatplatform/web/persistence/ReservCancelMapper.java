@@ -12,16 +12,16 @@ import com.eatplatform.web.domain.ReservVO;
 public interface ReservCancelMapper {
 	
 	/**
+	 * @param int reservId
+	 * @return ReservCancelVO
+	 */
+	ReservCancelVO selectReservCancelByReservId(int reservId);
+		
+	/**
 	 * @param reservList
 	 * @param requestType
 	 * @return
 	 */
-	int insertReservCancelByReservList(@Param("reservList") List<ReservVO> reservList, @Param("requestType") String requestType);
+	int insertReservCancelByReservList(@Param("cancelList") List<ReservCancelVO> cancelList, @Param("requestType") String requestType);
 	
-	/**
-	 * @param cancelList
-	 * @param requestStatus
-	 * @return
-	 */
-	int updateReservCancelAtRequestStatusByCancelId(@Param("cancelList") List<ReservCancelVO> cancelList, @Param("requestStatus") String requestStatus);
 }

@@ -11,6 +11,5 @@ public class ReservCancelVO {
 	private int cancelId;
 	private String requestType;
 	private String cancelComment;
-	private String requestStatus;
 	private int reservId;
 }
