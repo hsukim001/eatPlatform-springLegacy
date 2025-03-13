@@ -14,10 +14,12 @@ import lombok.ToString;
 public class NotificationVO {
 	private int notificationId;
 	private String type;
-	private String username;
+	private String receiver;
 	private String message;
 	private String read;
 	private Date notificationDate;
 	private String url;
+	
+	private StoreVO storeVO;
 	
 }

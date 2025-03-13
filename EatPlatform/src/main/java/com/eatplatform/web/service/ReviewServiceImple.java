@@ -51,8 +51,8 @@ public class ReviewServiceImple implements ReviewService{
 			
 		}
 		
-		// 알림 전송
-		notificationService.reviewNotification(reviewVO);
+		// 리뷰 등록 알림 전송
+		notificationService.addReviewNotification(reviewVO);
 		
 		return result;
 	}

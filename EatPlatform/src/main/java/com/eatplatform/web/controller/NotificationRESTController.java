@@ -27,25 +27,39 @@ public class NotificationRESTController {
 	@Autowired
 	private NotificationService notificationService;
 	
-	@GetMapping(value = "/subscribe/{username}", produces = "text/event-stream; charset=utf-8")
-	public SseEmitter subscribe(@PathVariable String username) {
-		return notificationService.subscribe(username);
+	/**
+	 * 로그인 시 SSE 연결
+	 * @param receiver 로그인 아이디
+	 * @return SseEmitter를 통해 클라이언트와 실시간으로 알림을 전송할 수 있는 객체
+	 */
+	@GetMapping(value = "/subscribe/{receiver}", produces = "text/event-stream; charset=utf-8")
+	public SseEmitter subscribe(@PathVariable String receiver) {
+		return notificationService.subscribe(receiver);
 	}
 	
-	@GetMapping("/getUnread")
-	public ResponseEntity<List<NotificationVO>> getUnreadNotifications(@AuthenticationPrincipal CustomUser customUser) {
-        String username = customUser.getUsername();  // 로그인한 사용자 ID
-        
-        List<NotificationVO> notifications = notificationService.getUnreadNotifications(username);
+	/**
+	 * 로그인 시 전체 알림 조회
+	 * @param receiver 로그인 아이디
+	 * @return 로그인한 아이디의 전체 알림
+	 */
+	@GetMapping("/{receiver}")
+	public ResponseEntity<List<NotificationVO>> getNotifications(@PathVariable String receiver) {
+        List<NotificationVO> notifications = notificationService.getNotificationsByReceiver(receiver);
         return ResponseEntity.ok(notifications);
 	}
 
+	/**
+	 * 알림 읽음 상태 변경
+	 * @param response notificationId의 데이터가 담긴 객체
+	 * @param customUser 로그인 아이디
+	 * @return notificationVO(notificationId, receiver, read, url)
+	 */
 	@PostMapping("/updateRead")
-	public ResponseEntity<String> updateNotifications(@RequestBody NotificationVO notificationVO) {
-		log.info("notificationVO: " + notificationVO);
-		String url = notificationVO.getUrl();
-		notificationService.updateNotification(url);
-		return ResponseEntity.ok("업데이트 성공");
+	public int updateNotifications(@RequestBody NotificationVO response,
+			@AuthenticationPrincipal CustomUser customUser) {
+		String receiver = customUser.getUsername();
+		response.setReceiver(receiver);
+		return notificationService.updateNotification(response);
 	}
 
 }

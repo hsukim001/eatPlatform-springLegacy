@@ -9,28 +9,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		id="notificationResultMap">
 		<id property="notificationId" column="NOTIFICATION_ID" />
 		<result property="type" column="TYPE" />
-		<result property="username" column="USERNAME" />
+		<result property="receiver" column="RECEIVER" />
 		<result property="message" column="MESSAGE" />
 		<result property="read" column="READ" />
 		<result property="notificationDate" column="NOTIFICATION_DATE" />
 		<result property="url" column="URL" />
 	</resultMap>
 
-	<select id="findUnreadNotificationsByUsername" resultMap="notificationResultMap">
+	<select id="selectNotificationsByReceiver" resultMap="notificationResultMap">
 		SELECT * FROM NOTIFICATION
-		WHERE USERNAME = #{username} AND READ = 'N'
-		ORDER BY NOTIFICATION_ID DESC
+		WHERE RECEIVER = #{receiver}
+		ORDER BY CASE WHEN READ = 'N' THEN 0 ELSE 1 END, NOTIFICATION_ID DESC
 	</select>
 	
 	<insert id="insert">
-		INSERT INTO NOTIFICATION (NOTIFICATION_ID, TYPE, USERNAME, MESSAGE, URL)
-		VALUES (NOTIFICATION_SEQ.NEXTVAL, #{type}, #{username}, #{message}, #{url})
+		INSERT INTO NOTIFICATION (NOTIFICATION_ID, TYPE, RECEIVER, MESSAGE, URL)
+		VALUES (NOTIFICATION_SEQ.NEXTVAL, #{type}, #{receiver}, #{message}, #{url})
 	</insert>
 	
 	<update id="update">
 		UPDATE NOTIFICATION 
 		SET READ = 'Y'
-		WHERE URL = #{url}
+		WHERE NOTIFICATION_ID = #{notificationId} OR 
+		RECEIVER = #{receiver} AND URL = #{url}
 	</update>
 
 </mapper>

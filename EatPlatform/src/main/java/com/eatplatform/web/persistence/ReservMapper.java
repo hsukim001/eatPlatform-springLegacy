@@ -99,4 +99,11 @@ public interface ReservMapper {
 	// 예약 가능 확인
 	int selectTotalPersonnelByStoreIdDateHourMin(ReservVO reservVO);
 	
+	/**
+	 * 예약 번호로 예약 조회
+	 * @param reservId
+	 * @return ReservVO
+	 */
+	ReservVO selectReservByReservId(int reservId);
+	
 }

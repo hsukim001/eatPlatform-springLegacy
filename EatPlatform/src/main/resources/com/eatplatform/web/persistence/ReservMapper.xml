@@ -279,4 +279,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND CANCEL_STATUS = #{cancelStatus}
 	</select>
 	
+	<select id="selectReservByReservId" resultMap="reservResultMap"> 
+		SELECT * FROM RESERV WHERE RESERV_ID = #{reservId} 
+	</select>
+	
 </mapper>

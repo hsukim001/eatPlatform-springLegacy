@@ -40,6 +40,9 @@ public class ReservServiceImple implements ReservService {
 	
 	@Autowired
 	private ReservCancelMapper reservCancelMapper;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	// 페이징 예약 목록 조회
 	@Override
@@ -218,6 +221,10 @@ public class ReservServiceImple implements ReservService {
 		int reservStatus = 1;
 		reservMapper.updateCancelStatus(cancelList, reservStatus);
 		reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
+		
+		// 예약 취소 알림
+		notificationService.cancelReservNotification(cancelList);
+		
 		return 1;
 	}
 

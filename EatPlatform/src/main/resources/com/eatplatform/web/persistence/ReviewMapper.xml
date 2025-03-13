@@ -88,8 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- username 조회 -->
 	<select id="findReviewWithUsername" resultMap="reviewResultMap">
-		SELECT r.REVIEW_ID, r.STORE_ID, r.USER_ID, r.REVIEW_STAR, r.REVIEW_CONTENT, 
-		r.REVIEW_TAG, r.REVIEW_DATE, r.REVIEW_LIKE, r.REVIEW_REPORT, r.REVIEW_UPDATE_DATE,
+		SELECT r.*,
 		u.USERNAME
 		FROM REVIEW r
 		LEFT JOIN USER_MEMBER u ON r.USER_ID = u.USER_ID

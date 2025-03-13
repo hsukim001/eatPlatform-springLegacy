@@ -10,8 +10,8 @@ import com.eatplatform.web.domain.NotificationVO;
 @Mapper
 public interface NotificationMapper {
 
-	List<NotificationVO> findUnreadNotificationsByUsername(String userId);
+	List<NotificationVO> selectNotificationsByReceiver(String receiver);
 	int insert(NotificationVO notificationVO);
-	int update(String url);
+	int update(NotificationVO notificationVO);
 	
 }

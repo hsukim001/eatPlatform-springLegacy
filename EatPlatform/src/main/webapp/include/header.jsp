@@ -156,13 +156,13 @@
 			    checkLoginStatus()
 			        .then(userInfo => {
 			            if (userInfo.isAuthenticated) {
-			                const username = userInfo.username;
+			                const receiver = userInfo.username;
 
-			                // 로그인된 사용자에게 읽지 않은 알림을 가져와서 화면에 표시
-			                loadUnreadNotifications(username);
+			             	// 로그인된 사용자에게 알림을 가져와서 화면에 표시
+			                loadNotifications(receiver);
 			                
 			             	// SSE를 통해 실시간 알림 받기
-			                setupRealTimeNotifications(username);
+			                setupRealTimeNotifications(receiver);
 
 			                // 알림 아이콘의 마우스 오버/아웃 이벤트 처리
 			                setupNotificationIcon();
@@ -186,10 +186,10 @@
 			}
 
 			/**
-			 * 로그인된 사용자의 읽지 않은 알림을 화면에 표시하는 함수
+			 * 로그인된 사용자의 알림을 화면에 표시하는 함수
 			 */
-			function loadUnreadNotifications(username) {
-			    fetch("/notifications/getUnread")
+			function loadNotifications(receiver) {
+			    fetch("/notifications/" + receiver)
 			        .then(response => response.json())
 			        .then(notifications => {
 			            displayNotifications(notifications);
@@ -207,39 +207,77 @@
 			    const notificationsElement = document.getElementById("notifications");
 				
 			    if (notifications.length > 0) {
-			        notificationIcon.classList.add("has-notifications");
+			    	// '읽지 않은 알림'이 하나라도 있으면 빨간 점을 표시
+			        const hasUnread = notifications.some(notification => notification.read === 'N');
+			        
+			    	if (hasUnread) {
+			            notificationIcon.classList.add("has-unread"); // 빨간 점 표시용 클래스 추가
+			        } else {
+			            notificationIcon.classList.remove("has-unread"); // 읽음 상태인 경우 빨간 점 숨김
+			        }
 
 			        notifications.forEach(notification => {
 			            const li = document.createElement("li");
 			            li.textContent = notification.message;
 			            li.dataset.notificationId = notification.notificationId;
 			            li.dataset.notificationUrl = notification.url;
+			            li.dataset.notificationRead = notification.read;
 			            notificationsElement.appendChild(li);
 			        });
 			    } else {
-			        notificationIcon.classList.remove("has-notifications");
+			        notificationIcon.classList.remove("has-unread");
 			    }
 			}
-
+			
 			/**
 			 * 실시간 알림을 받기 위한 SSE 설정 함수
 			 */
-			 function setupRealTimeNotifications(username) {
-				    const eventSource = new EventSource("/notifications/subscribe/" + username);
-
-				    eventSource.addEventListener("messageEvent", function (event) {
-				    	const data = JSON.parse(event.data);
-				    	console.log("새 알림: ", data.message);
-				        appendNewNotification(event.data);  
-	
-				    });
-
-				    eventSource.addEventListener("error", function (event) {
+			 function setupRealTimeNotifications(receiver) {
+				 const eventSource = new EventSource("/notifications/subscribe/" + receiver);
+				 
+				 const notifications = document.getElementById('notifications');
+				 
+				 console.log(notifications);
+				 
+				 eventSource.addEventListener("messageEvent", function (event) {
+					 const data = JSON.parse(event.data);
+					 appendNewNotification(data.message);
+					 
+					// 알림 권한 확인 후 알림 표시
+					if (Notification.permission === "granted") {
+						showNotification(data.message);
+						loadNotifications(receiver);
+					} else if (Notification.permission !== "denied") {
+						// 권한 요청
+			            Notification.requestPermission().then(permission => {
+			            	if (permission === "granted") {
+			                    showNotification(data.message);
+			                }
+			            });
+					}
+					 
+				 });
+				 
+				 eventSource.addEventListener("error", function (event) {
 				        console.error("SSE 오류 발생: ", event);
 				        console.error("EventSource 상태: ", eventSource.readyState);  // 상태 코드 확인
 				        eventSource.close();
-				    });
+				 });
+
 			}
+			
+		   /**
+			* 알림을 표시하는 함수
+			*/
+			function showNotification(message) {
+				const notification = new Notification("새 알림", {
+					body: message
+				});
+				// 알림이 일정 시간 후 닫히도록 설정 (10초 후)
+			    setTimeout(() => {
+			        notification.close();
+			    }, 10 * 1000);
+			 }
 			
 			/**
 			 * 새 알림을 화면에 추가하는 함수
@@ -250,6 +288,16 @@
 			    li.textContent = message;
 			    notificationsElement.appendChild(li);
 			    
+			    // 목록의 첫 번째 항목을 참조
+			    const firstChild = notificationsElement.firstChild;
+
+			    // 첫 번째 항목 앞에 새 항목을 추가
+			    if (firstChild) {
+			        notificationsElement.insertBefore(li, firstChild);
+			    } else {
+			        // 목록이 비어 있으면 그냥 appendChild 사용
+			        notificationsElement.appendChild(li);
+			    }
 			}
 
 			/**
@@ -268,19 +316,6 @@
 			    // 알림 목록에 마우스를 올리면 목록이 계속 보이도록 설정
 			    notifications.addEventListener("mouseenter", function() {
 			        notifications.style.display = "block"; // 알림 목록이 계속 보이도록 유지
-			    	
-			        notifications.addEventListener("click", function(event) {
-			        	// 클릭된 항목이 알림 항목이라면
-			        	const notificationItem = event.target;
-			        	
-			        	const notificationUrl = notificationItem.getAttribute('data-notification-url');
-			        	
-			        	
-			        	if(notificationUrl) {
-			        		window.location.href = notificationUrl;
-			        	}
-			        });
-			        
 			    });
 
 			    // 알림 목록에서 마우스를 뗄 때 목록 숨기기
@@ -293,12 +328,42 @@
 			        // 마우스가 알림 목록 안에 없으면 목록을 숨김
 			        notifications.style.display = "none"; // 알림 목록 숨기기
 			    });
+			    
+			 	// 알림 클릭 시 읽음 상태 변경
+			 	notifications.addEventListener("click", function(event) {
+		       
+		        	const notificationItem = event.target;
+		        	
+		        	const notificationId = notificationItem.getAttribute('data-notification-id');
+		        	const notificationRead = notificationItem.getAttribute('data-notification-read');
+		        	const notificationUrl = notificationItem.getAttribute('data-notification-url');
+		        	
+		        	if(notificationId) {
+		        		$.ajax({
+		        			url : '/notifications/updateRead',
+		        			method : 'POST',
+		        			headers : {
+		        				'Content-Type' : 'application/json'
+		        				},
+		        			data : JSON.stringify({
+		        				notificationId : notificationId,
+		        				read : notificationRead,
+		        				url : notificationUrl
+		        				}),
+		        			success : function(result) {
+		        				console.log("success");
+		        				window.location.href = notificationUrl;
+		        				
+		        			},
+		        			error : function(error) {
+		        				console.error('error : ', error);
+		        			}
+		        		});
+		        	}
+		        });
 			}
 			
-			/**
-			 * AJAX 요청을 위한 CSRF 토큰 설정
-			 */
-			 $(document).ajaxSend(function(e, xhr, opt){
+			$(document).ajaxSend(function(e, xhr, opt){
 	     	       var token = $("meta[name='_csrf']").attr("content");
 	     	       var header = $("meta[name='_csrf_header']").attr("content");
 	     	       

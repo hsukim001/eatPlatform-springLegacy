@@ -173,7 +173,7 @@ header {
 /* 알림 아이콘 스타일 */
 /* 빨간 점을 아이콘의 오른쪽 상단에 배치하기 위해 */
 #notificationIcon {
-	 position: relative;
+	position: relative;
 }
 		
 /* 빨간 점을 표시하는 스타일 */
@@ -222,6 +222,12 @@ header {
     color: #007BFF;  /* 글자 색상을 파란색으로 변경 */
 }
 
+/* read='y'일 때 글자 색상을 어두운 회색으로 변경 가로선 추가 */
+#notifications li[data-notification-read="Y"] {
+	text-decoration: line-through;
+    color: #555;
+}
+
 /* 알림 아이콘 스타일 */
 #notificationIcon {
     font-size: 20px;
@@ -238,9 +244,14 @@ header {
     display: flex;  /* 알림 목록 표시 */
 }
 		
-/* 알림 아이콘에 빨간 점이 표시될 때 */
-.notification-dot.has-notifications .notification-badge {
-	display: block; 
+/* 빨간 점 숨김 */
+.notification-badge {
+    display: none;
+}
+
+/* 읽지 않은 알림이 있을 경우 배지 표시 */
+.notification-dot.has-unread .notification-badge {
+    display: block; 
 }
 
 /* Empty Header & Footer*/
