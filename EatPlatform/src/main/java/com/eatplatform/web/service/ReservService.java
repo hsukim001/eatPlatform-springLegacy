@@ -21,7 +21,7 @@ public interface ReservService {
 	 * @param pagination
 	 * @return
 	 */
-	List<ReservWithStoreNameVO> searchToDayList(Pagination pagination);
+	List<ReservWithStoreNameVO> getReservWithStoreNameList(Pagination pagination, String auth, String keyword);
 	
 	/**
 	 * 이전 예약 목록 조회

@@ -17,6 +17,14 @@ import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface ReservMapper {
+	
+	/**
+	 * @param Pagination pagination
+	 * @param String keyword
+	 * @return List<ReservWithStoreNameVO>
+	 */
+	List<ReservWithStoreNameVO> selectReservWithStoreNameListByPaginationAndKeywordAndUserId(@Param("pagination") Pagination pagination, @Param("keyword") String keyword);
+	
 	// 예약 목록 조회
 	List<ReservWithStoreNameVO> selectPagingToDay(Pagination pagination);
 	// 이전 예약 목록 조회

@@ -1,6 +1,5 @@
 package com.eatplatform.web.domain;
 
-import java.util.Date;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

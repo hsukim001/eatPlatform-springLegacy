@@ -51,19 +51,20 @@ public class ReservRESTController {
 	 * @param customUser
 	 * @return
 	 */
-	@GetMapping("/toDay/{pageNum}")
-	public ResponseEntity<DataResponse> searchPagingToDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
-		log.info("searchPagingToDay()");
+	@GetMapping("/toDay/{pageNum}/{keyword}")
+	public ResponseEntity<DataResponse> getReservList(@PathVariable("pageNum") int pageNum, @PathVariable("keyword") String keyword, @AuthenticationPrincipal CustomUser customUser) {
+		log.info("getReservList()");
 		int pageSize = 5;
 		log.info("pageNum = " + pageNum);
 		
 		// session에서 사용자 아이디 로드
 		int userId = customUser.getUser().getUserId();
-		
+		String auth = customUser.getAuthorities().toString();
 
 		Pagination pagination = new Pagination(userId, pageNum, pageSize);
-
-		List<ReservWithStoreNameVO> list = reservService.searchToDayList(pagination);
+		
+		List<ReservWithStoreNameVO> list = reservService.getReservWithStoreNameList(pagination, auth, keyword);
+			
 
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);

@@ -46,8 +46,13 @@ public class ReservServiceImple implements ReservService {
 
 	// 페이징 예약 목록 조회
 	@Override
-	public List<ReservWithStoreNameVO> searchToDayList(Pagination pagination) {
+	public List<ReservWithStoreNameVO> getReservWithStoreNameList(Pagination pagination, String auth, String keyword) {
 		log.info("searchPagingToDayByReservDateUserId()");
+		List<ReservWithStoreNameVO> reservWithStoreNameList = new ArrayList<>();
+		if(auth.contains("ROLE_MEMBER")) {
+			reservWithStoreNameList = reservMapper.selectReservWithStoreNameListByPaginationAndKeywordAndUserId(pagination, keyword);		
+		} else if(auth.contains("ROLE_STORE")) {
+		}
 		return reservMapper.selectPagingToDay(pagination);
 	}
 

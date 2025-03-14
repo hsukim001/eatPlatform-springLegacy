@@ -86,6 +86,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="cancelComment" column="CANCEL_COMMENT"/>
 	</resultMap>
 	
+	<select id="selectReservWithStoreNameListByPaginationAndKeywordAndUserId" resultMap="reservWithStoreNameResultMap">
+		SELECT r.*, 
+	       (
+	           SELECT s.STORE_NAME 
+	           FROM STORE s 
+	           WHERE s.STORE_ID = r.STORE_ID
+	       ) AS STORE_NAME
+		FROM (
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANCEL_STATUS, 
+		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE ASC) AS RN
+		    FROM RESERV
+		    <choose>
+		    	<when test="keyword.equals('current')">
+		    		WHERE USER_ID = #{userId} AND RESERV_DATE >= TRUNC(SYSDATE)
+		    	</when>
+		    	<when test="keyword.equals('prev')">
+		    		WHERE USER_ID = #{userId} AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
+		    	</when>
+		    	<when test="keyword.equals('cancel')">
+		    		WHERE CANCEL_STATUS = 1
+		    	</when>
+		    </choose>
+		) r
+		WHERE r.RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="selectReservWithStoreNameListByPaginationAndKeywordAndStoreIdAndUserId" resultMap="reservWithStoreNameResultMap">
+		SELECT r.*, 
+	       (
+	           SELECT s.STORE_NAME 
+	           FROM STORE s 
+	           WHERE s.STORE_ID = r.STORE_ID
+	       ) AS STORE_NAME
+		FROM (
+		    SELECT RESERV_ID, STORE_ID, USER_ID, RESERV_DATE, RESERV_HOUR, RESERV_MIN, RESERV_PERSONNEL, RESERV_DATE_CREATED, CANCEL_STATUS, 
+		           ROW_NUMBER() OVER (ORDER BY RESERV_DATE ASC) AS RN
+		    FROM RESERV
+		    <choose>
+		    	<when test="keyword.equals('current')">
+		    		WHERE USER_ID = #{userId} AND RESERV_DATE >= TRUNC(SYSDATE)
+		    	</when>
+		    	<when test="keyword.equals('prev')">
+		    		WHERE USER_ID = #{userId} AND RESERV_DATE <![CDATA[<]]> TRUNC(SYSDATE)
+		    	</when>
+		    	<when test="keyword.equals('cancel')">
+		    		WHERE CANCEL_STATUS = 1
+		    	</when>
+		    </choose>
+		) r
+		WHERE r.RN BETWEEN #{start} AND #{end}
+	</select>
+	
 	<select id="selectPagingToDay" resultMap="reservWithStoreNameResultMap">
 		SELECT r.*, 
 	       (
