@@ -1,11 +1,27 @@
 package com.eatplatform.web.persistence;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.eatplatform.web.domain.ReviewReportListVO;
+import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
+import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface ReviewReportListMapper {
+	
+	/**
+	 * @param Pagination pagination
+	 * @return List<ReviewReportListWithUserAtName>
+	 */
+	List<ReviewReportListWithUserAtNameVO> selectReportListByPagination(Pagination pagination);
+	
+	/**
+	 * 신고 총 건 수 조회
+	 * @return int
+	 */
+	int getTotalCount();
 	
 	int insert(ReviewReportListVO reviewReportListVO);
 	

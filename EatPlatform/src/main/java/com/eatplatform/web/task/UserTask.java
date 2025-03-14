@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.eatplatform.web.persistence.UserDelMapper;
+import com.eatplatform.web.persistence.WithdrawlUserMapper;
 import com.eatplatform.web.service.UserService;
 
 import lombok.extern.log4j.Log4j;
@@ -20,7 +20,7 @@ public class UserTask {
 	UserService userMemberService;
 	
 	@Autowired
-	UserDelMapper userDelMapper;
+	WithdrawlUserMapper userDelMapper;
 	
 	// 비활성화 회원 삭제 테이블 정보 저장 및 삭제
 	@Scheduled(cron = "0 0 12 * * *") // 매일 12시 동작

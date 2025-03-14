@@ -1,12 +1,16 @@
 package com.eatplatform.web.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.ReviewReportListVO;
+import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.persistence.ReviewMapper;
 import com.eatplatform.web.persistence.ReviewReportListMapper;
+import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -19,6 +23,16 @@ public class ReviewReportListServiceImple implements ReviewReportListService {
 
 	@Autowired
 	private ReviewMapper reviewMapper;
+	
+	@Override
+	public List<ReviewReportListWithUserAtNameVO> getReviewReportList(Pagination pagination) {
+		return reviewReportListMapper.selectReportListByPagination(pagination);
+	}
+	
+	@Override
+	public int getTotalCount() {
+		return reviewReportListMapper.getTotalCount();
+	}
 	
 	@Transactional(value = "transactionManager")
 	@Override

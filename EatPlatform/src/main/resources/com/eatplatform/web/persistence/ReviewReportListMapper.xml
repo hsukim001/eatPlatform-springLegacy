@@ -15,6 +15,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewReportDate" column="REVIEW_REPORT_DATE" />
 	</resultMap>
 	
+	<resultMap type="com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO" id="reviewReportListWithUserAtNameResultMap">
+		<id property="reviewReportListId" column="REVIEW_REPORT_LIST_ID" />
+		<result property="reviewId" column="REVIEW_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="reviewReportMessage" column="REVIEW_REPORT_MESSAGE" />
+		<result property="reviewContent" column="REVIEW_CONTENT" />
+		<result property="reviewReportDate" column="REVIEW_REPORT_DATE" />
+		<result property="name" column="name"/>
+	</resultMap>
+	
+	<!-- 신고여부 확인 -->
+	<select id="checkReport" resultType="Integer">
+		SELECT COUNT (*) FROM REVIEW_REPORT_LIST
+		WHERE REVIEW_ID = #{reviewId} AND USER_ID = #{userId}
+	</select>
+	
+	<select id="selectReportListByPagination" resultMap="reviewReportListWithUserAtNameResultMap">
+		SELECT p.*, U.NAME FROM (
+			SELECT REVIEW_REPORT_LIST.*, ROW_NUMBER() OVER (ORDER BY REVIEW_REPORT_LIST_ID DESC) AS RN
+			FROM REVIEW_REPORT_LIST
+		) p
+		INNER JOIN USER_MEMBER u
+		ON p.USER_ID = u.USER_ID
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="getTotalCount" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM REVIEW_REPORT_LIST
+	</select>
+	
 	<insert id="insert">
 		INSERT INTO REVIEW_REPORT_LIST 
 		(REVIEW_REPORT_LIST_ID, REVIEW_ID, USER_ID, 
@@ -22,11 +53,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		VALUES (REVIEW_REPORT_LIST_SEQ.NEXTVAL, #{reviewId}, #{userId}, 
 		#{reviewReportMessage}, #{reviewContent})
 	</insert>
-	
-	<!-- 신고여부 확인 -->
-	<select id="checkReport" resultType="Integer">
-		SELECT COUNT (*) FROM REVIEW_REPORT_LIST
-		WHERE REVIEW_ID = #{reviewId} AND USER_ID = #{userId}
-	</select>
 	
 </mapper>

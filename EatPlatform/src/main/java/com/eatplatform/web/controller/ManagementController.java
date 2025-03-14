@@ -1,7 +1,9 @@
 package com.eatplatform.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.MenuVO;
+import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.ManagementService;
 import com.eatplatform.web.service.MenuService;
+import com.eatplatform.web.service.ReviewReportListService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.util.BusinessHourUtil;
 import com.eatplatform.web.util.PageMaker;
@@ -38,7 +42,11 @@ public class ManagementController {
 	@Autowired
 	private MenuService menuService;
 	
+	@Autowired
+	private ReviewReportListService reviewReportListService;
+	
 	/**
+	 * 가게 목록 조회
 	 * @param Model model
 	 * @param Pagination pagination
 	 * @param CustomUser customUser
@@ -72,6 +80,7 @@ public class ManagementController {
 	}
 
 	/**
+	 * 가게 상세 정보 조회
 	 * @param Model model
 	 * @param int storeId
 	 * @return String
@@ -103,6 +112,26 @@ public class ManagementController {
 		model.addAttribute("representMenuCount", representMenuCount);
 		return "/management/store/detail";
 		
+	}
+	
+	/**
+	 * @param model
+	 * @param pagination
+	 * @return
+	 */
+	@GetMapping("/report/reviewList")
+	public String reviewReportList(Model model, Pagination pagination) {
+		List<ReviewReportListWithUserAtNameVO> reviewReportList = reviewReportListService.getReviewReportList(pagination);
+		int totalCount = reviewReportListService.getTotalCount();
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		pageMaker.setTotalCount(totalCount);
+		
+		model.addAttribute("list", reviewReportList);
+		model.addAttribute("pageMaker", pageMaker);
+		
+		return "/management/report/reviewList";
 	}
 	
 }
