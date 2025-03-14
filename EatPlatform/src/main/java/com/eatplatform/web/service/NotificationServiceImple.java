@@ -141,24 +141,29 @@ public class NotificationServiceImple implements NotificationService {
     		
     		StoreVO storeVO = storeMapper.selectStoreById(reservVO.getStoreId());
     		String storeName = storeVO.getStoreName();
-    		String storeUser = storeVO.getStoreUserId(); 
     		
     		String type = "cancelReserv";
     		
     		UserVO userVO = userMapper.selectUserByUserId(reservVO.getUserId());
-    		String customUser = userVO.getUsername();
+    		String customer = userVO.getUsername();
     		
-    		String message = String.format("'%s'님의 '%s'예약이 취소되었습니다.", customUser, storeName);
+    		String customerMessage = String.format("'%s'님의 '%s'예약이 취소되었습니다.", customer, storeName);
     		
     		String url = "/reserv/list";
     		
     		// 고객 예약 취소 알림
-    		createNotification(type, customUser, message, url);
-    		sendSseNotification(type, customUser, message);
+    		createNotification(type, customer, customerMessage, url);
+    		sendSseNotification(type, customer, customerMessage);
+    		
+    		String storeUser = storeVO.getStoreUserId(); 
+    		
+    		String reservDate = reservVO.getReservDate();
+    		String reservTime = reservVO.getReservHour() + ":" + reservVO.getReservMin();
+    		String storeMessage = String.format("'%s'의 '%s'일 '%s' 예약이 취소되었습니다.", storeName, reservDate, reservTime);
     		
     		// 사업자 예약 취소 알림
-    		createNotification(type, storeUser, message, url);
-    		sendSseNotification(type, storeUser, message);
+    		createNotification(type, storeUser, storeMessage, url);
+    		sendSseNotification(type, storeUser, storeMessage);
     		
     	}
     	

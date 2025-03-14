@@ -20,7 +20,7 @@
 			<input type="hidden" name="reviewId" value="${reviewVO.reviewId }" >
 		</div>
 		<div>
-			<p>아이디 : <input type="text" name="username" readonly="readonly" value="${reviewVO.userVO.username }" ></p>
+			<p>아이디 : <input type="text" name="username" readonly="readonly" value="${reviewVO.username }" ></p>
 		</div>
 		<div>
 			<p>별점 : <input type="number" name="reviewStar" value="${reviewVO.reviewStar }" min="1" max="5" id="reviewStar" ></p>

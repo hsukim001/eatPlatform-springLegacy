@@ -222,10 +222,19 @@
 			            li.dataset.notificationId = notification.notificationId;
 			            li.dataset.notificationUrl = notification.url;
 			            li.dataset.notificationRead = notification.read;
+			            
+			            // 알림 등록 시간 표시
+			            const notificationDate = new Date(notification.notificationDate);
+			            const formattedDate = notificationDate.toLocaleString();
+			            const dateSpan = document.createElement("span");
+			            dateSpan.textContent = formattedDate;
+			            li.appendChild(dateSpan);
+			            
 			            notificationsElement.appendChild(li);
 			        });
 			    } else {
 			        notificationIcon.classList.remove("has-unread");
+			        notificationsElement.innerHTML = '<li>새로운 알림이 없습니다.</li>';
 			    }
 			}
 			
@@ -236,8 +245,6 @@
 				 const eventSource = new EventSource("/notifications/subscribe/" + receiver);
 				 
 				 const notifications = document.getElementById('notifications');
-				 
-				 console.log(notifications);
 				 
 				 eventSource.addEventListener("messageEvent", function (event) {
 					 const data = JSON.parse(event.data);
@@ -286,6 +293,7 @@
 			    const notificationsElement = document.getElementById("notifications");
 			    const li = document.createElement("li");
 			    li.textContent = message;
+			    li.dataset.notificationDate = formattedDate;
 			    notificationsElement.appendChild(li);
 			    
 			    // 목록의 첫 번째 항목을 참조

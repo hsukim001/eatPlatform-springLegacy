@@ -29,8 +29,7 @@ public class ReviewController {
 	public void updateReviewGET(Model model, int reviewId) {
 		log.info("updateReviewGET()");
 		
-		ReviewVO reviewVO = reviewService.getReviewById(reviewId);
-		ReviewVO username = reviewService.getReviewWithUsername(reviewId);
+		ReviewVO reviewVO = reviewService.getReviewWithUsername(reviewId);
 		reviewVO.setUsername(reviewVO.getUsername());
 		model.addAttribute("reviewVO",reviewVO);
 		log.info("reviewVO : " + reviewVO);
