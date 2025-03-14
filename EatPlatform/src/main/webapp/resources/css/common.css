@@ -382,7 +382,7 @@ footer {
 }
 
 /* width ~ 686px */
-@media ( max-width : 686px) {
+@media (max-width: 686px) {
 	#gnb_bar>ul {
 		width: 100%;
 	}

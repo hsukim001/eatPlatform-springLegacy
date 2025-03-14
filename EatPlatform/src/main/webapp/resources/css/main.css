@@ -353,6 +353,13 @@
     color: #1b47b3;
 }
 
+/* width ~ 1199px*/
+@media (max-width: 1199px) {
+    #best_container {
+        width: 100%;
+    }
+}
+
 /* width 687px ~ 1199px*/
 @media (max-width: 1199px) and (min-width: 687px) {
 
@@ -360,9 +367,6 @@
         width: 25%;
     }
     
-    #best_container {
-        width: 100%;
-    }
 
     .best_item {
         width: 40%;
@@ -401,10 +405,6 @@
     #recommend_info_layer img {
         width: 12px;
     }    
-
-    #best_container {
-        width: 100%;
-    }
 
    .best_item {
         width: 80%;

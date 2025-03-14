@@ -4,6 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/list.css">
@@ -173,81 +177,80 @@
 	<div id="wrap">
 		<jsp:include page="/include/header.jsp" />
 		<div id="container">
-			<div id="list_box">
-
-				<div id="category_container">
-					<div class="category_title">
-						<span>
-							#카테고리
-						</span>
+			<div id="list_container">
+				<div id="list_box">
+	
+					<div id="category_container">
+						<div class="category_title">#카테고리</div>
+						<div id="category_item">
+							<ul id="mainCategory"></ul>
+							<ul id="subCategory"></ul>
+						</div>
 					</div>
-					<div id="category_item">
-						<ul id="mainCategory"></ul>
-						<ul id="subCategory"></ul>
-					</div>
-				</div>
-
-				<div id="item_container">
-					<c:if test="${not empty recentStores}">
-						<c:forEach var="store" items="${recentStores}">
-							<div id="item_box"
-								onclick="location.href='detail?storeId=${store.storeId }'">
-								<div class="img_box">
-									<img
-										src="<%=request.getContextPath()%>/resources/img/sample2.png"
-										alt="sample">
+	
+					<div id="item_container">
+						<c:if test="${not empty recentStores}">
+							<c:forEach var="store" items="${recentStores}">
+								<div id="item_box"
+									onclick="location.href='detail?storeId=${store.storeId }'">
+									<div class="img_box">
+										<img
+											src="<%=request.getContextPath()%>/resources/img/sample2.png"
+											alt="sample">
+									</div>
+									<div class="text_box">
+										<p class="store_title">${store.storeName}</p>
+										<p class="store_tag">
+											<span>#${store.mainCategoryName} > ${store.subCategoryName}</span>
+										</p>
+										<pre class="store_comment">${store.storeComment}</pre>
+										<p class="store_hour">영업시간 | ${store.businessHour}</p>
+										<p class="store_phone">연락처 | <span class="phoneNum">${store.storePhone}</span></p>
+									</div>
 								</div>
-								<div class="text_box">
-									<p class="store_title">${store.storeName}</p>
-									<p class="store_tag">
-										<span>#${store.mainCategoryName} > ${store.subCategoryName}</span>
-									</p>
-									<p class="store_comment">${store.storeComment}</p>
-									<p class="store_hour">영업시간 | ${store.businessHour}</p>
-									<p class="store_phone">연락처 | <span class="phoneNum">${store.storePhone}</span></p>
-								</div>
-							</div>
-						</c:forEach>
-					</c:if>
-				</div>
-				<c:if test="${empty recentStores}">
-					<c:if test="${empty keyword}">
-						<p>최근 매장이 없습니다.</p>
-					</c:if>
-					<c:if test="${not empty keyword}">
-						<p>검색 결과가 없습니다.</p>
-					</c:if>
-				</c:if>
-
-				<div class="pagination">
-					<c:set var="currentPage" value="${currentPage}" />
-					<c:set var="totalPages" value="${totalPages}" />
-					
-					<c:if test="${currentPage > 3}">
-						<a class="prevBtn" href="?pageNum=${currentPage - 3}&keyword=${keyword}"><</a>
-					</c:if>
-					
-					<c:forEach var="i" begin="1" end="${totalPages}" varStatus="status">
-						<c:if test="${(currentPage <= 3 and i <= 5) 
-						                  or (currentPage >= totalPages - 2 and i >= totalPages - 4) 
-						                  or (i >= currentPage - 2 and i <= currentPage + 2)}">
-							<c:choose>
-								<c:when test="${i == currentPage}">
-									<a href="?pageNum=${i}&keyword=${keyword}" class="current">${i}</a>
-								</c:when>
-								<c:otherwise>
-									<a href="?pageNum=${i}&keyword=${keyword}">${i}</a>
-								</c:otherwise>
-							</c:choose>
+							</c:forEach>
 						</c:if>
-					</c:forEach>
-					
-					<c:if test="${currentPage < totalPages - 2}">
-						<a class="nextBtn" href="?pageNum=${currentPage + 3}&keyword=${keyword}">></a>
+					</div>
+					<c:if test="${empty recentStores}">
+						<c:if test="${empty keyword}">
+							<p>최근 매장이 없습니다.</p>
+						</c:if>
+						<c:if test="${not empty keyword}">
+							<p>검색 결과가 없습니다.</p>
+						</c:if>
 					</c:if>
+	
+					<div class="pagination">
+						<c:set var="currentPage" value="${currentPage}" />
+						<c:set var="totalPages" value="${totalPages}" />
+						
+						<c:if test="${currentPage > 3}">
+							<a class="prevBtn" href="?pageNum=${currentPage - 3}&keyword=${keyword}"></a>
+						</c:if>
+						
+						<c:forEach var="i" begin="1" end="${totalPages}" varStatus="status">
+							<c:if test="${(currentPage <= 3 and i <= 5) 
+							                  or (currentPage >= totalPages - 2 and i >= totalPages - 4) 
+							                  or (i >= currentPage - 2 and i <= currentPage + 2)}">
+								<c:choose>
+									<c:when test="${i == currentPage}">
+										<a href="?pageNum=${i}&keyword=${keyword}" class="current">${i}</a>
+									</c:when>
+									<c:otherwise>
+										<a href="?pageNum=${i}&keyword=${keyword}">${i}</a>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+						</c:forEach>
+						
+						<c:if test="${currentPage < totalPages - 2}">
+							<a class="nextBtn" href="?pageNum=${currentPage + 3}&keyword=${keyword}">></a>
+						</c:if>
+					</div>
 				</div>
 			</div>
 		</div>
+		<jsp:include page="/include/footer.jsp" />	
 	</div>
 </body>
 </html>

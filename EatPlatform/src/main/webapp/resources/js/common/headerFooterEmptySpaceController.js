@@ -1,7 +1,9 @@
 		$(function () {
+		    setHeights();
 		    function setHeights() {
 		        let headerHeight = $('header').outerHeight();
 		        let footerHeight = $('footer').outerHeight();
+		        console.log($("footer").height()); 
 		        let fullException = headerHeight - footerHeight;
 		
 		        $('#empty_header').css('height', headerHeight);
@@ -11,7 +13,6 @@
 		        $('.exceptionHeader').css('height', 'calc(100vh - ' + headerHeight + 'px)');
 		    }
 		
-		    setHeights();
 		
 		    $(window).resize(function () {
 		        let headerHeight = $('header').outerHeight();

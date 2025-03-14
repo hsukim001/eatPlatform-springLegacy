@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/main.css">
 	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/main/recommendSlider.js"></script>
 	<title>Eat PlatForm</title>
 </head>
