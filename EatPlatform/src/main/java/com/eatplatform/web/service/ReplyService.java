@@ -6,6 +6,13 @@ import com.eatplatform.web.domain.ReplyVO;
 
 public interface ReplyService {
 	List<ReplyVO> getAllReply(int revewId);
+	/**
+	 * username 조회
+	 * @param replyId
+	 * @return ReplyVO
+	 */
+	ReplyVO getReplyWithUsername(int replyId);
+	
 	int createReply(ReplyVO replyVO);
 	/**
 	 * 댓글 수정
@@ -20,7 +27,6 @@ public interface ReplyService {
 	// 페이징
 	int countAllRepliewsByReviewId(int reviewId);
 	
-	// username 조회
-	ReplyVO getReplyWithUsername(int replyId);
+	
 	
 }

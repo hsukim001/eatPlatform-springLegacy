@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.ReplyVO;
 import com.eatplatform.web.persistence.ReplyMapper;
@@ -17,12 +18,18 @@ public class ReplyServiceImple implements ReplyService{
 	@Autowired
 	private ReplyMapper replyMapper;
 	
+	@Autowired
+	private NotificationService notificationService;
+	
+	@Transactional(value = "transactionManager")
 	@Override
 	public int createReply(ReplyVO replyVO) {
-		log.info("createReply()");
-		int insertResult = replyMapper.insert(replyVO);
-		log.info(insertResult + "행 댓글 추가");
-		return 1;
+		int result = replyMapper.insert(replyVO);
+		
+		// 리뷰 등록 알림 전송
+		notificationService.addReplyNotification(replyVO);
+		
+		return result;
 	}
 
 	@Override
@@ -68,6 +75,7 @@ public class ReplyServiceImple implements ReplyService{
 	public ReplyVO getReplyWithUsername(int replyId) {
 		log.info("getReplyWithUsername()");
 		ReplyVO replyVO = replyMapper.findReplyWithUsername(replyId);
+		log.info("replyVO : " + replyVO);
 		return replyVO;
 	}
 

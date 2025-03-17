@@ -20,6 +20,4 @@ public class NotificationVO {
 	private Date notificationDate;
 	private String url;
 	
-	private StoreVO storeVO;
-	
 }

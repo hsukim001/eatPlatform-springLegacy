@@ -6,18 +6,27 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.eatplatform.web.domain.CustomUser;
+import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.NotificationVO;
+import com.eatplatform.web.domain.ReplyVO;
 import com.eatplatform.web.domain.ReservCancelVO;
+import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.NotificationMapper;
 import com.eatplatform.web.persistence.ReservMapper;
+import com.eatplatform.web.persistence.ReviewMapper;
+import com.eatplatform.web.persistence.StoreApprovalsMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.persistence.UserMapper;
 
@@ -39,10 +48,16 @@ public class NotificationServiceImple implements NotificationService {
 	private StoreMapper storeMapper;
 	
 	@Autowired
+	private ReviewMapper reviewMapper;
+	
+	@Autowired
 	private ReservMapper reservMapper;
 	
 	@Autowired
 	private UserMapper userMapper;
+	
+	@Autowired
+	private StoreApprovalsMapper storeApprovalsMapper;
 	
     /**
      * 클라이언트가 알림을 구독하기 위한 메서드
@@ -61,15 +76,11 @@ public class NotificationServiceImple implements NotificationService {
 					);
 		} catch (Exception e) {
 			log.error("error : " + e.getMessage());
-			
-			if (sseEmitter != null) {
-	            sseEmitter.completeWithError(e);
-	        }
+	        sseEmitter.completeWithError(e);
 	        return null;
 		}
 		
 		sseEmitters.put(receiver, sseEmitter);
-		
 		sseEmitter.onCompletion(() -> removeSseEmitter(receiver));
         sseEmitter.onTimeout(() -> removeSseEmitter(receiver));
         sseEmitter.onError((e) -> removeSseEmitter(receiver));
@@ -92,7 +103,6 @@ public class NotificationServiceImple implements NotificationService {
 	 */
 	@Override
 	public int updateNotification(NotificationVO notificationVO) {
-		
 		if ("Y".equals(notificationVO.getRead())) {
 			log.info("이미 읽은 알림");
 		}
@@ -128,47 +138,138 @@ public class NotificationServiceImple implements NotificationService {
         sendSseNotification(type, receiver, message);
     }
     
+	/**
+	 * 댓글 등록 알림을 전송하고 저장하는 메서드
+	 */
+	@Override
+	public void addReplyNotification(ReplyVO replyVO) {
+		
+		String type = "addReply";
+		ReviewVO reviewVO = reviewMapper.findReviewWithUsername(replyVO.getReviewId());
+		String receiver = reviewVO.getUsername();
+		StoreVO storeVO = storeMapper.selectStoreById(reviewVO.getStoreId());
+		String storeName = storeVO.getStoreName();
+		String message = String.format("'%s' 리뷰에 댓글이 등록되었습니다.", storeName);
+		String url = "/store/detail?storeId=" + storeVO.getStoreId();
+		
+		createNotification(type, receiver, message, url);
+
+        sendSseNotification(type, receiver, message);
+	}
+    
     /**
      * 예약 취소 알림을 전송하고 저장하는 메서드
      */
     @Override
-	public void cancelReservNotification(List<ReservCancelVO> cancelList) {
+	public void cancelReservNotification(List<ReservCancelVO> cancelList,
+			@AuthenticationPrincipal CustomUser customUser) {
     	
-    	for(ReservCancelVO reservCancelVO : cancelList) {
-    		int reservId = reservCancelVO.getReservId();
-    		
-    		ReservVO reservVO = reservMapper.selectReservByReservId(reservId);
-    		
-    		StoreVO storeVO = storeMapper.selectStoreById(reservVO.getStoreId());
-    		String storeName = storeVO.getStoreName();
-    		
-    		String type = "cancelReserv";
-    		
-    		UserVO userVO = userMapper.selectUserByUserId(reservVO.getUserId());
-    		String customer = userVO.getUsername();
-    		
-    		String customerMessage = String.format("'%s'님의 '%s'예약이 취소되었습니다.", customer, storeName);
-    		
-    		String url = "/reserv/list";
-    		
-    		// 고객 예약 취소 알림
-    		createNotification(type, customer, customerMessage, url);
-    		sendSseNotification(type, customer, customerMessage);
-    		
-    		String storeUser = storeVO.getStoreUserId(); 
-    		
-    		String reservDate = reservVO.getReservDate();
-    		String reservTime = reservVO.getReservHour() + ":" + reservVO.getReservMin();
-    		String storeMessage = String.format("'%s'의 '%s'일 '%s' 예약이 취소되었습니다.", storeName, reservDate, reservTime);
-    		
-    		// 사업자 예약 취소 알림
-    		createNotification(type, storeUser, storeMessage, url);
-    		sendSseNotification(type, storeUser, storeMessage);
-    		
+    	String url = "/reserv/list";
+    	
+    	// 사업자에게 알림을 한 번만 보내도록 flag 설정
+    	boolean sentStoreNotification = false;
+    	
+    	if(customUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STORE"))) {
+    		String type = "storeCancelReserv";
+	    	for(ReservCancelVO reservCancelVO : cancelList) {
+	    		userCancelNotification(reservCancelVO, type, customUser, url);
+	    		
+	    		if(!sentStoreNotification) {
+	    			storeCancelNotification(reservCancelVO, type, customUser, url);
+	    
+		    		// 사업자 알림 전송 완료 표시
+		            sentStoreNotification = true;
+	    		}
+	    	}
+    	} else if(customUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MEMBER"))) {
+    		String type = "userCancelReserv";
+    		for(ReservCancelVO reservCancelVO : cancelList) {
+    			storeCancelNotification(reservCancelVO, type, customUser, url);
+    		}
     	}
-    	
 	}
 
+    /**
+     * 고객 예약 취소 알림
+     * @param reservCancelVO
+     * @param customUser
+     * @param url
+     */
+    private void userCancelNotification(ReservCancelVO reservCancelVO, String type, CustomUser customUser, String url) {
+    	
+    	int reservId = reservCancelVO.getReservId();
+		ReservVO reservVO = reservMapper.selectReservByReservId(reservId);
+		
+		StoreVO storeVO = storeMapper.selectStoreById(reservVO.getStoreId());
+		String storeName = storeVO.getStoreName();
+		
+		UserVO userVO = userMapper.selectUserByUserId(reservVO.getUserId());
+		String user = userVO.getUsername();
+		
+		String reservDate = reservVO.getReservDate();
+		
+		String reservTime = reservVO.getReservHour() + ":" + reservVO.getReservMin();
+		String userMessage = String.format("'%s'의 '%s %s' 예약이 취소되었습니다.", storeName, reservDate, reservTime);
+		
+		createNotification(type, user, userMessage, url);
+		sendSseNotification(type, user, userMessage);
+	}
+
+	/**
+	 * 사업자 예약 취소 알림
+	 * @param reservCancelVO
+	 * @param customUser
+	 * @param url
+	 */
+	private void storeCancelNotification(ReservCancelVO reservCancelVO, String type, CustomUser customUser, String url) {
+		int reservId = reservCancelVO.getReservId();
+		ReservVO reservVO = reservMapper.selectReservByReservId(reservId);
+		
+		StoreVO storeVO = storeMapper.selectStoreById(reservVO.getStoreId());
+		String storeUser = storeVO.getStoreUserId();
+		String storeName = storeVO.getStoreName();
+		
+		String reservDate = reservVO.getReservDate();
+		
+		String storeMessage = String.format("'%s'의 '%s' 예약이 취소되었습니다.", storeName, reservDate);
+		
+		createNotification(type, storeUser, storeMessage, url);
+		sendSseNotification(type, storeUser, storeMessage);
+	}
+	
+	
+	/**
+	 * 가게 등록 승인 여부 알림
+	 * 
+	 */
+	@Override
+	public void storeApprovalNotification(int storeId) {
+		
+		StoreApprovalsVO storeApprovalsVO = storeApprovalsMapper.selectApprovalsByStoreId(storeId);
+		int approvals = storeApprovalsVO.getApprovals();
+		
+		StoreVO storeVO = storeMapper.selectStoreById(storeId);
+		String receiver = storeVO.getStoreUserId();
+		String storeName = storeVO.getStoreName();
+		String url = "/user/business/requestForm";
+		
+		if(approvals == 1) {
+			String type = "storeApproved";
+			String message = String.format("'%s'의 사업자 등록 요청이 승인되었습니다.", storeName);
+			
+			createNotification(type, receiver, message, url);
+	        sendSseNotification(type, receiver, message);
+			
+		} else {
+			String type = "storeRejected";
+			String message = String.format("'%s'의 사업자 등록 요청이 거부되었습니다.", storeName);
+			
+			createNotification(type, receiver, message, url);
+	        sendSseNotification(type, receiver, message);
+		}
+		
+	}
+	
     /**
      * 알림을 DB에 저장하는 메서드
      * @param type 알림 유형
@@ -182,6 +283,7 @@ public class NotificationServiceImple implements NotificationService {
         notificationVO.setMessage(message);
         notificationVO.setUrl(url);
 
+        log.info("notificationVO : " + notificationVO);
         notificationMapper.insert(notificationVO);
     }
 

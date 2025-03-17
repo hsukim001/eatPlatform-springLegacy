@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import com.eatplatform.web.domain.ReservCancelVO;
 import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.CancelReservInfoVO;
+import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -221,14 +223,14 @@ public class ReservServiceImple implements ReservService {
 
 	@Transactional
 	@Override
-	public int cancelReservByList(List<ReservCancelVO> cancelList, String requestType) {
+	public int cancelReservByList(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser) {
 		log.info("cancelReservByList()");
 		int reservStatus = 1;
 		reservMapper.updateCancelStatus(cancelList, reservStatus);
 		reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
 		
-		// 예약 취소 알림
-		notificationService.cancelReservNotification(cancelList);
+		// 예약 취소 알림 전송
+		notificationService.cancelReservNotification(cancelList, customUser);
 		
 		return 1;
 	}

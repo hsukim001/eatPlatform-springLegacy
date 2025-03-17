@@ -36,7 +36,7 @@ public class ReplyRESTController {
 
 		int userId = customUser.getUser().getUserId();
 		replyVO.setUserId(userId);
-
+		
 		// 필수 필드 검증(공백 및 글자 수 제한)
 		if (replyVO.getReplyContent() == null || replyVO.getReplyContent().trim().isEmpty()) {
 			model.addAttribute("error", "Review content cannot be empty.");
@@ -47,6 +47,7 @@ public class ReplyRESTController {
 		log.info("createReply()");
 
 		int result = replyService.createReply(replyVO);
+		
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 
 	}
@@ -60,7 +61,7 @@ public class ReplyRESTController {
 
 		for (ReplyVO replyVO : list) {
 			ReplyVO username = replyService.getReplyWithUsername(replyVO.getReplyId());
-			replyVO.setUserVO(username.getUserVO());
+			replyVO.setUsername(username.getUsername());
 		}
 		log.info("list : " + list);
 		return new ResponseEntity<List<ReplyVO>>(list, HttpStatus.OK);

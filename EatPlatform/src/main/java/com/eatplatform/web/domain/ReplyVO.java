@@ -22,5 +22,6 @@ public class ReplyVO {
 	private Date replyUpdateDate;
 	
 	// username 조회
-	private UserVO userVO;
+	private String username;
+	
 }

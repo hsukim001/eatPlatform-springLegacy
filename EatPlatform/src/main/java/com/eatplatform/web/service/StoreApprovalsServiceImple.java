@@ -22,6 +22,9 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 	
 	@Autowired
 	private StoreMapper storeMapper;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	// 가게 등록 요청 총 건수
 	@Override
@@ -53,6 +56,10 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 		storeApprovalsVO.setApprovals(1);
 		int result = storeApprovalsMapper.updateStoreApprovals(storeApprovalsVO);
 		log.info("가게 등록 요청 " + result + "행 수정");
+		
+		// 가게 등록 승인 알림 전송
+		notificationService.storeApprovalNotification(storeApprovalsVO.getStoreId());
+		
 		return result;
 	}
 
@@ -60,7 +67,19 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 	@Override
 	public int denialManagement(int storeId) {
 		log.info("denialManagement()");
+		
+		// 가게 등록 거부 알림 전송
+		notificationService.storeApprovalNotification(storeId);
+		
 		return storeMapper.deleteStore(storeId);
+	}
+
+	/**
+	 * storeId로 StoreApprovalsVO 조회
+	 */
+	@Override
+	public StoreApprovalsVO getApprovalsByStoreId(int storeId) {
+		return storeApprovalsMapper.selectApprovalsByStoreId(storeId);
 	}
 
 	

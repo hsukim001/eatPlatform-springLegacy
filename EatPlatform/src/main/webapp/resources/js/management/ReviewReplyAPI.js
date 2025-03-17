@@ -46,8 +46,7 @@
 							var reviewDateText = (reviewDate !== reviewUpdateDate) ? reviewUpdateDate + '<span>(수정됨) </span>' : reviewDate;
 				        	
 				        	let loginId = $('#loginId').text();
-							var username = this.userVO.username
-							console.log("로그인 ID: " + loginId + "사용자: " + username); 
+							var username = this.username
 				        	
 							list += '<div class="review_item">'
 								+ '<pre>'
@@ -132,7 +131,6 @@
 			function replyset() {
 				let loginId = $('#loginId').text();
 				let storeUserId = $('#storeUser').val();
-				console.log("로그인 ID: " + loginId + "사장님: " + storeUserId);
 				if (loginId == storeUserId) {
 				let buttons = $('.reply_buttons');
 					$('.review_reply').show();
@@ -155,7 +153,7 @@
 							
 							let loginId = $('#loginId').text();
 							let storeUserId = $('#storeUser').val();
-							var username = this.userVO.username
+							var username = this.username
 							
 							var replyDateText = (replyDate !== replyUpdateDate) ? replyUpdateDate + '<span>(수정됨) </span>' : replyDate;
 													

@@ -98,4 +98,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE appr.STORE_ID = #{storeId}
 		AND appr.APPROVALS = 0
 	</select>
+	
+	<select id="selectApprovalsByStoreId" resultMap="storeApprovalsResultMap">
+		SELECT * FROM STORE_APPROVALS
+		WHERE STORE_ID = #{storeId}
+	</select>
 </mapper>

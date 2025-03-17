@@ -17,4 +17,6 @@ public interface StoreApprovalsService {
 	int storeApproval(StoreApprovalsVO storeApprovalsVO);
 	// 가게 등록 요청 거부, 취소
 	int denialManagement(int storeId);
+	
+	StoreApprovalsVO getApprovalsByStoreId(int storeId);
 }

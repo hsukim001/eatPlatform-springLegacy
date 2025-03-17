@@ -20,4 +20,6 @@ public interface StoreApprovalsMapper {
 	JoinBusinessRequestVO selectApprovals(int storeId);
 	// 식당 등록 요청 승인
 	int updateStoreApprovals(StoreApprovalsVO storeApprovalsVO);
+	
+	StoreApprovalsVO selectApprovalsByStoreId(int storeId);
 }

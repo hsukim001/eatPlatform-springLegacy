@@ -251,14 +251,15 @@ public class ReservRESTController {
 	 * @return Map<String, Object>
 	 */
 	@PostMapping("/cancel/{requestType}")
-	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservCancelVO> cancelList, @PathVariable("requestType") String requestType) {
+	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservCancelVO> cancelList, @PathVariable("requestType") String requestType,
+			@AuthenticationPrincipal CustomUser customUser) {
 		log.info("cancelReservByReservId()");
 		Map<String, Object> map = new HashMap<>();
 		int result = 0;
 		log.info(cancelList);
 		
 		if(cancelList.size() > 0) {
-			result = reservService.cancelReservByList(cancelList, requestType);
+			result = reservService.cancelReservByList(cancelList, requestType, customUser);
 		}
 		
 		if(result == 1) {

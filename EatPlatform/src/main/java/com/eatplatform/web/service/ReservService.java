@@ -9,6 +9,7 @@ import com.eatplatform.web.domain.ReservCancelVO;
 import com.eatplatform.web.domain.ReservInfoVO;
 import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.CancelReservInfoVO;
+import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
 import com.eatplatform.web.domain.StoreVO;
@@ -122,6 +123,6 @@ public interface ReservService {
 	 * @param List<ReservVO> cancelList
 	 * @return int
 	 */
-	int cancelReservByList(List<ReservCancelVO> cancelList, String requestType);
+	int cancelReservByList(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser);
 	
 }
