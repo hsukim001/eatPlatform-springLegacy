@@ -48,27 +48,17 @@ public class ReservServiceImple implements ReservService {
 
 	// 페이징 예약 목록 조회
 	@Override
-	public List<ReservWithStoreNameVO> getReservWithStoreNameList(Pagination pagination, String auth, String keyword) {
+	public List<ReservWithStoreNameVO> getReservWithStoreNameList(Pagination pagination, String auth, String username) {
 		log.info("searchPagingToDayByReservDateUserId()");
 		List<ReservWithStoreNameVO> reservWithStoreNameList = new ArrayList<>();
+		
 		if(auth.contains("ROLE_MEMBER")) {
-			reservWithStoreNameList = reservMapper.selectReservWithStoreNameListByPaginationAndKeywordAndUserId(pagination, keyword);		
+			reservWithStoreNameList = reservMapper.selectReservWithStoreNameListByPaginationAndKeywordAndUserId(pagination);	
 		} else if(auth.contains("ROLE_STORE")) {
+			List<StoreVO> storeList = storeMapper.getStoreIdByStoreUserId(username);
+			reservWithStoreNameList = reservMapper.selectReservWithStoreNameListByPaginationAndKeywordAndStoreIdAndUserId(pagination, storeList);
 		}
-		return reservMapper.selectPagingToDay(pagination);
-	}
-
-	// 페이징 이전 예약 목록 조회
-	@Override
-	public List<ReservWithStoreNameVO> searchPrevDayList(Pagination pagination) {
-		log.info("searchPagingPrevDayByReservDateUserId()");
-		return reservMapper.selectPagingPrevDay(pagination);
-	}
-	
-	@Override
-	public List<ReservWithStoreNameVO> searchCancelList(Pagination pagination) {
-		log.info("searchPagingPrevDayByReservDateUserId()");
-		return reservMapper.selectReservListByCancel(pagination);
+		return reservWithStoreNameList;
 	}
 	
 	@Override
@@ -90,22 +80,17 @@ public class ReservServiceImple implements ReservService {
 
 	// 예약 목록 totalCount
 	@Override
-	public int searchToDayTotalCount(int userId) {
+	public int getTotalCount(int userId, String auth, String keyword, String username, String type) {
 		log.info("searchToDayTotalCountByReservDateUserId()");
-		return reservMapper.selectToDayTotalCount(userId);
-	}
-
-	// 이전 예약 목록 totalCount
-	@Override
-	public int searchPrevDayTotalCount(int userId) {
-		log.info("searchPrevDayTotalCountByReservDateUserId()");
-		return reservMapper.selectPrevDayTotalCount(userId);
-	}
-	
-	@Override
-	public int searchReservCancelTotalCount(int userId) {
-		log.info("searchPrevDayTotalCountByReservDateUserId()");
-		return reservMapper.selectReservCancelTotalCount(userId);
+		int totalCount = 0;
+		log.info("keyword" + keyword);
+		if(auth.contains("ROLE_MEMBER")) {
+			totalCount = reservMapper.selectTotalCountByUserId(userId, type, keyword);
+		} else if(auth.contains("ROLE_STORE")) {
+			List<StoreVO> storeList = storeMapper.getStoreIdByStoreUserId(username);
+			totalCount = reservMapper.selectTotalCountByStoreId(storeList, type, keyword);
+		}
+		return totalCount;
 	}
 	
 	@Override
@@ -170,16 +155,6 @@ public class ReservServiceImple implements ReservService {
 
 	}
 
-	// 예약 취소
-	@Override
-	public int cancelReserv(int reservId) {
-		log.info("cancelReserv()");
-		int cancelStatus = 1;
-		int result = 0;
-		//int result = reservMapper.updateCancelStatus(reservId, cancelStatus);
-		return result;
-	}
-
 	// 예약 가능시간 조회
 	@Override
 	public List<StoreScheduleVO> searchSchedule(StoreScheduleVO storeScheduleVO, int personnel) {
@@ -221,18 +196,21 @@ public class ReservServiceImple implements ReservService {
 		return reservMapper.selectReservListByStoreIdReservDateReservHourReservMin(reservVO);
 	}
 
-	@Transactional
 	@Override
 	public int cancelReservByList(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser) {
 		log.info("cancelReservByList()");
-		int reservStatus = 1;
-		reservMapper.updateCancelStatus(cancelList, reservStatus);
-		reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
+		int result = reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
 		
 		// 예약 취소 알림 전송
 		notificationService.cancelReservNotification(cancelList, customUser);
 		
-		return 1;
+		return result;
+	}
+
+	@Override
+	public int updateCancelStatusByList(List<ReservCancelVO> cancelList) {
+		int reservStatus = 1;
+		return reservMapper.updateCancelStatus(cancelList, reservStatus);
 	}
 
 }

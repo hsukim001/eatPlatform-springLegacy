@@ -114,6 +114,11 @@ public class ManagementController {
 		
 	}
 	
+	@GetMapping("/reserv/list")
+	public String managementReservList(Model model) {
+		return "/management/reserv/list";
+	}
+	
 	/**
 	 * @param model
 	 * @param pagination

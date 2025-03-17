@@ -48,17 +48,31 @@
 			<jsp:include page="/include/myPageLeft.jsp"/>
 		
 			<h1>나의 예약 목록</h1>
-			<div>
-				<span id="reservList" class="selectSpan">예약 목록</span>
-				<span id="preReservHistory" class="spanBtn">이전 예약 내역</span>
-				<span id="cancelReservHistory" class="spanBtn">예약 취소 내역</span>
+			<div class="search-container">
+				<div class="search-type">
+					<span id="allListBtn" class="spanBtn selectSpan">전체</span>
+					<span id="currentListBtn" class="spanBtn">예약 일정</span>
+					<span id="prevListBtn" class="spanBtn">이전 예약 내역</span>
+					<span id="cancelListBtn" class="spanBtn">예약 취소 내역</span>
+				</div>
+				<div class="search-title">
+					<input id="keyword" type="text" placeholder="가게 이름을 입력해주세요.">
+					<span class="searchBtn">검색</span>					
+				</div>
 			</div>
 			
 			<div>
 				<p id="totalCount"></p>
 				<table>
 					<thead id="tableHead">
-						<!-- js로 table head load -->
+						<tr>
+							<th>번호</th>
+							<th>식당명</th>
+							<th>예약 일자</th>
+							<th>예약 인원</th>
+							<th>상태</th>
+							<th>예약 신청일</th>
+						</tr>
 					</thead>
 					<tbody id="tableBody">
 						<!-- ajax로 table load -->

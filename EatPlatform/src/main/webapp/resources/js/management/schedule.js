@@ -868,8 +868,27 @@ $(function () {
 						},
 						data : JSON.stringify(requestData),
 						success : function(response) {
-							if(response.result == 1) {
-								cancelReservStatus = 1;
+							if(response.result == 1) {								
+								$.ajax({
+									url : '/reserv/cancel/list',
+									type : 'put',
+									headers : {
+										"Content-Type" : "application/json"
+									},
+									data : JSON.stringify(requestData),
+									success : function(response) {
+										if(response == 1) {
+											cancelReservStatus = 1;											
+										} else if(response == 0) {
+											cancelReservStatus = 0;	
+										}
+										resolve(cancelReservStatus);
+									},
+									error : function() {
+										cancelReservStatus = 3;
+										resolve(cancelReservStatus);
+									}
+								});
 							} else if(response.result == 0) {
 								cancelReservStatus = 0;
 							}

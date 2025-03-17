@@ -13,6 +13,7 @@ import com.eatplatform.web.domain.ReservVO;
 import com.eatplatform.web.domain.CancelReservInfoVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreScheduleVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.util.Pagination;
 
 @Mapper
@@ -23,19 +24,15 @@ public interface ReservMapper {
 	 * @param String keyword
 	 * @return List<ReservWithStoreNameVO>
 	 */
-	List<ReservWithStoreNameVO> selectReservWithStoreNameListByPaginationAndKeywordAndUserId(@Param("pagination") Pagination pagination, @Param("keyword") String keyword);
-	
-	// 예약 목록 조회
-	List<ReservWithStoreNameVO> selectPagingToDay(Pagination pagination);
-	// 이전 예약 목록 조회
-	List<ReservWithStoreNameVO> selectPagingPrevDay(Pagination pagination);
-	
+	List<ReservWithStoreNameVO> selectReservWithStoreNameListByPaginationAndKeywordAndUserId(@Param("pagination") Pagination pagination);
 	
 	/**
 	 * @param pagination
+	 * @param keyword
+	 * @param storeList
 	 * @return List<ReservWithStoreNameVO>
 	 */
-	List<ReservWithStoreNameVO> selectReservListByCancel(Pagination pagination);
+	List<ReservWithStoreNameVO> selectReservWithStoreNameListByPaginationAndKeywordAndStoreIdAndUserId(@Param("pagination") Pagination pagination, @Param("storeList") List<StoreVO> storeList);
 	
 	/**
 	 * @param reservId
@@ -77,7 +74,15 @@ public interface ReservMapper {
 	List<CancelReservInfoVO> joinReservWithCancelReservIdCancelCommentAndUserNamePhoneByStoreIdCancelStatus(@Param("storeId") int storeId, @Param("cancelStatus") int cancelStatus);
 	
 	// 예약 목록 총 건수 조회
-	int selectToDayTotalCount(int userId);
+	int selectTotalCountByUserId(@Param("userId") int userId, @Param("type") String type, @Param("keyword") String keyword);
+	
+	/**
+	 * @param storeList
+	 * @param keyword
+	 * @return int
+	 */
+	int selectTotalCountByStoreId(@Param("storeList") List<StoreVO> storeList, @Param("type") String type, @Param("keyword") String keyword);
+	
 	// 이전 예약 목록 총 건수 조회
 	int selectPrevDayTotalCount(int userId);
 	

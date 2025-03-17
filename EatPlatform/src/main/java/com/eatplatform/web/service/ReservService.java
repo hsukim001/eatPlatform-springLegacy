@@ -22,20 +22,7 @@ public interface ReservService {
 	 * @param pagination
 	 * @return
 	 */
-	List<ReservWithStoreNameVO> getReservWithStoreNameList(Pagination pagination, String auth, String keyword);
-	
-	/**
-	 * 이전 예약 목록 조회
-	 * @param pagination
-	 * @return
-	 */
-	List<ReservWithStoreNameVO> searchPrevDayList(Pagination pagination);
-	
-	/**
-	 * @param pagination
-	 * @return
-	 */
-	List<ReservWithStoreNameVO> searchCancelList(Pagination pagination);
+	List<ReservWithStoreNameVO> getReservWithStoreNameList(Pagination pagination, String auth, String username);
 	
 	/**
 	 * 예약 가능 시간 조회
@@ -83,20 +70,7 @@ public interface ReservService {
 	 * @param userId
 	 * @return
 	 */
-	int searchToDayTotalCount(int userId);
-
-	/**
-	 * 이전 예약 목록 총 건수 조회
-	 * @param userId
-	 * @return
-	 */
-	int searchPrevDayTotalCount(int userId);
-	
-	/**
-	 * @param userId
-	 * @return
-	 */
-	int searchReservCancelTotalCount(int userId);
+	int getTotalCount(int userId, String auth, String keyword, String username, String type);
 	
 	/**
 	 * @param userId
@@ -111,18 +85,17 @@ public interface ReservService {
 	 * @return
 	 */
 	int createdReserv(ReservVO reservVO, int reservLimit);
-
-	/**
-	 * 예약 취소
-	 * @param reservId
-	 * @return
-	 */
-	int cancelReserv(int reservId);
 	
 	/**
 	 * @param List<ReservVO> cancelList
 	 * @return int
 	 */
 	int cancelReservByList(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser);
+	
+	/**
+	 * @param cancelList
+	 * @return int
+	 */
+	int updateCancelStatusByList(List<ReservCancelVO> cancelList);
 	
 }

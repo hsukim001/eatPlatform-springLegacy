@@ -13,7 +13,7 @@ public class Pagination {
 	private int pageNum; // 현재 페이지 번호
 	private int pageSize; // 현재 페이지 사이즈
 	private String type; // 검색 항목
-	private String keyword; // 검색 키워드 
+	private String keyword; // 검색 키워드
 
 	public Pagination() {
 		this.pageNum = 1; // 기본 페이지 번호 설정
@@ -29,6 +29,14 @@ public class Pagination {
 		this.userId = userId;
 		this.pageNum = page;
 		this.pageSize = pageSize;
+	}
+	
+	public Pagination(int userId, int page, int pageSize, String keyword, String type) {
+		this.userId = userId;
+		this.pageNum = page;
+		this.pageSize = pageSize;
+		this.keyword = keyword;
+		this.type = type;
 	}
 
 	// 선택된 페이지의 시작 글 일련번호(rn) - #{start}

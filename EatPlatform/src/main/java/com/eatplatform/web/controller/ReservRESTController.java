@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.CustomUser;
@@ -51,78 +52,26 @@ public class ReservRESTController {
 	 * @param customUser
 	 * @return
 	 */
-	@GetMapping("/toDay/{pageNum}/{keyword}")
-	public ResponseEntity<DataResponse> getReservList(@PathVariable("pageNum") int pageNum, @PathVariable("keyword") String keyword, @AuthenticationPrincipal CustomUser customUser) {
+	@GetMapping("/toDay/{pageNum}/{type}")
+	public ResponseEntity<DataResponse> getReservList(@PathVariable("pageNum") int pageNum, @PathVariable("type") String type, @RequestParam(value = "keyword", required = false, defaultValue="") String keyword, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("getReservList()");
 		int pageSize = 5;
-		log.info("pageNum = " + pageNum);
 		
 		// session에서 사용자 아이디 로드
 		int userId = customUser.getUser().getUserId();
+		String username = customUser.getUsername();
 		String auth = customUser.getAuthorities().toString();
 
-		Pagination pagination = new Pagination(userId, pageNum, pageSize);
+		Pagination pagination = new Pagination(userId, pageNum, pageSize, keyword, type);
+		log.info(pagination);
 		
-		List<ReservWithStoreNameVO> list = reservService.getReservWithStoreNameList(pagination, auth, keyword);
-			
-
+		List<ReservWithStoreNameVO> list = reservService.getReservWithStoreNameList(pagination, auth, username);
+		
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
-		int totalCount = reservService.searchToDayTotalCount(userId);
+		int totalCount = reservService.getTotalCount(userId, auth, keyword, username, type);
 		log.info("totalCount : " + totalCount);
 		pageMaker.setTotalCount(totalCount);
-
-		DataResponse dataResponse = new DataResponse(list, pageMaker);
-
-		return new ResponseEntity<DataResponse>(dataResponse, HttpStatus.OK);
-	}
-
-	// 페이징 이전 예약 목록 조회(pageNum, userId)
-	/**
-	 * @param pageNum
-	 * @param customUser
-	 * @return
-	 */
-	@GetMapping("/prevDay/{pageNum}")
-	public ResponseEntity<DataResponse> searchPagingPrevDay(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
-		log.info("searchPagingToDay()");
-		int pageSize = 5;
-		
-		// session에서 사용자 아이디 로드
-		int userId = customUser.getUser().getUserId();
-
-		Pagination pagination = new Pagination(userId, pageNum, pageSize);
-
-		List<ReservWithStoreNameVO> list = reservService.searchPrevDayList(pagination);
-
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.setPagination(pagination);
-		int totalCount = reservService.searchPrevDayTotalCount(userId);
-		pageMaker.setTotalCount(totalCount);
-		log.info("prev totalCount : " + totalCount);
-
-		DataResponse dataResponse = new DataResponse(list, pageMaker);
-
-		return new ResponseEntity<DataResponse>(dataResponse, HttpStatus.OK);
-	}
-	
-	@GetMapping("/cancel/{pageNum}")
-	public ResponseEntity<DataResponse> searchCancelList(@PathVariable("pageNum") int pageNum, @AuthenticationPrincipal CustomUser customUser) {
-		log.info("searchCancelList()");
-		int pageSize = 5;
-		
-		// session에서 사용자 아이디 로드
-		int userId = customUser.getUser().getUserId();
-
-		Pagination pagination = new Pagination(userId, pageNum, pageSize);
-
-		List<ReservWithStoreNameVO> list = reservService.searchCancelList(pagination);
-
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.setPagination(pagination);
-		int totalCount = reservService.searchReservCancelTotalCount(userId);
-		pageMaker.setTotalCount(totalCount);
-		log.info("cancel totalCount : " + totalCount);
 
 		DataResponse dataResponse = new DataResponse(list, pageMaker);
 
@@ -166,19 +115,6 @@ public class ReservRESTController {
 		vo.setUserId(userId);
 		int result = reservService.createdReserv(vo, reservLimit);
 		
-		return new ResponseEntity<Integer>(result, HttpStatus.OK);
-	}
-
-	// 예약 취소
-	/**
-	 * @param reservId
-	 * @return
-	 */
-	@DeleteMapping("/cancel/{reservId}")
-	public ResponseEntity<Integer> cancelReserv(@PathVariable("reservId") int reservId) {
-		log.info("cancelReserv()");
-		int result = reservService.cancelReserv(reservId);
-
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
@@ -269,6 +205,16 @@ public class ReservRESTController {
 		}
 		
 		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param cancelList
+	 * @return ResponseEntity<Integer>
+	 */
+	@PutMapping("/cancel/list")
+	public ResponseEntity<Integer> updateCancelStatusByReservId(@RequestBody List<ReservCancelVO> cancelList) {
+		int result = reservService.updateCancelStatusByList(cancelList);
+		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 
 }
