@@ -90,7 +90,7 @@ public interface ReservService {
 	 * @param List<ReservVO> cancelList
 	 * @return int
 	 */
-	int cancelReservByList(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser);
+	int createdCancelHistory(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser);
 	
 	/**
 	 * @param cancelList

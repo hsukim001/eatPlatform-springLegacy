@@ -197,8 +197,8 @@ public class ReservServiceImple implements ReservService {
 	}
 
 	@Override
-	public int cancelReservByList(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser) {
-		log.info("cancelReservByList()");
+	public int createdCancelHistory(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser) {
+		log.info("createdCancelHistory()");
 		int result = reservCancelMapper.insertReservCancelByReservList(cancelList, requestType);
 		
 		// 예약 취소 알림 전송
@@ -209,8 +209,8 @@ public class ReservServiceImple implements ReservService {
 
 	@Override
 	public int updateCancelStatusByList(List<ReservCancelVO> cancelList) {
-		int reservStatus = 1;
-		return reservMapper.updateCancelStatus(cancelList, reservStatus);
+		int cancelStatus = 1;
+		return reservMapper.updateCancelStatus(cancelList, cancelStatus);
 	}
 
 }

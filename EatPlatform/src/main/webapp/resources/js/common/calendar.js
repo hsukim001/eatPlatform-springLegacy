@@ -42,11 +42,11 @@ $(function () {
 		xhr.setRequestHeader(header, token);
 	});
 	
-	$('#createdReserv').click(function(){
-	    //updateSelectedTime(); 
-	    //alert(selectTimeHour);
-	    //alert(selectTimeMinutes);
-	    createdReserv();
+	$('#createdReserv').click(function(){	
+		let isConfirm = confirm(dateText + " " + timeValue + "에 예약을 진행하시겠습니까?");
+		if(isConfirm) {
+		    createdReserv();			
+		}
 	});
 	
 	$(document).on('click', '.calendar div', function(){

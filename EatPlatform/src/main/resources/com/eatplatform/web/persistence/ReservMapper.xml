@@ -274,6 +274,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectReservListByHolidayList" parameterType="map" resultMap="reservWithStoreNameResultMap">
 		SELECT * FROM RESERV
 		WHERE STORE_ID = #{storeId}
+		AND CANCEL_STATUS = 0
 		AND RESERV_DATE IN
 		<foreach collection="holidayList" item="list" open="(" close=")" separator=",">
 			#{list.holiday}
@@ -295,6 +296,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT RESERV_DATE FROM (
 		    SELECT RESERV_DATE, COUNT(RESERV_ID) AS COUNT FROM RESERV
 		    WHERE STORE_ID = #{storeId} 
+		    AND CANCEL_STATUS = 0
 		    AND RESERV_DATE IN
 		    <foreach collection="holidayList" item="list" open="(" close=")" separator=",">
 		    	#{list.holiday}
