@@ -94,5 +94,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		LEFT JOIN USER_MEMBER u ON r.USER_ID = u.USER_ID
 		WHERE REVIEW_ID = #{reviewId}
 	</select>
+		
+    <select id="selectAverageStarByStoreId" resultType="java.math.BigDecimal">
+        SELECT AVG(REVIEW_STAR)
+        FROM REVIEW
+        WHERE STORE_ID = #{storeId}
+    </select>
 
 </mapper>

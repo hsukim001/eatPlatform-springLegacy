@@ -1,5 +1,6 @@
 package com.eatplatform.web.persistence;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,9 @@ public interface StoreMapper {
 	
 	//  List Pagination
 	List<StoreVO> getStoresWithPaging(Map<String, Object> params);
+	
+	// 모든 게시글 StoreId 추출
+    List<Long> selectAllStoreIds();
 
 	// storeId로 검색하여 조회
 	StoreVO selectStoreById(int storeId);
@@ -50,6 +54,8 @@ public interface StoreMapper {
 	int updateStore(StoreVO storeVO);
 	
 	int updateStoreCategory(StoreCategoryVO storeCategoryVO);
+	
+	int updateStoreScore(@Param("storeId") Long storeId, @Param("score") BigDecimal score);
 	
 	int deleteStore(int storeid);
 }

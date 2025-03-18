@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="description" column="DESCRIPTION" />
 		<result property="storeRegDate" column="STORE_REG_DATE" />
 		<result property="storeUpdateDate" column="STORE_UPDATE_DATE" />
+		<result property="score" column="score" />
 	</resultMap>
 	
 	<resultMap type="com.eatplatform.web.domain.StoreCategoryVO" id="StoreCategoryResultMap">
@@ -197,6 +198,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM STORE_CATEGORY
 		WHERE STORE_ID = ${storeId}
 	</select>
+	
+    <select id="selectAllStoreIds" resultType="java.lang.Long">
+        SELECT STORE_ID
+        FROM STORE
+    </select>
 
 	<!-- 가게 정보 수정 -->
 	<update id="updateStore">
@@ -222,6 +228,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SUB_CATEGORY_ID = #{subCategoryId},
 		MAIN_CATEGORY_NAME = #{mainCategoryName},
 		SUB_CATEGORY_NAME = #{subCategoryName}
+		WHERE STORE_ID = #{storeId}
+	</update>
+	
+	<update id="updateStoreScore">
+		UPDATE STORE
+		SET SCORE = #{score}
 		WHERE STORE_ID = #{storeId}
 	</update>
 	

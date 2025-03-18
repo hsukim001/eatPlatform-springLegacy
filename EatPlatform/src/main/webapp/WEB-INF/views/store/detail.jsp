@@ -23,6 +23,31 @@
 	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	<script>
 		$(function(){
+
+		    $(".phoneNum").each(function() {
+		        let rawPhone = $(this).text().trim();
+		        let formattedPhone = formatPhoneNumber(rawPhone);
+		        if (formattedPhone) {
+		            $(this).text(formattedPhone);
+		        }
+		    });
+		    
+		    function formatPhoneNumber(phone) {
+		        phone = phone.replace(/\D/g, "");
+
+		        if (phone.length === 9) {
+		            return phone.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+		        } else if (phone.length === 10) {
+		            return phone.replace(/(\d{2,3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+		        } else if (phone.length === 11) {
+		            return phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+		        } else if (phone.length === 12) {
+		            return phone.replace(/(\d{4})(\d{4})(\d{4})/, "$1-$2-$3");
+		        }
+
+		        return phone;
+		    }
+			
 			
 			$('#reservBtn').click(function(){
 				fetch('../access/auth/status', { method : 'get', credentials: 'include' })
@@ -164,11 +189,13 @@
 							<li>
 								<span class="textTitle">연락처 </span> 
 								<span class="colon">:</span>
-								<span class="textValue">${storeVO.storePhone }</span></li>
+								<span class="textValue phoneNum">${storeVO.storePhone }</span>
+							</li>
 							<li>
 								<span class="textTitle">대표명 </span>
 								<span class="colon">:</span>
-								<span class="textValue">${storeVO.ownerName }</span></li>
+								<span class="textValue">${storeVO.ownerName }</span>
+							</li>
 							<li>
 								<span class="textTitle">최근 등록일 </span> 
 								<span class="colon">:</span> 
@@ -177,11 +204,8 @@
 							<li>
 								<span class="textTitle">별점 </span> 
 								<span class="colon">:</span>
-								<span class="textValue">${storeVO.storeUpdateDate }</span></li>
-							<li>
-								<span class="textTitle">추천 수 </span> 
-								<span class="colon">:</span>
-								<span class="textValue">${storeVO.storeUpdateDate }</span></li>
+								<span class="textValue">${storeVO.score }</span>
+							</li>
 						</ul>
 
 					</div>

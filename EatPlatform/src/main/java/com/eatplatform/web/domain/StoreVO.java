@@ -1,5 +1,6 @@
 package com.eatplatform.web.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.Getter;
@@ -24,4 +25,5 @@ public class StoreVO {
 	private String description;
 	private LocalDate storeRegDate;
 	private LocalDate storeUpdateDate;
+	private BigDecimal score;
 }

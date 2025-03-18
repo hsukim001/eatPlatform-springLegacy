@@ -57,6 +57,9 @@
 
 #storeInfoText ul li {
 	width: 100%;
+	display: flex;
+    justify-content: space-evenly;
+	align-items: center;
 	border-bottom: 1px solid #ddd;
 }
 

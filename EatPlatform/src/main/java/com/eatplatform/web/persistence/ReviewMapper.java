@@ -1,5 +1,6 @@
 package com.eatplatform.web.persistence;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -15,7 +16,8 @@ public interface ReviewMapper {
 	ReviewVO selectByReviewId(int reviewId); // reviewId 조회
 	int update(ReviewVO reviewVO);
 	int delete(int reviewId);
-	 
+	BigDecimal selectAverageStarByStoreId(Long storeId);
+	
 	/**
 	 * 추천 수 변경
 	 * @param reviewId
