@@ -25,5 +25,10 @@ public interface ReviewService {
 	 
 	int countAllReviewsByStoreId(int storeId);
 	
-
+	/**
+	 * 신고된 리뷰 총 건수 조회
+	 * @return int
+	 */
+	int getReviewReportCount();
+	
 }

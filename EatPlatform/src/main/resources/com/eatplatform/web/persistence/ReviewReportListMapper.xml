@@ -41,6 +41,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE RN BETWEEN #{start} AND #{end}
 	</select>
 	
+	<select id="selectReportListByReviewId" resultMap="reviewReportListResultMap">
+		SELECT DISTINCT REVIEW_REPORT_LIST_ID,
+			   REVIEW_ID,
+			   REVIEW_REPORT_MESSAGE
+		FROM REVIEW_REPORT_LIST
+		WHERE REVIEW_ID = #{reviewId}
+	</select>
+	
 	<select id="getTotalCount" resultType="Integer">
 		SELECT COUNT(*) 
 		FROM REVIEW_REPORT_LIST
@@ -53,5 +61,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		VALUES (REVIEW_REPORT_LIST_SEQ.NEXTVAL, #{reviewId}, #{userId}, 
 		#{reviewReportMessage}, #{reviewContent})
 	</insert>
+	
+	<delete id="deleteReviewReportByReviewId">
+		DELETE FROM REVIEW_REPORT_LIST
+		WHERE REVIEW_ID = #{reviewId}
+	</delete>
 	
 </mapper>

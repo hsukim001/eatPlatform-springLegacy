@@ -2,6 +2,7 @@ package com.eatplatform.web.service;
 
 import java.util.List;
 
+import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.ReviewReportListVO;
 import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.util.Pagination;
@@ -13,7 +14,19 @@ public interface ReviewReportListService {
 	 * @param Pagination pagination
 	 * @return List<ReviewReportListWithUserAtName>
 	 */
-	List<ReviewReportListWithUserAtNameVO> getReviewReportList(Pagination pagination);
+	List<JoinReviewReportVO> getReviewReportList(Pagination pagination);
+	
+	/**
+	 * @param reviewId
+	 * @return
+	 */
+	List<ReviewReportListVO> getReviewReportListByReviewId(int reviewId);
+	
+	/**
+	 * @param reviewId
+	 * @return
+	 */
+	JoinReviewReportVO getReviewReportInfo(int reviewId);
 	
 	/**
 	 * 신고 총 건수 조회
@@ -30,4 +43,11 @@ public interface ReviewReportListService {
 	 * @return
 	 */
 	int isReviewReported(int reviewId, int userId);
+	
+	/**
+	 * @param reviewId
+	 * @param reviewReportList
+	 * @return
+	 */
+	int deleteReview(int reviewId);
 }

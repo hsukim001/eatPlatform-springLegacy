@@ -155,4 +155,9 @@ public class ReviewServiceImple implements ReviewService{
 		return reviewVO;
 	}
 
+	@Override
+	public int getReviewReportCount() {
+		return reviewMapper.getReviewReportCount();
+	}
+
 }

@@ -19,6 +19,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="reviewUpdateDate" column="REVIEW_UPDATE_DATE" />
 		<result property="username" column="USERNAME"/>
 	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.JoinReviewReportVO" id="joinReviewReportResultMap">
+		<id property="reviewId" column="REVIEW_ID" />
+		<result property="storeId" column="STORE_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="reviewContent" column="REVIEW_CONTENT" />
+		<result property="reviewReport" column="REVIEW_REPORT" />
+		<result property="reviewUpdateDate" column="REVIEW_UPDATE_DATE" />
+		<result property="storeName" column="STORE_NAME"/>
+		<result property="name" column="NAME"/>
+	</resultMap>
 
 	<insert id="insert">
 		INSERT INTO REVIEW (REVIEW_ID, STORE_ID, USER_ID,
@@ -99,6 +110,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT AVG(REVIEW_STAR)
         FROM REVIEW
         WHERE STORE_ID = #{storeId}
+    </select>
+    
+    <select id="selectReviewReportByPagination" resultMap="joinReviewReportResultMap">
+    	SELECT R.REVIEW_ID,
+    		   R.STORE_ID,
+    		   R.USER_ID,
+    		   R.REVIEW_REPORT, 
+    		   R.REVIEW_CONTENT, 
+    		   R.REVIEW_UPDATE_DATE, 
+    		   S.STORE_NAME, 
+    		   U.NAME
+		FROM (
+			  SELECT REVIEW.*,
+			  ROW_NUMBER() OVER(ORDER BY REVIEW_UPDATE_DATE DESC) AS RN 
+			  FROM REVIEW 
+			  WHERE REVIEW_REPORT > 0
+			  ) R
+		INNER JOIN STORE S
+		ON R.STORE_ID = S.STORE_ID
+		INNER JOIN USER_MEMBER U
+		ON R.USER_ID = U.USER_ID
+		WHERE R.RN BETWEEN #{start} AND #{end}
+    </select>
+    
+    <select id="getReviewReportCount" resultType="Integer">
+    	SELECT COUNT(*)
+    	FROM REVIEW
+    	WHERE REVIEW_REPORT > 0
+    </select>
+    
+    <select id="selectReviewReportByReviewId" resultMap="joinReviewReportResultMap">
+    	SELECT R.REVIEW_ID,
+    		   R.STORE_ID,
+    		   R.USER_ID,
+    		   R.REVIEW_REPORT, 
+    		   R.REVIEW_CONTENT, 
+    		   R.REVIEW_UPDATE_DATE, 
+    		   S.STORE_NAME, 
+    		   U.NAME
+		FROM REVIEW R
+		INNER JOIN STORE S
+		ON R.STORE_ID = S.STORE_ID
+		INNER JOIN USER_MEMBER U
+		ON R.USER_ID = U.USER_ID
+		WHERE R.REVIEW_ID = #{reviewId}
+		AND R.REVIEW_REPORT > 0
     </select>
 
 </mapper>

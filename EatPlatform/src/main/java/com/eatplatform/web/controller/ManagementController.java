@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.CustomUser;
+import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.persistence.ReviewMapper;
 import com.eatplatform.web.service.ManagementService;
 import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.ReviewReportListService;
@@ -44,6 +46,9 @@ public class ManagementController {
 	
 	@Autowired
 	private ReviewReportListService reviewReportListService;
+	
+	@Autowired
+	private ReviewMapper reviewMapper;
 	
 	/**
 	 * 가게 목록 조회
@@ -126,8 +131,8 @@ public class ManagementController {
 	 */
 	@GetMapping("/report/reviewList")
 	public String reviewReportList(Model model, Pagination pagination) {
-		List<ReviewReportListWithUserAtNameVO> reviewReportList = reviewReportListService.getReviewReportList(pagination);
-		int totalCount = reviewReportListService.getTotalCount();
+		List<JoinReviewReportVO> reviewReportList = reviewReportListService.getReviewReportList(pagination);
+		int totalCount = reviewMapper.getReviewReportCount();
 		
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);

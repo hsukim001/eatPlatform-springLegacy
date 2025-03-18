@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.ReviewVO;
+import com.eatplatform.web.util.Pagination;
 
 @Mapper
 public interface ReviewMapper {
@@ -49,5 +51,22 @@ public interface ReviewMapper {
 		
 	// username 조회
 	ReviewVO findReviewWithUsername(int reviewId);
+	
+	/**
+	 * @param Pagination pagination
+	 * @return List<JoinReviewReportVO>
+	 */
+	List<JoinReviewReportVO> selectReviewReportByPagination(Pagination pagination);
+	
+	/**
+	 * @param int reviewId
+	 * @return JoinReviewReportVO
+	 */
+	JoinReviewReportVO selectReviewReportByReviewId(int reviewId);
+	
+	/**
+	 * @return int
+	 */
+	int getReviewReportCount();
 	
 }

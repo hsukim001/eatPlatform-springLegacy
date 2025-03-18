@@ -15,26 +15,31 @@
 
 			<div>
 				<ul>
-					<li id="phone">
-						<span class="textTitle">신고 유형</span><span class="colon">:</span><span class="textValue"></span>
+					<li id="reviewReport">
+						<span class="textTitle">총 신고 건수</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
-					<li id="phone">
-						<span class="textTitle">작성자 명</span><span class="colon">:</span><span class="textValue"></span>
+					<li id="reviewId">
+						<span class="textTitle">번호</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
-					<li id="address">
-						<span class="textTitle">내용</span><span class="colon">:</span><span class="textValue"></span>
+					<li id="storeName">
+						<span class="textTitle">매장명</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
-					<li id="reservDate">
-						<span class="textTitle">신고자</span><span class="colon">:</span><span class="textValue"></span>
+					<li id="writer">
+						<span class="textTitle">작성자</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
-					<li id="reservTime">
+					<li id="reviewContent">
+						<span class="textTitle">리뷰 내용</span><span class="colon">:</span><span class="textValue"></span>
+					</li>
+					<li id="reviewUpdateDate">
 						<span class="textTitle">신고 등록일</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
+				</ul>
+				<ul id="reportType">
 				</ul>
 			</div>
 			
 			<div class="btnContainer">
-				<!-- button load -->
+				<button id="deleteBtn">리뷰 삭제</button>
 			</div>
 		</div>
 	</div>

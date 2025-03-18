@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.ReviewReportListVO;
 import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.persistence.ReviewMapper;
@@ -25,8 +26,18 @@ public class ReviewReportListServiceImple implements ReviewReportListService {
 	private ReviewMapper reviewMapper;
 	
 	@Override
-	public List<ReviewReportListWithUserAtNameVO> getReviewReportList(Pagination pagination) {
-		return reviewReportListMapper.selectReportListByPagination(pagination);
+	public List<JoinReviewReportVO> getReviewReportList(Pagination pagination) {
+		return reviewMapper.selectReviewReportByPagination(pagination);
+	}
+	
+	@Override
+	public List<ReviewReportListVO> getReviewReportListByReviewId(int reviewId) {
+		return reviewReportListMapper.selectReportListByReviewId(reviewId);
+	}
+	
+	@Override
+	public JoinReviewReportVO getReviewReportInfo(int reviewId) {
+		return reviewMapper.selectReviewReportByReviewId(reviewId);
 	}
 	
 	@Override
@@ -62,6 +73,18 @@ public class ReviewReportListServiceImple implements ReviewReportListService {
 		int result = reviewReportListMapper.checkReport(reviewReportListVO);
 		if(result > 0) {
 			log.info("이미 신고된 리뷰입니다.");
+		}
+		return result;
+	}
+
+	@Transactional
+	@Override
+	public int deleteReview(int reviewId) {
+		int result = 0;
+		int reviewResult = reviewMapper.delete(reviewId);
+		int reportResult = reviewReportListMapper.deleteReviewReportByReviewId(reviewId);
+		if(reviewResult == 1 && reportResult == 1) {
+			result = 1;
 		}
 		return result;
 	}

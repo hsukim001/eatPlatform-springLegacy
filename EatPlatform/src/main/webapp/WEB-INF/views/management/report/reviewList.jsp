@@ -13,6 +13,7 @@ pageEncoding="UTF-8"%>
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/myPageLeft.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/modal.css">
 	<style type="text/css">
 		
 	
@@ -58,20 +59,29 @@ pageEncoding="UTF-8"%>
 				<thead>
 					<tr>
 						<th>번호</th>
-						<th>신고유형</th>
-						<th>신고자 명</th>
-						<th>신고 등록일</th>
+						<th>매장명</th>
+						<th>작성자</th>
+						<th>등록일</th>
+						<th>총 신고 건수</th>
 					</tr>
 				</thead>
 				<tbody id="tableBody">
-					<c:forEach var="list" items="${list }">
-						<tr data-id-value="${list.reviewReportListId }">
-							<td>${list.reviewReportListId }</td>
-							<td>${list.reviewReportMessage }</td>
-							<td>${list.name }</td>
-							<td><fmt:formatDate value="${list.reviewReportDate}" pattern="yyyy-MM-dd" /></td>
-						</tr>
-					</c:forEach>
+					<c:if test="${empty list}">
+					    <tr>
+					    	<td colspan="5">목록이 존재하지 않습니다.</td>
+					    </tr>
+					</c:if>
+					<c:if test="${not empty list}">
+						<c:forEach var="list" items="${list }">
+							<tr data-id-value="${list.reviewId }">
+								<td>${list.reviewId }</td>
+								<td>${list.storeName }</td>
+								<td>${list.name }</td>
+								<td><fmt:formatDate value="${list.reviewUpdateDate}" pattern="yyyy-MM-dd" /></td>
+								<td>${list.reviewReport }</td>
+							</tr>
+						</c:forEach>
+					</c:if>
 				</tbody>
 			</table>
 			<ul>
@@ -89,6 +99,9 @@ pageEncoding="UTF-8"%>
 					<li><a href="list?pageNum=${pageMaker.endNum + 1}">다음</a></li>
 				</c:if>
 			</ul>
+			<div>
+				<jsp:include page="/include/modal/reviewReportInfo.jsp" />
+			</div>
 		</div>
 	</div>
 </body>
