@@ -627,6 +627,7 @@ $(function () {
 			
 			checkReservList()
 				.then(cancelReservList)
+				.then(createdCancelHistory)
 				.then(holidayRegistration)
 				.then(cancelHoliday)
 				.then(holidayExceptionalMsg);
@@ -717,7 +718,7 @@ $(function () {
 					}
 					list.push(selectHolidayList[i]);
 				}
-				console.log("checkReservList : " + list);
+				console.log("checkReservList : " + 	list);
 				joinList = list.map(obj => obj.holiday).join(",");
 				
 				checkUrl = '/store/holiday/check/reservList/' + storeId + '/' + joinList;
@@ -843,6 +844,7 @@ $(function () {
 		});
 	} // End searchHoliday
 	
+	// 예약 취소 ajax 함수
 	function cancelReservList(status) {
 		return new Promise((resolve) => {
 			if(status == 1) {
@@ -859,60 +861,93 @@ $(function () {
 					}
 					
 					console.log("cancelReservList : " + cancelList);
-					let requestType = "STORE";
-					$.ajax({
-						url : '/reserv/cancel/' + requestType,
-						type : 'post',
+					
+					$.ajax({ // 예약 취소
+						url : '/reserv/cancel/status',
+						type : 'put',
 						headers : {
 							"Content-Type" : "application/json"
 						},
 						data : JSON.stringify(requestData),
 						success : function(response) {
-							if(response.result == 1) {								
-								$.ajax({
-									url : '/reserv/cancel/list',
-									type : 'put',
-									headers : {
-										"Content-Type" : "application/json"
-									},
-									data : JSON.stringify(requestData),
-									success : function(response) {
-										if(response == 1) {
-											cancelReservStatus = 1;											
-										} else if(response == 0) {
-											cancelReservStatus = 0;	
-										}
-										resolve(cancelReservStatus);
-									},
-									error : function() {
-										cancelReservStatus = 3;
-										resolve(cancelReservStatus);
-									}
-								});
-							} else if(response.result == 0) {
-								cancelReservStatus = 0;
+							if(response > 0) {								
+								isCancelReservStatus = 1;
+							} else if(response == 0) {
+								isCancelReservStatus = 0;
 							}
-							resolve(cancelReservStatus);
+							resolve(isCancelReservStatus);
 						},
 						error : function() {
-							cancelReservStatus = 3;
-							resolve(cancelReservStatus);
+							isCancelReservStatus = 3;
+							resolve(isCancelReservStatus);
 						}
 					});
 				} else {
-					cancelReservStatus = 5;
-					resolve(cancelReservStatus);
+					isCancelReservStatus = 5;
+					resolve(isCancelReservStatus);
 				}
 			} else if(status == 0) {
+				isCancelReservStatus = 2;
+				console.log("cancelReservList() isCancelReservStatus : " + isCancelReservStatus);
+				resolve(isCancelReservStatus);
+			} else if(status == 3) {
+				isCancelReservStatus = 0;
+				resolve(isCancelReservStatus);
+			}
+		});
+	} // End cancelReservList
+	
+	// 취소 내역 저장 함수
+	function createdCancelHistory(status) {
+		return new Promise((resolve) => {
+			if(status == 1) {
+				let requestType = "STORE";
+				
+				const cancelList = cancelReservInfoList;
+				let requestData = [];
+				for(let i = 0; i < cancelList.length; i++) {
+					obj = {
+						"reservId" : cancelList[i].reservId,
+						"cancelComment" : "가게 휴무일로 인하여 예약이 취소되었습니다."
+					}
+					requestData.push(obj);
+				}
+				
+				$.ajax({
+					url : '/reserv/cancel/' + requestType,
+					type : 'post',
+					headers : {
+						"Content-Type" : "application/json"
+					},
+					data : JSON.stringify(requestData),
+					success : function(response) {
+						console.log(requestType + ": Succescc");
+						if(response > 0) {
+							cancelReservStatus = 1;						
+						} else if(response == 0) {
+							cancelReservStatus = 0;	
+						}
+						console.log("ajax success cancelReservStatus : " + cancelReservStatus);
+						resolve(cancelReservStatus);
+					},
+					error : function() {
+						console.log(requestType + ": error");
+						cancelReservStatus = 3;
+						resolve(cancelReservStatus);
+					}
+				});
+			} else if(status == 0) {
+				cancelReservStatus = 0;
+				resolve(cancelReservStatus);
+			} else if(status == 2) {
 				cancelReservStatus = 2;
-				console.log("cancelReservList() cancelReservStatus : " + cancelReservStatus);
 				resolve(cancelReservStatus);
 			} else if(status == 3) {
-				cancelReservStatus = 0;
+				cancelReservStatus = 3;
 				resolve(cancelReservStatus);
 			}
 		});
-	}
+	} // End createdCancelReserv
 	
     searchHoliday();
     //generateCalendar(currentMonth, currentYear);

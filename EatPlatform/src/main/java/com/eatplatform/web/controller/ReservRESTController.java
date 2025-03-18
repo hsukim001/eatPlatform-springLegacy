@@ -187,33 +187,28 @@ public class ReservRESTController {
 	 * @return Map<String, Object>
 	 */
 	@PostMapping("/cancel/{requestType}")
-	public ResponseEntity<Map<String, Object>> cancelReservByReservId(@RequestBody List<ReservCancelVO> cancelList, @PathVariable("requestType") String requestType,
+	public ResponseEntity<Integer> createdCancelHistory(@RequestBody List<ReservCancelVO> cancelList, @PathVariable("requestType") String requestType,
 			@AuthenticationPrincipal CustomUser customUser) {
-		log.info("cancelReservByReservId()");
-		Map<String, Object> map = new HashMap<>();
+		log.info("createdCancelHistory()");
 		int result = 0;
-		log.info(cancelList);
 		
 		if(cancelList.size() > 0) {
-			result = reservService.cancelReservByList(cancelList, requestType, customUser);
+			result = reservService.createdCancelHistory(cancelList, requestType, customUser);
 		}
 		
-		if(result == 1) {
-			map.put("result", 1);
-		} else {
-			map.put("result", 0);
-		}
+		log.info("result : " + result);
 		
-		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
+		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	
 	/**
 	 * @param cancelList
 	 * @return ResponseEntity<Integer>
 	 */
-	@PutMapping("/cancel/list")
+	@PutMapping("/cancel/status")
 	public ResponseEntity<Integer> updateCancelStatusByReservId(@RequestBody List<ReservCancelVO> cancelList) {
 		int result = reservService.updateCancelStatusByList(cancelList);
+		log.info(result);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 
