@@ -1,5 +1,6 @@
 package com.eatplatform.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +85,13 @@ public class ReservRESTController {
 		
 		int userId = customUser.getUser().getUserId();
 		boolean isUser = reservService.isReservUser(reservId, userId);
-		if(isUser) {
-			ReservInfoVO reservInfoVO = reservService.getReservInfoByReservId(reservId);
+		
+		ReservInfoVO reservInfoVO = new ReservInfoVO();
+		List<String> selectOptionList = new ArrayList<>();
+		String storeDetailUrl = "";
+		
+		if(isUser || customUser.getAuthorities().toString().contains("ROLE_STORE")) {
+			reservInfoVO = reservService.getReservInfoByReservId(reservId);
 			map.put("info", reservInfoVO);
 			
 			if(reservInfoVO.getCancelStatus() == 1) {
@@ -96,6 +102,22 @@ public class ReservRESTController {
 		} else {
 			return new ResponseEntity<Map<String,Object>>(map, HttpStatus.BAD_REQUEST);
 		}
+		
+		if(customUser.getAuthorities().toString().contains("ROLE_MEMBER")) {
+			selectOptionList.add("예약 취소사유를 선택해주세요.");
+			selectOptionList.add("개인적인 사유");
+			selectOptionList.add("건강상의 문제");
+			storeDetailUrl = "/store/detail?storeId=" + reservInfoVO.getStoreId();
+		} else if(customUser.getAuthorities().toString().contains("ROLE_STORE")) {
+			selectOptionList.add("예약 취소사유를 선택해주세요.");
+			selectOptionList.add("휴게 시간으로 인하여 취소합니다.");
+			selectOptionList.add("휴무일로 인하여 취소합니다.");
+			storeDetailUrl = "/management/store/detail?storeId=" + reservInfoVO.getStoreId();
+		}
+		
+		map.put("storeDetailUrl", storeDetailUrl);
+		map.put("selectOptionList", selectOptionList);
+		
 		return new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 	}
 

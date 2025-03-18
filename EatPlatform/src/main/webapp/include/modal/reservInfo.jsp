@@ -14,7 +14,8 @@
 			<h2>예약 상세</h2>
 
 			<div>
-				<p id="storeTitle"></p>
+				<span id="storeTitle"></span>
+				<button id="shortcut">바로가기</button>
 				<ul>
 					<li id="phone">
 						<span class="textTitle">연락처</span><span class="colon">:</span><span class="textValue"></span>

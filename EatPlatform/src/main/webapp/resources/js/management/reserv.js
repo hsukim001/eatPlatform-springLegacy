@@ -9,6 +9,7 @@ $(document).ajaxSend(function(e, xhr, opt){
 $(document).ready(function() {
 	let searchType = 'all';
 	let keyword = '';
+	let storeDetailUrl;
 	nextList(1, searchType, keyword);
 	
 	$('.searchBtn').click(function() {
@@ -173,56 +174,90 @@ $(document).ready(function() {
 				    
 		let check = confirm('선택하신 예약을 취소 하시겠습니까?');
 		if(check) {
-			reservCancel(reservId);
+			reservCancel(reservId)
+				.then((status) => createdCancelHistory(reservId, status));
 		}
 	});// End cancelBtn
 	
 	// 예약 취소 ajax 함수
-	function reservCancel(reservId) {
-		let requestType = "USER";
-		let pageNum = $('.page-link-select').data('page');
-		let commentNum = $('#cancelComment').val();
-		let cancelComment;
-		
-		if(commentNum == 0) {
-			return alert("예약 취소사유를 선택해주세요.");
-		} else if(commentNum == 1) {
-			cancelComment = "개인적인 사유";
-		} else if(commentNum == 2) {
-			cancelComment = "건강상의 문제";
-		}
-		
-		let obj = [{
-			"reservId" : reservId,
-			"cancelComment" : cancelComment
-		}];
-					
-		$.ajax({
-			url : '/reserv/cancel/' + requestType,
-			type : 'post',
-			headers : {
-				"Content-Type" : "application/json",
-			},
-			data : JSON.stringify(obj),
-			success : function(response) {
-				if(response.result == 1) {
-					alert('예약 취소 성공');
-					nextList(pageNum);
-					$('#reservInfoModal').hide();
-					$('#tableBody').removeClass('selected');
-				}
-			},
-			error : function() {
-				alert('예약을 취소하는중 오류 발생');
+	function createdCancelHistory(reservId, status) {
+		return new Promise((resolve) => {
+			if(status == 1) {
+				let requestType = "USER";
+				let pageNum = $('.page-link-select').data('page');
+				let commentNum = $('#cancelComment').val();
+				let cancelComment = $('#cancelComment option:selected').text();
+				
+				let obj = [{
+					"reservId" : reservId,
+					"cancelComment" : cancelComment
+				}];
+							
+				$.ajax({
+					url : '/reserv/cancel/' + requestType,
+					type : 'post',
+					headers : {
+				        "Content-Type" : "application/json"
+				    },
+					data : JSON.stringify(obj),
+					success : function(response) {
+						if(response > 0) {
+							nextList(pageNum);
+							$('#reservInfoModal').hide();
+							$('#tableBody').removeClass('selected');
+							resolve(1);
+							alert("예약 취소에 성공하였습니다.");
+							location.reload(true);
+						} else if(response == 0) {
+							alert("예약취소에 실패하였습니다.");
+						}
+					},
+					error : function() {
+						alert('예약을 취소하는중 오류 발생');
+						resolve(3);
+					}
+				});
+			} else if(status == 0) {
+				alert("예약취소에 실패하였습니다.");
+			} else if(status == 3) {
+				alert("예약을 취소하는중 오류 발생");
 			}
 		});
 	} // End reservCacnel
+	
+	function reservCancel(reservId) {
+		return new Promise((resolve) => {
+			let obj = [{
+				"reservId" : reservId
+			}];
+			
+			$.ajax({
+				url : '/reserv/cancel/status',
+				type : 'put',
+				headers : {
+			        "Content-Type" : "application/json"
+			    },
+				data : JSON.stringify(obj),
+				success : function(response) {
+					if(response > 0) {
+						resolve(1);
+					} else if(response == 0) {
+						resolve(0);
+					}
+				},
+				error : function() {
+					resolve(3);
+				}
+			});
+		});
+	}
 	
 	function searchReservInfo(reservId) {
 		$.ajax({
 			url : '/reserv/search/reservInfo/' + reservId,
 			type : 'get',
 			success : function(response) {
+				storeDetailUrl = response.storeDetailUrl;
 				let date = new Date(response.info.reservDateCreated);
 				let year = date.getFullYear(); // 년도
 				let month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
@@ -230,12 +265,13 @@ $(document).ready(function() {
 				let createdDate = year + '-' + month + '-' + day;
 				let formattedReservDate = String(response.info.reservDate).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3");
 				let reservTime = response.info.reservHour + ":" + response.info.reservMin;
-				let btn = '<select name="cancelComment" id="cancelComment">' +
-					'<option value="0">예약 취소사유를 선택해주세요.</option>' +
-					'<option value="1">개인적인 사유</option>' +
-					'<option value="2">건강상의 문제</option>' +
-					'</select>' + 
-					'<button class="reservCancelBtn">예약 취소</button>';
+				let btn = '<select name="cancelComment" id="cancelComment">';
+				
+				for(let i = 0; i < response.selectOptionList.length; i++) {
+					btn += '<option value="'+ i +'">'+ response.selectOptionList[i] +'</option>'
+				}
+					
+				btn += '</select>' + '<button class="reservCancelBtn">예약 취소</button>';
 					
 				$('#storeTitle').text(response.info.storeName);
 				$('#phone .textValue').text(response.info.storePhone);
@@ -271,6 +307,10 @@ $(document).ready(function() {
 			}
 		});
 	}
+	
+	$('#shortcut').click(function() {
+		location.href = storeDetailUrl;
+	});
 				
 }); // End document ready
 

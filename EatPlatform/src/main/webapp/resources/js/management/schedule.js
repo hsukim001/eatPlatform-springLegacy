@@ -851,11 +851,12 @@ $(function () {
 				let confirmMsg = confirm("선택된 휴무일 중에 예약일정이 확인되었습니다. \n 예약일정을 취소하여 휴무일을 등록 하시겠습니까?");
 				if(confirmMsg) {
 					const cancelList = cancelReservInfoList;
+					let cancelComment = "가게 휴무일로 인하여 예약이 취소되었습니다.";
 					let requestData = [];
 					for(let i = 0; i < cancelList.length; i++) {
 						obj = {
 							"reservId" : cancelList[i].reservId,
-							"cancelComment" : "가게 휴무일로 인하여 예약이 취소되었습니다."
+							"cancelComment" : cancelComment
 						}
 						requestData.push(obj);
 					}
@@ -904,11 +905,12 @@ $(function () {
 				let requestType = "STORE";
 				
 				const cancelList = cancelReservInfoList;
+				let cancelComment = "가게 휴무일로 인하여 예약이 취소되었습니다.";
 				let requestData = [];
 				for(let i = 0; i < cancelList.length; i++) {
 					obj = {
 						"reservId" : cancelList[i].reservId,
-						"cancelComment" : "가게 휴무일로 인하여 예약이 취소되었습니다."
+						"cancelComment" : cancelComment
 					}
 					requestData.push(obj);
 				}
