@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserRoleVO {
+public class RoleListVO {
 	private int roleId;
 	private String username;
 	private String roleName;

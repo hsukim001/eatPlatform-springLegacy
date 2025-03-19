@@ -11,11 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.eatplatform.web.domain.CustomUser;
-import com.eatplatform.web.domain.UserRoleVO;
+import com.eatplatform.web.domain.RoleListVO;
 import com.eatplatform.web.domain.UserVO;
 import com.eatplatform.web.persistence.UserAdminMapper;
 import com.eatplatform.web.persistence.UserMapper;
-import com.eatplatform.web.persistence.UserRoleMapper;
+import com.eatplatform.web.persistence.RoleListMapper;
 import com.eatplatform.web.persistence.UserStoreMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserAdminMapper userAdminMapper;
     
     @Autowired
-    private UserRoleMapper userRoleMapper;
+    private RoleListMapper roleListMapper;
    
     // CustomUserDetails
     // 전송된 username으로 사용자 정보를 조회하고, UserDetails에 저장하여 리턴하는 메서드 
@@ -42,7 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     	log.info("loadUserByUsername()");
     	log.info(username);
         // 사용자 ID를 이용하여 회원 정보와 권한 정보를 조회
-    	UserRoleVO role = userRoleMapper.selectUserRoleByUsername(username);
+    	RoleListVO role = roleListMapper.selectUserRoleByUsername(username);
     	UserVO user = null;
     	
     	if(role != null) {

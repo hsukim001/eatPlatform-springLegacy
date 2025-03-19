@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.service.BusinessRequestService;
 import com.eatplatform.web.service.UserService;
 import com.eatplatform.web.util.ResultMsgResponse;
 
@@ -38,6 +39,9 @@ public class UserRESTController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private BusinessRequestService businessRequestService;
 	
 	// 아이디 중복 확인
 	@GetMapping("/check/{username}/{type}")
@@ -116,11 +120,32 @@ public class UserRESTController {
 		return new ResponseEntity<ResultMsgResponse>(resultResponse, HttpStatus.OK);
 	}
 	
-	// 사업자 등록 거부
-	@DeleteMapping("/business/request/denialManagement/{businessRequestId}/{storeId}")
-	public ResponseEntity<Integer> requestDenialManagement(@PathVariable("businessRequestId") int businessRequestId, @PathVariable("storeId") int storeId) {
-		log.info("requestDenialManagement()");
-		int result = userService.businessReqeustDenialManagement(businessRequestId, storeId);
+	/**
+	 * 사업자 등록 요청 상태 변경
+	 * @param businessRequestId
+	 * @return
+	 */
+	@PutMapping("/business/request/status/{businessRequestId}/{requestStatus}")
+	public ResponseEntity<Integer> updateBusinessRequestStatus(@PathVariable("businessRequestId") int businessRequestId, @PathVariable("requestStatus") String requestStatus) {
+		log.info("requestDenialManagement()"); 
+		
+		boolean isCheck = businessRequestService.isBusinessRequestRoleMemberAndRequestStatusWait(businessRequestId);
+		if(!isCheck) {
+			return new ResponseEntity<Integer>(0, HttpStatus.BAD_REQUEST);
+		}
+		
+		int result = businessRequestService.updateRequestStatus(businessRequestId, requestStatus);
+		return new ResponseEntity<Integer>(result, HttpStatus.OK);
+	}
+	
+	/**
+	 * 사업자 등록 요청 취소
+	 * @param businessRequestId
+	 * @return
+	 */
+	@DeleteMapping("/business/request/cancel/{businessRequestId}")
+	public ResponseEntity<Integer> requestCancel(@PathVariable("businessRequestId") int businessRequestId) {
+		int result = businessRequestService.businessRequestCancel(businessRequestId);
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	

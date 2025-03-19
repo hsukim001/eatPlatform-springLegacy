@@ -39,10 +39,8 @@
 				<thead>
 					<tr>
 						<th>번호</th>
-						<th>식당명</th>
-						<th>사업자명</th>
-						<th>카테고리</th>
-						<th>식당 소개</th>
+						<th>아이디</th>
+						<th>이름</th>
 						<th>신청일</th>
 					</tr>
 				</thead>
@@ -50,12 +48,10 @@
 					<c:forEach var="list" items="${list }">
 						<tr>
 							<td>${list.businessRequestId }</td>
-							<td><a href="requestInfo?businessRequestId=${list.businessRequestId }">${list.storeName }</a></td>
-							<td>${list.ownerName }</td>
-							<td>${list.foodCategory }</td>
-							<td>${list.storeComment }</td>
-							<fmt:formatDate value="${list.regDate }" pattern="yyyy-MM-dd" var="createdDate" />
-							<td>${createdDate }</td>
+							<td><a href="requestInfo?businessRequestId=${list.businessRequestId }">${list.userId }</a></td>
+							<td>${list.name }</td>
+							<fmt:formatDate value="${list.businessReqeustUpdateDate }" pattern="yyyy-MM-dd" var="updateDate" />
+							<td>${updateDate }</td>
 						</tr>
 					</c:forEach>
 				</tbody>

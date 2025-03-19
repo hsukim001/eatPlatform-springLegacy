@@ -10,23 +10,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID" />
 		<result property="requestStatus" column="REQUEST_STATUS"/>
 		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
-		<result property="storeId" column="STORE_ID"/>
+		<result property="businessReqeustUpdateDate" column="BUSINESS_REQUEST_UPDATE_DATE"/>
 		<result property="userId" column="USER_ID" />
 	</resultMap>
 	
 	<resultMap type="com.eatplatform.web.domain.JoinBusinessRequestVO" id="joinBusinessRequestResultMap">
 		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
-		<result property="storeId" column="STORE_ID"/>
-		<result property="storeName" column="STORE_NAME"/>
-		<result property="ownerName" column="OWNER_NAME"/>
-		<result property="storePhone" column="STORE_PHONE"/>
-		<result property="foodCategory" column="FOOD_CATEGORY"/>
-		<result property="businessHour" column="BUSINESS_HOUR"/>
-		<result property="storeComment" column="STORE_COMMENT"/>
-		<result property="description" column="DESCRIPTION"/>
-		<result property="roadAddress" column="ROAD_ADDRESS"/>
-		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
+		<result property="requestStatus" column="REQUEST_STATUS"/>
+		<result property="businessReqeustRegDate" column="BUSINESS_REQUEST_REG_DATE"/>
+		<result property="businessReqeustUpdateDate" column="BUSINESS_REQUEST_UPDATE_DATE"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="username" column="USERNAME"/>
+		<result property="name" column="NAME"/>
+		<result property="phone" column="PHONE"/>
+		<result property="email" column="EMAIL"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.JoinBusinessRequestWithUserAndRoleListVO" id="joinBusinessRequestWithUserAndRoleListResultMap">
+		<id property="businessRequestId" column="BUSINESS_REQUEST_ID" />
+		<result property="requestStatus" column="REQUEST_STATUS"/>
+		<result property="businessRequestRegDate" column="BUSINESS_REQUEST_REG_DATE" />
+		<result property="businessReqeustUpdateDate" column="BUSINESS_REQUEST_UPDATE_DATE"/>
+		<result property="userId" column="USER_ID" />
+		<result property="username" column="USERNAME"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="email" column="EMAIL"/>
+		<result property="phone" column="PHONE"/>
+		<result property="name" column="NAME"/>
+		<result property="active" column="ACTIVE"/>
 		<result property="regDate" column="REG_DATE"/>
+		<result property="roleId" column="ROLE_ID"/>
+		<result property="roleName" column="ROLE_NAME"/>
 	</resultMap>
 	
 	<select id="selectBusinessRequest" resultMap="businessRequestResultMap">
@@ -34,60 +48,68 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE BUSINESS_REQUEST_ID = #{businessRequestId}
 	</select>
 	
-	<insert id="insertBusinessRequest" useGeneratedKeys="true" keyProperty="businessRequestId" keyColumn="BUSINESS_REQUEST_ID">
-		INSERT INTO BUSINESS_REQUEST
+	<select id="joinBusinessRequestWithUserMemberAndRoleListByBusinessRequestId" resultMap="joinBusinessRequestWithUserAndRoleListResultMap">
+		SELECT b.*,
+			   u.*,
+			   r.*
+		FROM BUSINESS_REQUEST b
+		INNER JOIN USER_MEMBER u
+		ON b.USER_ID = u.USER_ID
+		INNER JOIN ROLE_LIST r
+		ON u.USERNAME = r.USERNAME
+		WHERE b.BUSINESS_REQUEST_ID = #{businessRequestId}
+	</select>
+	
+	<insert id="insertBusinessRequest">
+		INSERT INTO BUSINESS_REQUEST (
+			BUSINESS_REQUEST_ID,
+			REQUEST_STATUS,
+			BUSINESS_REQUEST_REG_DATE,
+			BUSINESS_REQUEST_UPDATE_DATE,
+			USER_ID
+		)
 		VALUES(
 			BUSINESS_REQUEST_SEQ.NEXTVAL,
-			#{requestStatus},
+			'WAIT',
 			SYSDATE,
-			#{storeId},
+			SYSDATE,
 			#{userId}
 		)
 	</insert>
 	
 	<select id="selectBusinessRequestByBusinessRequestId" resultMap="joinBusinessRequestResultMap">
-		SELECT b.BUSINESS_REQUEST_ID, 
-			b.STORE_ID, 
-			b.BUSINESS_REQUEST_REG_DATE AS REG_DATE, 
-			s.STORE_NAME, 
-			s.OWNER_NAME, 
-			s.STORE_PHONE, 
-			s.FOOD_CATEGORY, 
-			s.BUSINESS_HOUR, 
-			s.STORE_COMMENT, 
-			s.DESCRIPTION, 
-			a.ROAD_ADDRESS, 
-			a.JIBUN_ADDRESS 
+		SELECT b.BUSINESS_REQUEST_ID,
+			b.REQUEST_STATUS, 
+			b.USER_ID,
+			b.BUSINESS_REQUEST_REG_DATE,
+			b.BUSINESS_REQUEST_UPDATE_DATE,
+			u.USERNAME,
+			u.NAME,
+			u.PHONE,
+			u.EMAIL
 		FROM BUSINESS_REQUEST b
-		INNER JOIN STORE s
-			ON s.STORE_ID = b.STORE_ID
-		INNER JOIN STORE_ADDRESS a
-			ON a.STORE_ID = b.STORE_ID
+		INNER JOIN USER_MEMBER u
+		ON b.USER_ID = u.USER_ID
 		WHERE b.BUSINESS_REQUEST_ID = #{businessRequestId}
 	</select>
 	
 	<select id="selectBusinessRequestListByPagination" resultMap="joinBusinessRequestResultMap">
-		SELECT b.BUSINESS_REQUEST_ID, 
-			b.STORE_ID, 
-			b.BUSINESS_REQUEST_REG_DATE AS REG_DATE,
-			s.STORE_NAME, 
-			s.OWNER_NAME, 
-			s.STORE_PHONE, 
-			s.FOOD_CATEGORY, 
-			s.BUSINESS_HOUR, 
-			s.STORE_COMMENT, 
-			s.DESCRIPTION, 
-			a.ROAD_ADDRESS, 
-			a.JIBUN_ADDRESS 
+		SELECT b.BUSINESS_REQUEST_ID,
+			b.REQUEST_STATUS, 
+			b.USER_ID,
+			b.BUSINESS_REQUEST_REG_DATE,
+			b.BUSINESS_REQUEST_UPDATE_DATE,
+			u.USERNAME,
+			u.NAME,
+			u.PHONE,
+			u.EMAIL
 		FROM
 		(
 		    SELECT ROW_NUMBER() OVER (ORDER BY BUSINESS_REQUEST_ID DESC)
 		    AS RN, BUSINESS_REQUEST.* FROM BUSINESS_REQUEST
 		) b
-		INNER JOIN STORE s
-		ON s.STORE_ID = b.STORE_ID
-		INNER JOIN STORE_ADDRESS a
-		ON a.STORE_ID = b.STORE_ID
+		INNER JOIN USER_MEMBER u
+		ON b.USER_ID = u.USER_ID
 		WHERE b.RN BETWEEN #{start} AND #{end}
 		ORDER BY BUSINESS_REQUEST_ID DESC
 	</select>
@@ -105,6 +127,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		) AS ID
 		FROM DUAL
 	</select>
+	
+	<update id="updateRequestStatusByBusinessRequestId">
+		UPDATE BUSINESS_REQUEST
+		SET REQUEST_STATUS = #{requestStatus}
+		WHERE BUSINESS_REQUEST_ID = #{businessRequestId}
+	</update>
 	
 	<delete id="deleteBusinessRequest">
 		DELETE FROM BUSINESS_REQUEST

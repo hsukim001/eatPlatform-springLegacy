@@ -1,28 +1,16 @@
 package com.eatplatform.web.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eatplatform.web.domain.BusinessRequestVO;
-import com.eatplatform.web.domain.JoinUserVO;
-import com.eatplatform.web.domain.JoinBusinessRequestVO;
-import com.eatplatform.web.domain.UserRoleVO;
-import com.eatplatform.web.domain.StoreAddressVO;
-import com.eatplatform.web.domain.StoreApprovalsVO;
-import com.eatplatform.web.domain.StoreVO;
+import com.eatplatform.web.domain.RoleListVO;
 import com.eatplatform.web.domain.UserVO;
-import com.eatplatform.web.persistence.BusinessRequestMapper;
-import com.eatplatform.web.persistence.StoreAddressMapper;
-import com.eatplatform.web.persistence.StoreApprovalsMapper;
-import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.persistence.UserAdminMapper;
 import com.eatplatform.web.persistence.UserMapper;
-import com.eatplatform.web.persistence.UserRoleMapper;
+import com.eatplatform.web.persistence.RoleListMapper;
 import com.eatplatform.web.persistence.UserStoreMapper;
-import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -40,19 +28,7 @@ public class UserServiceImple implements UserService {
 	private UserAdminMapper userAdminMapper;
 
 	@Autowired
-	private UserRoleMapper userRoleMapper;
-
-	@Autowired
-	private BusinessRequestMapper businessRequestMapper;
-
-	@Autowired
-	private StoreMapper storeMapper;
-
-	@Autowired
-	private StoreAddressMapper storeAddressMapper;
-
-	@Autowired
-	private StoreApprovalsMapper storeApprovalsMapper;
+	private RoleListMapper roleListMapper;
 
 	// 회원 정보 검색(userId)
 	@Override
@@ -77,10 +53,10 @@ public class UserServiceImple implements UserService {
 		log.info("createdUser()");
 		int resultUser = userMapper.insertUser(userMemberVO);
 
-		UserRoleVO roleListVO = new UserRoleVO();
+		RoleListVO roleListVO = new RoleListVO();
 		roleListVO.setUsername(userMemberVO.getUsername());
 		roleListVO.setRoleName("ROLE_MEMBER");
-		int resultRole = userRoleMapper.insertUserRole(roleListVO);
+		int resultRole = roleListMapper.insertUserRole(roleListVO);
 
 		log.info("회원 정보 " + resultUser + "행 등록 성공");
 		log.info("회원 권한 " + resultRole + "행 등록 성공");
@@ -128,7 +104,7 @@ public class UserServiceImple implements UserService {
 			}
 		} else { // 비 로그인 수정
 			UserVO vo = userMapper.selectUserAllByEmail(userMemberVO.getEmail());
-			UserRoleVO role = userRoleMapper.selectUserRoleByUsername(vo.getUsername());
+			RoleListVO role = roleListMapper.selectUserRoleByUsername(vo.getUsername());
 			if (role.getRoleName().equals("ROLE_MEMBER")) {
 				log.info("권한 : MEMBER");
 				result = userMapper.updatePassword(userMemberVO);
@@ -179,13 +155,13 @@ public class UserServiceImple implements UserService {
 		log.info("관리자 정보 " + withdrwalAdminResult + "행 withdrawal 테이블 저장");
 		
 		if(withdrwalMemberResult >= 1) {
-			int deleteWithdrowalUserRoleResult = userRoleMapper.deleteWithdrowalUserRole();
+			int deleteWithdrowalUserRoleResult = roleListMapper.deleteWithdrowalUserRole();
 			log.info("권한 정보 " + deleteWithdrowalUserRoleResult + "행 삭제");
 		} else if(withdrwalStoreResult >= 1) {
-			int deleteWithdrowalStoreUserRoleResult = userRoleMapper.deleteWithdrowalStoreUserRole();
+			int deleteWithdrowalStoreUserRoleResult = roleListMapper.deleteWithdrowalStoreUserRole();
 			log.info("권한 정보 " + deleteWithdrowalStoreUserRoleResult + "행 삭제");
 		} else if(withdrwalAdminResult >= 1) {
-			int deleteWithdrowalAdminUserRoleResult = userRoleMapper.deleteWithdrowalAdminUserRole();
+			int deleteWithdrowalAdminUserRoleResult = roleListMapper.deleteWithdrowalAdminUserRole();
 			log.info("권한 정보 " + deleteWithdrowalAdminUserRoleResult + "행 삭제");
 		}
 		
@@ -197,115 +173,6 @@ public class UserServiceImple implements UserService {
 		log.info("사업자 정보 " + deleteWithdrowalUserStoreResult + "행 삭제");
 		log.info("관리자 정보 " + deleteWithdrowalUserAdminResult + "행 삭제");
 		
-		return 1;
-	}
-
-	// 사업자 등록 신청
-	@Transactional
-	@Override
-	public int businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, int userId) {
-		log.info("businessUpgradeForm()");
-
-		int insertStore = storeMapper.insertStore(storeVO);
-		int storeId = storeVO.getStoreId();
-		log.info("storeId : " + storeId);
-
-		storeAddressVO.setStoreId(storeId);
-		int insertStoreAddress = storeAddressMapper.insertStoreAddress(storeAddressVO);
-
-		BusinessRequestVO businessRequestVO = new BusinessRequestVO();
-		businessRequestVO.setStoreId(storeId);
-		businessRequestVO.setUserId(userId);
-		businessRequestVO.setRequestStatus(0);
-		int insertBusinessRequest = businessRequestMapper.insertBusinessRequest(businessRequestVO);
-
-		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
-		storeApprovalsVO.setStoreId(storeId);
-		storeApprovalsVO.setApprovals(0);
-		int insertStoreApprovals = storeApprovalsMapper.insertStoreApprovals(storeApprovalsVO);
-
-		log.info("Store : " + insertStore + "행 등록 성공");
-		log.info("StoreAddress : " + insertStoreAddress + "행 등록 성공");
-		log.info("businessRequest : " + insertBusinessRequest + "행 등록 성공");
-		log.info("StoreApprovals : " + insertStoreApprovals + "행 등록 성공");
-
-		return 1;
-	}
-
-	// 사업자 등록 신청 정보 조회
-	@Override
-	public JoinBusinessRequestVO searchBusinessRequestInfo(int businessRequestId) {
-		log.info("searchBusinessRequestInfo()");
-		JoinBusinessRequestVO vo = businessRequestMapper.selectBusinessRequestByBusinessRequestId(businessRequestId);
-		log.info(vo);
-		return vo;
-	}
-
-	// 사업자 등록 신청 목록
-	@Override
-	public List<JoinBusinessRequestVO> searchBusinessRequestList(Pagination pagination) {
-		log.info("searchBusinessRequestList()");
-		return businessRequestMapper.selectBusinessRequestListByPagination(pagination);
-	}
-
-	// 사업자 등록 신청 목록 총 건수
-	@Override
-	public int getBusinessRequestTotalCount() {
-		log.info("getBusinessRequestTotalCount()");
-		return businessRequestMapper.selectTotalCount();
-	}
-
-	// 사업자 등록 신청 조회(userId)
-	@Override
-	public int getBusinessRequestId(int userId) {
-		log.info("getBusinessRequestId()");
-		return businessRequestMapper.selectBusinessRequestIdByuserId(userId);
-	}
-
-	// 사업자 등록 요청 승인
-	@Transactional(value = "transactionManager")
-	@Override
-	public int businessReqeustApprovals(int businessRequestId, int storeId) {
-		log.info("businessReqeustApprovals()");
-
-		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequest(businessRequestId);
-		int userId = businessRequestVO.getUserId();
-		log.info("userId : " + userId);
-
-		int deleteBusinessRequest = businessRequestMapper.deleteBusinessRequest(businessRequestId);
-
-		StoreApprovalsVO storeApprovalsVO = new StoreApprovalsVO();
-		storeApprovalsVO.setStoreId(storeId);
-		storeApprovalsVO.setApprovals(1);
-		int updateStoreApprovals = storeApprovalsMapper.updateStoreApprovals(storeApprovalsVO);
-
-		UserRoleVO userRoleVO = new UserRoleVO();
-		JoinUserVO joinUserVO = userMapper.selectUserJoinUserRole(userId);
-		userRoleVO.setUsername(joinUserVO.getUsername());
-		userRoleVO.setRoleName("ROLE_STORE");
-		int updateUserRole = userRoleMapper.updateUserRoleNameByUserName(userRoleVO);
-		
-		int insertUserStoreFromUserResult = userStoreMapper.insertUserStoreFromUser(userId);
-		int deleteUserResult = userMapper.deleteUserByUserId(userId);
-		
-		log.info("사업자 등록 요청 : " + deleteBusinessRequest + "행 삭제");
-		log.info("식당 등록 요청 정보 : " + updateStoreApprovals + "행 수정");
-		log.info("회원 권한 : " + updateUserRole + "행 수정");
-		log.info("회원 정보를 사업자 회원 정보에 " + insertUserStoreFromUserResult + "행 삽입");
-		log.info("회원 정보 : " + deleteUserResult + "행 삭제");
-
-		return 1;
-	}
-
-	// 사업자 등록 요청 거부
-	@Transactional(value = "transactionManager")
-	@Override
-	public int businessReqeustDenialManagement(int businessRequestId, int storeId) {
-		log.info("businessReqeustDenied()");
-
-		int deleteStore = storeMapper.deleteStore(storeId);
-		log.info("식당 : " + deleteStore + "행 삭제");
-
 		return 1;
 	}
 

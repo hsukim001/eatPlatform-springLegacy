@@ -18,6 +18,7 @@ import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.service.BusinessRequestService;
 import com.eatplatform.web.service.UserAdminService;
 import com.eatplatform.web.service.UserService;
 import com.eatplatform.web.service.UserStoreService;
@@ -42,6 +43,9 @@ public class UserController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private BusinessRequestService businessRequestService;
 	
 	// 회원 가입 페이지 이동
 	@GetMapping("/register")
@@ -164,7 +168,7 @@ public class UserController {
 		log.info("businessRequestForm()");
 		int userId = customUser.getUser().getUserId();
 		
-		int businessRequestId = userService.getBusinessRequestId(userId);
+		int businessRequestId = businessRequestService.getBusinessRequestId(userId);
 		log.info("businessRequestId : " + businessRequestId);
 		
 		// 사업자 등록을 신청한 회원을 사업자 등록 신청 상세 화면으로 이동하는 로직
@@ -174,22 +178,21 @@ public class UserController {
 			return "redirect:/user/business/requestInfo";
 		}
 		
-		log.info("사업자 등록되어있지 않음");
-		model.addAttribute("ownerName", customUser.getUser().getName());
+		model.addAttribute("username", customUser.getUsername());
+		model.addAttribute("email", customUser.getUser().getEmail());
+		model.addAttribute("phone", customUser.getUser().getPhone());
+		model.addAttribute("name", customUser.getUser().getName());
 		
 		return "user/business/requestForm";
 	}
 	
 	// 사업자 등록 신청
 	@PostMapping("/business/request")
-	public String businessRequest(StoreVO storeVO, StoreAddressVO storeAddressVO, @AuthenticationPrincipal CustomUser customUser, RedirectAttributes redirectAttributes) {
+	public String businessRequest(@AuthenticationPrincipal CustomUser customUser, RedirectAttributes redirectAttributes) {
 		log.info("businessRequest()");
 		
-		String username = customUser.getUsername();	
 		int userId = customUser.getUser().getUserId();
-		storeVO.setStoreUserId(username);
-		log.info("username : " + storeVO.getStoreUserId());
-		int result = userService.businessRequest(storeVO, storeAddressVO, userId);
+		int result = businessRequestService.businessRequest(userId);
 		
 		String message;
 		String url = "/user/business/requestForm";
@@ -214,8 +217,8 @@ public class UserController {
 	public void businessRequestList(Model model, Pagination pagination) {
 		log.info("businessRequestList()");
 		
-		List<JoinBusinessRequestVO> list = userService.searchBusinessRequestList(pagination);
-		int totalCount = userService.getBusinessRequestTotalCount();
+		List<JoinBusinessRequestVO> list = businessRequestService.searchBusinessRequestList(pagination);
+		int totalCount = businessRequestService.getBusinessRequestTotalCount();
 		
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
@@ -229,15 +232,15 @@ public class UserController {
 	@GetMapping("/business/requestInfo")
 	public void businessRequestInfo(Model model, @RequestParam("businessRequestId") int businessRequestId) {
 		log.info("businessRequestInfo()");
-		JoinBusinessRequestVO businessRequestInfo = userService.searchBusinessRequestInfo(businessRequestId);
+		JoinBusinessRequestVO businessRequestInfo = businessRequestService.searchBusinessRequestInfo(businessRequestId);
 		model.addAttribute("info", businessRequestInfo);
 	}
 	
 	// 사업자 등록 요청 승인
 	@PostMapping("/business/requestInfo")
-	public String businessRequestApprovals(@RequestParam("businessRequestId") int businessRequestId, @RequestParam("storeId") int storeId, RedirectAttributes redirectAttributes) {
+	public String businessRequestApprovals(@RequestParam("businessRequestId") int businessRequestId, RedirectAttributes redirectAttributes) {
 		log.info("businessRequestApprovals()");
-		int result = userService.businessReqeustApprovals(businessRequestId, storeId);
+		int result = businessRequestService.businessRequestApploval(businessRequestId);
 		
 		String message;
 		String url = "/user/business/requestList";

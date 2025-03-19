@@ -12,16 +12,13 @@ import lombok.Setter;
 public class JoinBusinessRequestVO {
 	
 	private int businessRequestId;
-	private int storeId;
-	private String storeName;
-	private String ownerName;
-	private String storePhone;
-	private String foodCategory;
-	private String businessHour;
-	private String storeComment;
-	private String description;
-	private String roadAddress;
-	private String jibunAddress;
-	private Date regDate;
+	private String requestStatus;
+	private int userId;
+	private Date businessReqeustRegDate;
+	private Date businessReqeustUpdateDate;
+	private String username;
+	private String name;
+	private String phone;
+	private String email;
 	
 }
