@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eatplatform.web.persistence.StoreImageMapper">
+	<resultMap type="com.eatplatform.web.domain.StoreImageVO" 
+		id="storeImageResultMap">
+		<id property="storeImageId" column="STORE_IMAGE_ID" />
+		<result property="storeId" column="STORE_ID" />
+		<result property="storeImagePath" column="STORE_IMAGE_PATH" />
+		<result property="storeImageRealName" column="STORE_IMAGE_REAL_NAME" />
+		<result property="storeImageChgName" column="STORE_IMAGE_CHG_NAME" />
+		<result property="storeImageExtension" column="STORE_IMAGE_EXTENSION" />
+		<result property="storeImageDate" column="STORE_IMAGE_DATE" />	
+	</resultMap>
+	
+	<insert id="insertStoreImage">
+		INSERT INTO STORE_IMAGE (STORE_IMAGE_ID, 
+		STORE_ID, STORE_IMAGE_PATH, STORE_IMAGE_REAL_NAME, 
+		STORE_IMAGE_CHG_NAME, STORE_IMAGE_EXTENSION) 
+		VALUES (STORE_IMAGE_SEQ.NEXTVAL, #{storeId}, #{storeImagePath},
+		#{storeImageRealName}, #{storeImageChgName}, #{storeImageExtension})
+	</insert>
+	
+	<select id="selectByStoreImageId" resultMap="storeImageResultMap">
+		SELECT * FROM STORE_IMAGE 
+		WHERE STORE_IMAGE_ID = #{storeImageId}
+	</select>
+	
+	<select id="selectListByStoreId" resultMap="storeImageResultMap">
+		SELECT * FROM STORE_IMAGE 
+		WHERE STORE_ID = #{storeId}
+		ORDER BY STORE_IMAGE_ID
+	</select>
+	
+	<delete id="deleteStoreImageByStoreId">
+		DELETE FROM STORE_IMAGE 
+		WHERE STORE_ID = #{storeId}
+	</delete>
+
+	<!-- 이미지 파일 삭제 -->
+	<select id="selectListByStoreImagePath" resultMap="storeImageResultMap">
+		SELECT * FROM STORE_IMAGE
+		WHERE STORE_IMAGE_PATH = #{storeImageDate}
+	</select>
+		
+</mapper>

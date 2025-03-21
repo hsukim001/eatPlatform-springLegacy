@@ -31,7 +31,7 @@ import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
-import com.eatplatform.web.domain.StoreimageVO;
+import com.eatplatform.web.domain.StoreImageVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -105,42 +105,6 @@ public class StoreRESTController {
 
 	    return response;
 	}
-	
-    /**
-     * @param file
-     * @return
-     */
-    @PostMapping("/image")
-    public ResponseEntity<ArrayList<StoreimageVO>> uploadImage(MultipartFile[] files) {
-		ArrayList<StoreimageVO> list = new ArrayList<>();
-		for(MultipartFile file : files) {
-			
-			// UUID 생성
-			String chgName = UUID.randomUUID().toString();
-			// 파일 저장
-			FileUploadUtil.saveFile(uploadStoreImgPath, file, chgName);
-			
-			String path = FileUploadUtil.makeDatePath();
-			String extension = FileUploadUtil.subStrExtension(file.getOriginalFilename());
-			
-			FileUploadUtil.createThumbnail(uploadStoreImgPath, path, chgName, extension);
-			
-			StoreimageVO storeImageVO = new StoreimageVO();
-			// 파일 경로 설정
-			storeImageVO.setStoreImagePath(path);
-			// 파일 실제 이름 설정
-			storeImageVO.setStoreImageRealName(FileUploadUtil.subStrName(file.getOriginalFilename()));
-			// 파일 변경 이름(UUID) 설정
-			storeImageVO.setStoreImageChgName(chgName);
-			// 파일 확장자 설정
-			storeImageVO.setStoreImageExtension(extension);
-			
-			list.add(storeImageVO);
-			
-		}
-		
-		return new ResponseEntity<ArrayList<StoreimageVO>>(list, HttpStatus.OK);
-    }
     
     @GetMapping("/holiday/search/list/{storeId}")
     public ResponseEntity<Map<String, Object>> searchHolidayList(@PathVariable("storeId") int storeId) {

@@ -104,6 +104,7 @@ public class ReservServiceImple implements ReservService {
 	}
 
 	// 예약 등록
+	@Transactional(value = "transactionManager")
 	@Override
 	public int createdReserv(ReservVO reservVO, int reservLimit) {
 		log.info("insertReserv()");
@@ -142,6 +143,10 @@ public class ReservServiceImple implements ReservService {
 			
 			if (totalPersonnel <= reservLimit) {
 				result = reservMapper.insert(vo);
+				
+				// 예약 등록 알림 전송
+				notificationService.addReservNotification(reservVO);
+				
 				log.info("예약 등록 성공");
 			} else {
 				log.info("예약 실패 : 인원 초과");
@@ -196,6 +201,7 @@ public class ReservServiceImple implements ReservService {
 		return reservMapper.selectReservListByStoreIdReservDateReservHourReservMin(reservVO);
 	}
 
+	@Transactional(value = "transactionManager")
 	@Override
 	public int createdCancelHistory(List<ReservCancelVO> cancelList, String requestType, CustomUser customUser) {
 		log.info("createdCancelHistory()");

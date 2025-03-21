@@ -26,7 +26,7 @@ public class ReplyServiceImple implements ReplyService{
 	public int createReply(ReplyVO replyVO) {
 		int result = replyMapper.insert(replyVO);
 		
-		// 리뷰 등록 알림 전송
+		// 댓글 등록 알림 전송
 		notificationService.addReplyNotification(replyVO);
 		
 		return result;

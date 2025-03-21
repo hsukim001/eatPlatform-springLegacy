@@ -165,7 +165,7 @@
 									
 								var reviewImageList = this.reviewImageList;
 									
-								var ReviewImgUrl = '../image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
+								var ReviewImgUrl = '/image/get/' + this.reviewImageId + '/reviewImageExtension/' + this.reviewImageExtension
 									
 								list += '<div class="review-image">'
 									+ '<a href="' + ReviewImgUrl + '"  target="_blank">'

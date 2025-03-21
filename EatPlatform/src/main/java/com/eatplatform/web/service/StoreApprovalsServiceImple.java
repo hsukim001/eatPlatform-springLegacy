@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
@@ -50,6 +51,7 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 	}
 
 	// 가게 등록 요청 승인
+	@Transactional(value = "transactionManager")
 	@Override
 	public int storeApproval(StoreApprovalsVO storeApprovalsVO) {
 		log.info("storeApproval()");
@@ -64,6 +66,7 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 	}
 
 	// 가게 등록 요청 거부, 취소
+	@Transactional(value = "transactionManager")
 	@Override
 	public int denialManagement(int storeId) {
 		log.info("denialManagement()");

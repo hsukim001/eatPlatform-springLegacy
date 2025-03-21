@@ -242,35 +242,35 @@
 			 * 실시간 알림을 받기 위한 SSE 설정 함수
 			 */
 			 function setupRealTimeNotifications(receiver) {
-				 const eventSource = new EventSource("/notifications/subscribe/" + receiver);
+				
+				let reconnectAttempts = 0;
+				const maxReconnectAttempts = 3;
+				
+				eventSource = new EventSource("/notifications/subscribe/" + receiver);
 				 
-				 const notifications = document.getElementById('notifications');
+				const notifications = document.getElementById('notifications');
 				 
-				 eventSource.addEventListener("messageEvent", function (event) {
-					 const data = JSON.parse(event.data);
-					 appendNewNotification(data.message);
-					 
-					// 알림 권한 확인 후 알림 표시
-					if (Notification.permission === "granted") {
-						showNotification(data.message);
-						loadNotifications(receiver);
-					} else if (Notification.permission !== "denied") {
-						// 권한 요청
-			            Notification.requestPermission().then(permission => {
-			            	if (permission === "granted") {
-			                    showNotification(data.message);
-			                }
-			            });
+				eventSource.addEventListener("messageEvent", function (event) {
+					const data = JSON.parse(event.data);
+					appendNewNotification(data.message);
+					showNotification(data.message);
+				});
+				 
+				eventSource.onerror = function(event) {
+					console.log('서버와의 연결이 끊어졌습니다.');
+					
+					if(reconnectAttempts < maxReconnectAttempts) {
+						setTimeout(() => {
+							console.log('재연결을 시도합니다.');
+							reconnectAttempts++;
+							eventSource = new EventSource("/notifications/subscribe/" + receiver);
+						}, 3000);
+					} else {
+						eventSource.close();
 					}
-					 
-				 });
+					
+				};
 				 
-				 eventSource.addEventListener("error", function (event) {
-				        console.error("SSE 오류 발생: ", event);
-				        console.error("EventSource 상태: ", eventSource.readyState);  // 상태 코드 확인
-				        eventSource.close();
-				 });
-
 			}
 			
 		   /**
