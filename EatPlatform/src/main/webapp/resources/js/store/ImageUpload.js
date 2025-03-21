@@ -138,10 +138,6 @@ $(document).ready(function(){
 		var storeImageChgName = $(this).prevAll('#storeImageChgName').val();
 		var storeImageExtension = $(this).prevAll('#storeImageExtension').val();
 		
-		console.log("storeImagePath : ", storeImagePath);
-		console.log("storeImageChgName : ", storeImageChgName);
-		console.log("storeImageExtension : ", storeImageExtension);
-
 		// ajax 요청
 		$.ajax({
 			type : 'POST', 

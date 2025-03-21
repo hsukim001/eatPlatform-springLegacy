@@ -135,7 +135,7 @@ public class StoreImageRESTController {
 				String savedPath = uploadStoreImgPath + File.separator 
 						+ storeImageVO.getStoreImagePath() + File.separator; 
 				if(storeImageExtension != null) {
-					savedPath += "t_" + storeImageVO.getStoreImageRealName() 
+					savedPath += "t_" + storeImageVO.getStoreImageChgName() 
 					+ "." + storeImageVO.getStoreImageExtension();
 				} else {
 					savedPath += storeImageVO.getStoreImageChgName();

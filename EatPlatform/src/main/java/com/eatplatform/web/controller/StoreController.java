@@ -23,10 +23,12 @@ import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
+import com.eatplatform.web.domain.StoreImageVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreApprovalsService;
+import com.eatplatform.web.service.StoreImageService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.util.BusinessHourUtil;
 import com.eatplatform.web.util.PageMaker;
@@ -50,6 +52,9 @@ public class StoreController {
 	
 	@Autowired
 	private StoreApprovalsService storeApprovalsService;
+	
+	@Autowired
+	private StoreImageService storeImageService;
 
 	@GetMapping("/newStore")
 	public String newStore(Model model) {
@@ -94,6 +99,7 @@ public class StoreController {
 		log.info(keywords);
 		log.info("keywords type: " + keywords.getClass().getName());
 		List<StoreVO> recentStores = storeService.getStoresWithPaging(pageNum, pageSize, keywords);
+		
 		if(recentStores != null && !recentStores.isEmpty()) {
 			List<Integer> storeIdList = recentStores.stream().map(StoreVO::getStoreId)
 					.collect(Collectors.toList());
@@ -121,6 +127,9 @@ public class StoreController {
 					mergedStore.put("subCategoryName", category.getSubCategoryName());
 					
 					mergedList.add(mergedStore);
+					
+					List<StoreImageVO> storeImageList = storeImageService.getImageListByStoreId(storeId);
+					stores.setStoreImageList(storeImageList);
 				});
 			});
 			
@@ -241,11 +250,17 @@ public class StoreController {
 		}
 		String startTime = times[0];
 		String endTime = times[1];
+		
+		// 이미지
+		List<StoreImageVO> storeImageList = storeImageService.getImageListByStoreId(storeId);
+		storeVO.setStoreImageList(storeImageList);
 
 		model.addAttribute("startTime", startTime);
 		model.addAttribute("endTime", endTime);
 		model.addAttribute("storeVO", storeVO);
 		model.addAttribute("menuVO", menuVO);
+		
+		log.info("storeVO : " + storeVO);
 		return "/store/detail";
 	}
 	

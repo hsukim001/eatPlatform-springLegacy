@@ -318,7 +318,7 @@
 			<label class="uploadLabel" for="storeImg">
 				업로드
 			</label>
-			<input id="storeImg" name="storeImg" type="file" onchange="addFile(this);" accept="image/*" multiple />
+			<input id="storeImg" name="storeImg" type="file" accept="image/*" multiple />
 			<div class="file-list"></div>
         	<div id="thumbnail-container"></div>
 		</div>

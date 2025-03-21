@@ -74,9 +74,7 @@ public class NotificationServiceImple implements NotificationService {
 					.data("success")
 					);
 		} catch (Exception e) {
-			log.error("error : " + e.getMessage());
-	        sseEmitter.completeWithError(e);
-	        return null;
+			e.printStackTrace();
 		}
 		
 		sseEmitters.put(receiver, sseEmitter);

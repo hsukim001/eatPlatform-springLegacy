@@ -14,7 +14,7 @@
 </head>
 <body>
 	<h2>리뷰 수정 페이지</h2>
-	<form id="updateReviewForm" action="../review/updateReview" method="POST">
+	<form id="updateReviewForm" action="/review/updateReview" method="POST">
 		<div>
 			<input type="hidden" name="storeId" value="${reviewVO.storeId }" >
 			<input type="hidden" name="reviewId" value="${reviewVO.reviewId }" >
@@ -42,9 +42,9 @@
 	<div class="image-view">
 		<div class="review-image">
 			<c:forEach var="reviewImageVO" items="${reviewVO.reviewImageList }">
-			<a href="../image/get/${reviewImageVO.reviewImageId }/reviewImageExtension/${reviewImageVO.reviewImageExtension }" target="_blank">
+			<a href="/image/get/${reviewImageVO.reviewImageId }/reviewImageExtension/${reviewImageVO.reviewImageExtension }" target="_blank">
 			<img width="100px" height="100px" 
-			src="../image/get/${reviewImageVO.reviewImageId }/reviewImageExtension/${reviewImageVO.reviewImageExtension }" />
+			src="/image/get/${reviewImageVO.reviewImageId }/reviewImageExtension/${reviewImageVO.reviewImageExtension }" />
 			</a>
 			</c:forEach>
 	 	</div>

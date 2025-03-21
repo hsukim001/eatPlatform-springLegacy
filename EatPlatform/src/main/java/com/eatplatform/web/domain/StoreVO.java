@@ -2,6 +2,8 @@ package com.eatplatform.web.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,4 +28,14 @@ public class StoreVO {
 	private LocalDate storeRegDate;
 	private LocalDate storeUpdateDate;
 	private BigDecimal score;
+	
+	// 이미지 첨부
+	private List<StoreImageVO> storeImageList;
+
+	public List<StoreImageVO> getStoreImageList() {
+		if (storeImageList == null) {
+			storeImageList = new ArrayList<StoreImageVO>();
+		}
+		return storeImageList;
+	}
 }

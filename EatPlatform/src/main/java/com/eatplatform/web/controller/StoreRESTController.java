@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,19 +19,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.eatplatform.web.service.HolidayService;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.service.StoreAddressService;
 import com.eatplatform.web.service.StoreService;
-import com.eatplatform.web.util.FileUploadUtil;
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
-import com.eatplatform.web.domain.StoreImageVO;
 
 import lombok.extern.log4j.Log4j;
 
@@ -52,10 +48,6 @@ public class StoreRESTController {
 	
 	@Autowired
 	private ReservService reservService;
-	
-	@Autowired
-	private String uploadStoreImgPath;
-	
 
 	/**
 	 * @param pageNum

@@ -19,6 +19,7 @@
 	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	<script>
@@ -140,7 +141,6 @@
 		            });
 		        }
 		        $("#reviewTag").val(currentTags.join(","));
-		        
 
 		        let tags = $("#reviewTag").val().split(",").filter(Boolean).map(Number);
 		        tags.sort((a, b) => a - b);
@@ -177,7 +177,6 @@
 				<p class="storeTitle width100 textLeft mb20 bold">${storeVO.storeName }</p>
 				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
-						<img src="<%=request.getContextPath()%>/resources/img/sample2.png" alt="sample">
 					</div>
 					<div id="storeInfoText">
 						<ul>
