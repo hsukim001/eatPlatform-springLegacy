@@ -172,7 +172,8 @@
 
             $("#businessHour").val(businessHour);
             
-            var attachForm = $('#attachForm');
+            // form에 이미지 첨부
+            var storeForm = $('#storeForm');
             var i = 0;
             $('.storeImgFile-list input[name="storeImageVO"]').each(function() {
             	var storeImageVO = JSON.parse($(this).val());
@@ -193,11 +194,10 @@
                          .attr('name', 'storeImageList[' + i + '].storeImageExtension');
                    inputExtension.val(storeImageVO.storeImageExtension);
                    
-                   // form에 태그 추가
-                   attachForm.append(inputPath);
-                   attachForm.append(inputRealName);
-                   attachForm.append(inputChgName);
-                   attachForm.append(inputExtension);
+                   storeForm.append(inputPath);
+                   storeForm.append(inputRealName);
+                   storeForm.append(inputChgName);
+                   storeForm.append(inputExtension);
                    
                    i++;
                 });
@@ -263,7 +263,7 @@
 <body onpageshow="if(event.persisted) noBack();">
 	<jsp:include page="/include/header.jsp" />
     <h2>여기는 가게 등록 페이지입니다.</h2>
-    <form action="register" method="POST" >
+    <form id="storeForm" action="register" method="POST" >
     	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     	<input type="hidden" id="businessHour" name="businessHour"> 
         <input type="hidden" id="hiddenFoodCategory" name="foodCategory" required>
