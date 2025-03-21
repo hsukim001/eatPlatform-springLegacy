@@ -53,7 +53,8 @@ public class BusinessRequestServiceImple implements BusinessRequestService {
 	@Override
 	public List<JoinBusinessRequestVO> searchBusinessRequestList(Pagination pagination) {
 		log.info("searchBusinessRequestList()");
-		return businessRequestMapper.selectBusinessRequestListByPagination(pagination);
+		List<JoinBusinessRequestVO> list = businessRequestMapper.selectBusinessRequestListByPagination(pagination);
+		return list;
 	}
 
 	// 사업자 등록 신청 목록 총 건수
@@ -114,7 +115,7 @@ public class BusinessRequestServiceImple implements BusinessRequestService {
 	@Override
 	public boolean isBusinessRequestRoleMemberAndRequestStatusWait(int businessRequestId) {
 		JoinBusinessRequestWithUserAndRoleListVO vo = businessRequestMapper.joinBusinessRequestWithUserMemberAndRoleListByBusinessRequestId(businessRequestId);
-		if(vo.getRoleName().equals("ROLE_MEMBER") && vo.getRequestStatus().equals("WAIT")) {
+		if(vo.getRoleName().equals("ROLE_MEMBER")) {
 			return true;
 		}
 		return false;

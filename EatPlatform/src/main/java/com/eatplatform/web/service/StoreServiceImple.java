@@ -141,6 +141,11 @@ public class StoreServiceImple implements StoreService {
 		return storeMapper.getStoreNameByStoreId(storeId);
 	}
 
+	@Override
+	public int deleteStore(int storeId) {
+		return storeMapper.deleteStore(storeId);
+	}
+
 
 
 }

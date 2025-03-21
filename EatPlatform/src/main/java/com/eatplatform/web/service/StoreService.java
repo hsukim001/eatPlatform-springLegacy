@@ -38,5 +38,12 @@ public interface StoreService {
 	int getTotalStoresCount(List<String> keywords);
 	
 	int modifyStore(StoreVO storeVO, StoreAddressVO storeAddressVO, StoreCategoryVO storeCategoryVO);
+	
+	/**
+	 * 매장 삭제
+	 * @param int storeId
+	 * @return int
+	 */
+	int deleteStore(int storeId);
 
 }

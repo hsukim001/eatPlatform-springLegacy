@@ -28,6 +28,37 @@
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/detail.css">
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('.list_row').on('click', function() {
+					let storeId = $(this).data('id-value');
+					location.href = "/management/store/detail?storeId=" + storeId;
+				});
+				
+				$('.store_delete_btn').on('click', function() {
+					let storeId = $(this).closest('li').data('id-value');
+					console.log("storeId : " + storeId);
+					if(confirm("선택하신 매장을 정말 삭제 하시겠습니까?")) {
+						$.ajax({
+							url : '/store/delete/' + storeId,
+							type : 'delete',
+							success : function(response) {
+								if(response == 1) {
+									alert("매장 삭제가 완료되었습니다.");
+									location.reload(true);
+								} else if(response == 0) {
+									alert("매장 삭제에 실패하였습니다.");
+								}
+							},
+							error : function() {
+								alert("매장 삭제 진행 중 오류가 발생하였습니다.");
+							}
+						});
+						
+					}
+				});
+			});
+		</script>
 		<title>업장 목록</title>
 	</head>
 	<body>
@@ -38,34 +69,41 @@
 				<jsp:include page="/include/myPageLeft.jsp"/>
 				
 				<h2>업장 목록</h2>
-				<table>
-					<thead>
-						<tr>
-							<th>번호</th>
-							<th>식당명</th>
-							<th>사업자명</th>
-							<th>카테고리</th>
-							<th>식당 소개</th>
-						</tr>
-					</thead>
-					<tbody>
-						<c:forEach var="list" items="${list }">
-							<tr>
-								<td>${list.storeId }</td>
-								<td><a href="detail?storeId=${list.storeId }">${list.storeName }</a></td>
-								<td>${list.ownerName }</td>
-								<td>
+				<ul>
+					<li>
+						<div>번호</div>
+						<div>식당명</div>
+						<div>사업자명</div>
+						<div>카테고리</div>
+						<div>식당소개</div>
+						<div>수정</div>
+						<div>삭제</div>
+					</li>
+				</ul>
+				<ul>
+					<c:forEach var="list" items="${list }">
+						<li data-id-value="${list.storeId }">
+							<div class="list_row">
+								<div>${list.storeId }</div>
+								<div>${list.storeName }</div>
+								<div>${list.ownerName }</div>
+								<div>
 					                <c:forEach var="categoryList" items="${categoryList}">
 					                    <c:if test="${list.storeId eq categoryList.storeId}">
 					                        ${categoryList.mainCategoryName}
 					                    </c:if>
 					                </c:forEach>
-					            </td>
-								<td>${list.storeComment }</td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
+					            </div>
+								<div>${list.storeComment }</div>						
+							</div>
+							<div class="btn_row">
+								<a href="/store/updateStore?storeId=${list.storeId }" >수정</a>
+								<div class="store_delete_btn">삭제</div>							
+							</div>
+						</li>
+					</c:forEach>
+				</ul>
+					
 				<ul>
 					<!-- 이전 버튼 생성을 위한 조건문 -->
 					<c:if test="${pageMaker.isPrev() }">

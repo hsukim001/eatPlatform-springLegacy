@@ -33,7 +33,7 @@
 				
 				// 취소 버튼 액션
 				$('#cancelBtn').click(function(){
-					location.href = '../'
+					location.href = '/user/detail'
 				});
 				
 				// 비밀번호 유효성 검사
