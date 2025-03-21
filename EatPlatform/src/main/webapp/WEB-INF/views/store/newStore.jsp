@@ -171,6 +171,36 @@
             const businessHour = startTime + " - " + endTime;
 
             $("#businessHour").val(businessHour);
+            
+            var attachForm = $('#attachForm');
+            var i = 0;
+            $('.storeImgFile-list input[name="storeImageVO"]').each(function() {
+            	var storeImageVO = JSON.parse($(this).val());
+            	
+                   var inputPath = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImagePath');
+                   inputPath.val(storeImageVO.storeImagePath);
+                   
+                   var inputRealName = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImageRealName');
+                   inputRealName.val(storeImageVO.storeImageRealName);
+                   
+                   var inputChgName = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImageChgName');
+                   inputChgName.val(storeImageVO.storeImageChgName);
+                   
+                   var inputExtension = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImageExtension');
+                   inputExtension.val(storeImageVO.storeImageExtension);
+                   
+                   // form에 태그 추가
+                   attachForm.append(inputPath);
+                   attachForm.append(inputRealName);
+                   attachForm.append(inputChgName);
+                   attachForm.append(inputExtension);
+                   
+                   i++;
+                });
         }); // End form.submit
     }); // End $function
 </script>
