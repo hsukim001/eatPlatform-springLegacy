@@ -274,8 +274,8 @@
 				
 				var storeId = $(this).prevAll('#storeId').val();
 				var reviewId = $(this).data('review-id');
-				
-				location.href = '../review/updateReview?reviewId=' + reviewId;
+								
+				location.href = '/review/updateReview?reviewId=' + reviewId;
 				
 				var obj2 = {
 						  'storeId' : storeId,
@@ -284,7 +284,7 @@
 
 				$.ajax({
 					type : 'GET', 
-					url : '../review/updateReview?reviewId=' + reviewId,
+					url : '/review/updateReview?reviewId=' + reviewId,
 					data : JSON.stringify(obj2),
 					success : function(result) {
 						if(result == 1) {

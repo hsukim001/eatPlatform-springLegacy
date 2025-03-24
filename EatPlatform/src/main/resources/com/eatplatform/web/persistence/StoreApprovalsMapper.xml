@@ -12,19 +12,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="storeApprovalsRegDate" column="STORE_APPROVALS_REG_DATE"/>
 	</resultMap>
 	
-	<resultMap type="com.eatplatform.web.domain.JoinBusinessRequestVO" id="joinBusinessRequestResultMap">
-		<id property="businessRequestId" column="BUSINESS_REQUEST_ID"/>
-		<result property="storeId" column="STORE_ID"/>
+	<resultMap type="com.eatplatform.web.domain.JoinStoreApprovalsListVO" id="joinStoreApprovalsListResultMap">
+		<id property="storeId" column="STORE_ID"/>
+		<result property="approvals" column="APPROVALS"/>
+		<result property="storeApprovalsRegDate" column="STORE_APPROVALS_REG_DATE"/>
+		<result property="storeUserId" column="STORE_USER_ID"/>
 		<result property="storeName" column="STORE_NAME"/>
-		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="phone" column="PHONE"/>
+		<result property="name" column="name"/>
+	</resultMap>
+	
+	<resultMap type="com.eatplatform.web.domain.JoinStoreApprovalsInfoVO" id="joinStoreApprovalsInfoResultMap">
+		<id property="storeId" column="STORE_ID"/>
+		<result property="approvals" column="APPROVALS"/>
+		<result property="storeApprovalsRegDate" column="STORE_APPROVALS_REG_DATE"/>
+		<result property="storeUserId" column="STORE_USER_ID"/>
+		<result property="storeName" column="STORE_NAME"/>
 		<result property="storePhone" column="STORE_PHONE"/>
-		<result property="foodCategory" column="FOOD_CATEGORY"/>
+		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="reservLimit" column="RESERV_LIMIT"/>
+		<result property="seat" column="SEAT"/>
 		<result property="businessHour" column="BUSINESS_HOUR"/>
 		<result property="storeComment" column="STORE_COMMENT"/>
 		<result property="description" column="DESCRIPTION"/>
 		<result property="roadAddress" column="ROAD_ADDRESS"/>
 		<result property="jibunAddress" column="JIBUN_ADDRESS"/>
-		<result property="regDate" column="REG_DATE"/>
+		<result property="detailAddress" column="DETAIL_ADDRESS"/>
+		<result property="phone" column="PHONE"/>
+		<result property="email" column="EMAIL"/>
 	</resultMap>
 	
 	<insert id="insertStoreApprovals">
@@ -48,57 +63,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		WHERE APPROVALS = 0
 	</select>
 	
-	<select id="selectApprovalsList" resultMap="joinBusinessRequestResultMap">
-		SELECT appr.STORE_ID, 
-			s.STORE_NAME, 
-			s.OWNER_NAME, 
-			s.STORE_PHONE, 
-			s.FOOD_CATEGORY, 
-			s.BUSINESS_HOUR, 
-			s.STORE_COMMENT, 
-			s.DESCRIPTION, 
-			s.STORE_REG_DATE AS REG_DATE, 
-			a.ROAD_ADDRESS, 
-			a.JIBUN_ADDRESS
+	<select id="selectApprovalsList" resultMap="joinStoreApprovalsListResultMap">
+		SELECT *
 		FROM (
-				SELECT ROW_NUMBER() OVER (ORDER BY STORE_ID DESC) AS RN,
-				STORE_APPROVALS.* FROM STORE_APPROVALS
-			) appr
-		INNER JOIN STORE s
-		ON s.STORE_ID = appr.STORE_ID
-		INNER JOIN STORE_ADDRESS a
-		ON a.STORE_ID = appr.STORE_ID
-		WHERE appr.APPROVALS = 0
-		AND appr.RN BETWEEN #{start} AND #{end}
-		AND NOT EXISTS (
-          SELECT 1 
-          FROM BUSINESS_REQUEST b 
-          WHERE b.STORE_ID = appr.STORE_ID
-      )
-		ORDER BY STORE_ID DESC
+            SELECT ROW_NUMBER() OVER(ORDER BY a.STORE_APPROVALS_REG_DATE DESC) AS RN, 
+            	   a.*,
+            	   s.STORE_USER_ID, 
+				   s.STORE_NAME, 
+				   u.PHONE, 
+				   u.NAME
+            FROM STORE_APPROVALS a
+            INNER JOIN STORE s
+            ON a.STORE_ID = s.STORE_ID
+            INNER JOIN USER_STORE u
+            ON s.STORE_USER_ID = u.USERNAME
+            WHERE u.ACTIVE = 1
+            )
+        WHERE RN BETWEEN #{start} AND #{end}
 	</select>
 	
-	<select id="selectApprovals" resultMap="joinBusinessRequestResultMap">
-		SELECT appr.STORE_ID, 
-			s.STORE_NAME, 
-			s.OWNER_NAME, 
-			s.STORE_PHONE, 
-			s.FOOD_CATEGORY, 
-			s.BUSINESS_HOUR, 
-			s.STORE_COMMENT, 
-			s.DESCRIPTION, 
-			s.STORE_REG_DATE AS REG_DATE, 
-			a.ROAD_ADDRESS, 
-			a.JIBUN_ADDRESS
-		FROM STORE_APPROVALS appr
+	<select id="selectApprovalInfoByStoreId" resultMap="joinStoreApprovalsInfoResultMap">
+		SELECT a.*,
+			   s.STORE_USER_ID,
+			   s.STORE_NAME,
+			   s.STORE_PHONE,
+			   s.OWNER_NAME,
+			   s.RESERV_LIMIT,
+			   s.SEAT,
+			   s.BUSINESS_HOUR,
+			   s.STORE_COMMENT,
+			   s.DESCRIPTION,
+			   d.ROAD_ADDRESS,
+			   d.JIBUN_ADDRESS,
+			   d.DETAIL_ADDRESS,
+			   u.PHONE,
+			   u.EMAIL
+		FROM STORE_APPROVALS a
 		INNER JOIN STORE s
-		ON s.STORE_ID = appr.STORE_ID
-		INNER JOIN STORE_ADDRESS a
-		ON a.STORE_ID = appr.STORE_ID
-		WHERE appr.STORE_ID = #{storeId}
-		AND appr.APPROVALS = 0
+		ON a.STORE_ID = s.STORE_ID
+		INNER JOIN STORE_ADDRESS d
+		ON a.STORE_ID = d.STORE_ID
+		INNER JOIN USER_STORE u
+		ON s.STORE_USER_ID = u.USERNAME
+		WHERE a.STORE_ID = #{storeId}
+		AND u.ACTIVE = 1
 	</select>
-	
+		
 	<select id="selectApprovalsByStoreId" resultMap="storeApprovalsResultMap">
 		SELECT * FROM STORE_APPROVALS
 		WHERE STORE_ID = #{storeId}

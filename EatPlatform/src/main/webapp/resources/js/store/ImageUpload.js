@@ -53,8 +53,6 @@ $(document).ready(function(){
 	    fileList.empty(); // 자식 요소 삭제
 	    
 	    $('.storeImgFile-list').empty(); // 기존 선택 목록 초기화
-	    
-
 
 		/* 첨부 파일 비동기로 전송하는 코드 */ 
 	    var formData = new FormData();

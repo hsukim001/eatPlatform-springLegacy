@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
 <title>리뷰 수정</title>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 </head>
 <body>
 	<h2>리뷰 수정 페이지</h2>
@@ -64,8 +65,6 @@
 	
 	<button id="updateReviewImage">등록</button>
 	<button onclick="history.back()">취소</button>
-	
-	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	
 	<script type="text/javascript">
 	// ajaxSend() : AJAX 요청이 전송되려고 할 때 실행할 함수를 지정

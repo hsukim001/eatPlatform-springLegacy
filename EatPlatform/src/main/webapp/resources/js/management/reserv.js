@@ -199,11 +199,16 @@ $(document).ready(function() {
 		//let reservId = row.querySelector('.reserv_id').innerText;
 		console.log("ok");
 		let reservId = $('#tableBody .selected').data('id-value');
-				    
-		let check = confirm('선택하신 예약을 취소 하시겠습니까?');
-		if(check) {
-			reservCancel(reservId)
-				.then((status) => createdCancelHistory(reservId, status));
+		let commentNum = $('#cancelComment').val();				    
+		
+		if(commentNum != 0) {
+			let check = confirm('선택하신 예약을 취소 하시겠습니까?');
+			if(check) {
+				reservCancel(reservId)
+					.then((status) => createdCancelHistory(reservId, status));
+			}
+		} else if(commentNum == 0) {
+			alert("예약 취소 사유를 선택해주세요.");
 		}
 	});// End cancelBtn
 	

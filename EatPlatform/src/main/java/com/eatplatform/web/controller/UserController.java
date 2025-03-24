@@ -219,6 +219,8 @@ public class UserController {
 		
 		List<JoinBusinessRequestVO> list = businessRequestService.searchBusinessRequestList(pagination);
 		int totalCount = businessRequestService.getBusinessRequestTotalCount();
+		log.info("businessList : " + list);
+		log.info("totalCount : " + totalCount);
 		
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);

@@ -12,10 +12,60 @@
 #otherCategory {
     display: none;
 }
+
+.insert {
+	padding: 10px 20px;
+	display: block;
+	width: 300px;
+	border: 1px solid #dbdbdb;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.insert .file-list {
+	height: 200px;
+	overflow: auto;
+	border: 1px solid #989898;
+	padding: 10px;
+}
+
+.insert .file-list .filebox p {
+	font-size: 14px;
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.insert .file-list .filebox .delete i {
+	color: #ff5353;
+	margin-left: 5px;
+}
+
+#storeImg {
+	display: none;
+}
+
+.uploadLabel {
+	display: inline-block;
+	padding: 6px 25px;
+	margin: 5px 0;
+	background-color:navy;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+}
 </style>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
 <script>
+	$(document).ajaxSend(function(e, xhr, opt){
+	    var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+	    
+	    xhr.setRequestHeader(header, token);
+	 });
+	
 	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
     $(function() { 
     	
@@ -134,7 +184,40 @@
             const businessHour = startTime + " - " + endTime;
 
             $("#businessHour").val(businessHour);
+            
+         	// form에 이미지 첨부
+            var storeForm = $('#storeForm');
+            var i = 0;
+            $('.storeImgFile-list input[name="storeImageVO"]').each(function() {
+            	var storeImageVO = JSON.parse($(this).val());
+            	
+                   var inputPath = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImagePath');
+                   inputPath.val(storeImageVO.storeImagePath);
+                   
+                   var inputRealName = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImageRealName');
+                   inputRealName.val(storeImageVO.storeImageRealName);
+                   
+                   var inputChgName = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImageChgName');
+                   inputChgName.val(storeImageVO.storeImageChgName);
+                   
+                   var inputExtension = $('<input>').attr('type', 'hidden')
+                         .attr('name', 'storeImageList[' + i + '].storeImageExtension');
+                   inputExtension.val(storeImageVO.storeImageExtension);
+                   
+                   storeForm.append(inputPath);
+                   storeForm.append(inputRealName);
+                   storeForm.append(inputChgName);
+                   storeForm.append(inputExtension);
+                   
+                   i++;
+                });
         }); // End form.submit
+        
+     
+        
     }); // End $function
 </script>
 <script>
@@ -195,7 +278,7 @@
 </head>
 <body onpageshow="if(event.persisted) noBack();">
     <h2>여기는 수정 페이지입니다.</h2>
-    <form action="modify" method="POST">
+    <form id="storeForm" action="modify" method="POST">
     	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <input type="hidden" value="${param.storeId }" id="storeId" name="storeId">
     	<input type="hidden" id="businessHour" name="businessHour">  
@@ -252,5 +335,26 @@
 		
         <input type="submit" value="식당 정보 수정">
     </form>
+    <br><br>
+    
+    <div class="insert">
+			<label class="uploadLabel" for="storeImg">
+				업로드
+			</label>
+			<input id="storeImg" name="storeImg" type="file" multiple />
+			<div class="file-list">
+				<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
+					<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
+					<img width="100px" height="100px" 
+					src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
+					</a>
+				</c:forEach>
+			</div>
+        	<div id="thumbnail-container">
+        	</div>
+		</div>
+		
+		<div class="storeImgFile-list">
+		</div>
 </body>
 </html>

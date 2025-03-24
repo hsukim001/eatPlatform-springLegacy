@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
+import com.eatplatform.web.domain.StoreImageVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.ProductMapper;
 import com.eatplatform.web.persistence.StoreAddressMapper;
 import com.eatplatform.web.persistence.StoreApprovalsMapper;
+import com.eatplatform.web.persistence.StoreImageMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 
 import lombok.extern.log4j.Log4j;
@@ -36,6 +38,9 @@ public class StoreServiceImple implements StoreService {
 	
 	@Autowired
 	private ProductMapper productMapper;
+	
+	@Autowired
+	private StoreImageMapper storeImageMapper;
 	
 	@Transactional(value = "transactionManager")
 	@Override
@@ -63,6 +68,16 @@ public class StoreServiceImple implements StoreService {
 		log.info("주소 정보 " + resultAddress + "행 삽입 성공");
 		log.info("카테고리 정보 " + resultAddress + "행 삽입 성공");
 		log.info("승인 요청 정보" + resultApprovals + "행 삽입 성공");
+		
+		// 이미지
+		List<StoreImageVO> storeImageList = storeVO.getStoreImageList();
+		
+		for (StoreImageVO storeImageVO : storeImageList) {
+			storeImageVO.setStoreId(storeId);
+			storeImageMapper.insertStoreImage(storeImageVO);
+			log.info("이미지 등록 : " + storeImageVO);
+		}
+		
 		return resultStore;
 	}
 
@@ -73,7 +88,11 @@ public class StoreServiceImple implements StoreService {
 
 	@Override
 	public StoreVO selectStoreById(int storeId) {
-		return storeMapper.selectStoreById(storeId);
+		StoreVO storeVO = storeMapper.selectStoreById(storeId);
+		List<StoreImageVO> storeImageList = storeImageMapper.selectListByStoreId(storeId);
+		storeVO.setStoreImageList(storeImageList);
+		
+		return storeVO;
 	}
 	
 	@Override
@@ -124,9 +143,24 @@ public class StoreServiceImple implements StoreService {
 		storeCategoryVO.setSubCategoryName(subCategoryName);
 		int resultStoreCategory = storeMapper.updateStoreCategory(storeCategoryVO);
 		
+		// 이미지 수정
+		List<StoreImageVO> storeImageList = storeVO.getStoreImageList();
+		
+		if(storeImageList.isEmpty()) {
+			storeImageList = storeVO.getStoreImageList();
+		} else {
+			storeImageMapper.deleteStoreImageByStoreId(storeVO.getStoreId());
+			
+			for(StoreImageVO storeImageVO : storeImageList) {
+				storeImageVO.setStoreId(storeVO.getStoreId());
+				storeImageMapper.insertStoreImage(storeImageVO);
+			}
+		}
+		
 		log.info(storeVO);
 		log.info(resultStore + "행 정보 수정 성공");
 		log.info(resultAddress + "행 주소 정보 수정 성공");
+		log.info(storeImageList + "이미지 수정 성공"); 
 		log.info(resultStoreCategory + "행 카테고리 정보 수정 성공");
 		return resultStore;
 	}
@@ -141,9 +175,13 @@ public class StoreServiceImple implements StoreService {
 		return storeMapper.getStoreNameByStoreId(storeId);
 	}
 
+	@Transactional(value = "transactionManager")
 	@Override
 	public int deleteStore(int storeId) {
-		return storeMapper.deleteStore(storeId);
+		int result = storeMapper.deleteStore(storeId);
+		storeImageMapper.deleteStoreImageByStoreId(storeId);
+		
+		return result;
 	}
 
 

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
+import com.eatplatform.web.domain.JoinStoreApprovalsInfoVO;
+import com.eatplatform.web.domain.JoinStoreApprovalsListVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.persistence.StoreApprovalsMapper;
 import com.eatplatform.web.persistence.StoreMapper;
@@ -36,18 +38,18 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 	
 	// 가게 등록 요청 목록 조회
 	@Override
-	public List<JoinBusinessRequestVO> searchList(Pagination pagination) {
+	public List<JoinStoreApprovalsListVO> searchList(Pagination pagination) {
 		log.info("searchList()");
-		List<JoinBusinessRequestVO> list = storeApprovalsMapper.selectApprovalsList(pagination);
+		List<JoinStoreApprovalsListVO> list = storeApprovalsMapper.selectApprovalsList(pagination);
 		log.info("list : " + list);
 		return list;
 	}
 
 	// 가게 등록 요청 정보
 	@Override
-	public JoinBusinessRequestVO searchInfo(int storeId) {
+	public JoinStoreApprovalsInfoVO searchInfo(int storeId) {
 		log.info("searchInfo");
-		return storeApprovalsMapper.selectApprovals(storeId);
+		return storeApprovalsMapper.selectApprovalInfoByStoreId(storeId);
 	}
 
 	// 가게 등록 요청 승인

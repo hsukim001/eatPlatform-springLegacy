@@ -58,7 +58,7 @@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
-<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js" defer></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
@@ -318,9 +318,12 @@
 			<label class="uploadLabel" for="storeImg">
 				업로드
 			</label>
-			<input id="storeImg" name="storeImg" type="file" accept="image/*" multiple />
+			<input id="storeImg" name="storeImg" type="file" multiple />
 			<div class="file-list"></div>
         	<div id="thumbnail-container"></div>
+		</div>
+		
+		<div class="storeImgFile-list">
 		</div>
 
 </body>

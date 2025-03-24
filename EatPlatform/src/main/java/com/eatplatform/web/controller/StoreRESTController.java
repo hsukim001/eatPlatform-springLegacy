@@ -50,6 +50,7 @@ public class StoreRESTController {
 	@Autowired
 	private ReservService reservService;	
 
+
 	/**
 	 * @param pageNum
 	 * @param keyword
@@ -99,7 +100,7 @@ public class StoreRESTController {
 
 	    return response;
 	}
-    
+
     @GetMapping("/holiday/search/list/{storeId}")
     public ResponseEntity<Map<String, Object>> searchHolidayList(@PathVariable("storeId") int storeId) {
     	log.info("searchHolidayList()");
