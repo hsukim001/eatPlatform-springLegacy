@@ -48,11 +48,8 @@ public class StoreRESTController {
 	private HolidayService holidayService;
 	
 	@Autowired
-<<<<<<< Updated upstream
 	private ReservService reservService;	
-=======
-	private ReservService reservService;
->>>>>>> Stashed changes
+
 
 	/**
 	 * @param pageNum
@@ -103,11 +100,7 @@ public class StoreRESTController {
 
 	    return response;
 	}
-<<<<<<< Updated upstream
-    
-=======
 
->>>>>>> Stashed changes
     @GetMapping("/holiday/search/list/{storeId}")
     public ResponseEntity<Map<String, Object>> searchHolidayList(@PathVariable("storeId") int storeId) {
     	log.info("searchHolidayList()");
