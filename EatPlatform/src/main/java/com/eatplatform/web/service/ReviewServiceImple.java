@@ -68,7 +68,7 @@ public class ReviewServiceImple implements ReviewService{
 	public ReviewVO getReviewById(int reviewId) {
 		log.info("getReviewById()");
 		
-		ReviewVO reviewVO = reviewMapper.selectByReviewId(reviewId);
+		ReviewVO reviewVO = reviewMapper.findReviewWithUsername(reviewId);
 		List<ReviewImageVO> list = reviewImageMapper.selectListByReviewId(reviewId);
 		
 		reviewVO.setReviewImageList(list);

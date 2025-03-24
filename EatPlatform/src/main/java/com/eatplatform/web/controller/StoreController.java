@@ -148,7 +148,7 @@ public class StoreController {
 		model.addAttribute("totalPages", totalPages);
 		model.addAttribute("currentPage", pageNum);
 		model.addAttribute("keyword", keyword);
-		log.info(recentStores);
+		log.info("RECENTSTORES : " + recentStores);
 
 		return "/store/list";
 	}
@@ -168,7 +168,7 @@ public class StoreController {
 
 		String currentUserId = userDetails.getUsername();
 		String dbUserId = storeService.getStoreUserIdByStoreId(storeVO.getStoreId());
-
+		log.info("storeVO : " + storeVO);
 		log.info("currentUserId : " + currentUserId + "// dbUserId : " + dbUserId);
 
 		if (dbUserId != null && dbUserId.equals(currentUserId)) {

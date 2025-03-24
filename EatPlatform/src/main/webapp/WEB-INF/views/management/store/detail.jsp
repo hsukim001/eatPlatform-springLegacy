@@ -67,7 +67,11 @@
 				<p class="storeTitle width100 textLeft mb20 bold">${storeInfo.storeName }</p>
 				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
-						<img src="<%=request.getContextPath()%>/resources/img/sample2.png" alt="sample">
+						<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
+							<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
+								<img src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
+							</a>
+						</c:forEach>
 					</div>
 					<div id="storeInfoText">
 						<ul>

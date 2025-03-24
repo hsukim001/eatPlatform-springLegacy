@@ -23,6 +23,13 @@
 	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
 	<script>
+		$(document).ajaxSend(function(e, xhr, opt){
+	    var token = $("meta[name='_csrf']").attr("content");
+	    var header = $("meta[name='_csrf_header']").attr("content");
+	    
+	    xhr.setRequestHeader(header, token);
+	 });
+		
 		$(function(){
 
 		    $(".phoneNum").each(function() {
@@ -177,6 +184,12 @@
 				<p class="storeTitle width100 textLeft mb20 bold">${storeVO.storeName }</p>
 				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
+						<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
+							<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
+							<img width="100px" height="100px" 
+							src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
+							</a>
+						</c:forEach>
 					</div>
 					<div id="storeInfoText">
 						<ul>

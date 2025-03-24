@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.service.ReviewService;
@@ -28,9 +30,7 @@ public class ReviewController {
 	@GetMapping("/updateReview")
 	public void updateReviewGET(Model model, int reviewId) {
 		log.info("updateReviewGET()");
-		
-		ReviewVO reviewVO = reviewService.getReviewWithUsername(reviewId);
-		reviewVO.setUsername(reviewVO.getUsername());
+		ReviewVO reviewVO = reviewService.getReviewById(reviewId);
 		model.addAttribute("reviewVO",reviewVO);
 		log.info("reviewVO : " + reviewVO);
 		
@@ -43,7 +43,7 @@ public class ReviewController {
 	 * @return
 	 */
 	@PostMapping("/updateReview")
-	public String updateReviewPOST(Model model,ReviewVO reviewVO) {
+	public String updateReviewPOST(Model model, ReviewVO reviewVO) {
 		log.info("updateReviewPOST()");
 		
 		// 필수 필드 검증
