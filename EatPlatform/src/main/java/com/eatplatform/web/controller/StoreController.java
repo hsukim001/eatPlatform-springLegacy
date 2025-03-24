@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
+import com.eatplatform.web.domain.JoinStoreApprovalsInfoVO;
+import com.eatplatform.web.domain.JoinStoreApprovalsListVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreImageVO;
@@ -262,35 +264,6 @@ public class StoreController {
 		
 		log.info("storeVO : " + storeVO);
 		return "/store/detail";
-	}
-	
-	// 가게 등록 요청 목록 화면 호출
-	@GetMapping("/request/list")
-	public void requestList(Model model, Pagination pagination) {
-		log.info("requestList()");
-		List<JoinBusinessRequestVO> list = storeApprovalsService.searchList(pagination);
-		int totalCount = storeApprovalsService.getTotalCount();
-		
-		PageMaker pageMaker = new PageMaker();
-		pageMaker.setPagination(pagination);
-		pageMaker.setTotalCount(totalCount);
-		
-		model.addAttribute("list", list);
-		model.addAttribute("pageMaker", pageMaker);
-	}
-	
-	// 가게 등록 요청 정보 화면 호출
-	@GetMapping("/request/info")
-	public void requestInfo(Model model, @RequestParam("storeId") int storeId) {
-		log.info("requestInfo()");
-		JoinBusinessRequestVO infoVO = storeApprovalsService.searchInfo(storeId);
-		model.addAttribute("info", infoVO);
-	}
-	
-
-	@GetMapping("/test")
-	public void test() {
-		log.info("test()");
 	}
 
 }

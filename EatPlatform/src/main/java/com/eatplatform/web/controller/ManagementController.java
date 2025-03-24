@@ -10,11 +10,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.JoinReviewReportVO;
+import com.eatplatform.web.domain.JoinStoreApprovalsInfoVO;
+import com.eatplatform.web.domain.JoinStoreApprovalsListVO;
 import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
@@ -23,6 +26,7 @@ import com.eatplatform.web.persistence.ReviewMapper;
 import com.eatplatform.web.service.ManagementService;
 import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.ReviewReportListService;
+import com.eatplatform.web.service.StoreApprovalsService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.util.BusinessHourUtil;
 import com.eatplatform.web.util.PageMaker;
@@ -50,6 +54,9 @@ public class ManagementController {
 	@Autowired
 	private ReviewMapper reviewMapper;
 	
+	@Autowired
+	private StoreApprovalsService storeApprovalsService;
+	
 	/**
 	 * 가게 목록 조회
 	 * @param Model model
@@ -63,12 +70,15 @@ public class ManagementController {
 		
 		List<StoreVO> storeList = managementService.searchStoreList(pagination, username);
 		List<Integer> storeIdList = new ArrayList<>();
+		List<StoreCategoryVO> storeCategoryList = new ArrayList();
 		
 		for(int i = 0; i < storeList.size(); i++) {
 			storeIdList.add(storeList.get(i).getStoreId());
 		}
 		
-		List<StoreCategoryVO> storeCategoryList = storeService.getStoreCategory(storeIdList);
+		if(storeList.size() != 0) {
+			storeCategoryList = storeService.getStoreCategory(storeIdList);
+		}
 		
 		int totalCount = managementService.getTotalStoresCount(username);
 		
@@ -142,6 +152,33 @@ public class ManagementController {
 		model.addAttribute("pageMaker", pageMaker);
 		
 		return "/management/report/reviewList";
+	}
+	
+	// 가게 등록 요청 목록 화면 호출
+	@GetMapping("/store/requestList")
+	public void requestList(Model model, Pagination pagination) {
+		log.info("requestList()");
+		List<JoinStoreApprovalsListVO> list = storeApprovalsService.searchList(pagination);
+		int totalCount = storeApprovalsService.getTotalCount();
+		
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setPagination(pagination);
+		pageMaker.setTotalCount(totalCount);
+		
+		model.addAttribute("list", list);
+		model.addAttribute("pageMaker", pageMaker);
+	}
+	
+	// 가게 등록 요청 정보 화면 호출
+	@GetMapping("/store/requestInfo")
+	public void requestInfo(Model model, @RequestParam("storeId") int storeId, @RequestParam("pageNum") int pageNum) {
+		log.info("requestInfo()");
+		JoinStoreApprovalsInfoVO infoVO = storeApprovalsService.searchInfo(storeId);
+		if(infoVO.getDetailAddress() == null || infoVO.getDetailAddress().isEmpty()) {
+			infoVO.setDetailAddress("상세 주소가 없습니다.");
+		}
+		model.addAttribute("info", infoVO);
+		model.addAttribute("pageNum", pageNum);
 	}
 	
 }
