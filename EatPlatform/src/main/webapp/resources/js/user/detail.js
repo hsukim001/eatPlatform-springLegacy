@@ -29,7 +29,7 @@ $(function() {
 		
 		let btn = '<button id="modifyBtn">수정</button>' +
 			'<button class="modify_cancel_btn">취소</button>' +
-			'<button onclick="location.href=' + "modifyPw" +'">비밀번호 변경</button>';
+			'<button onclick="location.href=\'/user/modifyPw\'">비밀번호 변경</button>';
 		$('.btn_container').html(btn);
 	});
 	
@@ -40,7 +40,8 @@ $(function() {
 		$('#phone').prop('readonly', true);
 		
 		let btn = '<button class="from_chg_btn">개인 정보 수정</button>' +
-			'<button onclick="location.href=' + "modifyPw" +'">비밀번호 변경</button>';
+			'<button onclick="location.href=\'/user/modifyPw\'">비밀번호 변경</button>' +
+			'<button id="memWithdrawal">회원 탈퇴</button>';
 		$('.btn_container').html(btn);
 	});
 	

@@ -6,6 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="_csrf" content="${_csrf.token}"/>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="_csrf_header" content="${_csrf.headerName}"/>
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
@@ -47,7 +48,7 @@
 		<div id="container">
 			<jsp:include page="/include/myPageLeft.jsp"/>
 		
-			<h1>나의 예약 목록</h1>
+			<h1>나의 예약 목록s</h1>
 			<div class="search-container">
 				<div class="search-type">
 					<span id="allListBtn" class="spanBtn selectSpan">전체</span>

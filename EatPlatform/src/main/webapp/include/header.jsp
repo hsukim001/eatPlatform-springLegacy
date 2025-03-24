@@ -42,7 +42,6 @@
                     	</li>         	
                 	</ul>
                 	<ul>
-           				<!-- 알림 버튼을 헤더에 추가 -->
             			<li class="review_noti">
                 			<a id="notificationIcon" class="nav-link text-white notification-dot">
                 				🔔
@@ -51,17 +50,16 @@
             			</li>
         			</ul>
         			<ul id="notifications" class="notifications-dropdown" style="display: none;">
-            			<!-- 실시간 알림이 여기에 표시됩니다 -->
         			</ul>
                 </sec:authorize>
             </div>
             <div id="gnb_bar">
             	<ul>
-            		<li> 
-            			<a href="/shop/list">
-            				Shop 
-            			</a>
-            		</li>
+<!--             		<li>  -->
+<!--             			<a href="/shop/list"> -->
+<!--             				Shop  -->
+<!--             			</a> -->
+<!--             		</li> -->
             		<li> 
             			<a href="/store/list">
             				맛집 목록 
@@ -100,20 +98,20 @@
             				<sec:authorize access="hasAuthority('ROLE_STORE')">
             				<!-- 사업자 회원 -->
 	            				<li>
-	            					<a href="/reserv/list">
+            						<a href="/management/reserv/list">
 	            						예약 현황 확인
 	            					</a>
 	            				</li>
             					<li>
-            						<a href="#" onclick="alert('아직 준비 중 입니다.');">
+            						<a href="/management/store/list">
             							매장 관리
             						</a>
             					</li>
-            					<li>
-            						<a href="/shop/product/newProduct">
-            							상품 등록
-            						</a>
-            					</li>
+<!--             					<li> -->
+<!--             						<a href="/shop/product/newProduct"> -->
+<!--             							상품 등록 -->
+<!--             						</a> -->
+<!--             					</li> -->
             					<li>
 	            					<a href="/store/newStore">
 	            						신규 업장 등록
@@ -140,7 +138,7 @@
             					</li>
             					<li>
             						<a href="/shop/product/category/management">
-            							상품 카테고리 관리
+            							업장 카테고리 관리
             						</a>
             					</li>
             				</sec:authorize>

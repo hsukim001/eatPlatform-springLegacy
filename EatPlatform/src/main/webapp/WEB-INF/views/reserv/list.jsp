@@ -3,89 +3,55 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="_csrf" content="${_csrf.token}"/>
-		<meta name="_csrf_header" content="${_csrf.headerName}"/>
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/myPageLeft.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/detail.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/modal.css">
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reserv/list.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/management/reserv.js"></script>
+<title>예약 목록</title>
+</head>
+<body>
+<div id="wrap">
+	<jsp:include page="/include/header.jsp" />
+	
+	<div id="container">
+		<div id="list_container">
+			<p class="list_title">나의 예약 목록</p>			
+			<div id="search-container">
+				<input id="keyword" type="text" placeholder="가게 이름을 입력해주세요.">
+				<span class="searchBtn">검색</span>
+			</div>	
+			<p id="totalCount"></p>	
+		</div>
+
 		
-		<style type="text/css">
-			.spanBtn {
-				cursor: pointer;
-			}
-			
-			.selectSpan {
-				font-weight: bold;
-				color: blue;
-				cursor: pointer;
-			}
-			.page-link-select {
-				font-weight: bold;
-				color: blue;
-				pointer-events: none; /* 클릭 비활성화 */
-    			cursor: default; /* 기본 커서 */
-			}
-			
-			.reservRow {
-				cursor: pointer;
-			}
-			
-			.searchBtn {
-				cursor: pointer;
-			}
-		</style>
-		
-		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
-		<script src="<%=request.getContextPath()%>/resources/js/management/reserv.js"></script>
-		<title>예약 목록</title>
-	</head>
-	<body>
-	<div id="wrap">
-		<jsp:include page="/include/header.jsp" />
-		
-		<div id="container">
-			<jsp:include page="/include/myPageLeft.jsp"/>
-		
-			<h1>나의 예약 목록</h1>
-			
-			<div class="search-container">
-				<div class="search-title">
-					<input id="keyword" type="text" placeholder="가게 이름을 입력해주세요.">
-					<span class="searchBtn">검색</span>					
-				</div>
-			</div>
-			
-			<div>
-				<p id="totalCount"></p>
-				<table>
-					<thead id="tableHead">
-						<tr>
-							<th>번호</th>
-							<th>식당명</th>
-							<th>예약 일자</th>
-							<th>예약 인원</th>
-							<th>상태</th>
-							<th>예약 신청일</th>
-						</tr>
-					</thead>
-					<tbody id="tableBody">
-						<!-- ajax로 table load -->
-					</tbody>
-				</table>
-				<div id="pagination">
-					<!-- ajax로 pagination load -->
-				</div>
-				
-				<div>
-					<jsp:include page="/include/modal/reservInfo.jsp" />
-				</div>
+		<div id="table_container">
+			<ul id="tableHead">
+				<li>번호</li>
+				<li>식당명</li>
+				<li>예약 일자</li>
+				<li>예약 인원</li>
+				<li>상태</li>
+				<li>예약 신청일</li>
+			</ul>
+			<div id="tableBody"></div>
+			<div id="pagination">
+				<!-- ajax로 pagination load -->
 			</div>
 		</div>
+		
+		<div>
+			<jsp:include page="/include/modal/reservInfo.jsp" />
+			</div>
+		</div>
+		
+		<jsp:include page="/include/footer.jsp" />	
 	</div>
 	
 	</body>

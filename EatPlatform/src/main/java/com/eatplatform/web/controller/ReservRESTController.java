@@ -56,7 +56,7 @@ public class ReservRESTController {
 	@GetMapping("/toDay/{pageNum}/{type}")
 	public ResponseEntity<DataResponse> getReservList(@PathVariable("pageNum") int pageNum, @PathVariable("type") String type, @RequestParam(value = "keyword", required = false, defaultValue="") String keyword, @AuthenticationPrincipal CustomUser customUser) {
 		log.info("getReservList()");
-		int pageSize = 5;
+		int pageSize = 10;
 		
 		// session에서 사용자 아이디 로드
 		int userId = customUser.getUser().getUserId();

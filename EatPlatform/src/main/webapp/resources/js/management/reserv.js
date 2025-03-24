@@ -11,6 +11,28 @@ $(document).ready(function() {
 	let keyword = '';
 	let storeDetailUrl;
 	nextList(1, searchType, keyword);
+    
+    function formatPhoneNumber(phone) {
+        phone = phone.replace(/\D/g, "");
+
+        if (phone.length === 9) {
+            return phone.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+        } else if (phone.length === 10) {
+            return phone.replace(/(\d{2,3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+        } else if (phone.length === 11) {
+            return phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+        } else if (phone.length === 12) {
+            return phone.replace(/(\d{4})(\d{4})(\d{4})/, "$1-$2-$3");
+        }
+
+        return phone;
+    }
+	
+	$('#keyword').keydown(function(e) {
+	    if (e.keyCode === 13) {
+	        $('.searchBtn').trigger('click');
+	    }
+	});
 	
 	$('.searchBtn').click(function() {
 		keyword = $('#keyword').val();
@@ -81,6 +103,12 @@ $(document).ready(function() {
 		$('#reservInfoModal').hide();
 	}); // x span click event
 	
+	$('#reservInfoModal').click(function(e) {
+	    if (!$(e.target).closest('.modal-content').length) {
+	        $('.close').click();
+	    }
+	});
+	
 	// 예약 목록 ajax 조회 함수
 	function nextList(pageNum, searchType, keyword) {
 		let getURL = '/reserv/toDay/' + pageNum + '/' + searchType + '?keyword=' + keyword;
@@ -100,7 +128,7 @@ $(document).ready(function() {
 	// 예약 목록 테이블 작성 함수
 	function nextTable(reserv) {
 		let tableBodyRows = '';
-		let totalCountHtml = '총 ' + reserv.pageMaker.totalCount + '건';
+		let totalCountHtml = '총 ' + reserv.pageMaker.totalCount + '건의 예약 내역이 있습니다.';
 				    
 		if(reserv.pageMaker.totalCount > 0) {
 			reserv.list.forEach(function(list) {
@@ -118,18 +146,18 @@ $(document).ready(function() {
 				status = "취소";
 			}
 						    
-			tableBodyRows += '<tr class="reservRow" data-id-value="'+ list.reservId +'">'+
-					'<td>'+ list.reservId +'</td>'+
-					'<td>'+ list.storeName +'</td>'+
-					'<td>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</td>'+
-					'<td>'+ list.reservPersonnel +'</td>'+
-					'<td>'+ status +'</td>' +
-					'<td>'+ createdDate +'</td>' +
+			tableBodyRows += '<ul class="reservRow" data-id-value="'+ list.reservId +'">'+
+					'<li>'+ list.reservId +'</li>'+
+					'<li>'+ list.storeName +'</li>'+
+					'<li>'+ formattedReservDate + ' ' + list.reservHour + ':' + list.reservMin + '</li>'+
+					'<li>'+ list.reservPersonnel +'</li>'+
+					'<li>'+ status +'</li>' +
+					'<li>'+ createdDate +'</li>' +
 					 //btnFrom +
-				'</tr>';
+				'</ul>';
 			});
 		} else {
-			tableBodyRows = '<tr><td colspan="6">목록이 존재하지 않습니다.</td></tr>'
+			tableBodyRows = '<ul><li class="no_data">목록이 존재하지 않습니다.</li></ul>'
 		}
 				    
 		$('#totalCount').html(totalCountHtml);
@@ -274,7 +302,14 @@ $(document).ready(function() {
 				btn += '</select>' + '<button class="reservCancelBtn">예약 취소</button>';
 					
 				$('#storeTitle').text(response.info.storeName);
-				$('#phone .textValue').text(response.info.storePhone);
+				$('#phone .textValue').text(response.info.storePhone);					
+			    $("#phone .textValue").each(function() {
+			        let rawPhone = $(this).text().trim();
+			        let formattedPhone = formatPhoneNumber(rawPhone);
+			        if (formattedPhone) {
+			            $(this).text(formattedPhone);
+			        }
+			    });
 				$('#reservDate .textValue').text(formattedReservDate);
 				$('#reservTime .textValue').text(reservTime);
 				$('#regDate .textValue').text(createdDate);
@@ -292,14 +327,25 @@ $(document).ready(function() {
 					$('.btnContainer').html(btn);
 				}
 				
-				if(response.info.roadAddress != null) {
-					let address = response.info.roadAddress + " " + response.info.detailAddress
-					$('#address .textValue').text(address);
-				} else if(response.info.jibunAddress != null) {
-					let address = response.info.jibunAddress + " " + response.info.detailAddress
-					$('#address .textValue').text(address);
-				}
-							
+				let address = "";
+				
+				if (response.info.roadAddress != null) {
+				    if (response.info.detailAddress != null) {
+				        address = response.info.roadAddress + " " + response.info.detailAddress;
+				    } else {
+				        address = response.info.roadAddress;
+				    }
+				    console.log(address);
+				    $('#address .textValue').text(address);
+				} else if (response.info.jibunAddress != null) {
+				    if (response.info.detailAddress != null) {
+				        address = response.info.jibunAddress + " " + response.info.detailAddress;
+				    } else {
+				        address = response.info.jibunAddress;
+				    }
+				    console.log(address);
+				    $('#address .textValue').text(address);
+				}			
 				$('#reservInfoModal').show();
 			},
 			error : function() {
