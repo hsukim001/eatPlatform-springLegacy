@@ -31,7 +31,8 @@
 		<script type="text/javascript">
 			$(function() {
 				$('.list_row').on('click', function() {
-					let storeId = $(this).data('id-value');
+					let storeId = $(this).closest('li').data('id-value');
+					alert(storeId);
 					location.href = "/management/store/detail?storeId=" + storeId;
 				});
 				
