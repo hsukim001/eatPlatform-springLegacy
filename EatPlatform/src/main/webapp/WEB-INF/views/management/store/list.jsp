@@ -72,7 +72,14 @@ $(function() {
 						<c:forEach var="list" items="${list }">
 							<ul class="list_row" data-id-value="${list.storeId }">
 								<li>${list.storeId }</li>
-								<li>${list.storeName }</li>
+								<li>
+									<c:if test="${list.approvals == 0}">
+										<span class="wait">
+											승인 대기 중
+										</span><br>
+									</c:if>
+									${list.storeName }
+								</li>
 								<li>${list.ownerName }</li>
 								<li>
 					                <c:forEach var="categoryList" items="${categoryList}">

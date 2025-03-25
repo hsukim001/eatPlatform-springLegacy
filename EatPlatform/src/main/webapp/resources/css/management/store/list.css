@@ -57,8 +57,16 @@
 	width: calc( 100% / 6 );
 	cursor: pointer;
 	display: flex;
+	flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+}
+
+#table_container ul li span {
+	font-size: 12px;
+	font-weight: bold;
+	color: #f00;
+	width: 100%;
 }
 
 #table_container ul:last-child {
