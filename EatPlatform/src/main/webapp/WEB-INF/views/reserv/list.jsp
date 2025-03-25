@@ -41,9 +41,7 @@
 				<li>예약 신청일</li>
 			</ul>
 			<div id="tableBody"></div>
-			<div id="pagination">
-				<!-- ajax로 pagination load -->
-			</div>
+			<div id="pagination"></div>
 		</div>
 		
 		<div>

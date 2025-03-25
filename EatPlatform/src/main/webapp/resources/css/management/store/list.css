@@ -19,31 +19,8 @@
 #search-container {
     width: 100%;
 	display: flex;
-	flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-}
-
-.search-type {
-	width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 10px auto 20px;
-}
-
-.search-type li {
-	margin-right: 15px;
-	cursor: pointer;
-}
-
-.selectSpan,
-.search-type li:hover {
-	color: #444;
-	font-weight: bold;
-}
-
-.search-title {
-	width: 100%;
 }
 
 #keyword {
@@ -94,14 +71,35 @@
 	flex-wrap: wrap;
 }
 
+.link_block {
+	width: 100%;
+	display: block;
+}
+
 #pagination {
 	width: 100%;
 	padding-top: 20px;
 	border-top: 1px solid #ccc;
+	margin-bottom: 15px;
 }
 
 #pagination a {
 	margin: 0 5px;
+}
+
+#container button {
+	background: #000;
+	color: #fff;
+	font-size: 22px;
+	font-weight: bold;
+	padding: 5px 7px;
+	cursor: pointer;
+	border: none;
+	outline: none;
+}
+
+#container button:hover {
+	background: #444;
 }
 
 

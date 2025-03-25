@@ -46,9 +46,7 @@ $(document).ready(function() {
 				
 		nextList(1, searchType, keyword);
 		$('.search-type .selectSpan').removeClass('selectSpan');
-		if($(this).hasClass("spanBtn")) {
-			$(this).addClass("selectSpan");
-		}
+		$(this).addClass("selectSpan");
 	}); // End reservList span click event
 	
 	// reservList span click event
@@ -60,9 +58,7 @@ $(document).ready(function() {
 		
 		nextList(1, searchType, keyword);
 		$('.search-type .selectSpan').removeClass('selectSpan');
-		if($(this).hasClass("spanBtn")) {
-			$(this).addClass("selectSpan");
-		}
+		$(this).addClass("selectSpan");
 	}); // End reservList span click event
 				
 	// preReservHistory span click event
@@ -72,9 +68,7 @@ $(document).ready(function() {
 		
 		nextList(1, searchType, keyword);
 		$('.search-type .selectSpan').removeClass('selectSpan');
-		if($(this).hasClass("spanBtn")) {
-			$(this).addClass("selectSpan");
-		}
+		$(this).addClass("selectSpan");
 	}); // End preReservHistory span click event
 	
 	// cancelReservHistory span click event
@@ -84,9 +78,7 @@ $(document).ready(function() {
 		
 		nextList(1, searchType, keyword);
 		$('.search-type .selectSpan').removeClass('selectSpan');
-		if($(this).hasClass("spanBtn")) {
-			$(this).addClass("selectSpan");
-		}
+		$(this).addClass("selectSpan");
 	}); // End cancelReservHistory span click event
 	
 	// table body row click event
