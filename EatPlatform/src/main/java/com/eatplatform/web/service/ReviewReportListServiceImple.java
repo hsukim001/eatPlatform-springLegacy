@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.ReviewReportListVO;
-import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.persistence.ReviewMapper;
 import com.eatplatform.web.persistence.ReviewReportListMapper;
 import com.eatplatform.web.util.Pagination;

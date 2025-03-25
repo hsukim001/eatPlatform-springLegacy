@@ -5,8 +5,7 @@
 $(document).ready(function(){
 	// 파일 객체를 배열로 전달받아 검증하는 함수
 	function validateAttachs(files){
-		// 차단할 확장자 정규식 
-		var blockedExtensions = /\.(exe|sh|php|jsp|aspx|zip|alz)$/i; 
+		var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i; 
 		var maxSize = 10 * 1024 * 1024; // 10 MB 
 		
 		if(files.length > 3) { // 파일 개수 제한
@@ -19,10 +18,10 @@ $(document).ready(function(){
 			var fileName = files[i].name; // 파일 이름
 			var fileSize = files[i].size; // 파일 크기
 			
-			if (blockedExtensions.test(fileName)) { // 차단된 확장자인 경우
-				alert("이 확장자의 파일은 첨부할 수 없습니다.");
-				return false;
-			}
+			if(!allowedExtensions.exec(fileName)) {
+	            alert("이 파일은 업로드할 수 없습니다. jpg, jpeg, png, gif파일만 가능합니다."); // 알림 표시
+	            return false;
+	        }
 			
 			if (fileSize > maxSize) {
 				alert("파일 크기가 너무 큽니다. 최대 크기는 10MB입니다.");

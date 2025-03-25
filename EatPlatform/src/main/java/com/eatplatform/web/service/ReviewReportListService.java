@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.ReviewReportListVO;
-import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
 import com.eatplatform.web.util.Pagination;
 
 public interface ReviewReportListService {
