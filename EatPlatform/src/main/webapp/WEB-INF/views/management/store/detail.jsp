@@ -67,7 +67,7 @@
 				<p class="storeTitle width100 textLeft mb20 bold">${storeInfo.storeName }</p>
 				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
-						<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
+						<c:forEach var="storeImageVO" items="${storeInfo.storeImageList }">
 							<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
 								<img src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
 							</a>

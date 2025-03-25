@@ -153,7 +153,6 @@ public class StoreImageRESTController {
 				return ResponseEntity.notFound().build(); // 파일을 찾을 수 없음을 클라이언트에게 알림
 			}
 			return entity;
-		
 	}
 
 	/**
