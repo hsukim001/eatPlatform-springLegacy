@@ -27,7 +27,7 @@ $(function() {
 
 	
 	$('.store_delete_btn').on('click', function() {
-		let storeId = $(this).closest('li').data('id-value');
+		let storeId = $(this).parent('ul').data('id-value');
 		console.log("storeId : " + storeId);
 		if(confirm("선택하신 매장을 정말 삭제 하시겠습니까?")) {
 			$.ajax({
