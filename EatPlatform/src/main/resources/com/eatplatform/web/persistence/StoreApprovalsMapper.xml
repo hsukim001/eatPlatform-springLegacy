@@ -60,7 +60,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectTotalCount" resultType="Integer">
 		SELECT COUNT(STORE_ID) COUNT
 		FROM STORE_APPROVALS
-		WHERE APPROVALS = 0
 	</select>
 	
 	<select id="selectApprovalsList" resultMap="joinStoreApprovalsListResultMap">

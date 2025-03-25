@@ -260,6 +260,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		  AND RESERV_DATE = #{reservDate}
 		  AND RESERV_HOUR = #{reservHour}
 		  AND RESERV_MIN = #{reservMin}
+		  AND CANCEL_STATUS = 0
 	</select>
 	
 	<select id="selectStoreScheduleListByStoreIdReservDate" resultMap="storeScheduleResultMap">

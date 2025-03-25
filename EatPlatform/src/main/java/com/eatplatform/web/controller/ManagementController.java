@@ -70,7 +70,7 @@ public class ManagementController {
 		
 		List<StoreVO> storeList = managementService.searchStoreList(pagination, username);
 		List<Integer> storeIdList = new ArrayList<>();
-		List<StoreCategoryVO> storeCategoryList = new ArrayList();
+		List<StoreCategoryVO> storeCategoryList = new ArrayList<>();
 		
 		for(int i = 0; i < storeList.size(); i++) {
 			storeIdList.add(storeList.get(i).getStoreId());
@@ -160,6 +160,7 @@ public class ManagementController {
 		log.info("requestList()");
 		List<JoinStoreApprovalsListVO> list = storeApprovalsService.searchList(pagination);
 		int totalCount = storeApprovalsService.getTotalCount();
+		log.info("totalCount : " + totalCount);
 		
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setPagination(pagination);
