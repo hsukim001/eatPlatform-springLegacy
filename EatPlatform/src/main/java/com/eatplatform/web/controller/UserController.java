@@ -168,6 +168,7 @@ public class UserController {
 		log.info("businessRequestForm()");
 		int userId = customUser.getUser().getUserId();
 		
+		UserVO userVO = userService.searchUser(userId);
 		int businessRequestId = businessRequestService.getBusinessRequestId(userId);
 		log.info("businessRequestId : " + businessRequestId);
 		
@@ -178,10 +179,10 @@ public class UserController {
 			return "redirect:/user/business/requestInfo";
 		}
 		
-		model.addAttribute("username", customUser.getUsername());
-		model.addAttribute("email", customUser.getUser().getEmail());
-		model.addAttribute("phone", customUser.getUser().getPhone());
-		model.addAttribute("name", customUser.getUser().getName());
+		model.addAttribute("username", userVO.getUsername());
+		model.addAttribute("email", userVO.getEmail());
+		model.addAttribute("phone", userVO.getPhone());
+		model.addAttribute("name", userVO.getName());
 		
 		return "user/business/requestForm";
 	}

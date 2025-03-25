@@ -186,7 +186,7 @@
 					<div id="storeInfoImg">
 						<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
 							<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
-							<img width="160px" height="100px" 
+							<img width="360px" height="300px" 
 							src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
 							</a>
 						</c:forEach>
