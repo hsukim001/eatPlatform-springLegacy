@@ -97,7 +97,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    FROM STORE store
 	    LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
 	    LEFT JOIN STORE_CATEGORY category ON store.STORE_ID = category.STORE_ID
+	    LEFT JOIN STORE_ADDRESS address ON store.STORE_ID = address.STORE_ID
+	    INNER JOIN STORE_APPROVALS approvals ON store.STORE_ID = approvals.STORE_ID
 	    <where>
+	        approvals.APPROVALS = 1
 	        <if test="keywords != null and keywords.size() > 0">
 	            AND (
 	                <foreach collection="keywords" item="keyword" separator="OR">
@@ -105,6 +108,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	                    OR (menu.MENU_NAME IS NOT NULL AND REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
 	                    OR REPLACE(category.MAIN_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	                    OR REPLACE(category.SUB_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR REPLACE(address.SIDO, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR REPLACE(address.SIGUNGU, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                    OR REPLACE(address.BNAME2, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	                </foreach>
 	            )
 	        </if>
@@ -115,13 +121,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	  WHERE paged.RN BETWEEN #{startRow} AND #{endRow}
 	</select>
 	
+		
 	<!-- 전체 게시글 카운트 -->
 	<select id="getTotalStoresCount" resultType="int" parameterType="java.util.Map">
 	  SELECT COUNT(DISTINCT store.STORE_ID)
 	  FROM STORE store
 	  LEFT JOIN MENU menu ON store.STORE_ID = menu.STORE_ID
 	  LEFT JOIN STORE_CATEGORY category ON store.STORE_ID = category.STORE_ID
+	  LEFT JOIN STORE_ADDRESS address ON store.STORE_ID = address.STORE_ID
+	  INNER JOIN STORE_APPROVALS approvals ON store.STORE_ID = approvals.STORE_ID
 	  <where>
+	      approvals.APPROVALS = 1
 	      <if test="keywords != null and keywords.size() > 0">
 	          AND (
 	              <foreach collection="keywords" item="keyword" separator="OR">
@@ -129,11 +139,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	                  OR (menu.MENU_NAME IS NOT NULL AND REPLACE(menu.MENU_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%')
 	                  OR REPLACE(category.MAIN_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	                  OR REPLACE(category.SUB_CATEGORY_NAME, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(address.SIDO, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(address.SIGUNGU, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
+	                  OR REPLACE(address.BNAME2, ' ', '') LIKE '%' || REPLACE(#{keyword}, ' ', '') || '%'
 	              </foreach>
 	          )
 	      </if>
 	  </where>
 	</select>
+
 	
 	<select id="getTotalStoresCountByStoreUserId" resultType="Integer">
 		SELECT COUNT(*)
