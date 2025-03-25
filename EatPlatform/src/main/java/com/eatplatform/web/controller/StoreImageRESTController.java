@@ -133,13 +133,9 @@ public class StoreImageRESTController {
 			try {
 				// 파일을 읽어와서 byte 배열로 변환
 				String savedPath = uploadStoreImgPath + File.separator 
-						+ storeImageVO.getStoreImagePath() + File.separator; 
-				if(storeImageExtension != null) {
-					savedPath += "t_" + storeImageVO.getStoreImageChgName() 
-					+ "." + storeImageVO.getStoreImageExtension();
-				} else {
-					savedPath += storeImageVO.getStoreImageChgName();
-				}
+						+ storeImageVO.getStoreImagePath() + File.separator
+						+ storeImageVO.getStoreImageChgName(); 
+				
 				Path path = Paths.get(savedPath);
 				byte[] imageBytes = Files.readAllBytes(path);
 				
