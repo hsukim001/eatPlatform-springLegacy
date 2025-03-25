@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.eatplatform.web.domain.JoinBusinessRequestVO;
 import com.eatplatform.web.domain.JoinStoreApprovalsInfoVO;
 import com.eatplatform.web.domain.JoinStoreApprovalsListVO;
+import com.eatplatform.web.domain.JoinStoreWithStoreApprovalsVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
+import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.StoreApprovalsMapper;
 import com.eatplatform.web.persistence.StoreMapper;
 import com.eatplatform.web.util.Pagination;
@@ -43,6 +45,11 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 		List<JoinStoreApprovalsListVO> list = storeApprovalsMapper.selectApprovalsList(pagination);
 		log.info("list : " + list);
 		return list;
+	}
+	
+	@Override
+	public List<JoinStoreWithStoreApprovalsVO> getStoreApprovals(Pagination pagination, String username) {
+		return storeApprovalsMapper.joinStoreWithStoreApprovalsByStoreUserId(pagination, username);
 	}
 
 	// 가게 등록 요청 정보

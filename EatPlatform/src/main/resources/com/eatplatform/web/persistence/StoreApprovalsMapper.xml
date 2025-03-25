@@ -42,6 +42,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="email" column="EMAIL"/>
 	</resultMap>
 	
+	<resultMap type="com.eatplatform.web.domain.JoinStoreWithStoreApprovalsVO" id="joinStoreWithStoreApprovalsResultMap">
+		<id property="storeId" column="STORE_ID"/>
+		<result property="storeName" column="STORE_NAME"/>
+		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="storeComment" column="STORE_COMMENT"/>
+		<result property="storeUpdateDate" column="STORE_UPDATE_DATE"/>
+		<result property="approvals" column="APPROVALS"/>
+	</resultMap>
+	
 	<insert id="insertStoreApprovals">
 		INSERT INTO STORE_APPROVALS
 		VALUES(
@@ -111,5 +120,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectApprovalsByStoreId" resultMap="storeApprovalsResultMap">
 		SELECT * FROM STORE_APPROVALS
 		WHERE STORE_ID = #{storeId}
+	</select>
+	
+	<select id="joinStoreWithStoreApprovalsByStoreUserId" parameterType="map" resultMap="joinStoreWithStoreApprovalsResultMap">
+		SELECT * 
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY s.STORE_UPDATE_DATE DESC) AS RN,
+				   a.STORE_ID, 
+				   a.APPROVALS,
+				   s.STORE_NAME,
+				   s.OWNER_NAME,
+				   s.STORE_COMMENT,
+				   s.STORE_UPDATE_DATE
+			FROM STORE_APPROVALS a
+			INNER JOIN STORE s
+			ON a.STORE_ID = s.STORE_ID
+			WHERE s.STORE_USER_ID = #{username}
+		)
+		WHERE RN BETWEEN #{pagination.start} AND #{pagination.end}
 	</select>
 </mapper>

@@ -18,8 +18,10 @@ import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.JoinReviewReportVO;
 import com.eatplatform.web.domain.JoinStoreApprovalsInfoVO;
 import com.eatplatform.web.domain.JoinStoreApprovalsListVO;
+import com.eatplatform.web.domain.JoinStoreWithStoreApprovalsVO;
 import com.eatplatform.web.domain.MenuVO;
 import com.eatplatform.web.domain.ReviewReportListWithUserAtNameVO;
+import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.persistence.ReviewMapper;
@@ -68,7 +70,8 @@ public class ManagementController {
 		log.info("managementStoreList()");
 		String username = customUser.getUsername();
 		
-		List<StoreVO> storeList = managementService.searchStoreList(pagination, username);
+		//List<StoreVO> storeList = managementService.searchStoreList(pagination, username);
+		List<JoinStoreWithStoreApprovalsVO> storeList = storeApprovalsService.getStoreApprovals(pagination, username);
 		List<Integer> storeIdList = new ArrayList<>();
 		List<StoreCategoryVO> storeCategoryList = new ArrayList<>();
 		
