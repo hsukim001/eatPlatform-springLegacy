@@ -73,12 +73,12 @@
 				function denialManagement() {
 					$.ajax({
 						url : "/approval/denialManagement/" + storeId,
-						type : 'DELETE',
+						type : 'put',
 						success : function(response) {
 							if(response == 1) {
 								if(buttonType == 1) {
 									alert("등록 거부가 완료되었습니다.");
-									location.href="list";
+									location.href="/management/store/requestList";
 								} else if(buttonType == 2) {
 									alert("가게 등록 요청이 취소되었습니다.");
 									location.href="../../user/detail"

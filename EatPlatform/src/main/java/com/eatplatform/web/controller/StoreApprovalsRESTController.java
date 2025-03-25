@@ -3,7 +3,6 @@ package com.eatplatform.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +31,7 @@ public class StoreApprovalsRESTController {
 	}
 	
 	// 가게 등록 요청 거부, 취소
-	@DeleteMapping("/denialManagement/{storeId}")
+	@PutMapping("/denialManagement/{storeId}")
 	public ResponseEntity<Integer> denialManagement(@PathVariable("storeId") int storeId) {
 		log.info("denialManagement()");
 		int result = storeApprovalsService.denialManagement(storeId);

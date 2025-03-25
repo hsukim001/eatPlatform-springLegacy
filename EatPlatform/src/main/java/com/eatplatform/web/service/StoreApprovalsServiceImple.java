@@ -79,11 +79,17 @@ public class StoreApprovalsServiceImple implements StoreApprovalsService{
 	@Override
 	public int denialManagement(int storeId) {
 		log.info("denialManagement()");
+		int approvals = 2;
+		StoreApprovalsVO vo = new StoreApprovalsVO();
+		vo.setStoreId(storeId);
+		vo.setApprovals(approvals);
+		int result = storeApprovalsMapper.updateStoreApprovals(vo);
 		
-		// 가게 등록 거부 알림 전송
-		notificationService.storeApprovalNotification(storeId);
-		
-		return storeMapper.deleteStore(storeId);
+		if(result == 1) {
+			// 가게 등록 거부 알림 전송
+			notificationService.storeApprovalNotification(storeId);
+		}
+		return result;
 	}
 
 	/**
