@@ -65,8 +65,15 @@
 #table_container ul li span {
 	font-size: 12px;
 	font-weight: bold;
-	color: #f00;
 	width: 100%;
+}
+
+.wait {
+	color: #fb892a;
+}
+
+.refuse {
+	color: #f00;
 }
 
 #table_container ul:last-child {

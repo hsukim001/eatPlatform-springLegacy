@@ -254,7 +254,7 @@
 		        	</li>
 		        	<li>
 				        <label for="storePhone">연락처</label>
-				         <input type="number" id="storePhone" name="storePhone" required>
+				         <input type="number" id="storePhone" name="storePhone" placeholder='"-"를 제외한 숫자만 입력해주세요.' required>
 		        	</li>
 		        	<li>
 				        <label for="ownerName">관리자명</label>

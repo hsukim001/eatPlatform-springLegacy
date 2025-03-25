@@ -73,11 +73,14 @@ $(function() {
 							<ul class="list_row" data-id-value="${list.storeId }">
 								<li>${list.storeId }</li>
 								<li>
-									<c:if test="${list.approvals == 0}">
-										<span class="wait">
-											승인 대기 중
-										</span><br>
-									</c:if>
+									<c:choose>
+								        <c:when test="${list.approvals == 0}">
+								            <span class="wait">승인 대기 중</span><br>
+								        </c:when>
+								        <c:when test="${list.approvals == 2}">
+								            <span class="refuse">승인 거절</span><br>
+								        </c:when>
+								    </c:choose>
 									${list.storeName }
 								</li>
 								<li>${list.ownerName }</li>
