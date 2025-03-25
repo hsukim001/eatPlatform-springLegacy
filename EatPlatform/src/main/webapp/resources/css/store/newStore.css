@@ -1,0 +1,287 @@
+@charset "UTF-8";
+
+.page_title {
+	width: 100%;
+    text-align: center;
+    font-size: 28px;
+    margin: 20px auto;
+}
+
+#storeForm {
+	display: inline-block;
+    margin-bottom: 20px;
+	padding: 10px 20px;
+	border: 1px solid #ddd;
+    box-shadow: 1px 1px 1px rgb(237 237 237 / 70%);
+}
+
+#storeForm input,
+#storeForm textarea {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	outline: none;
+	background: #fff;
+    font-size: 18px;
+    padding: 7px 10px;
+}
+
+#storeForm textarea {
+	height: 80px;
+	font-size: 14px;
+    resize: none;
+}
+
+.formList,
+#addressList {
+	width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.business_hour {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.business_hour p {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.business_hour span {
+	width: 50%;
+	text-align: center;
+}
+
+.business_hour input {
+	width: 45% !important;
+    margin: 10px auto;
+    text-align: center;
+}
+
+
+.formList li:not(#category_container ul li, .list_title) {
+	text-align: left;
+}
+
+.formList li,
+#addressList li {
+	margin: 10px auto;
+}
+
+#addressList > li > input {
+	margin: 2.5px;
+}
+
+.formList input,
+.formList textarea,
+#roadAddress,
+#jibunAddress {
+	width: 100%;
+}
+
+.formList > li {
+	width: 100%;
+}
+
+.list_title {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#category_container {
+	display: flex;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+}
+
+#category_container ul {
+	width: 50%;	
+	text-align: center;
+}
+
+#category_container > ul > li > input[type="radio"] {
+	display: none;
+}
+
+#category_container > ul > li > label{
+	width: 100%;
+	display: block;
+	cursor: pointer;
+}
+
+.category_title {
+	color: #444;
+	font-weight: bold;
+}
+
+.selected {
+	font-weight: bold;
+	color: #1c6fff;
+}
+
+.selected::before {
+	content: ">";
+	margin-right: 2.5px;
+}
+
+.formList > li > label,
+#addressList > li > label {
+	display: block;
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+#postCode {
+	width: 50%;
+}
+
+#postBtn {
+	width: 45%;
+	cursor: pointer;
+}
+
+#postBtn:hover {
+	background: #ddd;
+}
+
+.hiddenPlace {
+	display: none;
+}
+
+.resultPlace {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#extraAddress,
+#detailAddress {
+	width: calc(50% - 5px);
+}
+
+.data_comment {
+	font-size: 14px;
+	text-align: left;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #666;
+}
+
+#storeForm input[type="submit"] {
+	background: #000;
+	color: #fff;
+	margin: 5px auto;
+	font-size: 22px;
+	font-weight: bold;
+	padding: 7px 10px;
+	cursor: pointer;
+}
+
+#storeForm input[type="submit"]:hover {
+	background: #444;
+}
+
+#img_container {
+	margin: 10px auto 0;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	padding: 10px 0;
+}
+
+.img_title {
+	margin-top: 20px;
+}
+
+.insert {
+	width: 100%;
+	display: block;
+	margin: 20px auto;
+	padding: 5px 20px 10px;
+	border: 1px solid #dbdbdb;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.file-list {
+	margin: 10px auto;
+}
+
+.insert .file-list {
+	overflow: auto;
+	border: 1px solid #989898;
+	padding: 10px;
+}
+
+.insert .file-list .filebox p {
+	font-size: 14px;
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.insert .file-list .filebox .delete i {
+	color: #ff5353;
+	margin-left: 5px;
+}
+
+.storeImg_item pre {
+	width: calc((100% / 3) - 10px);
+    float: left;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.storeImg_item pre img {
+	width: 100%;
+}
+
+#storeImg {
+	display: none;
+}
+
+.storeImg_delete {
+	width: 100%;
+    border: none;
+    outline: none;
+    margin-top: 5px;
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    padding: 2.5px 0;
+    cursor: pointer;
+}
+
+.storeImg_delete:hover {
+	background: #444;
+}
+
+.uploadLabel {
+	display: inline-block;
+	padding: 6px 25px;
+	margin-top: 5px;
+	background-color:navy;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+}
+
+@media (max-width: 686px) {
+	#storeForm {
+		width: 90%;
+	}
+	
+	.formList,
+	#addressList {
+		width: 100%;
+	}
+}
