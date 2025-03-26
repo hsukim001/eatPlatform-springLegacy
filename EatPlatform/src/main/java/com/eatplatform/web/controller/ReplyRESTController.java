@@ -41,7 +41,7 @@ public class ReplyRESTController {
 		if (replyVO.getReplyContent() == null || replyVO.getReplyContent().trim().isEmpty()) {
 			model.addAttribute("error", "Review content cannot be empty.");
 			return new ResponseEntity<>(0, HttpStatus.FORBIDDEN);
-		} else if (replyVO.getReplyContent() != null && replyVO.getReplyContent().length() > 50) {
+		} else if (replyVO.getReplyContent() != null && replyVO.getReplyContent().length() > 200) {
 			return new ResponseEntity<>(0, HttpStatus.BAD_REQUEST);
 		}
 		log.info("createReply()");

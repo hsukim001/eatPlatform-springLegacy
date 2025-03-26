@@ -1,8 +1,6 @@
 package com.eatplatform.web.task;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +26,7 @@ public class StoreImageTask {
 	@Autowired
 	private StoreImageMapper storeImageMapper;
 	
-	@Scheduled(cron = "0 0 11 * * *")  // 매일 11시에 실행
+	@Scheduled(cron = "0 00 11 * * *")  // 매일 11시에 실행
 	
 		public static String getFormattedDateString() {
 		
@@ -45,18 +43,11 @@ public class StoreImageTask {
 		
 		}
 	
-	@Scheduled(cron = "0 0 11 * * *")  // 매일 11시에 실행
+	@Scheduled(cron = "0 00 11 * * *")  // 매일 11시에 실행
 	
 		public void deleteStoreImages() {
 			log.warn("===========================");
 			log.warn("Delete StoreImage Task Run");
-			
-			Path storeImagePath = Paths.get(getFormattedDateString().replace("/", "\\"));
-			if(Files.notExists(storeImagePath)) {
-				log.info("storeImagePath : " + storeImagePath);
-				log.info("이미지 파일 경로가 존재하지 않습니다.");
-				return;
-			}
 			
 			// 1일전 날짜의 첨부 파일 경로에 해당하는 파일 정보 조회
 			List<StoreImageVO> storeImageList = storeImageMapper.selectListByStoreImagePath(getFormattedDateString().replace("/", "\\"));

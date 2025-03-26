@@ -1,8 +1,6 @@
 package com.eatplatform.web.task;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -50,12 +48,6 @@ public class ReviewImageTask {
 		public void deleteReviewImages() {
 			log.warn("===========================");
 			log.warn("Delete ReviewImage Task Run");
-			
-			Path reviewImagePath = Paths.get(getFormattedDateString().replace("/", "\\"));
-			if(Files.notExists(reviewImagePath)) {
-				log.info("이미지 파일 경로가 존재하지 않습니다.");
-				return;
-			}
 			
 			// 1일전 날짜의 첨부 파일 경로에 해당하는 파일 정보 조회
 			List<ReviewImageVO> reviewImageList = reviewImageMapper.selectListByReviewImagePath(getFormattedDateString().replace("/", "\\"));
