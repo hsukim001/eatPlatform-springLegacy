@@ -20,21 +20,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.eatplatform.web.domain.MenuVO;
-import com.eatplatform.web.domain.JoinBusinessRequestVO;
-import com.eatplatform.web.domain.JoinStoreApprovalsInfoVO;
-import com.eatplatform.web.domain.JoinStoreApprovalsListVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
 import com.eatplatform.web.domain.StoreImageVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.service.MenuService;
 import com.eatplatform.web.service.StoreAddressService;
-import com.eatplatform.web.service.StoreApprovalsService;
 import com.eatplatform.web.service.StoreImageService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.util.BusinessHourUtil;
-import com.eatplatform.web.util.PageMaker;
-import com.eatplatform.web.util.Pagination;
 
 import lombok.extern.log4j.Log4j;
 
@@ -51,9 +45,7 @@ public class StoreController {
 
 	@Autowired
 	private MenuService menuService;
-	
-	@Autowired
-	private StoreApprovalsService storeApprovalsService;
+
 	
 	@Autowired
 	private StoreImageService storeImageService;
@@ -114,6 +106,10 @@ public class StoreController {
 			
 			recentStores.forEach(stores -> {
 				int storeId = stores.getStoreId();
+
+				List<StoreImageVO> storeImageList = storeImageService.getImageListByStoreId(storeId);
+				stores.setStoreImageList(storeImageList);
+				
 				List<StoreCategoryVO> categories = categoryMap.getOrDefault(storeId, Collections.emptyList());
 				
 				categories.forEach(category -> {
@@ -123,6 +119,7 @@ public class StoreController {
 					mergedStore.put("storeComment", stores.getStoreComment());
 					mergedStore.put("storePhone", stores.getStorePhone());
 					mergedStore.put("businessHour", stores.getBusinessHour());
+					mergedStore.put("storeImageList", stores.getStoreImageList());
 					mergedStore.put("mainCategoryId", category.getMainCategoryId());
 					mergedStore.put("subCategoryId", category.getSubCategoryId());
 					mergedStore.put("mainCategoryName", category.getMainCategoryName());
@@ -130,8 +127,6 @@ public class StoreController {
 					
 					mergedList.add(mergedStore);
 					
-					List<StoreImageVO> storeImageList = storeImageService.getImageListByStoreId(storeId);
-					stores.setStoreImageList(storeImageList);
 				});
 			});
 			

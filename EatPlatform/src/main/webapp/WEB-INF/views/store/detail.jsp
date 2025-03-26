@@ -184,12 +184,16 @@
 				<p class="storeTitle width100 textLeft mb20 bold">${storeVO.storeName }</p>
 				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
-						<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
-							<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
-							<img width="360px" height="300px" 
-							src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
-							</a>
-						</c:forEach>
+						<c:choose>
+						    <c:when test="${not empty storeVO.storeImageList}">
+						        <c:forEach var="storeImageVO" items="${storeVO.storeImageList}">
+						            <img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" />
+						        </c:forEach>
+						    </c:when>
+						    <c:otherwise>
+						        <img class="noImg" src="<%=request.getContextPath()%>/resources/img/common/noImg.png" alt="이미지 없음 이미지">
+						    </c:otherwise>
+						</c:choose>
 					</div>
 					<div id="storeInfoText">
 						<ul>
@@ -217,6 +221,11 @@
 								<span class="textTitle">별점 </span> 
 								<span class="colon">:</span>
 								<span class="textValue">${storeVO.score }</span>
+							</li>
+							<li>
+								<span class="textTitle">매장 내 좌석 수 </span> 
+								<span class="colon">:</span>
+								<span class="textValue">${storeVO.seat }석</span>
 							</li>
 						</ul>
 

@@ -14,6 +14,7 @@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/imgSlider.js"></script>
 <script>
 	$(document).ajaxSend(function(e, xhr, opt){
 		var token = $("meta[name='_csrf']").attr("content");
@@ -22,6 +23,15 @@
 	});
 	
 	$(function() {
+		$(".item_box").click(function(event){
+		    if ($(event.target).closest(".img_box button").length) {
+		        return;
+		    }
+		    let storeId = $(this).data('store-id');
+			location.href ="/store/detail?storeId=" + storeId;
+		});
+
+		
 	    $(".phoneNum").each(function() {
 	        let rawPhone = $(this).text().trim();
 	        let formattedPhone = formatPhoneNumber(rawPhone);
@@ -190,25 +200,37 @@
 	
 					<div id="item_container">
 						<c:if test="${not empty recentStores}">
-							<c:forEach var="store" items="${recentStores}">
-								<div id="item_box"
-									onclick="location.href='detail?storeId=${store.storeId }'">
-									<div class="img_box">
-										<img
-											src="<%=request.getContextPath()%>/resources/img/sample2.png"
-											alt="sample">
-									</div>
-									<div class="text_box">
-										<p class="store_title">${store.storeName}</p>
-										<p class="store_tag">
-											<span>#${store.mainCategoryName} > ${store.subCategoryName}</span>
-										</p>
-										<pre class="store_comment">${store.storeComment}</pre>
-										<p class="store_hour">영업시간 | ${store.businessHour}</p>
-										<p class="store_phone">연락처 | <span class="phoneNum">${store.storePhone}</span></p>
-									</div>
-								</div>
-							</c:forEach>
+						    <c:forEach var="store" items="${recentStores}">
+						        <div class="item_box" data-store-id="${store.storeId }">
+						                <c:choose>
+							                    <c:when test="${store.storeImageList.size() > 0}">
+							                    	<div class="img_box">
+										                <div class="img_item">
+															<c:forEach var="storeImageVO" items="${store.storeImageList}" varStatus="status">
+							             	               		<img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" data-img-index="${status.index}" />
+								                 	    	</c:forEach>
+										                </div>
+							                        	<button class="prev-btn">&lt;</button>
+	                        							<button class="next-btn">&gt;</button>
+                        							</div>
+							                    </c:when>
+						                    <c:otherwise>
+						                    	<div class="img_box">
+						                        	<img class="noImg" src="<%=request.getContextPath()%>/resources/img/common/noImg.png" alt="이미지 없음 이미지" />
+						                        </div>
+						                    </c:otherwise>
+						                </c:choose>
+						            <div class="text_box">
+						                <p class="store_title">${store.storeName}</p>
+						                <p class="store_tag">
+						                    <span>#${store.mainCategoryName} > ${store.subCategoryName}</span>
+						                </p>
+						                <pre class="store_comment">${store.storeComment}</pre>
+						                <p class="store_hour">영업시간 | ${store.businessHour}</p>
+						                <p class="store_phone">연락처 | <span class="phoneNum">${store.storePhone}</span></p>
+						            </div>
+						        </div>
+						    </c:forEach>
 						</c:if>
 					</div>
 					<c:if test="${empty recentStores}">
