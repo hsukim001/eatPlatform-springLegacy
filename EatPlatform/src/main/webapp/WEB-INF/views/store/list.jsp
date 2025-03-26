@@ -8,6 +8,7 @@
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/list.css">
@@ -24,7 +25,7 @@
 	
 	$(function() {
 		$(".item_box").click(function(event){
-		    if ($(event.target).closest(".img_box button").length) {
+		    if ($(event.target).closest(".prev-btn, .next-btn").length) {
 		        return;
 		    }
 		    let storeId = $(this).data('store-id');
@@ -204,18 +205,20 @@
 						        <div class="item_box" data-store-id="${store.storeId }">
 						                <c:choose>
 							                    <c:when test="${store.storeImageList.size() > 0}">
-							                    	<div class="img_box">
-										                <div class="img_item">
-															<c:forEach var="storeImageVO" items="${store.storeImageList}" varStatus="status">
-							             	               		<img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" data-img-index="${status.index}" />
-								                 	    	</c:forEach>
-										                </div>
-							                        	<button class="prev-btn">&lt;</button>
-	                        							<button class="next-btn">&gt;</button>
-                        							</div>
+							                    	<div class="slider-wrapper">
+													    <div class="img_box">
+													        <div class="img_item">
+													            <c:forEach var="storeImageVO" items="${store.storeImageList}" varStatus="status">
+													                <img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" data-img-index="${status.index}" />
+													            </c:forEach>
+													        </div>
+													    </div>
+													    <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+													    <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+													</div>
 							                    </c:when>
 						                    <c:otherwise>
-						                    	<div class="img_box">
+						                    	<div class="no_img_box">
 						                        	<img class="noImg" src="<%=request.getContextPath()%>/resources/img/common/noImg.png" alt="이미지 없음 이미지" />
 						                        </div>
 						                    </c:otherwise>

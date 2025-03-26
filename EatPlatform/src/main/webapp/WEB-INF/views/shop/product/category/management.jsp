@@ -13,35 +13,7 @@ pageEncoding="UTF-8"%>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
-<style>
-	.activeMain{
-		font-weight: bold;
-		text-decoration: underline;
-		color: #444;
-	}
-	
-	.viewMain li,
-	.viewSub li {
-		cursor: pointer;
-	}
-	
-	.viewMain li button,
-	.viewSub li button {
-		background: none;
-		border: none;
-		outline: none;
-		cursor: pointer;
-	}
-	
-	.gray-arrow {
-		color: #888;
-	}
-	
-	.red-x {
-		color: #f00;
-		font-size: 16px;
-	}
-</style>
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/management/category.css">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
@@ -56,10 +28,10 @@ pageEncoding="UTF-8"%>
 		
 		loadCategoriesList();
 		
-		$('.viewMain').on('click', '.mainCategoryName', function() {
-			ExistMainCategoryId = $(this).parent('li').data('main-id');
+		$('.viewMain').on('click', 'li', function() {
+			ExistMainCategoryId = $(this).data('main-id');
 			$('.mainCategoryName').removeClass('activeMain');
-			$(this).addClass('activeMain');
+			$(this).find('.mainCategoryName').addClass('activeMain');
 			RenewalSubCategory(ExistMainCategoryId);
 		});
 
@@ -177,16 +149,18 @@ pageEncoding="UTF-8"%>
 		                $mainCategorySelect.append(selectOption);
 		            });
 		            
-					if (ExistMainCategoryId) {
-		 		   		RenewalSubCategory(ExistMainCategoryId);
-			 		   	$('.viewMain li').each(function() {
-			 		       if ($(this).data('main-id') === ExistMainCategoryId) {
-			 		           $(this).addClass('activeMain');
-			 		       }
-			 		   });
-					} else {
-						callFirstCategory();
-					}
+		            if (ExistMainCategoryId && $('.viewMain li').filter(function() {
+		                return $(this).data('main-id') === ExistMainCategoryId;
+		            }).length > 0) {
+		                $('.viewMain li').each(function() {
+		                    if ($(this).data('main-id') === ExistMainCategoryId) {
+		                        $(this).find('.mainCategoryName').addClass('activeMain');
+		                        RenewalSubCategory(ExistMainCategoryId);
+		                    }
+		                });
+		            } else {
+		                callFirstCategory();
+		            }
 		        },
 		        error: function(xhr, status, error) {
 		            alert('카테고리 목록 로드에 실패했습니다. 다시 시도해 주세요.');
@@ -472,7 +446,7 @@ pageEncoding="UTF-8"%>
 			    success: function(response) {
 			    	alert(response.msg);
 			        if (response.msg.includes("완료")) {
-							callFirstCategory();
+			        	loadCategoriesList();
 			        }
 			     },
 			     error: function() {
@@ -533,28 +507,29 @@ pageEncoding="UTF-8"%>
 		<jsp:include page="/include/header.jsp" />
 		
 		<div id="container">
-			<p> 상품 카테고리 관리</p>
+			<p class="title">상품 카테고리 관리</p>
+			<p class="view_title">신규 카테고리 등록</p>
 			<div class="newCategory">
-				<label for="mainCategoryName">상위 카테고리 등록: </label>
-				<input type="text" id="mainCategoryName" name="mainCategoryName" placeholder=" ex) 한식">
-				<input id="mainSubmit" type="button" value="상위 카테고리 등록">
+				<div id="newMainCateogry">
+					<label for="mainCategoryName">상위 카테고리 등록</label>
+					<input type="text" id="mainCategoryName" name="mainCategoryName" placeholder=" ex) 한식">
+					<input id="mainSubmit" type="button" value="상위 카테고리 등록">
+				</div>
+				<div id="newSubCategory">
+					<label for="subCategoryName">하위 카테고리 등록</label>
+					<select id="mainCategorySelect" name="mainCategorySelect"></select>
+					<input type="text" id="subCategoryName" name="subCategoryName" placeholder=" ex) 찜/탕">
+					<input id="subSubmit" type="button" value="하위 카테고리 등록">
+				</div>
 			</div>
 			
-			<div class="newCategory">
-				<label for="subCategoryName">하위 카테고리 등록: </label>
-				<select id="mainCategorySelect" name="mainCategorySelect"></select>
-				<input type="text" id="subCategoryName" name="subCategoryName" placeholder=" ex) 찜/탕">
-				<input id="subSubmit" type="button" value="하위 카테고리 등록">
-			</div>
-			
+			<p class="view_title">카테고리 조회</p>
 			<div class="viewCategory">
-				<ul class="viewMain">
-				</ul>
-				
+				<ul class="viewMain"></ul>
 				<ul class="viewSub"></ul>
 			</div>
 		</div>
-		
+		<jsp:include page="/include/footer.jsp" />	
 	</div>
 </body>
 

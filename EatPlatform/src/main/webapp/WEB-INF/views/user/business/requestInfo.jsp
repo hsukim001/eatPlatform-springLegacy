@@ -90,7 +90,7 @@
 					
 				</ul>
 				<div>
-					<form action="requestInfo" method="post">
+					<form action="requestInfo" method="post" id="statusBtn">
 						<sec:authorize access="hasAuthority('ROLE_ADMIN')">
 							<c:if test="${info.requestStatus eq 'WAIT' || info.requestStatus eq 'REAPPLY'}">
 								<button id="submitBtn" type="submit">승인</button>

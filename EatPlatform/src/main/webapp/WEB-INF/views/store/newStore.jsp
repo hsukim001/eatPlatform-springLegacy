@@ -298,11 +298,11 @@
 		        	</li>
 		        	<li>
 		        		<label for="storeComment">식당 소개</label>
-		        		<textarea id="storeComment" name="storeComment" maxlength="50" placeholder="50자 내외의 간단한 소개를 적어주세요."></textarea>
+		        		<textarea id="storeComment" name="storeComment" maxlength="50" placeholder="50자 내외의 간단한 소개를 적어주세요." required></textarea>
 		        	</li>
 		        	<li>
 		        		<label for="description">식당 상세 설명:  </label>
-		        		<textarea id="description" name="description" maxlength="250" placeholder="250자 내외의 매장 소개글을 적어주세요."></textarea>
+		        		<textarea id="description" name="description" maxlength="250" placeholder="250자 내외의 매장 소개글을 적어주세요." required></textarea>
 		        	</li>
 		        </ul>
 		        <ul id="addressList">

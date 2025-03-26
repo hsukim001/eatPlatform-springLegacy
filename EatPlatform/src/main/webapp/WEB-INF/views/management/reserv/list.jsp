@@ -6,8 +6,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="_csrf" content="${_csrf.token}"/>
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="_csrf_header" content="${_csrf.headerName}"/>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reserv/list.css">

@@ -122,23 +122,23 @@
             				<sec:authorize access="hasAuthority('ROLE_ADMIN')">
             				<!--  관리자 -->
             					<li>
-            						<a href="#" onclick="alert('아직 준비 중 입니다.');">
-            							신고 리뷰 관리
-            						</a>
-            					</li>
-            					<li>
             						<a href="/user/business/requestList">
             							사업자 신청 관리
             						</a>
             					</li>
             					<li>
-            						<a href="/store/request/list">
-            							가게 등록 관리
+            						<a href="/management/store/requestList">
+            							사업장 등록 관리
             						</a>
             					</li>
             					<li>
             						<a href="/shop/product/category/management">
             							업장 카테고리 관리
+            						</a>
+            					</li>
+            					<li>
+            						<a href="/management/report/reviewList">
+            							신고 리뷰 관리
             						</a>
             					</li>
             				</sec:authorize>

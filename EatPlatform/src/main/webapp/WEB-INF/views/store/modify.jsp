@@ -10,7 +10,7 @@
 
         if (result > 0) {
             alert("가게 정보 수정 완료되었습니다.");
-            window.location.href = "list";
+            window.location.href = "/management/store/list";
         } else {
             alert("가게 등록에 실패했습니다. 다시 시도해주세요.");
             history.back();

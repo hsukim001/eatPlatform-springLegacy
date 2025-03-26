@@ -12,8 +12,8 @@
         let result = <%= result %>; 
 
         if (result > 0) {
-            alert("가게 등록이 완료되었습니다.");
-            window.location.href = "list";
+            alert("가게 등록 신청이 완료되었습니다.");
+            window.location.href = "/management/store/list";
         } else {
             alert("가게 등록에 실패했습니다. 다시 시도해주세요.");
             history.back();

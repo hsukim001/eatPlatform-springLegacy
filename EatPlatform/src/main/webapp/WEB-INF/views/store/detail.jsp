@@ -5,176 +5,178 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-    <meta name="_csrf" content="${_csrf.token}"/>
-	<meta name="_csrf_header" content="${_csrf.headerName}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/detail.css">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
-	<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
-	<script>
-		$(document).ajaxSend(function(e, xhr, opt){
-	    var token = $("meta[name='_csrf']").attr("content");
-	    var header = $("meta[name='_csrf_header']").attr("content");
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/detail.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/calendar.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/store/imgSlider.js"></script>
+<script>
+	$(document).ajaxSend(function(e, xhr, opt){
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    
+    xhr.setRequestHeader(header, token);
+ });
+	
+	$(function(){
+
+	    $(".phoneNum").each(function() {
+	        let rawPhone = $(this).text().trim();
+	        let formattedPhone = formatPhoneNumber(rawPhone);
+	        if (formattedPhone) {
+	            $(this).text(formattedPhone);
+	        }
+	    });
 	    
-	    xhr.setRequestHeader(header, token);
-	 });
+	    function formatPhoneNumber(phone) {
+	        phone = phone.replace(/\D/g, "");
+
+	        if (phone.length === 9) {
+	            return phone.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+	        } else if (phone.length === 10) {
+	            return phone.replace(/(\d{2,3})(\d{3,4})(\d{4})/, "$1-$2-$3");
+	        } else if (phone.length === 11) {
+	            return phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+	        } else if (phone.length === 12) {
+	            return phone.replace(/(\d{4})(\d{4})(\d{4})/, "$1-$2-$3");
+	        }
+
+	        return phone;
+	    }
 		
-		$(function(){
-
-		    $(".phoneNum").each(function() {
-		        let rawPhone = $(this).text().trim();
-		        let formattedPhone = formatPhoneNumber(rawPhone);
-		        if (formattedPhone) {
-		            $(this).text(formattedPhone);
-		        }
-		    });
-		    
-		    function formatPhoneNumber(phone) {
-		        phone = phone.replace(/\D/g, "");
-
-		        if (phone.length === 9) {
-		            return phone.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
-		        } else if (phone.length === 10) {
-		            return phone.replace(/(\d{2,3})(\d{3,4})(\d{4})/, "$1-$2-$3");
-		        } else if (phone.length === 11) {
-		            return phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
-		        } else if (phone.length === 12) {
-		            return phone.replace(/(\d{4})(\d{4})(\d{4})/, "$1-$2-$3");
-		        }
-
-		        return phone;
-		    }
-			
-			
-			$('#reservBtn').click(function(){
-				fetch('../access/auth/status', { method : 'get', credentials: 'include' })
-					.then(response => response.json())
-					.then(isAuthenticated => {
-						if(isAuthenticated) {
-							$('#calendar-wrap > div').stop().fadeToggle(400);
-							$('#calendar-wrap').stop().slideToggle(500);							
-						} else {
-							alert('로그인이 필요합니다.');
-						}
-					})
-					.catch(error => {
-						console.error("Error checking authentication status:", error);
-					});
-			}); // End #reservBtnWrap input.click
-			
-			$('#scoreWrap img').click(function () {
-			    let currentScore = $(this).data('score'); 
-			    console.log(currentScore);
-
-			    $('#scoreWrap img').each(function () {
-			        let imgScore = $(this).data('score'); 
-			        if (imgScore <= currentScore) {
-			            $(this).attr('src', '<%=request.getContextPath()%>/resources/img/sample3.png');
-			        } else {
-			            $(this).attr('src', '<%=request.getContextPath()%>/resources/img/sample3bk.png');
-			        }
-			    }); // End #scoreWrap img.each 
-
-			    $(this).siblings('.scoreText').find('#reviewStar').text(currentScore);
-			}); // End #scoreWrap img.click
-			
-			const tagData = [
-			    { icon: 1, text: "음식이 맛있어요 !" },
-			    { icon: 2, text: "친절해요" },
-			    { icon: 3, text: "분위기가 좋아요." },
-			    { icon: 4, text: "재료가 신선해요." },
-			    { icon: 5, text: "청결해요." },
-			    { icon: 6, text: "재방문 의사가 있어요." }
-			];
-			console.log(tagData);
-			const listContainer = $('#tagList');
-			const tagContainer = $('#viewTag');
-
-			tagData.forEach(tag => {
-			    const listItem =
-			    	'<li data-tag-id=' + tag.icon +'>' +
-                		'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
-                		'<span>' + tag.text + '</span>' +
-           			 '</li>';
-			    listContainer.append(listItem);
-			}); // End tagData.forEach
-			
-			$(document).click(function(event) {
-			    if (!$(event.target).closest('.tagBtn').length && !$(event.target).closest('#tagList').length) {
-			        $('#tagList').slideUp(200); 
-			    }
-			}); // End document.click
-
-			$(".tagBtn").click(function(event) {
-			    event.stopPropagation();  
-			    $('#tagList').stop().slideToggle(200); 
-			}); // End .tagBtn.click
-			
-			
-		    $("#tagList li").click(function () {
-		        $(this).toggleClass("tagActive");
-
-		        const tagId = $(this).data("tag-id")
-		        const tag = tagData.find(tag => tag.icon === tagId); 
-		        let currentTags = $("#reviewTag").val().split(",").filter(Boolean); 
-
-		        if ($(this).hasClass("tagActive")) {
-		            if (!currentTags.includes(String(tagId))) {
-		                currentTags.push(tagId);
-		            }
-		            const tagItem =
-		                '<li data-sticker-id=' + tag.icon + '>' +
-		                	'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
-		                	'<span>' + tag.text + '</span>' +
-		                '</li>';
-		            tagContainer.append(tagItem);
-		        } else {
-		           $('#viewTag li').each(function() {
-		                const stickerId = $(this).data('sticker-id'); 
-		                if (stickerId === tagId) {
-		                    $(this).remove();
-		                }
-		            });
-		        }
-		        $("#reviewTag").val(currentTags.join(","));
-
-		        let tags = $("#reviewTag").val().split(",").filter(Boolean).map(Number);
-		        tags.sort((a, b) => a - b);
-
-		        $("#reviewTag").val(tags.join(","));
-		        console.log($("#reviewTag").val());
-		    }); // End #tagList li.click
-
-		    $("#reviewWrite").hide();
-		    
-		    $("#reviewBtn").click(function(){
-		    	fetch('../access/auth/status')
+		
+		$('#reservBtn').click(function(){
+			fetch('../access/auth/status', { method : 'get', credentials: 'include' })
 				.then(response => response.json())
 				.then(isAuthenticated => {
-			        if (isAuthenticated) {
-			        	$("#reviewWrite").slideToggle('300'); // 리뷰 작성 영역을 슬라이드 토글
-			        } else {
-			            alert('로그인이 필요합니다.'); // 로그인되지 않은 경우
-			            location.href = '../access/login';
-			        }
-			    });
+					if(isAuthenticated) {
+						$('#calendar-wrap > div').stop().fadeToggle(400);
+						$('#calendar-wrap').stop().slideToggle(500);							
+					} else {
+						alert('로그인이 필요합니다.');
+					}
+				})
+				.catch(error => {
+					console.error("Error checking authentication status:", error);
+				});
+		}); // End #reservBtnWrap input.click
+		
+		$('#scoreWrap img').click(function () {
+		    let currentScore = $(this).data('score'); 
+		    console.log(currentScore);
 
-		    });		
-		}); // End $function
-	</script>
+		    $('#scoreWrap img').each(function () {
+		        let imgScore = $(this).data('score'); 
+		        if (imgScore <= currentScore) {
+		            $(this).attr('src', '<%=request.getContextPath()%>/resources/img/common/fullStar.png');
+		        } else {
+		            $(this).attr('src', '<%=request.getContextPath()%>/resources/img/common/emptyStar.png');
+		        }
+		    }); // End #scoreWrap img.each 
 
-	<title>${storeVO.storeName }</title>
+		    $(this).siblings('.scoreText').find('#reviewStar').text(currentScore);
+		}); // End #scoreWrap img.click
+		
+		const tagData = [
+		    { icon: 1, text: "음식이 맛있어요 !" },
+		    { icon: 2, text: "친절해요" },
+		    { icon: 3, text: "분위기가 좋아요." },
+		    { icon: 4, text: "재료가 신선해요." },
+		    { icon: 5, text: "청결해요." },
+		    { icon: 6, text: "재방문 의사가 있어요." }
+		];
+		console.log(tagData);
+		const listContainer = $('#tagList');
+		const tagContainer = $('#viewTag');
+
+		tagData.forEach(tag => {
+		    const listItem =
+		    	'<li data-tag-id=' + tag.icon +'>' +
+               		'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+               		'<span>' + tag.text + '</span>' +
+          			 '</li>';
+		    listContainer.append(listItem);
+		}); // End tagData.forEach
+		
+		$(document).click(function(event) {
+		    if (!$(event.target).closest('.tagBtn').length && !$(event.target).closest('#tagList').length) {
+		        $('#tagList').slideUp(200); 
+		    }
+		}); // End document.click
+
+		$(".tagBtn").click(function(event) {
+		    event.stopPropagation();  
+		    $('#tagList').stop().slideToggle(200); 
+		}); // End .tagBtn.click
+		
+		
+	    $("#tagList li").click(function () {
+	        $(this).toggleClass("tagActive");
+
+	        const tagId = $(this).data("tag-id")
+	        const tag = tagData.find(tag => tag.icon === tagId); 
+	        let currentTags = $("#reviewTag").val().split(",").filter(Boolean); 
+
+	        if ($(this).hasClass("tagActive")) {
+	            if (!currentTags.includes(String(tagId))) {
+	                currentTags.push(tagId);
+	            }
+	            const tagItem =
+	                '<li data-sticker-id=' + tag.icon + '>' +
+	                	'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+	                	'<span>' + tag.text + '</span>' +
+	                '</li>';
+	            tagContainer.append(tagItem);
+	        } else {
+	           $('#viewTag li').each(function() {
+	                const stickerId = $(this).data('sticker-id'); 
+	                if (stickerId === tagId) {
+	                    $(this).remove();
+	                }
+	            });
+	        }
+	        $("#reviewTag").val(currentTags.join(","));
+
+	        let tags = $("#reviewTag").val().split(",").filter(Boolean).map(Number);
+	        tags.sort((a, b) => a - b);
+
+	        $("#reviewTag").val(tags.join(","));
+	        console.log($("#reviewTag").val());
+	    }); // End #tagList li.click
+
+	    $("#reviewWrite").hide();
+	    
+	    $("#reviewBtn").click(function(){
+	    	fetch('../access/auth/status')
+			.then(response => response.json())
+			.then(isAuthenticated => {
+		        if (isAuthenticated) {
+		        	$("#reviewWrite").slideToggle('300'); // 리뷰 작성 영역을 슬라이드 토글
+		        } else {
+		            alert('로그인이 필요합니다.'); // 로그인되지 않은 경우
+		            location.href = '../access/login';
+		        }
+		    });
+
+	    });		
+	}); // End $function
+</script>
+
+<title>${storeVO.storeName }</title>
 </head>
 <body>
 	<div id="wrap">
@@ -186,9 +188,17 @@
 					<div id="storeInfoImg">
 						<c:choose>
 						    <c:when test="${not empty storeVO.storeImageList}">
-						        <c:forEach var="storeImageVO" items="${storeVO.storeImageList}">
-						            <img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" />
-						        </c:forEach>
+	    						<div class="slider-wrapper">
+								    <div class="img_box">
+								        <div class="img_item">
+            						        <c:forEach var="storeImageVO" items="${storeVO.storeImageList}">
+						            			<img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" />
+						        			</c:forEach>
+								        </div>
+								    </div>
+								    <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+								    <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+								</div>
 						    </c:when>
 						    <c:otherwise>
 						        <img class="noImg" src="<%=request.getContextPath()%>/resources/img/common/noImg.png" alt="이미지 없음 이미지">
@@ -220,7 +230,7 @@
 							<li>
 								<span class="textTitle">별점 </span> 
 								<span class="colon">:</span>
-								<span class="textValue">${storeVO.score }</span>
+								<span class="textValue"><img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star1" alt="별 이미지"> ${storeVO.score }</span>
 							</li>
 							<li>
 								<span class="textTitle">매장 내 좌석 수 </span> 
@@ -239,8 +249,8 @@
 				<div id="remoteBar" class="mb30">
 					<ul>
 						<li><a href="#storeContent"> 매장 소개 </a></li>
-						<li><a href="#"> 메뉴 </a></li>
-						<li><a href="#"> 리뷰 </a></li>
+						<li><a href="#menuContainer"> 메뉴 </a></li>
+						<li><a href="#reviews"> 리뷰 </a></li>
 					</ul>
 				</div>
 				<!--  End RemoteBar -->
@@ -266,9 +276,13 @@
 					   		</c:if>
 							<c:forEach var="menu" items="${menuVO}" varStatus="status">
 								<li>
-									<img src="<%=request.getContextPath()%>/resources/img/sample3.png" alt="메뉴사진 ${status.index + 1 }">
 									<p class="menuTitle menuText">${menu.menuName }</p>
-									<p class="menuComment menuText">${menu.menuComment }</p>
+									<c:if test="${not empty menu.menuComment }">
+									    <p class="menuComment menuText">${menu.menuComment }</p>
+									</c:if>
+									<c:if test="${empty menu.menuComment }">
+									    <p class="menuComment menuText">작성된 소개글이 없습니다</p>
+									</c:if>
 									<p class="menuPrice menuText">${menu.menuPrice } \</p>
 								</li>
 							</c:forEach>
@@ -283,7 +297,7 @@
 						</sec:authorize>
 						
 						<sec:authorize access="hasAuthority('ROLE_MEMBER') or isAnonymous()">
-							<p>
+							<p class="review_cover">
 								<input id="reviewBtn" type="button" value="작성하기 &nbsp;&nbsp;Ⅴ">
 							</p>
 						</sec:authorize>
@@ -293,12 +307,11 @@
 						
 						<div id="reviewWrite">
 							<div id="scoreWrap">
-								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="1">
-								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="2">
-								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="3">
-								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="4">
-								<img src="<%=request.getContextPath()%>/resources/img/sample3bk.png" alt="추천점수" data-score="5">
-							
+								<img src="<%=request.getContextPath()%>/resources/img/common/emptyStar.png" alt="추천점수" data-score="1">
+								<img src="<%=request.getContextPath()%>/resources/img/common/emptyStar.png" alt="추천점수" data-score="2">
+								<img src="<%=request.getContextPath()%>/resources/img/common/emptyStar.png" alt="추천점수" data-score="3">
+								<img src="<%=request.getContextPath()%>/resources/img/common/emptyStar.png" alt="추천점수" data-score="4">
+								<img src="<%=request.getContextPath()%>/resources/img/common/emptyStar.png" alt="추천점수" data-score="5">							
 								<div class="scoreText">
 									<span id="reviewStar">0 </span>
 									<span class="scoreNum"> / 5 점</span>
@@ -330,13 +343,10 @@
 					        <button id="reviewBtnAdd">작성</button>
 					     	
 						</div>
-							<div style="text-align: center;">
-								<div id="reviews">
-								</div>
-								<br>
+							<div id="reviews"></div>
+							<br>
 								<!-- 더보기 버튼 추가 -->
-								<button id="loadMoreBtn">더보기</button>
-							</div>
+							<button id="loadMoreBtn">더보기</button>
 							
 							<!-- 리뷰 신고 모달 포함 -->
     						<jsp:include page="/include/reportModal.jsp" />	
@@ -352,7 +362,7 @@
 			<!--  End StoreContainer -->
 		</div>
 		<!--  End Container -->
-
+		<jsp:include page="/include/footer.jsp" />		
 	</div>
 	<!--  End Wrap -->
 </body>

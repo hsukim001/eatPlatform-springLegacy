@@ -8,54 +8,13 @@
 <meta charset="UTF-8">
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
-<style>
-#otherCategory {
-    display: none;
-}
-
-.insert {
-	padding: 10px 20px;
-	display: block;
-	width: 300px;
-	border: 1px solid #dbdbdb;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-.insert .file-list {
-	height: 200px;
-	overflow: auto;
-	border: 1px solid #989898;
-	padding: 10px;
-}
-
-.insert .file-list .filebox p {
-	font-size: 14px;
-	margin-top: 10px;
-	display: inline-block;
-}
-
-.insert .file-list .filebox .delete i {
-	color: #ff5353;
-	margin-left: 5px;
-}
-
-#storeImg {
-	display: none;
-}
-
-.uploadLabel {
-	display: inline-block;
-	padding: 6px 25px;
-	margin: 5px 0;
-	background-color:navy;
-	border-radius: 4px;
-	color: white;
-	cursor: pointer;
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/newStore.css">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
 <script>
@@ -68,6 +27,15 @@
 	
 	function noBack(){window.history.forward(); alert('잘못된 접근 입니다.');}	
     $(function() { 
+		$("#category_container").on('click', 'ul li label', function(){
+		    if ($(this).closest('#mainCategory').length) {
+				$("#mainCategory > li > label").removeClass('selected');
+				$(this).addClass('selected');
+		    } else if ($(this).closest('#subCategory').length) {
+				$("#subCategory > li > label").removeClass('selected');
+				$(this).addClass('selected');
+		    }
+		});
     	
 
 		let ExistMainCategoryId;
@@ -147,6 +115,7 @@
 			            
 		                if (isFirstLoad) {
 		                    $('input[type="radio"][name="subCategoryId"][value="' + originSubCategoryId + '"]').prop('checked', true);
+		                    $('input[type="radio"][name="subCategoryId"][value="' + originSubCategoryId + '"]').siblings('label').addClass('selected');
 		                    isFirstLoad = false; 
 		                }
 		            } else {
@@ -169,6 +138,7 @@
 		        if (firstMainId) {
 		            RenewalSubCategory(originMainCategoryId); 
  		            $('input[type="radio"][name="mainCategoryId"][value="' + originMainCategoryId + '"]').prop('checked', true);
+ 		            $('input[type="radio"][name="mainCategoryId"][value="' + originMainCategoryId + '"]').siblings('label').addClass('selected');
 		        } else {
 		            alert("문제가 발생했습니다. 다시 시도해주세요.")
 		        }
@@ -277,84 +247,97 @@
 <title>식당 수정 페이지</title>
 </head>
 <body onpageshow="if(event.persisted) noBack();">
-    <h2>여기는 수정 페이지입니다.</h2>
-    <form id="storeForm" action="modify" method="POST">
-    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <input type="hidden" value="${param.storeId }" id="storeId" name="storeId">
-    	<input type="hidden" id="businessHour" name="businessHour">  
-        
-        <input type="hidden" id="hiddenFoodCategory" name="foodCategory">
-        <p>${param.storeId }</p>
-        <label for="storeName"> 
-            식당 이름 : <input type="text" id="storeName" name="storeName" value="${storeVO.storeName }">
-        </label>
-        <label for="storePhone"> 
-            연락처 : <input type="number" id="storePhone" name="storePhone" value="${storeVO.storePhone }">
-        </label> 
-        <label for="ownerName">
-            대표명 : <input type="text" id="ownerName" name="ownerName" value="${storeVO.ownerName }"> 
-        </label>
-               
-		<div id="category_container">
-				<ul id="mainCategory"></ul>
-				<ul id="subCategory"></ul>
+ 
+	<div id="wrap">
+		<jsp:include page="/include/header.jsp" />
+		<div id="container">
+		   <p class="page_title">사업자 정보 수정</p>
+		    <form id="storeForm" action="register" method="POST" >
+		    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		    	<input type="hidden" id="businessHour" name="businessHour"> 
+		        <input type="hidden" id="hiddenFoodCategory" name="foodCategory" required>
+		        
+		        <ul class="formList">
+		        	<li>
+				        <label for="storeName">식당 이름</label>
+				        <input type="text" id="storeName" name="storeName" value="${storeVO.storeName }" required>
+		        	</li>
+		        	<li>
+				        <label for="storePhone">연락처</label>
+				         <input type="number" id="storePhone" name="storePhone" value="${storeVO.storePhone }" placeholder='"-"를 제외한 숫자만 입력해주세요.' required>
+		        	</li>
+		        	<li>
+				        <label for="ownerName">관리자명</label>
+				        <input type="text" id="ownerName" name="ownerName" value="${storeVO.ownerName }" required>    
+		        	</li>
+		        	<li class="list_title">카테고리</li>
+		        	<li id="category_container">
+						<ul id="mainCategory"></ul>
+						<ul id="subCategory"></ul>
+		        	</li>
+		        </ul>
+				<p class="list_title img_title">매장 이미지</p>
+			    <div id="img_container">
+					<div class="insert">
+						<input id="storeImg" name="storeImg" type="file" multiple />
+						<div class="file-list"></div>
+			        	<div id="thumbnail-container"></div>
+						<label class="uploadLabel" for="storeImg">
+							이미지 업로드
+						</label>
+					</div>
+					<p class="data_comment">* 이미지 크기는 320x300 (1.2:1) 비율을 기준으로 노출됩니다.</p>
+					<p class="data_comment">* 이미지는 최대 3개까지 등록이 가능합니다.</p>
+					<div class="storeImgFile-list"></div>
+				</div>
+		        <ul class="formList">
+		        	<li>
+		        		<label for="reservLimit">시간별 예약 제한</label>
+		        		<input type="number" max="99999" id="reservLimit" name="reservLimit" value="${storeVO.reservLimit }" required>
+		        	</li>
+		        	<li>
+		        		<label for="seat">좌석 수</label>
+		        		<input type="number" max="99999" id="seat" name="seat" value="${storeVO.seat }">
+		        	</li>
+		        	<li class="business_hour">
+		        		<p>영업시간</p>
+		        		<span>오픈</span>
+		        		<span>마감</span>
+		        		<input type="time" id="startTime" name="startTime" value="${startTime }"> - <input type="time" id="endTime" name="endTime" value="${endTime }">
+		        		<p class="data_comment">* 24시간 영업의 경우는 오전 12:00 - 오전12:00 로 설정해주세요.</p>
+		        	</li>
+		        	<li>
+		        		<label for="storeComment">식당 소개</label>
+		        		<textarea id="storeComment" name="storeComment" maxlength="50" placeholder="50자 내외의 간단한 소개를 적어주세요." required>${storeVO.storeComment }</textarea>
+		        	</li>
+		        	<li>
+		        		<label for="description">식당 상세 설명:  </label>
+		        		<textarea id="description" name="description" maxlength="250" placeholder="250자 내외의 매장 소개글을 적어주세요." required>${storeVO.description  }</textarea>
+		        	</li>
+		        </ul>
+		        <ul id="addressList">
+		        	<li>
+		        		<label for="postBtn">주소</label>
+		        		<input type="text" id="postCode" name="postCode" placeholder="우편번호" value="${storeAddressVO.postCode }" required>
+						<input id="postBtn" type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
+		        	</li>
+		        	<li class="resultPlace">
+						<input type="text" id="roadAddress" name="roadAddress" placeholder="도로명주소" value="${storeAddressVO.roadAddress }" readonly>
+						<input type="text" id="jibunAddress" name="jibunAddress" placeholder="지번주소" value="${storeAddressVO.jibunAddress }" required readonly>
+						<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" value="${storeAddressVO.extraAddress }" readonly>
+						<input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소" value="${storeAddressVO.detailAddress }">
+		        	</li>
+					<li class="hiddenPlace">
+						<input type="text" id="sido" name="sido" placeholder="sido" value="${storeAddressVO.sido }" required>
+						<input type="text" id="sigungu" name="sigungu" placeholder="sigungu" value="${storeAddressVO.sigungu }" required>
+						<input type="text" id="bname1" name="bname1" placeholder="bname1" value="${storeAddressVO.bname1 }">
+						<input type="text" id="bname2" name="bname2" placeholder="bname2" value="${storeAddressVO.bname2 }">
+					</li>
+		        </ul>
+		        <input type="submit" value="사업장 정보 등록">
+		    </form>
 		</div>
-        <label for="reservLimit">
-            시간별 예약 제한: <input type="number" max="99999"  id="reservLimit" name="reservLimit" value="${storeVO.reservLimit }">
-        </label> 
-        <label for="seat"> 
-            좌석 수 : <input type="number" max="99999"  id="seat" name="seat" value="${storeVO.seat }">
-        </label> 
-        <label for="businessHour"> 
-            영업시간 : <input type="time" id="startTime" name="startTime" value="${startTime }"> - <input type="time" id="endTime" name="endTime" value="${endTime }">
-        </label> 
-        <label for="storeComment"> 
-            식당 소개: 
-            <textarea id="storeComment" name="storeComment" maxlength="125" placeholder="125자까지 입력 가능합니다.">${storeVO.storeComment }
-            </textarea>
-        </label>
-        <br>
-        <label for="description"> 
-            식당 상세 설명: 
-            <textarea id="description" name="description" maxlength="250" placeholder="250자까지 입력 가능합니다.">${storeVO.description }
-            </textarea>
-        </label>
-               
-		<input type="text" id="postCode" name="postCode" placeholder="우편번호" value="${storeAddressVO.postCode }" required>
-		<input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
-		<input type="text" id="roadAddress" name="roadAddress" placeholder="도로명주소"  value="${storeAddressVO.roadAddress }">
-		<input type="text" id="jibunAddress" name="jibunAddress" placeholder="지번주소"required  value="${storeAddressVO.jibunAddress }">
-		<input type="text" id="detailAddress" name="detailAddress" placeholder="상세주소"  value="${storeAddressVO.detailAddress }">
-		<input type="text" id="extraAddress" name="extraAddress" placeholder="참고항목" value="${storeAddressVO.extraAddress }">
-		<br>
-		<input type="text" id="sido" name="sido" placeholder="sido" required value="${storeAddressVO.sido }">
-		<input type="text" id="sigungu" name="sigungu" placeholder="sigungu" required value="${storeAddressVO.sigungu }">
-		<input type="text" id="bname1" name="bname1" placeholder="bname1" value="${storeAddressVO.bname1 }">
-		<input type="text" id="bname2" name="bname2" placeholder="bname2" value="${storeAddressVO.bname2 }">
-		<br><br>
-		
-        <input type="submit" value="식당 정보 수정">
-    </form>
-    <br><br>
-    
-    <div class="insert">
-			<label class="uploadLabel" for="storeImg">
-				업로드
-			</label>
-			<input id="storeImg" name="storeImg" type="file" multiple />
-			<div class="file-list">
-				<c:forEach var="storeImageVO" items="${storeVO.storeImageList }">
-					<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
-					<img width="100px" height="100px" 
-					src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
-					</a>
-				</c:forEach>
-			</div>
-        	<div id="thumbnail-container">
-        	</div>
-		</div>
-		
-		<div class="storeImgFile-list">
-		</div>
+		<jsp:include page="/include/footer.jsp" />	
+	</div>
 </body>
 </html>
