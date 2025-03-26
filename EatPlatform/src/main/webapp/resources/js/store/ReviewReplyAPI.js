@@ -187,7 +187,7 @@
 			            // 리뷰 댓글 표시
 			            list += '<div class="review_replies" id="review_' + this.reviewId + '_replies"></div>'
 			                + '<div class="review_reply" style="display: none;">'
-			                + '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요" maxlength="50"></textarea>'
+			                + '<textarea id="replyContent" placeholder="댓글 내용을 작성하세요"></textarea>'
 			                + '<button class="btn_reply">댓글 작성</button>'
 			                + '</div>' // review_reply div 끝
 			                + '</div>';
@@ -480,7 +480,7 @@
 					},
 					error: function(xhr, status, error) {
 	                     if (xhr.status == 400) {
-	                         alert('댓글 내용은 50자 이하로 작성해주세요.');
+	                         alert('댓글 내용은 200자 이하로 작성해주세요.');
 	                     } else {
 	                         alert('댓글 등록에 실패했습니다.');
 	                     }
