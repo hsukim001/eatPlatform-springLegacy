@@ -161,6 +161,7 @@ public class NotificationServiceImple implements NotificationService {
 		String url = NotificationTemplate.Url.RESERV_LIST_URL;
 		
 		sendNotification(NotificationTemplate.Types.ADD_RESERV, userVO.getUsername(), message, url);
+		sendNotification(NotificationTemplate.Types.ADD_RESERV, storeVO.getStoreUserId(), message, url);
 	}
     
     /**

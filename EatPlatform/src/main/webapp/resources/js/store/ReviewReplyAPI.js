@@ -491,6 +491,7 @@
 			}); // end reviews.on()
 			
 			// 선택된 댓글 수정
+<<<<<<< Updated upstream
 $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
     var reviewId = $(this).closest('.review_item').find('#reviewId').val();
     var replyId = $(this).closest('.review_item').find('#replyId').val();
@@ -559,10 +560,80 @@ $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
         replyItem.find('.btn_return_reply').hide();
     });
 });
+=======
+			$('#reviews').on('click', '.reply_item .btn_update_reply', function () {
+			    var reviewId = $(this).closest('.review_item').find('#reviewId').val();
+			    var replyId = $(this).closest('.review_item').find('#replyId').val();
+			    var replyContent = $(this).closest('.reply_item').find('#replyContent');
+			
+			    // 기존 댓글 내용을 가져오기
+			    var originalContent = replyContent.text();
+			
+			    // textarea로 변경
+			    var textarea = $('<textarea>')
+			        .attr('id', 'replyContent')
+			        .val(originalContent)
+			        .addClass(replyContent.attr('class'));
+			
+			    replyContent.replaceWith(textarea);
+			    textarea.focus();
+			
+			    var replyItem = $(this).closest('.reply_item');
+			
+			    replyItem.find('.btn_update_reply').hide();
+			    replyItem.find('.btn_delete_reply').hide();
+			    replyItem.find('.btn_save_reply').show();
+			    replyItem.find('.btn_return_reply').show();
+			
+			    // 저장 버튼 눌렀을 때
+			    replyItem.find('.btn_save_reply').off('click').on('click', function () {
+			        let updateReplyId = $(this).parent().siblings('#replyId').val();
+			        var updatedContent = textarea.val();
+			
+			        if (originalContent === updatedContent) {
+			            alert("수정할 댓글을 입력해주세요.");
+			            return;
+			        }
+			
+			        $.ajax({
+			            type: 'PUT',
+			            url: '../reply/' + updateReplyId,
+			            headers: {
+			                'Content-Type': 'application/json'
+			            },
+			            data: JSON.stringify({ "replyContent": updatedContent }),
+			            success: function (result) {
+			                if (result == 1) {
+			                    alert('댓글 수정 성공!');
+			                    getReplies(reviewId);
+			                }
+			            },
+			            error: function (xhr, status, error) {
+			                alert('댓글 수정에 실패했습니다.');
+			            }
+			        });
+			    });
+			
+			    // 취소 버튼 눌렀을 때
+			    replyItem.find('.btn_return_reply').off('click').on('click', function () {
+			        var preTag = $('<pre>')
+			            .attr('id', 'replyContent')
+			            .text(originalContent)
+			            .addClass(textarea.attr('class'));
+			
+			        textarea.replaceWith(preTag);
+			
+			        replyItem.find('.btn_update_reply').show();
+			        replyItem.find('.btn_delete_reply').show();
+			        replyItem.find('.btn_save_reply').hide();
+			        replyItem.find('.btn_return_reply').hide();
+			    });
+			});
+>>>>>>> Stashed changes
 
 			
 			
-		// 선택된 댓글 삭제
+			// 선택된 댓글 삭제
 			$('#reviews').on('click', '.reply_item .btn_delete_reply', function(){
 				
 				var reviewId = $(this).closest('.review_item').find('#reviewId').val();

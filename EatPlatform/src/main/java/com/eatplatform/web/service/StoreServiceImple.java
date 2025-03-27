@@ -184,6 +184,15 @@ public class StoreServiceImple implements StoreService {
 		return result;
 	}
 
+	/**
+	 * 가게 별점순 정렬
+	 * @return list
+	 */
+	@Override
+	public List<StoreVO> getStoresByScore() {
+		return storeMapper.selectStoreListByScore();
+	}
+
 
 
 }

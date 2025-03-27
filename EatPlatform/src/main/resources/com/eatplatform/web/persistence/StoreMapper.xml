@@ -186,6 +186,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		AND ROWNUM &gt;= #{startRow}
 	</select>
 	
+	<!-- 가게 별점순 정렬 -->
+    <select id="selectStoreListByScore" resultMap="StoreResultMap">
+    	SELECT * FROM (
+	    SELECT s.*, ROW_NUMBER() OVER (ORDER BY SCORE DESC) AS rn
+	    FROM STORE s
+		) WHERE rn BETWEEN 1 AND 3
+    </select>
+	
 	<!-- 가게 목록 조회(Pagination 사용) -->
 	<select id="selectStoreWithPagination" resultMap="StoreResultMap">
 		SELECT *
@@ -217,7 +225,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT STORE_ID
         FROM STORE
     </select>
-
+    
 	<!-- 가게 정보 수정 -->
 	<update id="updateStore">
 		UPDATE STORE

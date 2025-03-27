@@ -260,5 +260,5 @@ public class StoreController {
 		log.info("storeVO : " + storeVO);
 		return "/store/detail";
 	}
-
+	
 }

@@ -200,4 +200,10 @@ public class StoreRESTController {
     	return new ResponseEntity<Integer>(result, HttpStatus.OK);
     }
     
+    @GetMapping("/score")
+    public ResponseEntity<List<StoreVO>> getStoreListByScore() {
+    	List<StoreVO> stores = storeService.getStoresByScore();
+        return ResponseEntity.ok(stores);
+    }
+    
 }

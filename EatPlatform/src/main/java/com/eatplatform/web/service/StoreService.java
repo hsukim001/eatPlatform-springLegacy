@@ -34,6 +34,12 @@ public interface StoreService {
 	// storeUserId로 storeId 검색
 	List<StoreVO> getStoreIdByStoreUserId(@Param("storeUserId") String storeUserId);
 	
+	/**
+	 * 가게 별점순 정렬
+	 * @return list
+	 */
+	List<StoreVO> getStoresByScore();
+	
 	// 전체 게시글 카운트
 	int getTotalStoresCount(List<String> keywords);
 	

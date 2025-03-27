@@ -46,6 +46,13 @@ public interface StoreMapper {
 	
 	// storeUserId로 storeId 검색
 	List<StoreVO> getStoreIdByStoreUserId(@Param("storeUserId") String storeUserId);
+	
+	
+	/**
+	 * 가게 별점순 정렬
+	 * @return list
+	 */
+	List<StoreVO> selectStoreListByScore();
 
 	int getTotalStoresCount(Map<String, Object> params);
 	

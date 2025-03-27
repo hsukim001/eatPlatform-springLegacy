@@ -13,6 +13,80 @@
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/main/recommendSlider.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/main/config.js"></script>
+	<script>
+		$(document).ajaxSend(function(e, xhr, opt){
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");			
+			xhr.setRequestHeader(header, token);
+		});
+		
+		$(document).ready(function () {
+		    recommendStore();
+		});
+		
+		function recommendStore() {
+			const userId = ${userId}
+			
+			if (userId === 0) {
+				loadTopRatedStoresByScore(); // 다른 함수 실행
+		        return; // recommendStore 실행 중단
+		    }
+			
+			$.ajax({
+				type : 'POST',
+				url : CONFIG.API_BASE_URL + '/recommend',
+				headers : {
+					"Content-Type" : "application/json"
+				},
+				data : JSON.stringify({ "userId": userId }),
+				success : function (result) {
+					console.log("회원 카테고리 추천순 : ", result);
+					
+					let top3 = '${recommendations.top_3_recommendations}';
+					let recommendations = JSON.parse(top3);
+					
+					console.log(recommendations);
+					
+		        },
+				error: function(xhr, status, error) {
+	                console.error("오류 발생:", status, error);
+	            }
+			});
+		}
+		
+		function loadTopRatedStoresByScore() {
+			$.ajax({
+				type : 'GET',
+				url : '/store/score',
+				dataType: "json",
+				success : function (stores) {
+					console.log("가게 별점순 : ", stores);
+					
+					let html = ''; // HTML을 담을 변수 초기화
+		            stores.forEach(store => {
+		                html += '<div class="best_item">'
+		                    + '<div id="best_store_img">'
+		                    + '<img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="추천 가게 사진">'
+		                    + '</div>'
+		                    + '<p id="best_store_represent"></p>'
+		                    + '<p id="best_store_name">' + store.storeName + '</p>'
+		                    + '<div id="best_store_info">'
+		                    + '<p id="store_info_tel">' + store.storePhone + '</p>'
+		                    + '<p id="store_info_address"></p>'
+		                    + '</div>'
+		                    + '<pre id="best_store_comment">' + store.storeComment + '</pre>'
+		                    + '</div>';
+		            });
+
+		            $("#best_box").html(html); // 동적으로 생성된 HTML을 삽입
+		        },
+				error: function(xhr, status, error) {
+	                console.error("오류 발생:", status, error);
+	            }
+			});
+		}
+	</script>
 	<title>Eat PlatForm</title>
 </head>
 <body>
@@ -271,81 +345,7 @@
                     만인이 선택한 BEST SELLER
                 </p>
                 <div id="best_box">
-                    <div class="best_item">
-                        <div id="best_store_img">
-                            <img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="가게 대표 이미지">
-                        </div>
-                        <p id="best_store_represent">
-                            #represent
-                        </p>
-                        <p id="best_store_name">
-                            storeName
-                        </p>
-                        <div id="best_store_info">
-                            <p id="store_info_tel">
-                                storePhone
-                            </p>
-                            <p id="store_info_address">
-                                주소
-                            </p>
-                        </div>
-                        <p id="best_store_comment">
-                            storeComment<br>
-                            storeComment<br>
-                            storeCommenfsadfasfsdfsafasfasfasdfasfasdfasdt<br>
-                            sasd
-                        </p>
-                    </div> <!-- End Best Item -->
-                    <div class="best_item">
-                        <div id="best_store_img">
-                            <img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="가게 대표 이미지">
-                        </div>
-                        <p id="best_store_represent">
-                            #represent
-                        </p>
-                        <p id="best_store_name">
-                            storeName
-                        </p>
-                        <div id="best_store_info">
-                            <p id="store_info_tel">
-                                storePhone
-                            </p>
-                            <p id="store_info_address">
-                                주소
-                            </p>
-                        </div>
-                        <p id="best_store_comment">
-                            storeComment<br>
-                            storeComment<br>
-                            storeCommenfsadfasfsdfsafasfasfasdfasfasdfasdt<br>
-                            sasd
-                        </p>
-                    </div> <!-- End Best Item -->
-                    <div class="best_item">
-                        <div id="best_store_img">
-                            <img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="가게 대표 이미지">
-                        </div>
-                        <p id="best_store_represent">
-                            #represent
-                        </p>
-                        <p id="best_store_name">
-                            storeName
-                        </p>
-                        <div id="best_store_info">
-                            <p id="store_info_tel">
-                                storePhone
-                            </p>
-                            <p id="store_info_address">
-                                주소
-                            </p>
-                        </div>
-                        <p id="best_store_comment">
-                            storeComment<br>
-                            storeComment<br>
-                            storeCommenfsadfasfsdfsafasfasfasdfasfasdfasdt<br>
-                            sasd
-                        </p>
-                    </div> <!-- End Best Item -->
+                
                 </div>
             </div>
             <!-- End 맛집 별점 랭킹 -->
