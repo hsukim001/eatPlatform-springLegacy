@@ -16,22 +16,52 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
 	<style>
-		##menuContainer ul li {
+		.schedule_input input {
+			width: auto !important;
+		}
+	
+		#menuContainer ul li {
 			height: 200px !important;
 		}
-		##menuContainer ul li img {
+		
+		#menuContainer ul li img {
 			height: 200px;
 		}
+		
+		.no_reserv {
+		
+		}
+		
+		label[for="reservScheduleBtn"] {
+			margin-right: 15px;
+		}
+		
 		.bottom_layer {
-			width: calc(100% - 195px);
+			width: 100%;
 			float: left;
 			display: flex;
 			justify-content: space-between;
 		}
+		
 		.bottom_layer .menuText {
 			margin: 0;
 			width: auto !important;
 		}
+		
+		.bottom_layer button {
+			border: none;
+		    outline: none;
+		    background: #364db5;
+		    color: #fff;
+		    padding: 5px 10px;
+		    font-size: 18px;
+		    cursor: pointer;
+		}
+		
+		.bottom_layer button:hover{
+			background: #5e7cff
+		}
+		
 		.createdMenuBtn {
 			width: 90%;
 		    margin: 0 auto 20px;
@@ -161,21 +191,6 @@
 									<p class="menuTitle menuText">${menu.menuName }</p>
 									<p class="menuComment menuText">${menu.menuComment }</p>
 									<input type="hidden" class="menuRepresent" value="${menu.represent }">
-									<div class="bottom_layer">
-										<div>
-											<button class="updateMenuBtn" data-id-value="${menu.menuId }">수정</button>
-											<button class="deleteMenuBtn" data-id-value="${menu.menuId }">삭제</button>
-										</div>
-										<p class="menuPrice menuText">${menu.menuPrice } \</p>
-									</div>
-									
-									<p class="menuTitle menuText">${menu.menuName }</p>
-									<c:if test="${not empty menu.menuComment }">
-									    <p class="menuComment menuText">${menu.menuComment }</p>
-									</c:if>
-									<c:if test="${empty menu.menuComment }">
-									    <p class="menuComment menuText">작성된 소개글이 없습니다</p>
-									</c:if>
 									<div class="bottom_layer">
 										<div>
 											<button class="updateMenuBtn" data-id-value="${menu.menuId }">수정</button>

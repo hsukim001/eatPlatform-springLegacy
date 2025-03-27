@@ -5,8 +5,8 @@
 
 <div id="calendar-wrap">
 	<div class="calendar-container">
-		<p>최대 <span id="reservLimit">${storeVO.reservLimit}</span>명 까지 예약 가능합니다.</p>
-		<div>
+		<p class="limit_ment">해당 시간대는 <span id="reservLimit">${storeVO.reservLimit}</span>명 까지 예약 가능합니다.</p>
+		<div class="personnel_controller">
 			<button id="minerBtn">-</button>
 			<span id="personnel">1</span>
 			<button id="plusBtn">+</button>

@@ -5,6 +5,42 @@
 	margin-bottom: 20px;
 }
 
+.limit_ment {
+	font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.personnel_controller {
+	margin: 15px auto;
+}
+
+.personnel_controller button {
+	border: none;
+    outline: none;
+    background: #364db5;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.personnel_controller input {
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	margin: 0 10px;
+	outline: none;
+	padding: 3px 4px;
+}
+
+.personnel_controller button:hover {
+	background: #5e7cff;
+}
+
+#reservLimit {
+	color:#f00;
+	font-weight: bold;
+}
+
 .calendar-header {
 	display: flex;
 	justify-content: center;
@@ -62,6 +98,16 @@
 	grid-template-columns: repeat(4, 1fr);
 	gap: 10px;
 	margin-top: 10px;
+	position: relative;
+	min-height: 100px;
+}
+
+.no_reserv {
+    width: 100%;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .time-slots div h3 {
@@ -102,9 +148,8 @@
 }
 
 .selection-display {
-	margin-top: 20px;
+	margin: 20px;
 	text-align: center;
-	font-size: 18px;
 	font-weight: bold;
 }
 

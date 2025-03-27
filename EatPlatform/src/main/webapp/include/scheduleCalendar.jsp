@@ -14,10 +14,7 @@
 	</div>
 
 	<div class="time-container">
-		<div>
-			<p id="requestCancel" class="request-cancel">예약 취소 요청</p>
-		</div>
-		<div>
+		<div class="schedule_input">
 			<input type="radio" id="reservScheduleBtn" class="scheduleType" name="scheduleType" value="reserv" checked="checked">
 			<label for="reservScheduleBtn">예약</label>
 			

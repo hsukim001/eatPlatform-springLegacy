@@ -778,6 +778,11 @@ input[type="text"]#reviewStar {
 	    width: 70%;
 	    margin: 0 auto 20px;
 	}
+	
+	#calendar-wrap {
+		width: 100%;
+	}
+	
 	#storeInfoText {
 		width: 100%;
 		margin: 0 auto;

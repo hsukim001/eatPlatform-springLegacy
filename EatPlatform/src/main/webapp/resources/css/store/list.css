@@ -109,6 +109,7 @@
     position: relative;
     width: 20%;
     margin-right: 10%;
+    height:: 150px;
 }
 
 .img_box {
@@ -246,7 +247,7 @@
 	}
 	
 	.img_box {
-    	width: 70%;
+    	width: 80%;
     	margin: 0 auto;
 	}
 	

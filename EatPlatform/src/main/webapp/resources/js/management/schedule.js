@@ -446,26 +446,26 @@ $(function () {
 			
 			if(morningCount == 0) {
 				let morningMsg = "오전 예약이 존재하지 않습니다.";
-				let morningMsgSlot = $('<p>').text(morningMsg);
+				let morningMsgSlot = $('<p class="no_reserv">').text(morningMsg);
 				reservMorningSlotsContainer.append(morningMsgSlot);
 			}
 			
 			if(afternoonCount == 0) {
 				let afternoonMsg = "오후 예약이 존재하지 않습니다.";
-				let afternoonMsgSlot = $('<p>').text(afternoonMsg);
+				let afternoonMsgSlot = $('<p class="no_reserv">').text(afternoonMsg);
 				reservAfternoonSlotsContainer.append(afternoonMsgSlot);
 			}
 			
 		} else {
 			if(morningCount == 0) {
 				let morningMsg = "오전 예약이 존재하지 않습니다.";
-				let morningMsgSlot = $('<p>').text(morningMsg);
+				let morningMsgSlot = $('<p class="no_reserv">').text(morningMsg);
 				reservMorningSlotsContainer.append(morningMsgSlot);
 			}
 			
 			if(afternoonCount == 0) {
 				let afternoonMsg = "오후 예약이 존재하지 않습니다.";
-				let afternoonMsgSlot = $('<p>').text(afternoonMsg);
+				let afternoonMsgSlot = $('<p class="no_reserv">').text(afternoonMsg);
 				reservAfternoonSlotsContainer.append(afternoonMsgSlot);
 			}
 		}
