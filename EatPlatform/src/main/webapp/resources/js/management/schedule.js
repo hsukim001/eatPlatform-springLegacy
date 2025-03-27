@@ -510,13 +510,19 @@ $(function () {
 			let todayDate = new Date(todayText);
 			let reservDate = new Date(reservInfoList[i].reservDate);
 			
+			let currentDate = new Date(reservInfoList[i].reservDateCreated);
+			let year = currentDate.getFullYear(); // 년도
+			let month = String(currentDate.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+			let day = String(currentDate.getDate()).padStart(2, '0'); // 일
+			let createdDate = year + '-' + month + '-' + day;
+			
 			if(todayDate <= reservDate) {
 				reservInfo += 
 					'<li>' +
 					'<span>' + (i + 1) + '. 예약자 명 : ' + reservInfoList[i].name + '</span>' +
 					'<span>, 연락처 : ' + reservInfoList[i].phone + '</span>' +
 					'<span>, 인원 : ' + reservInfoList[i].reservPersonnel + '</span>' +
-					'<span>, 접수일 : ' + reservInfoList[i].reservDateCreated + '</span>' +
+					'<span>, 접수일 : ' + createdDate + '</span>' +
 					reservCancelBtn
 					+ '</li>';
 			} else {
@@ -525,7 +531,7 @@ $(function () {
 					'<span>' + (i + 1) + '. 예약자 명 : ' + reservInfoList[i].name + '</span>' +
 					'<span>, 연락처 : ' + reservInfoList[i].phone + '</span>' +
 					'<span>, 인원 : ' + reservInfoList[i].reservPersonnel + '</span>' +
-					'<span>, 접수일 : ' + reservInfoList[i].reservDateCreated + '</span>'
+					'<span>, 접수일 : ' + createdDate + '</span>'
 					+ '</li>';			
 			}
 			
