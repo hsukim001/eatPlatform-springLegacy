@@ -9,13 +9,12 @@
 	<meta name="_csrf" content="${_csrf.token}"/>
 	<meta name="_csrf_header" content="${_csrf.headerName}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/store/detail.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/page/image.css">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/user/myPageLeft.css">
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/calendar.css">
 	<style>
 		##menuContainer ul li {
 			height: 200px !important;
@@ -52,7 +51,10 @@
 	<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/listSearch.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/common/priceSeparate.js"></script>
-	<script src="<%=request.getContextPath()%>/resources/js/management/ReviewReplyAPI.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/store/ReviewReplyAPI.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/store/ImageUpload.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/page/image.js"></script>
+	<script src="<%=request.getContextPath()%>/resources/js/store/imgSlider.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/management/schedule.js"></script>
 	<script src="<%=request.getContextPath()%>/resources/js/management/menu.js"></script>
 	
@@ -62,16 +64,28 @@
 	<div id="wrap">
 		<jsp:include page="/include/header.jsp" />
 		<div id="container">
-		<jsp:include page="/include/myPageLeft.jsp"/>
 			<div id="storeContainer">
 				<p class="storeTitle width100 textLeft mb20 bold">${storeInfo.storeName }</p>
 				<div id="storeInfoBox" class="mb30">
 					<div id="storeInfoImg">
-						<c:forEach var="storeImageVO" items="${storeInfo.storeImageList }">
-							<a href="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" target="_blank">
-								<img src="/store/image/get/${storeImageVO.storeImageId }/storeImageExtension/${storeImageVO.storeImageExtension }" />
-							</a>
-						</c:forEach>
+						<c:choose>
+						    <c:when test="${not empty storeInfo.storeImageList}">
+	    						<div class="slider-wrapper">
+								    <div class="img_box">
+								        <div class="img_item">
+            						        <c:forEach var="storeImageVO" items="${storeInfo.storeImageList}">
+						            			<img src="/store/image/get/${storeImageVO.storeImageId}/storeImageExtension/${storeImageVO.storeImageExtension}" />
+						        			</c:forEach>
+								        </div>
+								    </div>
+								    <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+								    <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+								</div>
+						    </c:when>
+						    <c:otherwise>
+						        <img class="noImg" src="<%=request.getContextPath()%>/resources/img/common/noImg.png" alt="이미지 없음 이미지">
+						    </c:otherwise>
+						</c:choose>
 					</div>
 					<div id="storeInfoText">
 						<ul>
@@ -83,11 +97,13 @@
 							<li>
 								<span class="textTitle">연락처 </span> 
 								<span class="colon">:</span>
-								<span class="textValue">${storeInfo.storePhone }</span></li>
+								<span class="textValue phoneNum">${storeInfo.storePhone }</span>
+							</li>
 							<li>
 								<span class="textTitle">대표명 </span>
 								<span class="colon">:</span>
-								<span class="textValue">${storeInfo.ownerName }</span></li>
+								<span class="textValue">${storeInfo.ownerName }</span>
+							</li>
 							<li>
 								<span class="textTitle">최근 등록일 </span> 
 								<span class="colon">:</span> 
@@ -96,11 +112,13 @@
 							<li>
 								<span class="textTitle">별점 </span> 
 								<span class="colon">:</span>
-								<span class="textValue">${storeInfo.storeUpdateDate }</span></li>
+								<span class="textValue"><img src="<%=request.getContextPath()%>/resources/img/common/fullStar.png" class="star1" alt="별 이미지"> ${storeInfo.score }</span>
+							</li>
 							<li>
-								<span class="textTitle">추천 수 </span> 
+								<span class="textTitle">매장 내 좌석 수 </span> 
 								<span class="colon">:</span>
-								<span class="textValue">${storeInfo.storeUpdateDate }</span></li>
+								<span class="textValue">${storeInfo.seat }석</span>
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -113,8 +131,8 @@
 				<div id="remoteBar" class="mb30">
 					<ul>
 						<li><a href="#storeContent"> 매장 소개 </a></li>
-						<li><a href="#"> 메뉴 </a></li>
-						<li><a href="#"> 리뷰 </a></li>
+						<li><a href="#menuContainer"> 메뉴 </a></li>
+						<li><a href="#reviews"> 리뷰 </a></li>
 					</ul>
 				</div>
 				<!--  End RemoteBar -->
@@ -140,10 +158,24 @@
 					   		</c:if>
 							<c:forEach var="menu" items="${menuInfo}" varStatus="status">
 								<li>
-									<img src="<%=request.getContextPath()%>/resources/img/sample3.png" alt="메뉴사진 ${status.index + 1 }">
 									<p class="menuTitle menuText">${menu.menuName }</p>
 									<p class="menuComment menuText">${menu.menuComment }</p>
 									<input type="hidden" class="menuRepresent" value="${menu.represent }">
+									<div class="bottom_layer">
+										<div>
+											<button class="updateMenuBtn" data-id-value="${menu.menuId }">수정</button>
+											<button class="deleteMenuBtn" data-id-value="${menu.menuId }">삭제</button>
+										</div>
+										<p class="menuPrice menuText">${menu.menuPrice } \</p>
+									</div>
+									
+									<p class="menuTitle menuText">${menu.menuName }</p>
+									<c:if test="${not empty menu.menuComment }">
+									    <p class="menuComment menuText">${menu.menuComment }</p>
+									</c:if>
+									<c:if test="${empty menu.menuComment }">
+									    <p class="menuComment menuText">작성된 소개글이 없습니다</p>
+									</c:if>
 									<div class="bottom_layer">
 										<div>
 											<button class="updateMenuBtn" data-id-value="${menu.menuId }">수정</button>

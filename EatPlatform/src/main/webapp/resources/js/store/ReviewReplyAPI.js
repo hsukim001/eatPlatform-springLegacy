@@ -64,7 +64,7 @@
 	         	// JSON 데이터를 전송
 	             $.ajax({
 	                 type: 'POST',
-	                 url: '../review',  // 서버의 URL
+	                 url: '/review',  // 서버의 URL
 	                 headers : {
 							"Content-Type" : "application/json"
 					 },
@@ -99,7 +99,7 @@
 	        // 식당 리뷰 전체 가져오기
 			function getAllReview() {
 			    var storeId = $('#storeId').val();
-			    var url = '../review/all/' + storeId + '?page=' + pageNumber + '&pageSize=' + pageSize; // 페이지 파라미터
+			    var url = '/review/all/' + storeId + '?page=' + pageNumber + '&pageSize=' + pageSize; // 페이지 파라미터
 			
 			    $.getJSON(url, function(data) {
 			        console.log(data);
@@ -233,7 +233,7 @@
 			// 리뷰에 대한 댓글을 가져오는 함수
 			function getReplies(reviewId) {
 				
-				var url = '../reply/all/' + reviewId;
+				var url = '/reply/all/' + reviewId;
 				$.getJSON(
 					url,
 					function(data) {
@@ -316,7 +316,7 @@
 				
 				$.ajax({
 					type : 'DELETE', 
-					url : '../review/' + reviewId,
+					url : '/review/' + reviewId,
 					headers : {
 						'Content-Type' : 'application/json'
 					}, 
@@ -346,7 +346,7 @@
 				
 				$.ajax({
 					type : 'POST', 
-					url : '../review/like/' + reviewId,
+					url : '/review/like/' + reviewId,
 					headers : {
 						'Content-Type' : 'application/json'
 					}, 
@@ -375,7 +375,7 @@
 			// 신고여부 확인
 			  $.ajax({
 				  type : 'GET',
-				  url : '../review/report/' + reviewId,
+				  url : '/review/report/' + reviewId,
 				  headers : {
 					  'Content-Type' : 'application/json'
 				  },
@@ -414,7 +414,7 @@
 				// 서버로 신고 데이터 보내기
 			      $.ajax({
 			    	  type: 'POST',
-			          url: '../review/report/' + reviewId, // 실제 서버 URL로 변경
+			          url: '/review/report/' + reviewId, // 실제 서버 URL로 변경
 			          headers : {
 							'Content-Type' : 'application/json'
 						},
@@ -466,7 +466,7 @@
 				
 				$.ajax({
 					type : 'POST',
-					url : '../reply',
+					url : '/reply',
 					headers : {
 						'Content-Type' : 'application/json'
 					},
@@ -526,7 +526,7 @@ $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
 
         $.ajax({
             type: 'PUT',
-            url: '../reply/' + updateReplyId,
+            url: '/reply/' + updateReplyId,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -569,7 +569,7 @@ $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
 				
 				$.ajax({
 					type : 'DELETE', 
-					url : '../reply/' + replyId,
+					url : '/reply/' + replyId,
 					headers : {
 						'Content-Type' : 'application/json'
 					}, 
