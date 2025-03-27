@@ -134,14 +134,17 @@
 		
 		// 이메일 인증코드 전송 버튼 액션
 		$('#sendEmailCodeBtn').click(function(){
-			sendEmailCode();
+			if(emailAddressChk == true) {
+				sendEmailCode();				
+			} else {
+				alert("이메일을 올바르게 입력해주세요.");
+			}
 		});
 		
 		// 이메일 인증코드 전송
 		function sendEmailCode() {
-			console.log('sendEmailCode()');
 			let userEmail = $('#email').val();
-			console.log("email : " + userEmail);
+			
 			let obj = {
 					"userEmail" : userEmail
 			};

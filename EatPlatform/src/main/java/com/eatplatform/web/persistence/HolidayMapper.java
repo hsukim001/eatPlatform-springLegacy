@@ -11,10 +11,23 @@ import com.eatplatform.web.domain.HolidayVO;
 public interface HolidayMapper {
 	
 	/**
+	 * @param holidayList
+	 * @param storeId
+	 * @return
+	 */
+	List<HolidayVO> selectHolidayListByHolidayAndStoreId(@Param("holidayList") List<HolidayVO> holidayList, @Param("storeId") int storeId);
+	
+	/**
 	 * @param storeId
 	 * @return List<HolidayVO>
 	 */
 	List<HolidayVO> selectHolidayListByStoreId(int storeId);
+	
+	/**
+	 * @param holidayVO
+	 * @return
+	 */
+	HolidayVO selectHolidayByHolidayAndStoreId(HolidayVO holidayVO);
 	
 	/**
 	 * @param holidayVO

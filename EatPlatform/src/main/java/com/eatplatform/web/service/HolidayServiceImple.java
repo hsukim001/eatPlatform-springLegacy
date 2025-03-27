@@ -1,5 +1,7 @@
 package com.eatplatform.web.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +37,32 @@ public class HolidayServiceImple implements HolidayService{
 	@Override
 	public int createdHoliday(HolidayVO holidayVO) {
 		log.info("createdHoliday()");
+		
+		try {
+			
+			String currentHoliday = holidayVO.getHoliday();
+			
+			Date nowDate = new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+			String nowDateFormat = formatter.format(nowDate);
+			
+			Date now = formatter.parse(nowDateFormat);
+			Date holidayDateTime = formatter.parse(currentHoliday);
+			
+			// 함수명 (시간, 차이갑
+			// 현재시간보다 이전의 시간 예외
+			if (now.after(holidayDateTime)) {
+				return 0;
+			}
+			
+			HolidayVO vo = holidayMapper.selectHolidayByHolidayAndStoreId(holidayVO);
+			if(vo != null) {
+				return 0;
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return holidayMapper.insertHoliday(holidayVO);
 	}
 
@@ -42,10 +70,38 @@ public class HolidayServiceImple implements HolidayService{
 	public int registrationHolidayList(List<HolidayVO> holidayList) {
 		log.info("createdHoliday()");
 		int result = 0;
-		int insertResult = holidayMapper.multipleInsertHoliday(holidayList);
+		int storeId = holidayList.get(0).getStoreId();
+		List<HolidayVO> dbHolidayList = holidayMapper.selectHolidayListByHolidayAndStoreId(holidayList, storeId);
 		
-		if(insertResult == holidayList.size()) {
-			result = 1;
+		try {
+			if(dbHolidayList.size() > 0) {
+				return result;
+			}
+			
+			for(int i = 0; i < holidayList.size(); i++ ) {
+				String currentHoliday = holidayList.get(i).getHoliday();
+				
+				Date nowDate = new Date();
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+				String nowDateFormat = formatter.format(nowDate);
+				
+				Date now = formatter.parse(nowDateFormat);
+				Date holidayDateTime = formatter.parse(currentHoliday);
+				
+				// 함수명 (시간, 차이갑
+				// 현재시간보다 이전의 시간 예외
+				if (now.after(holidayDateTime)) {
+					return 0;
+				}
+			}
+			
+			int insertResult = holidayMapper.multipleInsertHoliday(holidayList);
+			
+			if(insertResult == holidayList.size()) {
+				result = 1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return result;

@@ -12,6 +12,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="holiday" column="HOLIDAY"/>
 	</resultMap>
 	
+	<select id="selectHolidayByHolidayAndStoreId" resultMap="holidayResultMap">
+		SELECT * FROM HOLIDAY
+		WHERE HOLIDAY = #{holiday}
+		AND STORE_ID = #{storeId}
+	</select>
+	
+	<select id="selectHolidayListByHolidayAndStoreId" parameterType="map" resultMap="holidayResultMap">
+		SELECT * FROM HOLIDAY
+		WHERE HOLIDAY IN
+		<foreach collection="holidayList" item="list" open="(" close=")" separator=",">
+			#{list.holiday}
+		</foreach>
+		AND STORE_ID = #{storeId}
+	</select>
+	
 	<select id="selectHolidayListByStoreId" resultMap="holidayResultMap">
 		SELECT * FROM HOLIDAY
 		WHERE STORE_ID = #{storeId}
