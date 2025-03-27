@@ -4,17 +4,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/modal.css">
 <title>리뷰 신고 상세</title>
+<script>
+</script>
 </head>
 <body>
 	<!-- 신고 모달 -->
 	<div id="reviewReportInfoModal" class="modal">
 		<div class="modal-content">
 			<span id="closeBtn" class="close">&times;</span>
-			<h2>리뷰 신고 상세</h2>
+			<p class="modal_title">리뷰 신고 상세</p>
 
 			<div>
-				<ul>
+				<ul class="modal_list">
 					<li id="reviewReport">
 						<span class="textTitle">총 신고 건수</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
@@ -34,7 +37,7 @@
 						<span class="textTitle">신고 등록일</span><span class="colon">:</span><span class="textValue"></span>
 					</li>
 				</ul>
-				<ul id="reportType">
+				<ul id="reportType modal_list">
 				</ul>
 			</div>
 			

@@ -4,6 +4,12 @@
 
 $(function(){
 	
+	$('#reviewReportInfoModal').click(function(e) {
+	    if (!$(e.target).closest('.modal-content').length) {
+	        $('.close').click();
+	    }
+	});
+	
 	let reviewReportList;
 	
 	$(document).ajaxSend(function(e, xhr, opt){
@@ -12,7 +18,7 @@ $(function(){
 		xhr.setRequestHeader(header, token);
 	}); // End document ajaxSend
 	
-	$('#tableBody').on('click', 'tr', function() {
+	$('#tableBody').on('click', 'ul', function() {
 		let reviewId = $(this).data('id-value');
 		reviewReportInfo(reviewId);
 	});

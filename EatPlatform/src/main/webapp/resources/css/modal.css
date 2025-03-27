@@ -84,6 +84,7 @@
 	margin-right: 10px;
 }
 
+#deleteBtn,
 .reservCancelBtn {
 	border: none;
     outline: none;
@@ -94,6 +95,7 @@
     padding: 4px 6px;
 }
 
+#deleteBtn:hover,
 #shortcut:hover,
 .reservCancelBtn:hover {
 	background: #444;

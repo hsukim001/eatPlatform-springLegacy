@@ -124,39 +124,41 @@
 		}); // End .tagBtn.click
 		
 		
-	    $("#tagList li").click(function () {
-	        $(this).toggleClass("tagActive");
+		$("#tagList li").click(function () {
+		    $(this).toggleClass("tagActive");
 
-	        const tagId = $(this).data("tag-id")
-	        const tag = tagData.find(tag => tag.icon === tagId); 
-	        let currentTags = $("#reviewTag").val().split(",").filter(Boolean); 
+		    const tagId = $(this).data("tag-id");
+		    const tag = tagData.find(tag => tag.icon === tagId); 
+		    let currentTags = $("#reviewTag").val().split(",").filter(Boolean); 
 
-	        if ($(this).hasClass("tagActive")) {
-	            if (!currentTags.includes(String(tagId))) {
-	                currentTags.push(tagId);
-	            }
-	            const tagItem =
-	                '<li data-sticker-id=' + tag.icon + '>' +
-	                	'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
-	                	'<span>' + tag.text + '</span>' +
-	                '</li>';
-	            tagContainer.append(tagItem);
-	        } else {
-	           $('#viewTag li').each(function() {
-	                const stickerId = $(this).data('sticker-id'); 
-	                if (stickerId === tagId) {
-	                    $(this).remove();
-	                }
-	            });
-	        }
-	        $("#reviewTag").val(currentTags.join(","));
+		    if ($(this).hasClass("tagActive")) {
+		        if (!currentTags.includes(String(tagId))) {
+		            currentTags.push(tagId);
+		        }
+		        const tagItem =
+		            '<li data-sticker-id=' + tag.icon + '>' +
+		            	'<img src="<%=request.getContextPath()%>/resources/img/store/detail/tag_icon_' + tag.icon + '.png" alt="태그_' + tag.text + '">' +
+		            	'<span>' + tag.text + '</span>' +
+		            '</li>';
+		        tagContainer.append(tagItem);
+		    } else {
+		        currentTags = currentTags.filter(tag => tag !== String(tagId));
+		        $('#viewTag li').each(function() {
+		            const stickerId = $(this).data('sticker-id'); 
+		            if (stickerId === tagId) {
+		                $(this).remove();
+		            }
+		        });
+		    }
 
-	        let tags = $("#reviewTag").val().split(",").filter(Boolean).map(Number);
-	        tags.sort((a, b) => a - b);
+		    $("#reviewTag").val(currentTags.join(","));
 
-	        $("#reviewTag").val(tags.join(","));
-	        console.log($("#reviewTag").val());
-	    }); // End #tagList li.click
+		    let tags = $("#reviewTag").val().split(",").filter(Boolean).map(Number);
+		    tags.sort((a, b) => a - b);
+
+		    $("#reviewTag").val(tags.join(","));
+		    console.log($("#reviewTag").val());
+		}); // #End tagList li.click
 
 	    $("#reviewWrite").hide();
 	    
@@ -339,8 +341,9 @@
 						   	
 						   	<div class="reviewImg-list">
 						    </div>
-						    
-					        <button id="reviewBtnAdd">작성</button>
+						    <div class="btnWrap">
+					        	<button id="reviewBtnAdd">리뷰등록</button>
+					        </div>
 					     	
 						</div>
 							<div id="reviews"></div>

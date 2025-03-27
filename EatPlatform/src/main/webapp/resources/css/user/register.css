@@ -89,5 +89,26 @@ form > button[type="submit"] {
 /* End Login Form */
 
 .notice {
-	margin-top: 20px;
+	margin: 20px;
+}
+
+
+/* width ~ 686px */ 
+@media (max-width: 686px) { 
+	form {
+		width: 95%;
+	}	
+	
+	
+	form > div > label {
+		width: 20%;
+	}
+	
+	form > div > div {
+		width: 75%;
+	}
+	
+	form > div > p {
+		width: 75%;
+	}
 }

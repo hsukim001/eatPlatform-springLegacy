@@ -97,7 +97,7 @@
 
 /* review-image �겢�옒�뒪瑜� �뒪���씪留� */
 .review-image {
-    display: inline-block; /* �뿬�윭 �씠誘몄�瑜� �븳 以꾩뿉 �몴�떆 */
+    display: none; /* �뿬�윭 �씠誘몄�瑜� �븳 以꾩뿉 �몴�떆 */
     margin-right: 10px;    /* �씠誘몄��뱾 �궗�씠�쓽 媛꾧꺽 */
     margin-bottom: 10px;   /* �씠誘몄� �븯�떒 媛꾧꺽 */
     border: 1px solid #ddd; /* �뀒�몢由� 異붽� (�꽑�깮�궗�빆) */

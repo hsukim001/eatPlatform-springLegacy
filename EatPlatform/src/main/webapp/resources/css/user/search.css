@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+#container > div {
+	margin: 20px auto;
+}
+
+#container > div > input {
+	border-radius: 5px;
+    outline: none;
+    border: 1px solid #aaa;
+}
+
+#container > div > button {
+	background: #364db5;
+	color: #fff;    
+	border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 2px 5px;
+}
+
+#container > div > button:hover {
+	background: #5e7cff;
+}
+
+.title {
+	width: 100%;
+    font-size: 28px;
+    margin: 20px auto;
+}
+
+.comment {
+    font-size: 14px;
+    text-align: left;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #666;
+}
+
+
+.divHide {
+	display : none;
+}
+
+.divShow {
+	display : block;
+}
+
+/* width ~ 686px */ 
+@media (max-width: 686px) { 
+}

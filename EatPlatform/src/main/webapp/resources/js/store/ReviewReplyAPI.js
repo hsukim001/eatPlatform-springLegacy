@@ -76,7 +76,7 @@
 	                         $('#tagList li').removeClass('tagActive');
 	                         currentScore = 0;
 	                         $('#reviewStar').text(currentScore);
-	                         $('#scoreWrap img').attr('src', '/resources/img/sample3bk.png');
+	                         $('#scoreWrap img').attr('src', '/resources/img/common/emptyStar.png');
 	                         $('#reviewWrite input, #reviewWrite textarea').val(''); // reviewContent 값 초기화
 	                         $('.image-list').html(''); // image-list 초기화
 	                         $("#reviewWrite").hide();
@@ -158,7 +158,7 @@
 			                list += '</ul>';
 			            }
 			
-			            list +=  '<pre id="reviewConetent">' + this.reviewContent + '</pre>';
+			            list +=  '<pre id="reviewContent">' + this.reviewContent + '</pre>';
 			
 			            // 버튼들 (수정, 삭제, 추천, 신고)
 			            if (loginId && username && loginId == username) {
@@ -370,7 +370,7 @@
 			$(document).on('click', '.btn_report', function() {
 	
 			  var reviewId = $(this).data('review-id');
-			  var reviewContent = $(this).closest('.review_item').find('#reviewContent').val();
+			  var reviewContent = $(this).parents('.review_box').find('#reviewContent').html();
 			  
 			// 신고여부 확인
 			  $.ajax({
@@ -399,6 +399,7 @@
 			  
 			// 신고 제출 버튼 클릭 시 처리
 			  $('#submitReport').off('click').on('click', function() {
+			  
 			    var selectedReason = $('input[name="reportReason"]:checked').val();
 
 			    if (selectedReason) {

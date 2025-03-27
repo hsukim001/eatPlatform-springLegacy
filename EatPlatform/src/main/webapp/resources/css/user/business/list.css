@@ -31,6 +31,11 @@
     align-items: center;
 }
 
+.no_data {
+	width: 100%;
+	text-align: center;
+}
+
 #tableBody {
 	width: 100%;
 	display: flex;	

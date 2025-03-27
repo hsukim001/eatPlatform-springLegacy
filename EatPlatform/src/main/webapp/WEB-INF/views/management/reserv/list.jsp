@@ -3,21 +3,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="_csrf" content="${_csrf.token}"/>
-		<meta name="_csrf_header" content="${_csrf.headerName}"/>
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reserv/list.css">
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/modal.css">		
-		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-		<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
-		<script src="<%=request.getContextPath()%>/resources/js/management/reserv.js"></script>
-		<title>예약 목록</title>
-	</head>
-	<body>
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reset.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/common.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/reserv/list.css">
+<link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/modal.css">		
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/common/headerFooterEmptySpaceController.js"></script>
+<script src="<%=request.getContextPath()%>/resources/js/management/reserv.js"></script>
+<title>예약 목록</title>
+</head>
+<body>
 	<div id="wrap">
 		<jsp:include page="/include/header.jsp" />
 		
@@ -68,6 +68,6 @@
 		<jsp:include page="/include/footer.jsp" />	
 	</div>
 	
-	</body>
+</body>
 
 </html>

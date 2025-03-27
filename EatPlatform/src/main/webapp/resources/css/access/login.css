@@ -12,6 +12,7 @@
 .login_container {
 	width: 900px;
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-around;
 	margin: 0 auto;
 }
@@ -170,3 +171,18 @@
     background-color: #333;
 }
 
+
+@media (max-width: 686px) { 
+	.login_container {
+		width :100%;
+	}	
+	
+	.login_container > div {
+		width: 90%;
+	}
+	
+	.form_box {
+		margin-bottom: 30px;
+	}
+	
+}
