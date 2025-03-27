@@ -42,12 +42,6 @@
 				data : JSON.stringify({ "userId": userId }),
 				success : function (result) {
 					console.log("회원 카테고리 추천순 : ", result);
-					
-					let top3 = '${recommendations.top_3_recommendations}';
-					let recommendations = JSON.parse(top3);
-					
-					console.log(recommendations);
-					
 		        },
 				error: function(xhr, status, error) {
 	                console.error("오류 발생:", status, error);

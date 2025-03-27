@@ -491,7 +491,6 @@
 			}); // end reviews.on()
 			
 			// 선택된 댓글 수정
-<<<<<<< Updated upstream
 $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
     var reviewId = $(this).closest('.review_item').find('#reviewId').val();
     var replyId = $(this).closest('.review_item').find('#replyId').val();
@@ -560,7 +559,7 @@ $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
         replyItem.find('.btn_return_reply').hide();
     });
 });
-=======
+
 			$('#reviews').on('click', '.reply_item .btn_update_reply', function () {
 			    var reviewId = $(this).closest('.review_item').find('#reviewId').val();
 			    var replyId = $(this).closest('.review_item').find('#replyId').val();
@@ -629,7 +628,6 @@ $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
 			        replyItem.find('.btn_return_reply').hide();
 			    });
 			});
->>>>>>> Stashed changes
 
 			
 			
