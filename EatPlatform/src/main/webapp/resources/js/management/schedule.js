@@ -77,6 +77,7 @@ $(function () {
 			
 			searchHoliday();
 			generateCalendar(currentMonth, currentYear);
+			$('.today').trigger('click');
 			updateSelectionDisplay();
 			generateReservTimeSlots();
 			console.log("todayText : " + todayText);
