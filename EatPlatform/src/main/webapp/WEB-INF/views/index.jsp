@@ -42,11 +42,52 @@
 				data : JSON.stringify({ "userId": userId }),
 				success : function (result) {
 					console.log("회원 카테고리 추천순 : ", result);
+					
+					const data = result.top_3_recommendations;
+					console.log(data);
+					
+					const pattern = /(?<rank>\d+)\.\s(?<storeName>.+?)\s\(ID:\s(?<storeId>\d+),\s전화번호:\s(?<storePhone>\d+),\s코멘트:\s(?<storeComment>.+?)\s*,\s주소:\s(?<storeRoadAddress>.+?),\s상세 주소:\s(?<storeDetailAddress>.+?),\s이미지:\s(?<storeImageExtension>\w+),\s유사도 점수:\s(?<similarityScore>\d+\.\d+)\)/gs;
+					
+					const stores = [];
+					let match;
+					while ((match = pattern.exec(data)) !== null) {
+						  stores.push({
+						    storeName: match.groups.storeName.trim(),
+						    storeId: Number(match.groups.storeId),
+						    storePhone: match.groups.storePhone.trim(),
+						    storeComment: match.groups.storeComment.trim(),
+						    storeRoadAddress: match.groups.storeRoadAddress,
+					        storeDetailAddress: match.groups.storeDetailAddress,
+					        storeImageExtension: match.groups.storeImageExtension,
+						    similarityScore: match.groups.similarityScore ? parseFloat(match.groups.similarityScore) : null
+						  });
+					}
+					console.log(stores);
+					
+					let html = ''; // HTML을 담을 변수 초기화
+		            stores.forEach(store => {
+		                html += '<div class="best_item">'
+		                    + '<div id="best_store_img">'
+		                    + '<img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="추천 가게 사진">'
+		                    + '</div>'
+		                    + '<p id="best_store_represent"></p>'
+		                    + '<p id="best_store_name">' + store.storeName + '</p>'
+		                    + '<div id="best_store_info">'
+		                    + '<p id="store_info_tel">' + store.storePhone + '</p>'
+		                    + '<p id="store_info_address">' + store.storeRoadAddress 
+		                    + (store.storeDetailAddress ? store.storeDetailAddress : '') + '</p>'
+		                    + '</div>'
+		                    + '<pre id="best_store_comment">' + store.storeComment + '</pre>'
+		                    + '</div>';
+		            });
+
+		            $("#best_box").html(html); // 동적으로 생성된 HTML을 삽입
 		        },
 				error: function(xhr, status, error) {
 	                console.error("오류 발생:", status, error);
 	            }
 			});
+			
 		}
 		
 		function loadTopRatedStoresByScore() {
@@ -67,7 +108,8 @@
 		                    + '<p id="best_store_name">' + store.storeName + '</p>'
 		                    + '<div id="best_store_info">'
 		                    + '<p id="store_info_tel">' + store.storePhone + '</p>'
-		                    + '<p id="store_info_address"></p>'
+		                    + '<p id="store_info_address">' + store.storeAddressVO.roadAddress 
+		                    + (store.storeAddressVO.detailAddress ? store.storeAddressVO.detailAddress : '') + '</p>'
 		                    + '</div>'
 		                    + '<pre id="best_store_comment">' + store.storeComment + '</pre>'
 		                    + '</div>';

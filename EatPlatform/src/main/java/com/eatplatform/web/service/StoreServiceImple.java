@@ -2,6 +2,7 @@ package com.eatplatform.web.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -190,7 +191,18 @@ public class StoreServiceImple implements StoreService {
 	 */
 	@Override
 	public List<StoreVO> getStoresByScore() {
-		return storeMapper.selectStoreListByScore();
+		List<StoreVO> storeList = storeMapper.selectStoreListByScore();
+		
+		for(StoreVO storeVO : storeList) {
+			int storeId = storeVO.getStoreId();
+			List<StoreImageVO> storeImageList = storeImageMapper.selectListByStoreId(storeId);
+			storeVO.setStoreImageList(storeImageList);
+			
+			StoreAddressVO storeAddressVO = storeAddressMapper.selectStoreAddressById(storeId);
+			storeVO.setStoreAddressVO(storeAddressVO);
+		}
+		
+		return storeList;
 	}
 
 

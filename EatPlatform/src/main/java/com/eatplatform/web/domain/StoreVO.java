@@ -38,4 +38,7 @@ public class StoreVO {
 		}
 		return storeImageList;
 	}
+	
+	// 가게 주소
+	private StoreAddressVO storeAddressVO;
 }
