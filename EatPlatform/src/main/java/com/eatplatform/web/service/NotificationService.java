@@ -22,4 +22,5 @@ public interface NotificationService {
 	void addReservNotification(ReservVO reservVO);
 	void cancelReservNotification(List<ReservCancelVO>cancelList, CustomUser customUser);
 	void storeApprovalNotification(int storeId);
+	void businessRequestNotification(int businessRequestId);
 }

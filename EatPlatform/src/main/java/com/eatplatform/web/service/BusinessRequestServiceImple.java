@@ -34,6 +34,9 @@ public class BusinessRequestServiceImple implements BusinessRequestService {
 
 	@Autowired
 	private RoleListMapper roleListMapper;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	// 사업자 등록 신청
 	@Override
@@ -79,9 +82,12 @@ public class BusinessRequestServiceImple implements BusinessRequestService {
 		int result = 0;
 		JoinBusinessRequestWithUserAndRoleListVO joinBusinessRequestWithUserAndRoleListVO = businessRequestMapper.joinBusinessRequestWithUserMemberAndRoleListByBusinessRequestId(businessRequestId);
 		int userId = joinBusinessRequestWithUserAndRoleListVO.getUserId();
-		String requestStatus = "APPLOVAL";
+		String requestStatus = "APPROVAL";
 		int updateRequestStatusResult = businessRequestMapper.updateRequestStatusByBusinessRequestId(businessRequestId, requestStatus);
-
+		
+		// 사업자 등록 요청 결과 알림 전송
+		notificationService.businessRequestNotification(businessRequestId);
+		
 		// 권한 변경 로직
 		RoleListVO roleListVO = new RoleListVO();
 		roleListVO.setRoleId(joinBusinessRequestWithUserAndRoleListVO.getRoleId());
@@ -116,6 +122,10 @@ public class BusinessRequestServiceImple implements BusinessRequestService {
 	public boolean isBusinessRequestRoleMemberAndRequestStatusWait(int businessRequestId) {
 		JoinBusinessRequestWithUserAndRoleListVO vo = businessRequestMapper.joinBusinessRequestWithUserMemberAndRoleListByBusinessRequestId(businessRequestId);
 		if(vo.getRoleName().equals("ROLE_MEMBER")) {
+			
+			// 사업자 등록 요청 결과 알림 전송
+			notificationService.businessRequestNotification(businessRequestId);
+			
 			return true;
 		}
 		return false;

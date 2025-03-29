@@ -135,6 +135,7 @@ public class UserRESTController {
 		}
 		
 		int result = businessRequestService.updateRequestStatus(businessRequestId, requestStatus);
+		
 		return new ResponseEntity<Integer>(result, HttpStatus.OK);
 	}
 	

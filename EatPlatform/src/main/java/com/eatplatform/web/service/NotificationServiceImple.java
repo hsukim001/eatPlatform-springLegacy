@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.eatplatform.web.domain.BusinessRequestVO;
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.NotificationVO;
 import com.eatplatform.web.domain.ReplyVO;
@@ -21,6 +22,7 @@ import com.eatplatform.web.domain.ReviewVO;
 import com.eatplatform.web.domain.StoreApprovalsVO;
 import com.eatplatform.web.domain.StoreVO;
 import com.eatplatform.web.domain.UserVO;
+import com.eatplatform.web.persistence.BusinessRequestMapper;
 import com.eatplatform.web.persistence.NotificationMapper;
 import com.eatplatform.web.persistence.ReservMapper;
 import com.eatplatform.web.persistence.ReviewMapper;
@@ -57,6 +59,9 @@ public class NotificationServiceImple implements NotificationService {
 	
 	@Autowired
 	private StoreApprovalsMapper storeApprovalsMapper;
+	
+	@Autowired
+	private BusinessRequestMapper businessRequestMapper;
 	
     /**
      * 클라이언트가 알림을 구독하기 위한 메서드
@@ -252,7 +257,7 @@ public class NotificationServiceImple implements NotificationService {
 		
 		StoreApprovalsVO storeApprovalsVO = storeApprovalsMapper.selectApprovalsByStoreId(storeId);
 		StoreVO storeVO = storeMapper.selectStoreById(storeId);
-		String url = NotificationTemplate.Url.BUSINESS_REQUEST_URL;
+		String url = NotificationTemplate.Url.STORE_LIST_URL;
 		
 		if(storeApprovalsVO.getApprovals() == 1) {
 			String type = NotificationTemplate.Types.STORE_APPROVED;
@@ -265,6 +270,34 @@ public class NotificationServiceImple implements NotificationService {
 			String message = String.format(NotificationTemplate.Messages.STORE_REJECTED, storeVO.getStoreName());
 			
 			sendNotification(type, storeVO.getStoreUserId(), message, url);
+		}
+		
+	}
+	
+	/**
+	 * 사업자 등록 승인 여부 알림
+	 * 
+	 */
+	@Override
+	public void businessRequestNotification(int businessRequestId) {
+		
+		BusinessRequestVO businessRequestVO = businessRequestMapper.selectBusinessRequest(businessRequestId);
+		UserVO userVO = userMapper.selectUserByUserId(businessRequestVO.getUserId());
+		String url = NotificationTemplate.Url.BUSINESS_REQUEST_URL;
+		
+		String requestStatus = businessRequestVO.getRequestStatus();
+		
+		if("DENIED".equals(requestStatus)) {
+			String type = NotificationTemplate.Types.BUSINESS_REJECTED;
+			String message = String.format(NotificationTemplate.Messages.BUSINESS_REJECTED, userVO.getName());
+			
+			sendNotification(type, userVO.getUsername(), message, url);
+			
+		} else {
+			String type = NotificationTemplate.Types.BUSINESS_APPROVED;
+			String message = String.format(NotificationTemplate.Messages.BUSINESS_APPROVED, userVO.getName());
+			
+			sendNotification(type, userVO.getUsername(), message, url);
 		}
 		
 	}

@@ -43,24 +43,21 @@
 				success : function (result) {
 					console.log("회원 카테고리 추천순 : ", result);
 					
-					const data = result.top_3_recommendations;
-					console.log(data);
-					
-					const pattern = /(?<rank>\d+)\.\s(?<storeName>.+?)\s\(ID:\s(?<storeId>\d+),\s전화번호:\s(?<storePhone>\d+),\s코멘트:\s(?<storeComment>.+?)\s*,\s주소:\s(?<storeRoadAddress>.+?),\s상세 주소:\s(?<storeDetailAddress>.+?),\s이미지:\s(?<storeImageExtension>\w+),\s유사도 점수:\s(?<similarityScore>\d+\.\d+)\)/gs;
+					const pattern = /(?<rank>\d+)\.\s(?<storeName>.+?)\s\(ID:\s(?<storeId>\d+),\s전화번호:\s(?<storePhone>\d+),\s코멘트:\s(?<storeComment>[\s\S]+?),\s주소:\s(?<storeRoadAddress>.+?),\s상세 주소:\s(?<storeDetailAddress>.+?),\s이미지:\s(?<storeImageExtension>\w+),\s유사도 점수:\s(?<similarityScore>\d+\.\d+)\)/g;
 					
 					const stores = [];
 					let match;
-					while ((match = pattern.exec(data)) !== null) {
-						  stores.push({
-						    storeName: match.groups.storeName.trim(),
-						    storeId: Number(match.groups.storeId),
-						    storePhone: match.groups.storePhone.trim(),
-						    storeComment: match.groups.storeComment.trim(),
-						    storeRoadAddress: match.groups.storeRoadAddress,
+					while ((match = pattern.exec(result)) !== null) {
+					    stores.push({
+					        storeName: match.groups.storeName.trim(),
+					        storeId: Number(match.groups.storeId),
+					        storePhone: match.groups.storePhone.trim(),
+					        storeComment: match.groups.storeComment.trim(),
+					        storeRoadAddress: match.groups.storeRoadAddress,
 					        storeDetailAddress: match.groups.storeDetailAddress,
 					        storeImageExtension: match.groups.storeImageExtension,
-						    similarityScore: match.groups.similarityScore ? parseFloat(match.groups.similarityScore) : null
-						  });
+					        similarityScore: match.groups.similarityScore ? parseFloat(match.groups.similarityScore) : null
+					    });
 					}
 					console.log(stores);
 					

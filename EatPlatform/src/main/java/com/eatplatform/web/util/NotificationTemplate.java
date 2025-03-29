@@ -16,6 +16,9 @@ public class NotificationTemplate {
         
         public static final String STORE_APPROVED = "storeApproved";
         public static final String STORE_REJECTED = "storeRejected";
+        
+        public static final String BUSINESS_APPROVED = "businessApproved";
+        public static final String BUSINESS_REJECTED = "businessRejected";
     }
 
     /**
@@ -30,8 +33,11 @@ public class NotificationTemplate {
         public static final String CANCEL_RESERV = "'%s'의 '%s %s' 예약이 취소되었습니다.";
         public static final String STORE_CANCEL_RESERV = "'%s'의 '%s' 예약이 취소되었습니다.";
         
-        public static final String STORE_APPROVED = "'%s'의 사업자 등록 요청이 승인되었습니다.";
-        public static final String STORE_REJECTED = "'%s'의 사업자 등록 요청이 거부되었습니다.";
+        public static final String STORE_APPROVED = "'%s'의 가게 등록 요청이 승인되었습니다.";
+        public static final String STORE_REJECTED = "'%s'의 가게 등록 요청이 거부되었습니다.";
+        
+        public static final String BUSINESS_APPROVED = "'%s'의 사업자 등록 요청이 거부되었습니다.";
+        public static final String BUSINESS_REJECTED = "'%s'의 사업자 등록 요청이 거부되었습니다.";
     }
 
     /**
@@ -41,6 +47,7 @@ public class NotificationTemplate {
     public static class Url {
         public static final String STORE_DETAIL_URL = "/store/detail?storeId=";
         public static final String RESERV_LIST_URL = "/reserv/list";
+        public static final String STORE_LIST_URL = "/store/list";
         public static final String BUSINESS_REQUEST_URL = "/user/business/requestForm";
     }
 
