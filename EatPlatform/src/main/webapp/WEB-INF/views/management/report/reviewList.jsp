@@ -35,10 +35,9 @@ pageEncoding="UTF-8"%>
 				<ul id="tableHead">
 						<li>번호</li>
 						<li>식당명</li>
-						<li>사업자명</li>
-						<li>카테고리</li>
-						<li>수정</li>
-						<li>삭제</li>
+						<li>신고자명</li>
+						<li>신고 접수일</li>
+						<li>신고 횟수</li>
 				</ul>
 				<div id="tableBody">
 					<c:if test="${empty list}">

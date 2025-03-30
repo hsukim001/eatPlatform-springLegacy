@@ -25,7 +25,7 @@ public class StoreTask {
 
 
     // 매 정각 별점 갱신
-    @Scheduled(cron = "0 */10 * * * *") 
+    @Scheduled(cron = "0 */46 * * * *") 
     public void updateStoreScores() {
         List<Long> storeIds = getAllStoreIds(); 
 

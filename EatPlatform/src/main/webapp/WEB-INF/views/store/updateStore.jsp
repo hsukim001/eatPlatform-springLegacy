@@ -252,8 +252,9 @@
 		<jsp:include page="/include/header.jsp" />
 		<div id="container">
 		   <p class="page_title">사업자 정보 수정</p>
-		    <form id="storeForm" action="register" method="POST" >
+		    <form id="storeForm" action="modify" method="POST" >
 		    	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		    	<input type="hidden" value="${param.storeId }" id="storeId" name="storeId">
 		    	<input type="hidden" id="businessHour" name="businessHour"> 
 		        <input type="hidden" id="hiddenFoodCategory" name="foodCategory" required>
 		        

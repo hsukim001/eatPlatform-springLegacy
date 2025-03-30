@@ -47,7 +47,7 @@
 							<c:forEach var="list" items="${list }">
 								<ul>
 									<li class="list_num">${list.businessRequestId }</li>
-									<li>${list.userId }</li>
+									<li>${list.username }</li>
 									<li>${list.name }</li>
 									<fmt:formatDate value="${list.businessReqeustUpdateDate }" pattern="yyyy-MM-dd" var="updateDate" />
 									<li>${updateDate }</li>

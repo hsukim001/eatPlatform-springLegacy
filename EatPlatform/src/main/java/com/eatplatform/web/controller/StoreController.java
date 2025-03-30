@@ -223,6 +223,9 @@ public class StoreController {
 			return "/store/modify";
 		} else {
 			String errHandler = "otherUser";
+			log.info("currentUserId : " + currentUserId);
+			log.info("dbUserId : " + dbUserId);
+			log.info("storeVO.getStoreId() : " + storeVO.getStoreId());
 			log.info(errHandler);
 			log.info("잘못된 User 접근");
 			model.addAttribute("errHandler", errHandler);

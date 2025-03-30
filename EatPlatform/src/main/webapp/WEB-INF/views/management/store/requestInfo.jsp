@@ -60,7 +60,7 @@ $(function() {
 			success : function(response) {
 				if(response == 1) {
 					alert("승인 완료 되었습니다.");
-					location.href="list";
+					location.href="/management/store/requestList";
 				} else {
 					alert("가게 등록 요청에 대한 승인에 실패하였습니다.");
 				}
