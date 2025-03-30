@@ -28,5 +28,15 @@ public class StoreImageServiceImple implements StoreImageService{
 		return storeImageMapper.selectListByStoreId(storeId);
 	}
 
+	@Override
+	public StoreImageVO getFirstStoreImage(int storeId) {
+		
+		List<StoreImageVO> images = storeImageMapper.selectListByStoreId(storeId);
+		if (!images.isEmpty()) {
+			return images.get(0); // 첫 번째 이미지 반환
+		}
+		return null;
+	}
+
 
 }

@@ -41,9 +41,8 @@
 				},
 				data : JSON.stringify({ "userId": userId }),
 				success : function (result) {
-					console.log("회원 카테고리 추천순 : ", result);
 					
-					const pattern = /(?<rank>\d+)\.\s(?<storeName>.+?)\s\(ID:\s(?<storeId>\d+),\s전화번호:\s(?<storePhone>\d+),\s코멘트:\s(?<storeComment>[\s\S]+?),\s주소:\s(?<storeRoadAddress>.+?),\s상세 주소:\s(?<storeDetailAddress>.+?),\s이미지:\s(?<storeImageExtension>\w+),\s유사도 점수:\s(?<similarityScore>\d+\.\d+)\)/g;
+					const pattern = /(?<rank>\d+)\.\s(?<storeName>.+?)\s\(ID:\s(?<storeId>\d+),\s전화번호:\s(?<storePhone>\d+),\s코멘트:\s(?<storeComment>[\s\S]+?),\s주소:\s(?<storeRoadAddress>.+?),\s상세 주소:\s(?<storeDetailAddress>.+?),\s이미지 ID:\s(?<storeImageId>\d+),\s이미지:\s(?<storeImageExtension>\w+),\s유사도 점수:\s(?<similarityScore>\d+\.\d+)\)/g;
 					
 					const stores = [];
 					let match;
@@ -55,6 +54,7 @@
 					        storeComment: match.groups.storeComment.trim(),
 					        storeRoadAddress: match.groups.storeRoadAddress,
 					        storeDetailAddress: match.groups.storeDetailAddress,
+					        storeImageId : match.groups.storeImageId,
 					        storeImageExtension: match.groups.storeImageExtension,
 					        similarityScore: match.groups.similarityScore ? parseFloat(match.groups.similarityScore) : null
 					    });
@@ -65,7 +65,7 @@
 		            stores.forEach(store => {
 		                html += '<div class="best_item">'
 		                    + '<div id="best_store_img">'
-		                    + '<img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="추천 가게 사진">'
+		                    + '<img src="/store/image/get/' + store.storeImageId + '/storeImageExtension/' + store.storeImageExtension + '" alt="First Image" >'
 		                    + '</div>'
 		                    + '<p id="best_store_represent"></p>'
 		                    + '<p id="best_store_name">' + store.storeName + '</p>'
@@ -93,13 +93,12 @@
 				url : '/store/score',
 				dataType: "json",
 				success : function (stores) {
-					console.log("가게 별점순 : ", stores);
 					
 					let html = ''; // HTML을 담을 변수 초기화
 		            stores.forEach(store => {
 		                html += '<div class="best_item">'
 		                    + '<div id="best_store_img">'
-		                    + '<img src="<%=request.getContextPath()%>/resources/img/main/foodSample.png" alt="추천 가게 사진">'
+		                    + '<img src="/store/image/get/' + store.storeImageVO.storeImageId + '/storeImageExtension/' + store.storeImageVO.storeImageExtension + '">'
 		                    + '</div>'
 		                    + '<p id="best_store_represent"></p>'
 		                    + '<p id="best_store_name">' + store.storeName + '</p>'

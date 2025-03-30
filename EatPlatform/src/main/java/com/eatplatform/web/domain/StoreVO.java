@@ -30,6 +30,7 @@ public class StoreVO {
 	private BigDecimal score;
 	
 	// 이미지 첨부
+	private StoreImageVO storeImageVO;
 	private List<StoreImageVO> storeImageList;
 
 	public List<StoreImageVO> getStoreImageList() {

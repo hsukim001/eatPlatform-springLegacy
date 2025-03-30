@@ -8,5 +8,6 @@ public interface StoreImageService {
 	
 	StoreImageVO getStoreImageById(int storeImageId);
 	List<StoreImageVO> getImageListByStoreId(int storeId);
+	StoreImageVO getFirstStoreImage(int storeId);
 	
 }

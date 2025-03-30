@@ -23,12 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatplatform.web.service.HolidayService;
 import com.eatplatform.web.service.ReservService;
 import com.eatplatform.web.service.StoreAddressService;
+import com.eatplatform.web.service.StoreImageService;
 import com.eatplatform.web.service.StoreService;
 import com.eatplatform.web.domain.CustomUser;
 import com.eatplatform.web.domain.HolidayVO;
 import com.eatplatform.web.domain.ReservWithStoreNameVO;
 import com.eatplatform.web.domain.StoreAddressVO;
 import com.eatplatform.web.domain.StoreCategoryVO;
+import com.eatplatform.web.domain.StoreImageVO;
 import com.eatplatform.web.domain.StoreVO;
 
 import lombok.extern.log4j.Log4j;
@@ -49,6 +51,9 @@ public class StoreRESTController {
 	
 	@Autowired
 	private ReservService reservService;	
+	
+	@Autowired
+	private StoreImageService storeImageService;
 
 
 	/**
@@ -203,7 +208,14 @@ public class StoreRESTController {
     @GetMapping("/score")
     public ResponseEntity<List<StoreVO>> getStoreListByScore() {
     	List<StoreVO> stores = storeService.getStoresByScore();
-        return ResponseEntity.ok(stores);
+    	
+    	for (StoreVO store : stores) {
+            if (store.getStoreImageList() != null && !store.getStoreImageList().isEmpty()) {
+                StoreImageVO firstImage = store.getStoreImageList().get(0);
+                store.setStoreImageVO(firstImage);
+            }
+    	}
+    	return ResponseEntity.ok(stores);
     }
     
 }
