@@ -120,7 +120,6 @@ public class ReservServiceImple implements ReservService {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			String nowDateFormat = formatter.format(nowDate);
 			String dateTime = reservVO.getReservDate() + " " + reservVO.getReservHour() + ":" + reservVO.getReservMin();
-			log.info(dateTime);
 			
 			Date now = formatter.parse(nowDateFormat);
 			Date reservDateTime = formatter.parse(dateTime);
@@ -131,15 +130,12 @@ public class ReservServiceImple implements ReservService {
 			// 함수명 (시간, 차이갑
 			// 현재시간보다 이전의 시간 예외
 			if (now.after(reservDateTime)) {
-				log.info("예약할수 없는 시간입니다.");
 				return result;
 			}
 			
 			currentReservPersonnel = reservMapper.selectTotalPersonnelByStoreIdDateHourMin(vo);
-			log.info("currentReservPersonnel : " + currentReservPersonnel);
 			
 			int totalPersonnel = currentReservPersonnel + vo.getReservPersonnel();
-			log.info("인원 : " + totalPersonnel);
 			
 			if (totalPersonnel <= reservLimit) {
 				result = reservMapper.insert(vo);
@@ -147,9 +143,6 @@ public class ReservServiceImple implements ReservService {
 				// 예약 등록 알림 전송
 				notificationService.addReservNotification(reservVO);
 				
-				log.info("예약 등록 성공");
-			} else {
-				log.info("예약 실패 : 인원 초과");
 			}
 			
 		} catch (Exception e) {

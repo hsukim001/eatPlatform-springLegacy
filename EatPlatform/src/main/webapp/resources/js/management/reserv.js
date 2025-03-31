@@ -340,7 +340,6 @@ $(document).ready(function() {
 				    } else {
 				        address = response.info.jibunAddress;
 				    }
-				    console.log(address);
 				    $('#address .textValue').text(address);
 				}			
 				$('#reservInfoModal').show();

@@ -596,7 +596,7 @@ $('#reviews').on('click', '.reply_item .btn_update_reply', function () {
 			
 			        $.ajax({
 			            type: 'PUT',
-			            url: '../reply/' + updateReplyId,
+			            url: '/reply/' + updateReplyId,
 			            headers: {
 			                'Content-Type': 'application/json'
 			            },

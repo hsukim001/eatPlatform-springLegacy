@@ -55,7 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 				.antMatchers("/approval/denialManagement/*").access("hasRole('ROLE_STORE') or hasRole('ROLE_ADMIN')")
 				.antMatchers("/review/*").permitAll()
 				.antMatchers("/reserv/list").access("hasRole('ROLE_MEMBER') or hasRole('ROLE_STORE')")
-				.antMatchers("/email/**").permitAll();
+				.antMatchers("/email/**").permitAll()
+				.antMatchers("/management/reserv/*").access("hasRole('ROLE_STORE') or hasRole('ROLE_MEMBER')")
+				;
 
 		// 접근 제한 경로 설정
 		httpSecurity.exceptionHandling().accessDeniedPage("/access/accessDenied");

@@ -625,11 +625,8 @@ $(function () {
 				let isDuplicate = selectHolidayDate.list.some(item => item.holiday === date);
 				    
 				if(!isDuplicate) {
-					console.log(selectHolidayDate.list);
 					selectHolidayDate.list.push(obj);
 				}
-				
-				
 			});
 			
 			checkReservList()
@@ -800,7 +797,6 @@ $(function () {
 	function cancelHoliday(status) {
 		return new Promise((resolve) => {
 			if(status != 0 && status != 3) {
-				console.log("cancelHoliday() cancelHolidayDate.list.length : " + cancelHolidayDate.list.length);
 				if(cancelHolidayDate.list.length > 0) {
 					$.ajax({
 						url : '/store/holiday/delete',
@@ -812,7 +808,6 @@ $(function () {
 						success : function(response) {
 							if(response.result == 1) {
 								cancelHolidayStatus = 1;
-								console.log("cancelHoliday() success cancelHolidayStatus : " + cancelHolidayStatus);
 							} else if(response.result == 0) {
 								cancelHolidayStatus = 0;
 							}
