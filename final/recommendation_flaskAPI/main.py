@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -85,12 +86,10 @@ def get_data():
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(df["processed_review"])
     text_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
     # One-Hot Encoding (카테고리)
     encoder = OneHotEncoder()
     category_matrix = encoder.fit_transform(df[["MAIN_CATEGORY_NAME"]])
     category_sim = cosine_similarity(category_matrix, category_matrix)
-
     # MinMax Scaling (평균 평점)
     scaler = MinMaxScaler()
     df["normalized_rating"] = scaler.fit_transform(df[["SCORE"]])
@@ -127,7 +126,7 @@ def recommend():
             # 🔹 리뷰 개수 + 평점 기준 정렬 (리뷰 개수 → 평점 높은 순)
             top_reviewed_stores = pd.merge(review_counts, avg_scores, on="STORE_ID")
             top_reviewed_stores = top_reviewed_stores.sort_values(by=["REVIEW_COUNT", "SCORE"],
-                                                                  cending=[False, False]).head(3)
+                                                                  ascending=[False, False]).head(3)
 
             for row in top_reviewed_stores.itertuples():
                 STORE_ID = row.STORE_ID
@@ -136,22 +135,24 @@ def recommend():
 
                 store_info = df[df["STORE_ID"] == STORE_ID].iloc[0]
                 recommended_store_ids.add(STORE_ID)
-
                 STORE_NAME = store_info["STORE_NAME"]
                 STORE_PHONE = store_info["STORE_PHONE"] if pd.notna(store_info["STORE_PHONE"]) else "전화번호 없음"
                 STORE_COMMENT = store_info["STORE_COMMENT"] if pd.notna(store_info["STORE_COMMENT"]) else "코멘트 없음"
                 ROAD_ADDRESS = store_info["ROAD_ADDRESS"] if pd.notna(store_info["ROAD_ADDRESS"]) else "주소 없음"
                 DETAIL_ADDRESS = store_info["DETAIL_ADDRESS"] if pd.notna(store_info["DETAIL_ADDRESS"]) else "상세 주소 없음"
+                STORE_IMAGE_ID = int(store_info["STORE_IMAGE_ID"]) if pd.notna(
+                    store_info["STORE_IMAGE_ID"]) else "이미지 ID 없음"
                 STORE_IMAGE = store_info["STORE_IMAGE_EXTENSION"] if pd.notna(
                     store_info["STORE_IMAGE_EXTENSION"]) else "이미지 없음"
 
                 ranked_recommendations.append(
                     f"{rank}. {STORE_NAME} (ID: {STORE_ID}, 전화번호: {STORE_PHONE}, "
                     f"코멘트: {STORE_COMMENT}, 주소: {ROAD_ADDRESS}, 상세 주소: {DETAIL_ADDRESS}, "
-                    f"이미지: {STORE_IMAGE}, 유사도 점수: {0.00})"
+                    f"이미지 ID: {STORE_IMAGE_ID}, 이미지: {STORE_IMAGE}, 유사도 점수: {0.00})"
                 )
                 print(f"🔹 추천 {rank}: {ranked_recommendations[-1]}")
                 rank += 1
+
         else:
             print(f"✅ 유저 가게 예약 내역: {user_reservations}")
 
@@ -175,7 +176,6 @@ def recommend():
                 final_score = (text_sim_score * 0.4) + (category_sim_score * 0.5) + (rating_sim_score * 0.1)
 
                 STORE_NAME = df.iloc[index]["STORE_NAME"]
-
                 sim_scores.append((index, STORE_ID, STORE_NAME, final_score))
                 recommended_store_ids.add(STORE_ID)  # 🔹 중복 방지용으로 추가
 
@@ -201,13 +201,15 @@ def recommend():
                 STORE_COMMENT = store_info["STORE_COMMENT"] if pd.notna(store_info["STORE_COMMENT"]) else "코멘트 없음"
                 ROAD_ADDRESS = store_info["ROAD_ADDRESS"] if pd.notna(store_info["ROAD_ADDRESS"]) else "주소 없음"
                 DETAIL_ADDRESS = store_info["DETAIL_ADDRESS"] if pd.notna(store_info["DETAIL_ADDRESS"]) else "상세 주소 없음"
+                STORE_IMAGE_ID = int(store_info["STORE_IMAGE_ID"]) if pd.notna(
+                    store_info["STORE_IMAGE_ID"]) else "이미지 ID 없음"
                 STORE_IMAGE = store_info["STORE_IMAGE_EXTENSION"] if pd.notna(
                     store_info["STORE_IMAGE_EXTENSION"]) else "이미지 없음"
 
                 ranked_recommendations.append(
                     f"{rank}. {STORE_NAME} (ID: {STORE_ID}, 전화번호: {STORE_PHONE}, "
                     f"코멘트: {STORE_COMMENT}, 주소: {ROAD_ADDRESS}, 상세 주소: {DETAIL_ADDRESS}, "
-                    f"이미지: {STORE_IMAGE}, 유사도 점수: {score:.2f})"
+                    f"이미지 ID: {STORE_IMAGE_ID}, 이미지: {STORE_IMAGE}, 유사도 점수: {0.00})"
                 )
 
                 print(f"🔹 추천 {rank}: {ranked_recommendations[-1]}")
@@ -223,4 +225,4 @@ def recommend():
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=False)
+    app.run(port=5050, debug=False)
