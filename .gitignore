@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=eclipse,java
 
 .metadata
+.idea
 Servers
 EatPlatform/target/
 /EatPlatform/src/main/webapp/META-INF/maven/com.eatplatform/web
