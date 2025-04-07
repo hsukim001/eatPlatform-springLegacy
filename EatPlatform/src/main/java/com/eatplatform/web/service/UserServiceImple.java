@@ -50,17 +50,23 @@ public class UserServiceImple implements UserService {
 	@Transactional
 	@Override
 	public int createdUser(UserVO userMemberVO) {
-		log.info("createdUser()");
-		int resultUser = userMapper.insertUser(userMemberVO);
-
-		RoleListVO roleListVO = new RoleListVO();
-		roleListVO.setUsername(userMemberVO.getUsername());
-		roleListVO.setRoleName("ROLE_MEMBER");
-		int resultRole = roleListMapper.insertUserRole(roleListVO);
-
-		log.info("회원 정보 " + resultUser + "행 등록 성공");
-		log.info("회원 권한 " + resultRole + "행 등록 성공");
-		return 1;
+		int result = 0;
+		int checkUsername = userMapper.countUser(userMemberVO.getUsername());
+		int checkEmail = userMapper.countUserEmail(userMemberVO.getEmail());
+		
+		if(checkUsername == 0 && checkEmail == 0) {
+			int resultUser = userMapper.insertUser(userMemberVO);
+	
+			RoleListVO roleListVO = new RoleListVO();
+			roleListVO.setUsername(userMemberVO.getUsername());
+			roleListVO.setRoleName("ROLE_MEMBER");
+			int resultRole = roleListMapper.insertUserRole(roleListVO);
+			
+			if(resultUser == 1 && resultRole == 1) {
+				result = 1;
+			}
+		}
+		return result;
 	}
 	
 	// 회원 아이디 찾기(email)

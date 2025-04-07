@@ -35,6 +35,7 @@
 		let isUserId = false;
 		let isUserPw = false;
 		
+		let currentUsername = "";
 		let email;
 		let authCode;
 		let expirationTime;
@@ -47,11 +48,6 @@
 		// 사용자 계정 확인 버튼 이벤트
 		$("#userChk").click(function(){
 			userCheck();
-			if (isUserId == true) {
-				alert('사용 가능한 아이디 입니다.');
-			} else {
-				alert('사용할 수 없는 아이디 입니다.');
-			}
 		});
 		
 		// 비밀번호 확인 이벤트
@@ -86,7 +82,7 @@
 			} else {
 				if(userIdPattern.test($('#username').val())) {
 					$('#userIdChkMsg').text('아이디 입력이 완료되었습니다.');
-					userCheck();
+					//userCheck();
 				} else {
 					$('#userIdChkMsg').text('아이디에는 특수문자를 작성할수 없으며 5글자 이상 작성해야 합니다.');
 				}
@@ -96,7 +92,6 @@
 		// 계정 생성 버튼 클릭 이벤트
 		$("form").submit(function(){
 			createdUser();
-			userCheck();
 		});
 		
 		// 중복 계정 확인
@@ -111,13 +106,26 @@
 						isUserId = false;
 					} else if (result == 0 && userIdPattern.test($('#username').val())) {
 						isUserId = true;
+						currentUsername = username;
+					}
+					
+					if (isUserId == true) {
+						alert('사용 가능한 아이디 입니다.');
+					} else {
+						alert('사용할 수 없는 아이디 입니다.');
 					}
 				}
 			});
 		}
 		
 		// 계정 생성전 아이디,비밀번호 확인 및 이메일 인증 확인
-		function createdUser() {			
+		function createdUser() {
+			let username = $("#username").val();
+			
+			if(username !== currentUsername) {
+				isUserId = false;
+			}
+			
 			if(isUserId == false || isUserPw == false) {
 				if(!isUserId) {
 					alert("아이디 중복 체크를 다시 해주세요.");
@@ -130,6 +138,7 @@
 				alert("이메일인증이 완료되지 않았습니다.");
 				event.preventDefault();
 			}
+			
 		}
 		
 		// 이메일 인증코드 전송 버튼 액션
