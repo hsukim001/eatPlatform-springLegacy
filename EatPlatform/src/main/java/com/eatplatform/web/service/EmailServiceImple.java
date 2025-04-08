@@ -63,7 +63,7 @@ public class EmailServiceImple implements EmailService {
 		if (vo.getExpirationTime().after(sendTime)) {
 			if (passwordEncoder.matches(checkCode, vo.getAuthCode())) {
 				vo.setStatus(0);
-				String message = "이메일 인증이 성공";
+				String message = "이메일 인증에 성공하였습니다.";
 				vo.setMessage(message);
 			} else {
 				vo.setStatus(3);
@@ -128,7 +128,7 @@ public class EmailServiceImple implements EmailService {
 			vo.setAuthCode(encode);
 			vo.setSendTime(sendTime);
 			vo.setExpirationTime(expirationTime);
-			vo.setMessage("코드 전송이 완료되었습니다. 3분이내에 인증코드를 입력해주세요.");
+			vo.setMessage("인증메일 전송이 완료되었습니다. 3분이내에 인증코드를 입력해주세요.");
 			vo.setStatus(0);
 		} catch (Exception e) {
 			e.printStackTrace();
