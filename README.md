@@ -1,6 +1,6 @@
 # EatPlatform-springLegacy
 
-
+<br/>
 
 <p align="center">
     <img src="https://github.com/hsukim001/eatPlatform-springLegacy/blob/main/EatPlatform/src/main/webapp/resources/img/common/logo.png"><br>
@@ -16,8 +16,6 @@
 
 <br/>
 
-### 프로젝트 소개
-
-------
+## 프로젝트 소개
 
 맛집 탐색 서비스 및 지도를 활용한 직관적인 UI를 제공하여 사용자가 원하는 최적의 맛집을 쉽고 빠르게 찾을 수 있으며 온라인 예약 현황을 통하여 맛집 추천 서비스를 제공합니다.
