@@ -1,6 +1,6 @@
 # EatPlatform-springLegacy
 
-![logo](.\EatPlatform\src\main\webapp\resources\img\common\logo.png)
+![logo](https://github.com/hsukim001/eatPlatform-springLegacy/blob/main/EatPlatform/src/main/webapp/resources/img/common/logo.png)
 
 ​															 	[![hits](https://hitmeup-backend-593087166771.asia-northeast1.run.app/api/count/increment?url=https%253A%252F%252Fgithub.com%252Fhsukim001%252FeatPlatform-springLegacy&title=hits&title_bg=555555&count_bg=79c83d&edge_flat=false)](https://hitmeup-backend-593087166771.asia-northeast1.run.app)
 
